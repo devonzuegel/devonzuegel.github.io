@@ -21,26 +21,32 @@
 	cursor: wait !important;
 	opacity: 0;
 	transition: opacity 0.5s ease;
-}</style><link  rel="stylesheet" href="css/style.css" /><link  rel="stylesheet" href="css/vendor/normalize.css" /><link  rel="stylesheet" href="css/vendor/main.css" />
+}</style><link  rel="stylesheet" href="css/style.css" /><link  rel="stylesheet" href="css/vendor/normalize.css" /><link  rel="stylesheet" href="css/vendor/main.css" /><link  rel="stylesheet" href="css/vendor/bootstrap/bootstrap-theme.css" /><link  rel="stylesheet" href="css/vendor/bootstrap/bootstrap.css" /><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
   <script src="js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
   <!--[if lt IE 7]>
   <p class="browsehappy">You are using an <strong>outdated browser</strong>. Please <a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
   <![endif]-->
-  <div class="nav">
-    <div class="container">
-      <ul>
-        <li><a href="/posts/first.html">First Post</a></li>
-      </ul>
+  <nav role="navigation" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="#" class="navbar-brand">Brand</a>
+      </div>
+      <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/posts/first.html">First Post</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </nav>
   <div id="content">
 <div class="page-content">
-  <h4>Hello World!</h4>
-  <p>This is a paragraph.</p>
-</div></div>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script><script >(function(){
+  <div class="jumbotron">
+    <h1>Hello World!</h1>
+    <p>This is a paragraph.</p>
+  </div>
+</div></div><script >(function(){
 	/* Did we just livereload? */
 var log = !!(localStorage && console && console.log && true);
 if ( log && localStorage.getItem('/docpad-livereload/reloaded') === 'yes' ) {
@@ -85,14 +91,5 @@ var inject = function(){
 	} else {
 		inject();
 	}
-})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><script  src="js/plugins.js"></script><script  src="js/main.js"></script>
-  <!-- Google Analytics: change UA-XXXXX-X to be your sites ID.-->
-  <script>
-    (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-    e.src='//www.google-analytics.com/analytics.js';
-    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-    ga('create','UA-XXXXX-X');ga('send','pageview');
-  </script>
+})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="js/plugins.js"></script><script  src="js/main.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </body>
