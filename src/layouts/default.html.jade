@@ -1,0 +1,21 @@
+include ../views/includes/head
+
+body
+  //if lt IE 7
+    p.browsehappy
+      |You are using an 
+      strong
+        |outdated browser
+      |. Please 
+      a(href="http://browsehappy.com/")
+        |upgrade your browser
+      |to improve your experience.
+  
+  .nav: .container: ul
+    //- each p in getCollection('pages').toJSON()
+    //-   li(typeof="sioc:Page", about=p.url, class=(document.url === p.url) ? 'active' : null)
+    //-     a(href=p.url, property="dc:title")= p.title
+
+  #content!= content
+
+  include ../views/includes/scripts
