@@ -1,37 +1,61 @@
-# [HTML5 Boilerplate](http://html5boilerplate.com/), [Jade](http://jade-lang.com) and [Less](http://lesscss.org) skeleton for [DocPad](https://github.com/bevry/docpad)
-Bare essentials for building a modern website with best practices using jade and less. livereload used to aid development.
+# [HTML5 Boilerplate](http://html5boilerplate.com)
+
+HTML5 Boilerplate is a professional front-end template for building fast,
+robust, and adaptable web apps or sites.
+
+This project is the product of many years of iterative development and combined
+community knowledge. It does not impose a specific development philosophy or
+framework, so you're free to architect your code in the way that you want.
+
+* Source: [https://github.com/h5bp/html5-boilerplate](https://github.com/h5bp/html5-boilerplate)
+* Homepage: [http://html5boilerplate.com](http://html5boilerplate.com)
+* Twitter: [@h5bp](http://twitter.com/h5bp)
 
 
-## Getting Started
+## Quick start
 
-1. [Install DocPad](https://github.com/bevry/docpad)
+Choose one of the following options:
 
-1. Clone the project and run the server
-
-	``` bash
-	git clone git://github.com/jh3y/html5-boilerplate-jade-less-livereload.docpad.git
-	cd html5-boilerplate-jade-less-livereload.docpad
-	npm install
-	docpad run
-	```
-
-1. [Open http://localhost:9778/](http://localhost:9778/)
-
-1. Start hacking away by modifying the `src` directory
+1. Download the latest stable release from
+   [html5boilerplate.com](http://html5boilerplate.com/) or a custom build from
+   [Initializr](http://www.initializr.com).
+2. Clone the git repo — `git clone
+   https://github.com/h5bp/html5-boilerplate.git` - and checkout the tagged
+   release you'd like to use.
 
 
-## License
+## Features
 
-This skeleton is made ["public domain"](http://en.wikipedia.org/wiki/Public_domain) using the [Creative Commons Zero](http://creativecommons.org/publicdomain/zero/1.0/), as such before you publish your website you should place your desired license here and within the `LICENSE.md` file.
+* HTML5 ready. Use the new elements with confidence.
+* Cross-browser compatible (Chrome, Opera, Safari, Firefox 3.6+, IE6+).
+* Designed with progressive enhancement in mind.
+* Includes [Normalize.css](http://necolas.github.com/normalize.css/) for CSS
+  normalizations and common bug fixes.
+* The latest [jQuery](http://jquery.com/) via CDN, with a local fallback.
+* The latest [Modernizr](http://modernizr.com/) build for feature detection.
+* IE-specific classes for easier cross-browser control.
+* Placeholder CSS Media Queries.
+* Useful CSS helpers.
+* Default print CSS, performance optimized.
+* Protection against any stray `console.log` causing JavaScript errors in
+  IE6/7.
+* An optimized Google Analytics snippet.
+* Apache server caching, compression, and other configuration defaults for
+  Grade-A performance.
+* Cross-domain Ajax and Flash.
+* "Delete-key friendly." Easy to strip out parts you don't need.
+* Extensive inline and accompanying documentation.
 
-If you are wanting to open-source your website, we suggest using the [Creative Commons Attribution License](http://creativecommons.org/licenses/by/3.0/) for content and the [MIT License](http://creativecommons.org/licenses/MIT/) for code. In which case you'd probably want to use the following as your license:
 
-	Unless stated otherwise, all content is licensed under the [Creative Commons Attribution License](http://creativecommons.org/licenses/by/3.0/) and code licensed under the [MIT License](http://creativecommons.org/licenses/MIT/), © [Your Name](http://your.website)
+## Documentation
 
-If you are wanting to close-source your website, we'd suggest using the following:
+Take a look at the [documentation table of contents](doc/TOC.md). This
+documentation is bundled with the project, which makes it readily available for
+offline reading and provides a useful starting point for any documentation you
+want to write about your project.
 
-	Copyright [Your Name](http://your.website). All rights reserved.
 
-Other included things such as themes and libraries are likely already licensed by their own invidual licenses, so be sure to respect their licenses too.
+## Contributing
 
-Thanks, the DocPad team loves you.
+Anyone and everyone is welcome to [contribute](CONTRIBUTING.md). Hundreds of
+developers have helped make the HTML5 Boilerplate what it is today.
