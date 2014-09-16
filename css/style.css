@@ -1,5 +1,140 @@
+/* -------------------------
+ * COLORS */
+/* -------------------------
+ * WIDTHS */
+/* -------------------------
+ * PADDINGS */
+@include font-face("DINComp", font-files("../fonts/DINComp-Light.ttf", "./../../fonts/DINComp.woff"));
+/* -----------
+ * HEADINGS */
+h1,
+h2,
+h3,
+h4,
+h5,
+.time {
+  font-family: "DINComp", sans-serif;
+}
+h1 {
+  font-size: 3.2em;
+  font-weight: 700;
+}
+h3 {
+  font-size: 1.4em !important;
+}
+.time {
+  color: #777;
+  font-weight: 100;
+  font-style: italic;
+  font-size: .8em;
+  margin-top: -2em;
+}
+/* -----------
+ * NAVIGATION */
+nav {
+  font-family: 'DINComp', sans-serif;
+  text-transform: uppercase;
+}
+nav .navbar-brand {
+  text-transform: none;
+  color: #edbf09 !important;
+  border-top: 5px solid transparent;
+  font-size: 2.1em;
+}
+nav .navbar-brand:hover {
+  text-shadow: 0 0 0.2em #ffffff;
+}
+@media (min-width: 768px) {
+  .navbar-default .navbar-nav .active > a {
+    color: #666;
+    border-top: 5px solid #fae386;
+  }
+  .navbar-default .navbar-nav .active > a:hover {
+    color: black;
+    border-top: 5px solid #f6ca1a;
+  }
+  .navbar-default .navbar-nav li > a {
+    padding: 15px 4px 5px 4px;
+    margin-left: 20px;
+    background: none !important;
+    border-top: 5px solid transparent;
+    color: #ccc;
+  }
+  .navbar-default .navbar-nav li > a:hover {
+    color: black;
+    border-top: 5px solid #f6ca1a;
+  }
+}
+@media (max-width: 768px) {
+  .navbar-default .navbar-nav .active > a {
+    background: #fef7de;
+    color: #666;
+  }
+  .navbar-default .navbar-nav .active > a:hover {
+    color: black;
+    background: #fcecad;
+  }
+  .navbar-default .navbar-nav li > a {
+    padding: 5px 5px 5px 10px;
+    margin: 5px 0px;
+    background: none;
+    color: #ccc;
+  }
+  .navbar-default .navbar-nav li > a:hover {
+    background: #fcecad;
+    color: black;
+  }
+}
+/* -----------
+ * BODY & PARAGRAPHS */
+body {
+  font: 14px "Helvetica Neue", sans-serif;
+  font-weight: "thin";
+}
+a {
+  color: #428bca;
+  padding-bottom: 1px;
+}
+a:hover {
+  color: #245682;
+}
 body {
   overflow-y: scroll;
   font: Helvetica 14px;
   font-weight: 200;
+}
+.navbar {
+  background: white;
+  border: none;
+}
+.navbar .navbar-toggle {
+  border: none;
+  background: none !important;
+}
+.navbar .navbar-toggle:hover {
+  border: none;
+  background-color: none !important;
+  color: #666;
+}
+.navbar .navbar-default .navbar-toggle:hover,
+.navbar .navbar-default .navbar-toggle:focus,
+.navbar .navbar-default .navbar-toggle .icon-bar {
+  background-color: none !important;
+}
+.navbar .container-fluid {
+  max-width: 1000px;
+  padding: 0 30px;
+}
+@media (max-width: 758px) {
+  .navbar .container-fluid {
+    border-bottom: 1px solid #e7e7e7;
+  }
+}
+#nav-spacer {
+  height: 50px;
+}
+#content {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
 }

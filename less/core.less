@@ -1,8 +1,52 @@
-// @import './base/variables';
+@import '/base/variables';
+@import '/base/typography';
+@import '/base/mixins';
 
 body {
 	overflow-y: scroll;
 	font: Helvetica 14px;
 	font-weight: 200;
 	// color: @color1;
+}
+
+.navbar {
+	background: white;
+	border: none;
+
+	.navbar-toggle {
+		border: none;
+		background: none !important;
+
+		&:hover {
+			border: none;
+			background-color: none !important;
+			color: #666;
+		}
+
+	}
+
+	.navbar-default .navbar-toggle:hover, 
+	.navbar-default .navbar-toggle:focus,
+	.navbar-default .navbar-toggle .icon-bar {
+		background-color: none !important;
+	}
+
+	.container-fluid {
+		max-width: @width-1;
+		padding: 0 @padding-1;
+
+		@media (max-width: 758px) {
+			border-bottom: 1px solid #e7e7e7;
+		}
+	}
+	
+}
+
+// compensates for sticky nav's height
+#nav-spacer {	height: 50px; }
+
+#content {
+	max-width: @width-1;
+	margin: auto;
+	padding: @padding-1;
 }

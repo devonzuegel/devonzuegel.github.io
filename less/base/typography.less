@@ -1,0 +1,131 @@
+@include font-face("DINComp", font-files("../fonts/DINComp-Light.ttf", "./../../fonts/DINComp.woff"));
+
+/* -----------
+ * HEADINGS */
+
+h1, h2, h3, h4, h5, .time {
+	font-family: "DINComp", sans-serif;
+}
+
+h1 {
+	font-size: 3.2em;
+	font-weight: 700;
+}
+
+h3 {
+	font-size: 1.4em !important;
+}
+
+.time {
+	color: #777;
+	font-weight: 100;
+	font-style: italic;
+	font-size: .8em;
+	margin-top: -2em;
+}
+
+
+
+/* -----------
+ * NAVIGATION */
+
+nav {
+	font-family: 'DINComp', sans-serif;
+	text-transform: uppercase;
+	
+	.navbar-brand {
+		text-transform: none;
+		color: darken(@yellow, 15%) !important;
+		border-top: 5px solid transparent;
+		font-size: 2.1em;
+
+		&:hover {
+			text-shadow: 0 0 0.2em lighten(@yellow, 40%);
+			// color: darken(@yellow, 10%) !important;
+		}
+	}
+
+}
+
+.navbar-default .navbar-nav {
+
+	@media(min-width: 768px) {
+		.active > a {
+			color: #666;
+			border-top: 5px solid lighten(@yellow, 12%);
+
+			&:hover {
+				color: black;
+				border-top: 5px solid darken(@yellow, 10%);
+			}
+
+		}
+
+		li > a {
+			padding: 15px 4px 5px 4px;
+			margin-left: 20px;
+			background: none !important;
+			border-top: 5px solid transparent;
+			color: #ccc;
+
+			&:hover {
+				color: black;
+				border-top: 5px solid darken(@yellow, 10%);
+			}
+		}
+
+	}
+
+	@media(max-width: 768px) {
+		.active > a {
+			background: lighten(@yellow, 30%);
+			color: #666;
+			// border-left: 5px solid lighten(@yellow, 12%);
+
+			&:hover {
+				color: black;
+				background: lighten(@yellow, 20%);
+				// border-left: 5px solid darken(@yellow, 10%);
+			}
+
+		}
+
+		li > a {
+			padding: 5px 5px 5px 10px;
+			margin: 5px 0px;
+			background: none;
+			// border-left: 5px solid transparent;
+			color: #ccc;
+
+			&:hover {
+				background: lighten(@yellow, 20%);
+				color: black;
+				// border-left: 5px solid darken(@yellow, 10%);
+			}
+		}
+
+	}
+
+}
+
+
+
+/* -----------
+ * BODY & PARAGRAPHS */
+ 
+body {
+	font: 14px "Helvetica Neue", sans-serif;
+	font-weight: "thin";
+}
+
+a {
+	color: @blue;
+	padding-bottom: 1px;
+
+	&:hover {
+		color: darken(@blue, 20%);
+	}
+}
+
+
+
