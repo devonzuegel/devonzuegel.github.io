@@ -1,4 +1,4 @@
 RewriteEngine on
-RewriteCond %{HTTP_HOST} ^example.com [NC,OR]
-RewriteCond %{HTTP_HOST} ^www.example.com [NC]
+RewriteCond %{HTTP_HOST} ^devonzuegel.github.io [NC,OR]
+RewriteCond %{HTTP_HOST} ^www.devonzuegel.github.io [NC]
 RewriteRule ^(.*)$ http://devon.zuegel.us/$1 [L,R=301,NC]
