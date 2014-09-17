@@ -1,0 +1,116 @@
+
+
+/* -----------
+ * NAVIGATION */
+
+nav {
+	font-family: 'DINComp', sans-serif;
+	text-transform: uppercase;
+	
+	.navbar-brand {
+		text-transform: none;
+		font-family: 'Roboto Slab', serif;
+		font-weight: 300;
+		color: @yellow-dark !important;
+		border-top: 5px solid transparent;
+		font-size: 2em;
+
+		&:hover {
+			text-shadow: 0 0 0.1em lighten(@yellow, 18%);
+			color: @yellow !important;
+		}
+	}
+
+}
+
+.navbar {
+	background: white;
+	border: none;
+
+	.navbar-toggle {
+		border: none;
+		background: none !important;
+
+		&:hover {
+			border: none;
+			background-color: none !important;
+			color: #666;
+		}
+
+	}
+
+	.navbar-default .navbar-toggle:hover, 
+	.navbar-default .navbar-toggle:focus,
+	.navbar-default .navbar-toggle .icon-bar {
+		background-color: none !important;
+	}
+
+	.container-fluid {
+		max-width: @width-1 - 50px;
+		padding: 0 10px 5px 10px;
+		border-bottom: 1px solid #e7e7e7;
+	}
+	
+}
+
+// compensates for sticky nav's height
+#nav-spacer {	height: 50px; }
+
+.navbar-default .navbar-nav {
+
+	@media(min-width: 768px) {
+		.active > a {
+			color: #666;
+			border-top: 5px solid lighten(@yellow, 12%);
+			text-shadow: 0 0 0.05em lighten(black, 85%);
+
+			&:hover {
+				color: black;
+				border-top: 5px solid darken(@yellow, 10%);
+			}
+
+		}
+
+		li > a {
+			padding: 15px 4px 5px 4px;
+			margin-left: 20px;
+			background: none !important;
+			border-top: 5px solid transparent;
+			color: #ccc;
+
+			&:hover {
+				color: black;
+				border-top: 5px solid darken(@yellow, 10%);
+			}
+		}
+
+	}
+
+	@media(max-width: 768px) {
+		.active > a {
+			background: lighten(@yellow, 30%);
+			color: #666;
+
+			&:hover {
+				color: black;
+				background: lighten(@yellow, 25%);
+			}
+
+		}
+
+		li > a {
+			padding: 5px 5px 5px 10px;
+			margin: 5px 0px;
+			background: none;
+			color: #ccc;
+
+			&:hover {
+				background: lighten(@yellow, 25%);
+				color: black;
+			}
+		}
+
+	}
+
+}
+

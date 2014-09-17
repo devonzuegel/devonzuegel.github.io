@@ -2,51 +2,68 @@
 @import '/base/typography';
 @import '/base/mixins';
 
+@import '/includes/nav';
+
 body {
 	overflow-y: scroll;
 	font: Helvetica 14px;
 	font-weight: 200;
-	// color: @color1;
 }
 
-.navbar {
-	background: white;
-	border: none;
+.circle {
+	height: 150px;
+	width: 150px;
+	.border-radius(150px);
+	overflow: hidden;
+	padding: 0 !important;
+	margin: auto !important;
 
-	.navbar-toggle {
-		border: none;
-		background: none !important;
-
-		&:hover {
-			border: none;
-			background-color: none !important;
-			color: #666;
-		}
-
+	img {
+		max-height: 150px;
+		padding: 0 !important;
+		margin: 0 !important;
 	}
-
-	.navbar-default .navbar-toggle:hover, 
-	.navbar-default .navbar-toggle:focus,
-	.navbar-default .navbar-toggle .icon-bar {
-		background-color: none !important;
-	}
-
-	.container-fluid {
-		max-width: @width-1;
-		padding: 0 @padding-1;
-
-		@media (max-width: 758px) {
-			border-bottom: 1px solid #e7e7e7;
-		}
-	}
-	
 }
-
-// compensates for sticky nav's height
-#nav-spacer {	height: 50px; }
 
 #content {
 	max-width: @width-1;
 	margin: auto;
-	padding: @padding-1;
+	padding: 40px @padding-1;
+
+	#main-content {
+		@media (min-width: 992px) {
+			padding-right: 25px;
+		}
+	}
+
+	#side-bar {
+		padding: 25px 0 25px 40px;
+		margin: auto !important;
+
+		@media (min-width: 992px) {
+			border-left: 1px solid #eee;
+
+			.circle {
+				margin: -10px auto 25px auto !important;
+			}
+
+			.contact-info {
+				margin: auto;
+			}
+		}
+
+		@media (max-width: 992px) {
+			margin-top: 30px;
+			border-top: 1px solid #eee;
+
+			.circle {
+				float: left;
+				margin: 25px 25px 0 0 !important;
+			}
+
+			.contact-info {
+				float: left;
+			}
+		}
+	}
 }
