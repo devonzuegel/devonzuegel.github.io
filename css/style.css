@@ -26,8 +26,13 @@ h1 {
   font-weight: 700;
   margin-top: 0 !important;
 }
+h2 {
+  color: #e3b709;
+  border-bottom: 1px solid #e3b709;
+}
 h3 {
-  font-size: 1.4em !important;
+  font-size: 1.3em !important;
+  margin-bottom: 0 !important;
 }
 h4 {
   text-transform: uppercase;
@@ -41,13 +46,17 @@ h4 {
   font-weight: 100;
   font-style: italic;
   font-size: .8em;
-  margin-top: -2em;
+}
+.light {
+  font-weight: "thin" !important;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
 }
 /* -----------
  * BODY & PARAGRAPHS */
 body {
   font: 14px "Roboto", sans-serif;
-  font-weight: "thin";
+  font-weight: "light";
 }
 a {
   color: #5697d0;
@@ -55,6 +64,35 @@ a {
 }
 a:hover {
   color: #357ebd;
+}
+ul {
+  padding-left: 18px !important;
+  margin: 5px 0 !important;
+}
+ul li.no_bullet {
+  list-style: none;
+  margin: 0 0 5px -18px !important;
+  text-family: 'DINComp', sans-serif;
+  text-transform: uppercase;
+  color: #555;
+}
+ul li.no_bullet span.level {
+  background: #ccc;
+  color: white;
+  font-size: 81%;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 2px 5px;
+  margin: -10px 0 0 10px;
+  display: inline-block;
+}
+.smaller {
+  font-size: 80%;
+  font-weight: 100;
 }
 /* -----------
  * NAVIGATION */
@@ -72,7 +110,7 @@ nav .navbar-brand {
 }
 nav .navbar-brand:hover {
   text-shadow: 0 0 0.1em #fbeaa3;
-  color: #f8d54b !important;
+  color: #f2c309 !important;
 }
 .navbar {
   background: white;
