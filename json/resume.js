@@ -160,6 +160,21 @@ module.exports = {
 
 
 	"skills": {
+
+		"web_frameworks": [
+			{
+				"name": "Node.js",
+				"months_exp": 6,
+				"comfort": 5,
+				"include": true,
+			}, {
+				"name": "Ruby on Rails",
+				"months_exp": 6,
+				"comfort": 4,
+				"include": true,
+			},
+		],
+		
 		"programming_languages": [
 			// comfort is 0-5, 5 being most comfortable
 			{
@@ -187,20 +202,6 @@ module.exports = {
 				"months_exp": 5,
 				"comfort": 3,
 				"include": false,
-			},
-		],
-
-		"web_frameworks": [
-			{
-				"name": "Node.js",
-				"months_exp": 6,
-				"comfort": 5,
-				"include": true,
-			}, {
-				"name": "Ruby on Rails",
-				"months_exp": 6,
-				"comfort": 4,
-				"include": true,
 			},
 		],
 
@@ -263,7 +264,7 @@ module.exports = {
 				"start": "June 2014",
 				"end": "September 2014",
 			},
-			"website": "www.formation8.com",
+			"website": "//formation8.com",
 			"bullet_pts": [
 				"Designed & built an app in Node.js with profiles for each portfolio company. It facilitates requests & updates between the companies & Formation 8 & acts as a repository for financial documents."
 			],
@@ -282,7 +283,7 @@ module.exports = {
 				"start": "September 2012",
 				"end": "present",
 			},
-			"website": "www.stanfordreview.org",
+			"website": "//stanfordreview.org",
 			"bullet_pts": [
 				"Led campaign to grow online presence of paper, increased viewership by 50% within a month",
 				"Managed & mentored staff writers to ensure the Review went to print on time",
@@ -297,7 +298,7 @@ module.exports = {
 				"start": "January 2014",
 				"end": "present",
 			},
-			"website": "www.cs198.stanford.edu",
+			"website": "//cs198.stanford.edu",
 			"bullet_pts": [
 				"Teach weekly section, hold office hours, & assess assignments for the first & second introductory CS courses (in Java and C++).",
 			],
@@ -310,7 +311,7 @@ module.exports = {
 				"start": "May 2012",
 				"end": "July 2012",
 			},
-			"website": "www.quixey.com",
+			"website": "//quixey.com",
 			"bullet_pts": [
 				"Designed & built a website for the press announcing the company’s investment round",
 			],
@@ -323,7 +324,7 @@ module.exports = {
 				"start": "June 2012",
 				"end": "August 2012",
 			},
-			"website": "www.nasa.gov",
+			"website": "//nasa.gov",
 			"bullet_pts": [
 				"Designed & built a searchable photo archive in Excel that was sharable across the network",
 				"Constructed an experimental replica of the workstation on the International Space Station",
@@ -337,7 +338,7 @@ module.exports = {
 				"start": "April 2012",
 				"end": "June 2013",
 			},
-			"website": "www.guidedogs.com",
+			"website": "//guidedogs.com",
 			"bullet_pts": [
 				"Raised a puppy to lead & accompany a blind individual throughout his daily life",
 				"Attended weekly trainings to learn how to work with the puppy",
@@ -355,7 +356,7 @@ module.exports = {
 				"start": "April 2014",
 				"end": "present",
 			},
-			"website": "www.stanford.edu/~devonz/paper_trail",
+			"website": "//stanford.edu/~devonz/paper_trail",
 			"bullet_pts": [
 				"Built an app that presents information about corporations\" political contributions.",
 			],
@@ -369,7 +370,7 @@ module.exports = {
 				"start": "September 2010",
 				"end": "June 2012",
 			},
-			"website": "www.freestyle.mvla.net/~DevonZ/project0/index.html",
+			"website": "//freestyle.mvla.net/~DevonZ/project0/index.html",
 			"bullet_pts": [
 			 "Represents my first exposure & experimentation with web design",
 			],
@@ -383,7 +384,7 @@ module.exports = {
 				"start": "May 2011",
 				"end": "June 2011",
 			},
-			"website": "www.freestyle.mvla.net/~DevonZ/project2/pages/animation.html",
+			"website": "//freestyle.mvla.net/~DevonZ/project2/pages/animation.html",
 			"bullet_pts": [
 				"Created graphics with Adobe Illustrator & Photoshop, animated graphics in Adobe Flash",
 				"Won 2nd place for best 2010 junior animation at Freestyle Academy",
@@ -398,7 +399,7 @@ module.exports = {
 				"start": "January 2011",
 				"end": "April 2011",
 			},
-			"website": "www.blurb.com/books/2092327-in-other-words",
+			"website": "//blurb.com/books/2092327-in-other-words",
 			"bullet_pts": [
 				"Gained experience in interview- & research-based writing & in layout design",
 				"Won 2nd place for best 2011 junior documentary book at Freestyle Academy",
