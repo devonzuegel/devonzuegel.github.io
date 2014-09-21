@@ -357,7 +357,7 @@ module.exports = {
 			},
 			"website": "www.stanford.edu/~devonz/paper_trail",
 			"bullet_pts": [
-				"Learned Javascript while creating an app that presents information about corporations\" political contributions.",
+				"Built an app that presents information about corporations\" political contributions.",
 			],
 			"include": true,
 

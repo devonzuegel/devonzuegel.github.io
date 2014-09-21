@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"></html>
+<![endif]-->
+<!--[if IE 7]>
+<html lang="en" class="no-js lt-ie9 lt-ie8"></html>
+<![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="no-js lt-ie9"></html>
+<![endif]-->
+<!--[if gt IE 8]>
+<html lang="en" class="no-js"></html>
+<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>What happened at MtGox? The Collapse of the World's Largest Bitcoin Exchange | Devon Zuegel</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--Place favicon.ico and apple-touch-icon.png in the root directory--><meta name="generator" content="DocPad v6.53.4" /><style >html.wait {
+	cursor: wait !important;
+	opacity: 0;
+	transition: opacity 0.5s ease;
+}</style><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <script src="../js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+  <!--[if lt IE 7]>
+  <p class="browsehappy">You are using an <strong>outdated browser</strong>. Please <a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
+  <![endif]-->
+  <div id="nav-spacer"></div>
+  <nav role="navigation" class="navbar navbar-default navbar-fixed-top custom">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" class="navbar-toggle collapsed"><span><i class="fa fa-bars"></i></span>
+        </button><a href="../../" class="navbar-brand">Devon Zuegel</a>
+      </div>
+      <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/pages/resume.html">Resume</a></li>
+          <li><a href="/pages/posts.html">Writing</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div id="content">
+    <div class="col-md-9">
+      <div id="main-content">
+<article id="post" class="post">
+  <h1>What happened at MtGox? The Collapse of the World's Largest Bitcoin Exchange</h1><a href="//stanfordreview.org/article/what-happened-at-mtgox-the-collapse-of-the-worlds-largest-bitcoin-exchange/" class="light">by Devon Zuegel</a>
+  <div class="time">April 23 2014</div>
+  <div class="post-content"><p>Only a year ago, MtGox was the largest Bitcoin (BTC) exchange in the world, handling 70 percent of all Bitcoin transactions. The exchange ground to a halt on February 7 when it was announced that all BTC withdrawals from customer accounts were indefinitely suspended. Left in the dark, thousands of Bitcoin owners found their assets frozen as the exchange shut down. To ease growing concern, MtGox stated that “the increase in withdrawal traffic [was] hindering [their] efforts on a technical level” and they needed the system to be in a “static state ... to obtain a clear technical view of the current processes.”</p>
+
+<p>MtGox’s customers were not satisfied with the explanation. The announcement was preceded by months of crippling delays and unfulfilled transfers. Trust in the company was already wearing thin after an ongoing series of blunders: the site had fallen victim to a successful hack in June 2011 and lost the equivalent of $8.75 million; federal authorities seized most of MtGox’s US-based accounts in mid-2013 due to compliance issues with financial regulations; and the exchange had been plagued by chronic withdrawal delays since April 2013. Even Roger Ver, a friend of MtGox’s CEO Mark Karpeles, recommended against the exchange. However, no one guessed the magnitude of the catastrophe that was about to surface.</p>
+
+<blockquote>
+<p>Anybody who has enough information about what&#39;s going on in the Bitcoin world ... world not buy [their] bitcoins on MtGox.   ~ Roger Ver</p>
+</blockquote>
+
+<p>By late February, the world learned that more than 1 out of every 20 bitcoins in existence had disappeared from MtGox’s “cold wallet”. According to a “Crisis Strategy Draft” leaked on February 24, 2014, MtGox had just 2,000btc while customer deposits totaled to over 600,000btc. Over the course of two years, over 744,000 bitcoins worth more than $400 million USD had been stolen from the site.</p>
+
+<h2 id="transaction-malleability">Transaction Malleability</h2>
+
+<p>The core of the issue is a vulnerability called “transaction malleability”. Each bitcoin transaction has certain metadata, including information on how much is being traded and the identities of the sender and receiver of the coin. For identification of that trade, a transaction ID or “hash” is mathematically calculated using the contents that metadata.</p>
+
+<p>However, not all of the metadata is secure. It is possible to change certain parts of the information stored in the transaction and, in turn, the transaction ID, without alerting the sender.</p>
+
+<p>Transaction malleability in and of itself is not an issue; changing a transaction’s ID does not change the important parts of the trade, and the bitcoins still go to their intended recipient. However, a manipulated ID can throw off a system that’s built around the assumption that each transaction shows up under a particular ID, and the way this uncertainty is handled is crucial.</p>
+
+<p>Unfortunately, when individuals withdrew from MtGox, the exchange’s software expected transactions to show up in the public ledger called the blockchain under the specific IDs it calculated at the time of the trade. This vulnerability gave hackers an opening to manipulate the hash and then claim their transactions had failed. Worse, MtGox’s system would automatically repeat the transaction in response to such a complaint, sending out bitcoins once again. Transaction malleability combined with MtGox’s system that depends on the validity of the hashes essentially allowed for double spending of coins.</p>
+
+<h2 id="who-is-responsible-">Who is responsible?</h2>
+
+<p>Initially MtGox blamed the designers of Bitcoin itself. In a press release on 10 February, MtGox stated that they had identified a problem in the Bitcoin protocol “not limited to MtGox.”</p>
+
+<p>However, the Bitcoin community has been aware of this vulnerability since at least May 15, 2011, and “transaction malleability” has been well-documented with its own page on the Bitcoin wiki. While transaction malleability is a weakness in Bitcoin itself, it can be and, by many other bitcoin services, has been neutralized by simple ID validation. The Bitcoin Foundation has acknowledged that this is a problem but argues that “any company dealing with Bitcoin … should responsibly prepare for this possibility”.</p>
+
+<p>MtGox felt tremendous backlash from the Bitcoin community for their pushing the blame upon the bitcoin protocol. Kyt Dotson from SiliconAngle described MtGox’s response as a “blame-game” and attributed“technical ineptitude” for the withdrawal freeze. Alex Hern wrote in The Guardian that much of the blame also fell upon MtGox’s “almost unbelievably lax approach to accounting”.</p>
+
+<p>“MtGox has allegedly never conducted a single audit of its customer deposits,” said Ryan Selkis, who leaked the crisis strategy document, “and it is believed that [MtGox CEO Mark] Karpeles may have been the only one within the company to have knowledge of how to actually tap the exchange’s cold storage. It remains unclear exactly how this type of storage leak could have happened over a multi-year period without any knowledge on the part of the executives at MtGox.”</p>
+
+<p>Even the sloppiest of audits should have shown that something had gone wrong.  ~ Russell Brandom from The Verge</p>
+
+<p>Emin Gün Sirer, an associate professor of computer science at Cornell University, thinks that the cause of the theft was less benign than simple incompetence. He said, “Whenever anyone is in a position of trust, whenever the illegal gains to be obtained from breaking that trust exceed the value of one’s reputation, there will be a temptation to steal. Jail is not quite a deterrent in this case, where the jurisdiction is Japan and the technology is too new for the justice system. Chances are that this is a simple case of theft, involving at least one insider.”</p>
+
+<h2 id="the-fallout">The Fallout</h2>
+
+<p>MtGox’s meltdown has affected the entire Bitcoin community. Once the world’s largest BTC exchange, MtGox filed bankruptcy, deleted its Twitter account, and shut down its trading platform. The exchange’s customers lost almost half a billion dollars overall. Customers have flooded the the Bitcoin subreddit with stories of retirement savings and college funds that were wiped out.</p>
+
+<p>After repeatedly attempting to withdraw his BTC from MtGox, a Redditor who goes by the username CoinSearcher flew for 16 hours from his home in Australia to MtGox’s headquarters in Tokyo, Japan on Wednesday 5 February. He met with Gonzague Gay-Bouchery, MtGox’s Manager of Business Development and questioned him about the withdrawal delays. (“My protest at MtGox Offices”)</p>
+
+<p>Initially, the wider community was anxious that MtGox’s collapse would put Bitcoin’s future in jeopardy. Hern said, “The MtGox losses … underscore the perception of bitcoin as a currency highly susceptible to bank robberies.” Indeed, when news came out, Bitcoin’s market price saw a major dip, plunging overnight to $405 from $612 as listed on another exchange, Coinbase.</p>
+
+<p>MtGox’s leaked “Crisis Strategy Draft” noted, “With Bitcoin/crypto just recently gaining acceptance in the public eye, the likely damage in public perception to this class of technology could put it back 5~10 years, and cause governments to react swiftly and harshly. At the risk of appearing hyperbolic, this could be the end of Bitcoin, at least for most of the public.”</p>
+
+<p>Despite these fears, Bitcoin has since recovered from the MtGox debacle. UK-based Bitstamp has taken up MtGox’s mantle as the world’s largest Bitcoin exchange; Bitcoin moves towards the mainstream as an increasing number of businesses accept Bitcoin as payment; and the price of BTC has floated back up. After losing his life savings during the MtGox meltdown, a man who goes by the username nmersulypnem on Bitcointalk said, “Ultimately, I still believe in cryptocurrency technology and how it will revolutionize the financial world; but it is clear that still has a lot of growing up to do.”</p></div>
+</article></div>
+    </div>
+    <div class="col-md-3">
+      <div id="side-bar">
+        <div class="row contact">
+          <div class="circle"><img src="https://scontent-a-pao.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/10624925_10152355110703443_8470920206731569812_n.jpg?oh=b07b63c7d77ff1ae92838e9abcbf3d60&amp;oe=549B0314"></div>
+          <div class="contact-info">
+            <h4>Github</h4><a href="//github.com/devonzuegel">github.com/devonzuegel</a>
+            <h4>Twitter</h4><a href="//twitter.com/devonzuegel">@DevonZuegel</a>
+            <h4>Email</h4><a href="mailto:deovnz@cs.stanford.edu">devonz@cs.stanford.edu</a>
+            <h4></h4><a></a>
+          </div>
+        </div>
+        <div class="row headlines">
+          <h3>Featured</h3>
+          <ul>
+            <div class="headline"><a href="/posts/the-new-campus-radicals.html" class="title">Editor's Note: The New Campus Radicals</a></div>
+            <div class="headline"><a href="/posts/what-happened-at-mtgox-the-collapse-of-the-worlds-largest-bitcoin-exchange.html" class="title">What happened at MtGox? The Collapse of the World's Largest Bitcoin Exchange</a></div>
+            <div class="headline"><a href="/posts/mortgaging-the-millennials-future.html" class="title">Mortgaging the Millennials’ Future</a></div>
+            <div class="headline"><a href="/posts/why-college-campuses-should-allow-concealed-carry.html" class="title">Why College Campuses Should Allow Concealed Carry</a></div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div><script >(function(){
+	/* Did we just livereload? */
+var log = !!(localStorage && console && console.log && true);
+if ( log && localStorage.getItem('/docpad-livereload/reloaded') === 'yes' ) {
+	localStorage.removeItem('/docpad-livereload/reloaded');
+	console.log('LiveReload completed at', new Date())
+}
+
+/* Listen for the regenerated event and perform a reload of the page when the event occurs */
+var listen = function(){
+	var primus = new Primus('/docpad-livereload');
+	primus.on('data', function(data){
+		if ( data && data.message ) {
+			if ( data.message === 'generateBefore' ) {
+				if ( log ) {
+					console.log('LiveReload started at', new Date());
+				}
+				if ( typeof document.getElementsByTagName !== 'undefined' ) {
+	document.getElementsByTagName('html')[0].className += ' wait';
+}
+			}
+			else if ( data.message === 'generateAfter' ) {
+				if ( log ) {
+					localStorage.setItem('/docpad-livereload/reloaded', 'yes');
+				}
+				document.location.reload();
+			}
+		}
+	});
+};
+	/* Inject socket into our page */
+var inject = function(){
+	var t = document.createElement('script');
+	t.type = 'text/javascript';
+	t.async = 'async';
+	t.src = '/primus/primus.js';
+	t.onload = listen;
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(t, s);
+};
+	if ( typeof Primus !== 'undefined' ) {
+		listen();
+	} else {
+		inject();
+	}
+})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</body>

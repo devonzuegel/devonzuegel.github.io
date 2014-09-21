@@ -10,19 +10,39 @@ body {
 	font-weight: 200;
 }
 
+img {
+	max-width: 100%;
+	border: 1px solid #eee !important;
+	margin: 10px 0px;
+}
+
 .circle {
 	height: 150px;
 	width: 150px;
+	border: 1px solid #eee;
 	.border-radius(150px);
 	overflow: hidden;
 	padding: 0 !important;
 	margin: auto !important;
 
 	img {
+		max-width: none;
+		border: none !important;
 		max-height: 150px;
 		padding: 0 !important;
 		margin: 0 !important;
 	}
+
+	&.small {
+		height: 75px;
+		width: 75px;
+
+		img {
+			max-height: 75px;
+		}
+
+	}
+
 }
 
 #content {
@@ -31,6 +51,8 @@ body {
 	padding: 40px @padding-1;
 
 	#main-content {
+		padding-bottom: 25px;
+
 		@media (min-width: 992px) {
 			padding-right: 25px;
 		}
@@ -39,6 +61,33 @@ body {
 	#side-bar {
 		padding: 25px 0 25px 40px;
 		margin: auto !important;
+
+		ul {
+			padding: 0 !important;
+		}
+
+		.contact {
+			display: block;
+			width: 100%;
+		}
+
+		.headlines {
+			display: block;
+			width: 100%;
+			border-top: 1px solid #eee;
+
+			.headline {
+				margin: 10px 0;
+
+				.title {
+					font-family: 'DINComp';
+					line-height: 16px !important;
+					font-size: 15px;
+					width: 100% !important;
+					padding: 0 !important;
+				}
+			}
+		}
 
 		@media (min-width: 992px) {
 			border-left: 1px solid #eee;
@@ -66,4 +115,9 @@ body {
 			}
 		}
 	}
+}
+
+.space {
+	display: block;
+	height: 20px;
 }

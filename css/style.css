@@ -24,7 +24,7 @@ h5,
 h1 {
   font-size: 3em !important;
   font-weight: 700;
-  margin-top: 0 !important;
+  margin: 0 !important;
 }
 h2 {
   color: #e3b709;
@@ -65,6 +65,9 @@ a {
 a:hover {
   color: #357ebd;
 }
+.justify {
+  text-align: justify !important;
+}
 ul {
   padding-left: 18px !important;
   margin: 5px 0 !important;
@@ -93,6 +96,15 @@ ul li.no_bullet span.level {
 .smaller {
   font-size: 80%;
   font-weight: 100;
+}
+.headline {
+  display: inline-block;
+  margin: 0 0 10px 0;
+  width: 100%;
+}
+.headline .title {
+  padding-left: 25px;
+  width: 75% !important;
 }
 /* -----------
  * NAVIGATION */
@@ -185,9 +197,15 @@ body {
   font: Helvetica 14px;
   font-weight: 200;
 }
+img {
+  max-width: 100%;
+  border: 1px solid #eee !important;
+  margin: 10px 0px;
+}
 .circle {
   height: 150px;
   width: 150px;
+  border: 1px solid #eee;
   -webkit-border-radius: 150px;
   -moz-border-radius: 150px;
   border-radius: 150px;
@@ -199,14 +217,26 @@ body {
   margin: auto !important;
 }
 .circle img {
+  max-width: none;
+  border: none !important;
   max-height: 150px;
   padding: 0 !important;
   margin: 0 !important;
+}
+.circle.small {
+  height: 75px;
+  width: 75px;
+}
+.circle.small img {
+  max-height: 75px;
 }
 #content {
   max-width: 1000px;
   margin: auto;
   padding: 40px 30px;
+}
+#content #main-content {
+  padding-bottom: 25px;
 }
 @media (min-width: 992px) {
   #content #main-content {
@@ -216,6 +246,28 @@ body {
 #content #side-bar {
   padding: 25px 0 25px 40px;
   margin: auto !important;
+}
+#content #side-bar ul {
+  padding: 0 !important;
+}
+#content #side-bar .contact {
+  display: block;
+  width: 100%;
+}
+#content #side-bar .headlines {
+  display: block;
+  width: 100%;
+  border-top: 1px solid #eee;
+}
+#content #side-bar .headlines .headline {
+  margin: 10px 0;
+}
+#content #side-bar .headlines .headline .title {
+  font-family: 'DINComp';
+  line-height: 16px !important;
+  font-size: 15px;
+  width: 100% !important;
+  padding: 0 !important;
 }
 @media (min-width: 992px) {
   #content #side-bar {
@@ -240,4 +292,8 @@ body {
   #content #side-bar .contact-info {
     float: left;
   }
+}
+.space {
+  display: block;
+  height: 20px;
 }
