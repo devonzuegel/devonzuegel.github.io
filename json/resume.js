@@ -178,10 +178,15 @@ module.exports = {
 		"programming_languages": [
 			// comfort is 0-5, 5 being most comfortable
 			{
+				"name": "Javascript",
+				"months_exp": 8,
+				"comfort": 4,
+				"include": true,
+			}, {
 				"name": "Ruby",
 				"months_exp": 5,
 				"comfort": 3,
-				"include": false,
+				"include": true,
 			}, {
 				"name": "Jade, Haml, Slim",
 				"months_exp": 5,				
@@ -201,7 +206,7 @@ module.exports = {
 				"name": "Java",
 				"months_exp": 5,
 				"comfort": 3,
-				"include": false,
+				"include": true,
 			},
 		],
 
@@ -266,7 +271,22 @@ module.exports = {
 			},
 			"website": "//formation8.com",
 			"bullet_pts": [
-				"Designed & built an app in Node.js with profiles for each portfolio company. It facilitates requests & updates between the companies & Formation 8 & acts as a repository for financial documents."
+				"Designed and built an app called Octagon in Node.js with Express, a Javascript-based web framework.",
+				"Octagon is a tool for venture capital firms to better manage relationships with portfolio companies by visualizing important metrics about company growth and acting as a repository for financial documents and quarterly updates."			
+			],
+
+		}, {
+			
+			"title": ["CS 106A & 106B Section Leader"],
+			"employer": "Stanford Section Leading",
+			"dates": {
+				"start": "January 2014",
+				"end": "present",
+			},
+			"website": "//cs198.stanford.edu",
+			"bullet_pts": [
+				"Teach weekly section, hold office hours, and assess assignments for introductory courses taught in Java and C++.",
+				"Mentor students new to computer science, introduce them to other opportunities, resources, and courses at Stanford."
 			],
 
 		}, {
@@ -280,27 +300,16 @@ module.exports = {
 			],
 			"employer": "The Stanford Review",
 			"dates": {
-				"start": "September 2012",
-				"end": "present",
+				"start": "Feb 2014",
+				"end": "Sep 2014",
 			},
 			"website": "//stanfordreview.org",
 			"bullet_pts": [
-				"Led campaign to grow online presence of paper, increased viewership by 50% within a month",
-				"Managed & mentored staff writers to ensure the Review went to print on time",
-				"Contributed 1-2 articles to each biweekly issue & designed graphics",
-			],
-
-		}, {
-			
-			"title": ["Section Leader"],
-			"employer": "Stanford Computer Science Dept.",
-			"dates": {
-				"start": "January 2014",
-				"end": "present",
-			},
-			"website": "//cs198.stanford.edu",
-			"bullet_pts": [
-				"Teach weekly section, hold office hours, & assess assignments for the first & second introductory CS courses (in Java and C++).",
+				"Led campaign to grow online presence of paper; increased viewership by 50% over course of the 5-month volume.",
+				"Restructured editing cycle, which increased the number of articles submitted for each issue by 30%.",
+				"Organized team-building events and projects for past and current members; strengthened partnerships with alumni.",
+				"Managed Wordpress site, Facebook page, Twitter account, and email digest.",
+				"Other roles: Executive Editor (Sep 2013 — Jan 2014), Opinions Editor (Sep 2014 — present) Deputy News Editor (Feb 2013 — Sep 2013).",
 			],
 
 		}, {
@@ -349,6 +358,21 @@ module.exports = {
 
 	"projects": [
 		{
+			"name": "Octagon",
+			"type": "Node.js application",
+			"dates": {
+				"start": "June 2014",
+				"end": "present",
+			},
+			"website": "//octagon-f8.herokuapp.com",
+			"bullet_pts": [
+				"Built the back-end with document-oriented MongoDB; collaborated with another intern to develop the front-end.",
+				"Deployed the app to Heroku; the tool is currently in Beta Testing by Formation | 8’s investment team.",
+				"Used tools such as Git for version control and Bower for managing front-end dependencies.",
+				"Open-source code can be found at github.com/devonzuegel/octogon.",
+			],
+			"include": true,
+		}, {
 
 			"name": "Paper Trail",
 			"type": "Javascript application",
@@ -358,7 +382,8 @@ module.exports = {
 			},
 			"website": "//stanford.edu/~devonz/paper_trail",
 			"bullet_pts": [
-				"Built an app that presents information about corporations\" political contributions.",
+				"Built a Javascript-based application that presents information about corporations’ political contributions.",
+				"Open-source code can be found at github.com/devonzuegel/WWW/tree/master/paper_trail.",
 			],
 			"include": true,
 
