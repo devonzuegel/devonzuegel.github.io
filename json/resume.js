@@ -23,7 +23,7 @@ module.exports = {
 			"email": {
 				"title": "Email",
 				"address": "devonz@cs.stanford.edu",
-				"url": "mailto:deovnz@cs.stanford.edu",
+				"url": "mailto:devonz@cs.stanford.edu",
 			},
 
 			"quora": { },
