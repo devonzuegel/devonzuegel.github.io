@@ -79,7 +79,7 @@ h5 {
 .time {
   color: #aaa;
   font-weight: 100;
-  font-size: 9pt;
+  font-size: 10pt;
   text-transform: uppercase;
   float: left;
   margin: 2px 0 0 0;
@@ -93,10 +93,10 @@ h5 {
 /* -----------
  * BODY & PARAGRAPHS */
 body {
-  font: 16px 'Sentinel Light', sans-serif;
+  font: 17px 'Sentinel Light', sans-serif;
 }
 body b {
-  font-weight: black;
+  font-weight: 700;
 }
 a {
   color: #367da2;
@@ -246,7 +246,6 @@ body {
 img {
   max-width: 100%;
   border: 1px solid #eee !important;
-  margin: 10px 0px;
 }
 .circle {
   height: 150px;
