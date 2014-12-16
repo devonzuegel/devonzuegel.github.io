@@ -1,69 +1,109 @@
 @import url('http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700');
 
 @import url('http://fonts.googleapis.com/css?family=Roboto:900,700,300italic,300');
+@font-face {
+  font-family: 'DINComp';
+  src: url('../fonts/DINWeb.woff') format('woff');
+}
+@font-face {
+  font-family: 'Sentinel Light';
+  src: url('../fonts/Sentinel-Light.woff') format('woff');
+}
+@font-face {
+  font-family: 'Sentinel';
+  src: url('../fonts/Sentinel-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'Sentinel Italic';
+  src: url('../fonts/Sentinel-SemiboldItalic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Sentinel BookItalic';
+  src: url('../fonts/Sentinel-BookItalic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Sentinel Semibold';
+  src: url('../fonts/Sentinel-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('../fonts/ProximaNova-Light.woff') format('woff');
+}
 /* -------------------------
  * COLORS */
 /* -------------------------
  * WIDTHS */
 /* -------------------------
  * PADDINGS */
-@font-face {
-  font-family: 'DINComp';
-  src: url('../fonts/DINWeb.woff') format('woff');
-}
 /* -----------
  * HEADINGS */
-h1,
 h2,
 h3,
 h4,
 h5,
 .time {
-  font-family: "DINComp", sans-serif;
+  font-family: 'Proxima Nova', sans-serif;
 }
 h1 {
-  font-size: 3em !important;
-  font-weight: 700;
+  font-size: 2.7em !important;
   margin: 0 !important;
+  font-family: 'Sentinel Semibold';
 }
 h2 {
-  color: #e3b709;
-  border-bottom: 1px solid #e3b709;
+  color: #367da2;
+  font-size: 1.2em;
+  border-bottom: 1px solid #367da2;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 h3 {
+  font-family: 'Sentinel';
   font-size: 1.3em !important;
-  margin-bottom: 0 !important;
+  margin: 15px 0 0 0 !important;
+}
+h3 a {
+  font-family: 'Sentinel BookItalic';
 }
 h4 {
   text-transform: uppercase;
   margin-bottom: 1px !important;
   margin-top: 20px !important;
   font-weight: 600;
-  color: #e3b709 !important;
+  color: #ccc !important;
+}
+h5 {
+  font-family: 'Sentinel Italic';
+  font-size: 1.6em !important;
+  margin: .6em 0 0 0 !important;
 }
 .time {
-  color: #777;
+  color: #aaa;
   font-weight: 100;
-  font-style: italic;
-  font-size: .8em;
+  font-size: 9pt;
+  text-transform: uppercase;
+  float: left;
+  margin: 2px 0 0 0;
 }
 .light {
-  font-weight: "thin" !important;
-  font-family: "Roboto", sans-serif;
-  font-size: 14px;
+  float: left;
+  font-weight: 'thin' !important;
+  font-size: 16px;
+  margin-right: 16px;
 }
 /* -----------
  * BODY & PARAGRAPHS */
 body {
-  font: 14px "Roboto", sans-serif;
-  font-weight: "light";
+  font: 16px 'Sentinel Light', sans-serif;
+}
+body b {
+  font-weight: black;
 }
 a {
-  color: #5697d0;
+  color: #367da2;
   padding-bottom: 1px;
 }
 a:hover {
-  color: #357ebd;
+  color: #295f7c;
 }
 .justify {
   text-align: justify !important;
@@ -75,7 +115,7 @@ ul {
 ul li.no_bullet {
   list-style: none;
   margin: 0 0 5px -18px !important;
-  text-family: 'DINComp', sans-serif;
+  font-family: 'Proxima Nova', sans-serif;
   text-transform: uppercase;
   color: #555;
 }
@@ -94,7 +134,7 @@ ul li.no_bullet span.level {
   display: inline-block;
 }
 .smaller {
-  font-size: 80%;
+  font-size: 90%;
   font-weight: 100;
 }
 .headline {
@@ -106,23 +146,27 @@ ul li.no_bullet span.level {
   padding-left: 25px;
   width: 75% !important;
 }
+.headline .title h3 a {
+  font-family: 'Sentinel';
+}
+p b {
+  font-family: 'Sentinel';
+}
 /* -----------
  * NAVIGATION */
 nav {
-  font-family: 'DINComp', sans-serif;
+  font-family: 'Proxima Nova', sans-serif;
   text-transform: uppercase;
 }
 nav .navbar-brand {
-  text-transform: none;
-  font-family: 'Roboto Slab', serif;
-  font-weight: 300;
-  color: #e3b709 !important;
-  border-top: 5px solid transparent;
+  color: #92bce0 !important;
+  border-top: 10px solid transparent;
   font-size: 2em;
+  font-family: 'Proxima Nova';
+  font-weight: 600;
 }
 nav .navbar-brand:hover {
-  text-shadow: 0 0 0.1em #fbeaa3;
-  color: #f2c309 !important;
+  color: #5ca3c9 !important;
 }
 .navbar {
   background: white;
@@ -153,12 +197,11 @@ nav .navbar-brand:hover {
 @media (min-width: 768px) {
   .navbar-default .navbar-nav .active > a {
     color: #666;
-    border-top: 5px solid #fae386;
-    text-shadow: 0 0 0.05em #d9d9d9;
+    border-top: 5px solid #92bce0;
   }
   .navbar-default .navbar-nav .active > a:hover {
     color: black;
-    border-top: 5px solid #f6ca1a;
+    border-top: 5px solid #5ca3c9;
   }
   .navbar-default .navbar-nav li > a {
     padding: 15px 4px 5px 4px;
@@ -169,17 +212,17 @@ nav .navbar-brand:hover {
   }
   .navbar-default .navbar-nav li > a:hover {
     color: black;
-    border-top: 5px solid #f6ca1a;
+    border-top: 5px solid #367da2;
   }
 }
 @media (max-width: 768px) {
   .navbar-default .navbar-nav .active > a {
-    background: #fef7de;
+    background: #f5f9fc;
     color: #666;
   }
   .navbar-default .navbar-nav .active > a:hover {
     color: black;
-    background: #fdf2c6;
+    background: #e1edf7;
   }
   .navbar-default .navbar-nav li > a {
     padding: 5px 5px 5px 10px;
@@ -188,9 +231,12 @@ nav .navbar-brand:hover {
     color: #ccc;
   }
   .navbar-default .navbar-nav li > a:hover {
-    background: #fdf2c6;
+    background: #e1edf7;
     color: black;
   }
+}
+.jumbotron p {
+  margin: 0px;
 }
 body {
   overflow-y: scroll;
@@ -263,9 +309,8 @@ img {
   margin: 10px 0;
 }
 #content #side-bar .headlines .headline .title {
-  font-family: 'DINComp';
-  line-height: 16px !important;
-  font-size: 15px;
+  font-family: 'Sentinel';
+  font-size: 16px;
   width: 100% !important;
   padding: 0 !important;
 }
@@ -283,7 +328,6 @@ img {
 @media (max-width: 992px) {
   #content #side-bar {
     margin-top: 30px;
-    border-top: 1px solid #eee;
   }
   #content #side-bar .circle {
     float: left;
@@ -296,4 +340,7 @@ img {
 .space {
   display: block;
   height: 20px;
+}
+.alignright {
+  float: right;
 }

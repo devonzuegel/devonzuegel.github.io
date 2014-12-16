@@ -1,8 +1,10 @@
+@import '/base/fonts';
 @import '/base/variables';
 @import '/base/typography';
 @import '/base/mixins';
 
 @import '/includes/nav';
+@import '/includes/jumbotron';
 
 body {
 	overflow-y: scroll;
@@ -80,9 +82,9 @@ img {
 				margin: 10px 0;
 
 				.title {
-					font-family: 'DINComp';
-					line-height: 16px !important;
-					font-size: 15px;
+					font-family: 'Sentinel';
+					// line-height: 16px !important;
+					font-size: 16px;
 					width: 100% !important;
 					padding: 0 !important;
 				}
@@ -103,7 +105,6 @@ img {
 
 		@media (max-width: 992px) {
 			margin-top: 30px;
-			border-top: 1px solid #eee;
 
 			.circle {
 				float: left;
@@ -120,4 +121,8 @@ img {
 .space {
 	display: block;
 	height: 20px;
+}
+
+.alignright {
+	float: right;
 }

@@ -16,7 +16,7 @@ module.exports = {
 
 			"twitter": {
 				"title": "Twitter",
-				"address": "@DevonZuegel",
+				"address": "@devonzuegel",
 				"url": "//twitter.com/devonzuegel",
 			},
 
@@ -267,7 +267,7 @@ module.exports = {
 			"employer": "Formation 8",
 			"dates": {
 				"start": "June 2014",
-				"end": "September 2014",
+				"end": "Sept 2014",
 			},
 			"website": "//formation8.com",
 			"bullet_pts": [
@@ -331,7 +331,7 @@ module.exports = {
 			"employer": "NASA Ames Research Center",
 			"dates": {
 				"start": "June 2012",
-				"end": "August 2012",
+				"end": "Aug 2012",
 			},
 			"website": "//nasa.gov",
 			"bullet_pts": [

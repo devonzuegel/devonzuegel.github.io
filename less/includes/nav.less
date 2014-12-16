@@ -4,20 +4,18 @@
  * NAVIGATION */
 
 nav {
-	font-family: 'DINComp', sans-serif;
+	font-family: 'Proxima Nova', sans-serif;
 	text-transform: uppercase;
 	
 	.navbar-brand {
-		text-transform: none;
-		font-family: 'Roboto Slab', serif;
-		font-weight: 300;
-		color: @yellow-dark !important;
-		border-top: 5px solid transparent;
+		color: @blue-light !important;
+		border-top: 10px solid transparent;
 		font-size: 2em;
+		font-family: 'Proxima Nova';
+		font-weight: 600;
 
 		&:hover {
-			text-shadow: 0 0 0.1em lighten(@yellow, 18%);
-			color: lighten(@yellow-dark, 3%) !important;
+			color: lighten(@blue-dark, 15%) !important;
 		}
 	}
 
@@ -61,12 +59,12 @@ nav {
 	@media(min-width: 768px) {
 		.active > a {
 			color: #666;
-			border-top: 5px solid lighten(@yellow, 12%);
-			text-shadow: 0 0 0.05em lighten(black, 85%);
+			border-top: 5px solid @blue-light;
+			// text-shadow: 0 0 0.04em lighten(black, 85%);
 
 			&:hover {
 				color: black;
-				border-top: 5px solid darken(@yellow, 10%);
+				border-top: 5px solid lighten(@blue-dark, 15%);
 			}
 
 		}
@@ -80,22 +78,22 @@ nav {
 
 			&:hover {
 				color: black;
-				border-top: 5px solid darken(@yellow, 10%);
+				border-top: 5px solid @blue-dark;
 			}
 		}
 
 	}
 
 	@media(max-width: 768px) {
+
 		.active > a {
-			background: lighten(@yellow, 30%);
+			background: lighten(@blue-light, 25%);
 			color: #666;
 
 			&:hover {
 				color: black;
-				background: lighten(@yellow, 25%);
+				background: lighten(@blue-light, 20%);
 			}
-
 		}
 
 		li > a {
@@ -105,7 +103,7 @@ nav {
 			color: #ccc;
 
 			&:hover {
-				background: lighten(@yellow, 25%);
+				background: lighten(@blue-light, 20%);
 				color: black;
 			}
 		}

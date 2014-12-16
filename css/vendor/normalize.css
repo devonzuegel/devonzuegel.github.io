@@ -122,7 +122,7 @@ a:hover {
  * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
  * and Chrome.
  */
-
+/*
 h1 {
     font-size: 2em;
     margin: 0.67em 0;
@@ -151,7 +151,7 @@ h5 {
 h6 {
     font-size: 0.67em;
     margin: 2.33em 0;
-}
+}*/
 
 /**
  * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
@@ -206,10 +206,12 @@ mark {
  * Address margins set differently in IE 6/7.
  */
 
+/*
 p,
 pre {
     margin: 1em 0;
 }
+*/
 
 /**
  * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
