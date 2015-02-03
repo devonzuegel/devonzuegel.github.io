@@ -152,6 +152,16 @@ ul li.no_bullet span.level {
 p b {
   font-family: 'Sentinel';
 }
+pre {
+  padding: 0px;
+}
+.highlight {
+  background: none;
+  border: none;
+}
+.hljs {
+  border-radius: 4px;
+}
 /* -----------
  * NAVIGATION */
 nav {
