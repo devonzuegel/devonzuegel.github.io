@@ -22,7 +22,7 @@ h2 {
 h3 {
 	font-family: 'Sentinel';
 	font-size: 1.3em !important;
-	margin: 15px 0 0 0 !important;
+	margin: 15px 0 5px 0 !important;
 
 	a {
 		font-family: 'Sentinel BookItalic';
@@ -49,7 +49,7 @@ h5 {
 	font-size: 10pt;
 	text-transform: uppercase;
 	float: left;
-	margin: 2px 0 0 0;
+	margin: -3px 0 0 0;
 }
 
 .light {
@@ -87,12 +87,18 @@ a {
 	text-align: justify !important;
 }
 
-ul {
+.no-bullet {
+	list-style: none !important;
+	padding-left: 0 !important;
+}
+
+ul, ol {
 	padding-left: 18px !important;
 	margin: 5px 0 !important;
+	&:extend(.paragr-line-height);
 
-	li.no_bullet {
-		list-style: none;
+	li.blue-upper {
+		&:extend(.normal-line-height);
 		margin: 0 0 5px -18px !important;
 
 		font-family: 'Proxima Nova', sans-serif;
@@ -112,7 +118,16 @@ ul {
 	}
 }
 
+.normal-line-height {
+	line-height: normal !important;
+}
+
+.paragr-line-height {
+	line-height: 1.53em !important;
+}
+
 .smaller {
+	&:extend(.normal-line-height);
 	font-size: 90%;
 	font-weight: 100;
 }
@@ -133,6 +148,7 @@ ul {
 }
 
 p {
+	&:extend(.paragr-line-height);
 	b {
 		font-family: 'Sentinel';
 	}

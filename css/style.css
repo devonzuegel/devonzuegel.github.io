@@ -63,7 +63,7 @@ h2 {
 h3 {
   font-family: 'Sentinel';
   font-size: 1.3em !important;
-  margin: 15px 0 0 0 !important;
+  margin: 15px 0 5px 0 !important;
 }
 h3 a {
   font-family: 'Sentinel BookItalic';
@@ -86,7 +86,7 @@ h5 {
   font-size: 10pt;
   text-transform: uppercase;
   float: left;
-  margin: 2px 0 0 0;
+  margin: -3px 0 0 0;
 }
 .light {
   float: left;
@@ -117,18 +117,24 @@ a:hover {
 .justify {
   text-align: justify !important;
 }
-ul {
+.no-bullet {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+ul,
+ol {
   padding-left: 18px !important;
   margin: 5px 0 !important;
 }
-ul li.no_bullet {
-  list-style: none;
+ul li.blue-upper,
+ol li.blue-upper {
   margin: 0 0 5px -18px !important;
   font-family: 'Proxima Nova', sans-serif;
   text-transform: uppercase;
   color: #555;
 }
-ul li.no_bullet span.level {
+ul li.blue-upper span.level,
+ol li.blue-upper span.level {
   background: #ccc;
   color: white;
   font-size: 81%;
@@ -141,6 +147,18 @@ ul li.no_bullet span.level {
   padding: 2px 5px;
   margin: -10px 0 0 10px;
   display: inline-block;
+}
+.normal-line-height,
+ul li.blue-upper,
+ol li.blue-upper,
+.smaller {
+  line-height: normal !important;
+}
+.paragr-line-height,
+ul,
+ol,
+p {
+  line-height: 1.53em !important;
 }
 .smaller {
   font-size: 90%;

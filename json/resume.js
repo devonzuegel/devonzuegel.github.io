@@ -163,14 +163,14 @@ module.exports = {
 
 		"web_frameworks": [
 			{
-				"name": "Node.js",
-				"months_exp": 6,
-				"comfort": 5,
-				"include": true,
-			}, {
 				"name": "Ruby on Rails",
 				"months_exp": 6,
 				"comfort": 4,
+				"include": true,
+			}, {
+				"name": "Node.js",
+				"months_exp": 6,
+				"comfort": 5,
 				"include": true,
 			},
 		],
