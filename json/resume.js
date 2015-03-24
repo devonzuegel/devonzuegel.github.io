@@ -26,7 +26,16 @@ module.exports = {
 				"url": "mailto:devonz@cs.stanford.edu",
 			},
 
-			"quora": { },
+			// "instagram": {
+			// 	"title": "Instagram",
+			// 	"address": "devon_marisa",
+			// 	"url": "https://instagram.com/devon_marisa/",
+			// },
+
+			// "quora": { },
+
+			"blank": {},
+
 		}
 	},
 
