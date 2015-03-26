@@ -59,6 +59,7 @@ h2 {
   border-bottom: 1px solid #367da2;
   text-transform: uppercase;
   font-weight: 600;
+  margin-top: 30px;
 }
 h3 {
   font-family: 'Sentinel';
@@ -175,6 +176,9 @@ p {
 }
 .headline .title h3 a {
   font-family: 'Sentinel';
+}
+p {
+  margin: 10px 0 20px 0;
 }
 p b {
   font-family: 'Sentinel';
@@ -411,7 +415,7 @@ img {
 }
 .space {
   display: block;
-  height: 20px;
+  height: 5px;
 }
 .alignright {
   float: right;
