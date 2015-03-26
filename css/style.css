@@ -324,6 +324,12 @@ img {
   max-width: 100%;
   border: 1px solid #eee !important;
 }
+img[alt=right-15px] {
+  float: right;
+  margin: 15px;
+  width: 450px;
+  max-width: 97%;
+}
 .circle {
   height: 150px;
   width: 150px;
