@@ -324,11 +324,22 @@ img {
   max-width: 100%;
   border: 1px solid #eee !important;
 }
-img[alt=right-15px] {
+img[alt=right-sm],
+img[alt=right-md],
+img[alt=right-lg] {
   float: right;
-  margin: 15px;
+  margin: 20px;
+  max-width: 85%;
+  border: none !important;
+}
+img[alt=right-sm] {
+  width: 310px;
+}
+img[alt=right-md] {
   width: 450px;
-  max-width: 97%;
+}
+img[alt=right-lg] {
+  width: 85%;
 }
 .circle {
   height: 150px;

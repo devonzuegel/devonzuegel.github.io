@@ -18,12 +18,24 @@ img {
 	max-width: 100%;
 	border: 1px solid #eee !important;
 
-	&[alt=right-15px] { 
+	&[alt=right-sm], &[alt=right-md], &[alt=right-lg] {
 		float: right; 
-		margin: 15px;
-		width: 450px;
-		max-width: 97%;
+		margin: 20px;
+		max-width: 100% - 15px;
+		border: none !important;
 	}
+
+	&[alt=right-sm] { 
+		width: 310px;
+	}
+
+	&[alt=right-md] { 
+		width: 450px;
+	}
+
+	&[alt=right-lg] { 
+		width: 100% - 15px;
+	}	
 }
 
 .circle {
