@@ -41,17 +41,22 @@
  * PADDINGS */
 /* -----------
  * HEADINGS */
+* {
+  font-weight: 300 !important;
+  color: #444;
+  font-size: 15px;
+}
 h2,
 h3,
 h4,
 h5,
 .time {
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: 'DINComp';
 }
 h1 {
   font-size: 2.7em !important;
   margin: 0 !important;
-  font-family: 'Sentinel Semibold';
+  font-family: 'San Francisco Display';
 }
 h2 {
   color: #367da2;
@@ -62,12 +67,19 @@ h2 {
   margin-top: 30px;
 }
 h3 {
-  font-family: 'Sentinel';
-  font-size: 1.3em !important;
+  font-weight: 500 !important;
+  font-family: 'San Francisco Display';
+  font-size: 1.4em !important;
   margin: 15px 0 5px 0 !important;
 }
+h3 .block {
+  font-weight: 500 !important;
+  font-family: 'San Francisco Display';
+  font-size: 16px;
+  line-height: 1.53em;
+}
 h3 a {
-  font-family: 'Sentinel BookItalic';
+  font-family: 'San Francisco Display';
 }
 h4 {
   text-transform: uppercase;
@@ -77,7 +89,7 @@ h4 {
   color: #ccc !important;
 }
 h5 {
-  font-family: 'Sentinel Semibold Italic';
+  font-family: 'San Francisco Display';
   font-size: 1.6em !important;
   margin: .6em 0 0 0 !important;
 }
@@ -98,15 +110,8 @@ h5 {
 /* -----------
  * BODY & PARAGRAPHS */
 body {
-  font: 17px 'Sentinel Light', sans-serif;
-}
-body b,
-body strong {
-  font: 17px 'Sentinel Semibold', sans-serif;
-}
-body i,
-body em {
-  font: 17px 'Sentinel Italic', sans-serif;
+  font: 17px 'San Francisco Display', sans-serif;
+  font-weight: 300;
 }
 a {
   color: #367da2;
@@ -130,7 +135,7 @@ ol {
 ul li.blue-upper,
 ol li.blue-upper {
   margin: 0 0 5px -18px !important;
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: 'DINComp';
   text-transform: uppercase;
   color: #555;
 }
@@ -151,8 +156,7 @@ ol li.blue-upper span.level {
 }
 .normal-line-height,
 ul li.blue-upper,
-ol li.blue-upper,
-.smaller {
+ol li.blue-upper {
   line-height: normal !important;
 }
 .paragr-line-height,
@@ -163,7 +167,7 @@ p {
 }
 .smaller {
   font-size: 90%;
-  font-weight: 100;
+  font-weight: 300;
 }
 .headline {
   display: inline-block;
@@ -175,13 +179,14 @@ p {
   width: 75% !important;
 }
 .headline .title h3 a {
-  font-family: 'Sentinel';
+  font-family: 'San Francisco Display';
 }
 p {
   margin: 10px 0 20px 0;
 }
 p b {
-  font-family: 'Sentinel';
+  font-family: 'San Francisco Display';
+  font-weight: 900;
 }
 pre {
   padding: 0px;
@@ -226,14 +231,14 @@ table tr td {
 /* -----------
  * NAVIGATION */
 nav {
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: 'DINComp';
   text-transform: uppercase;
 }
 nav .navbar-brand {
   color: #92bce0 !important;
   border-top: 10px solid transparent;
   font-size: 2em;
-  font-family: 'Proxima Nova';
+  font-family: 'DINComp';
   font-weight: 600;
 }
 nav .navbar-brand:hover {
@@ -312,13 +317,15 @@ a.anchor {
   top: -50px;
   visibility: hidden;
 }
+.jumbotron {
+  font-weight: 300;
+}
 .jumbotron p {
   margin: 0px;
 }
 body {
   overflow-y: scroll;
   font: Helvetica 14px;
-  font-weight: 200;
 }
 img {
   max-width: 100%;
@@ -402,7 +409,7 @@ img[alt=right-lg] {
   margin: 10px 0;
 }
 #content #side-bar .headlines .headline .title {
-  font-family: 'Sentinel';
+  font-family: 'San Francisco Display';
   font-size: 16px;
   width: 100% !important;
   padding: 0 !important;

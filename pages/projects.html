@@ -26,7 +26,7 @@
 </head>
 <body id="wrapper">
   <!--[if lt IE 7]>
-  <p class="browsehappy">You are using an <strong>outdated browser</strong>. Please <a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
+  <p class="browsehappy">You are using an<strong>outdated browser</strong>. Please<a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
   <![endif]-->
   <div id="nav-spacer"></div>
   <nav role="navigation" class="navbar navbar-default navbar-fixed-top custom">
@@ -52,7 +52,45 @@
   <div class="space"></div>
   <h1>Projects</h1>
   <div class="space"></div>
-  <div class="page-content"><h2 id="fiesta-machine-translator">Fiesta: Machine Translator</h2>
+  <div class="page-content"><h2 id="my-evernote">My Evernote</h2>
+
+<h6 id="-div-class-time-july-2015-div-br-"><div class='time'>July 2015</div><br></h6>
+
+<p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
+
+<p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
+
+<p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
+
+<p><img src="../assets/my-evernote.png" alt=""></p>
+
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
+
+<h2 id="zen-writer">Zen Writer</h2>
+
+<h6 id="-div-class-time-june-2015-div-br-"><div class='time'>June 2015</div><br></h6>
+
+<p>The most difficult part of writing is that first draft. Putting your ideas to paper to generate that initial content is hard, because it&#39;s natural to edit your thoughts while translating them into words. However, this can severely hamper progress and creativity during early drafts. I&#39;ve learned that I write better content faster if I don&#39;t censor myself initially and then only allow myself to revise and edit after I&#39;ve exhausted my ideas. However, it&#39;s extremely difficult to contain that urge to filter out the less well-formed ideas.</p>
+
+<p>During spring quarter finals, I was assigned a 10 page paper. Just three days before it was due I had a one page draft despite hours of research and staring at a blank screen. I had lots of ideas in my head, but every time I started typing I ended up using the delete button almost as much as all my other keys combined.</p>
+
+<p>Since I wasn&#39;t making any progress anyways, I decided to take a break and built a tiny text editor called <a href="//zenwriter.io">Zen Writer</a>. It disables the delete button, highlights the current line, and fades out past content so that your attention is focused on moving forward and generating more content.</p>
+
+<p>It didn&#39;t take much work to build a rough version, and as soon as I finished I was back to writing that first draft of my paper. In the first 15 minutes, I generated about 600 words. When I went back to revise what I&#39;d written, I was surprised to find that most of my changes were to fix minor typos rather than large, conceptual revisions.</p>
+
+<p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
+
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
+
+<h2 id="origamijs">OrigamiJS</h2>
+
+<h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
+
+<p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
+
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
+
+<h2 id="fiesta-machine-translator">Fiesta: Machine Translator</h2>
 
 <h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
 
@@ -147,8 +185,9 @@ do until convergence
           </div>
         </div>
         <div class="row headlines">
-          <h5>Featured</h5>
+          <h5>Writing</h5>
           <ul class="normal-line-height">
+            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro Technique</a></div>
             <div class="headline"><a href="/posts/workflow-optimizations-customizations" class="title">Workflow optimizations &amp; customizations</a></div>
             <div class="headline"><a href="/posts/the-new-campus-radicals" class="title">Editor's Note: The New Campus Radicals</a></div>
             <div class="headline"><a href="/posts/mortgaging-the-millennials-future" class="title">Mortgaging the Millennials’ Future</a></div>
@@ -159,7 +198,7 @@ do until convergence
     </div>
   </div>
   <div id="footer" class="col-lg-12">
-    <h4>Last modified on Thursday, March 26, 2015 12:34 AM</h4>
+    <h4>Last modified on Sunday, August 2, 2015 10:47 PM</h4>
   </div><script >(function(){
 	/* Did we just livereload? */
 var log = !!(localStorage && console && console.log && true);
@@ -205,5 +244,5 @@ var inject = function(){
 	} else {
 		inject();
 	}
-})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script>
 </body>

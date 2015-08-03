@@ -1,0 +1,171 @@
+@body-font: 						'San Francisco Display'; //'Sentinel Light';
+@semibold-body-font: 		'San Francisco Display'; //'Sentinel Semibold';
+@italic-body-font: 			'San Francisco Display'; //'Sentinel Italic';
+@bold-italic-body-font: 'San Francisco Display'; //'Sentinel Semibold Italic';
+@decorative-font: 			'DINComp';							 //'Proxima Nova', sans-serif;
+
+/* -----------
+ * HEADINGS */
+* {
+	font-weight: 300 !important;
+	color: #444;
+	font-size: 15px;
+}
+
+h2, h3, h4, h5, .time {
+	font-family: @decorative-font;
+}
+
+h1 {
+	font-size: 2.7em !important;
+	margin: 0 !important;
+	font-family: @semibold-body-font;
+}
+
+h2 {
+	color: @blue-dark;
+	font-size: 1.2em;
+	border-bottom: 1px solid @blue-dark;
+	text-transform: uppercase;
+	font-weight: 600;
+	margin-top: 30px;
+}
+
+h3 {
+	font-family: @body-font;
+	font-size: 1.3em !important;
+	margin: 15px 0 5px 0 !important;
+
+	a {
+		font-family: @italic-body-font;
+	}
+}
+
+h4 {
+	text-transform: uppercase;
+	margin-bottom: 1px !important;
+	margin-top: 20px !important;
+	font-weight: 600;
+	color: #ccc !important;
+}
+
+h5 {
+	font-family: @bold-italic-body-font;
+	font-size: 1.6em !important;
+	margin: .6em 0 0 0 !important;
+}
+
+.time {
+	color: #aaa;
+	font-weight: 100;
+	font-size: 10pt;
+	text-transform: uppercase;
+	float: left;
+	margin: -3px 0 0 0;
+}
+
+.light {
+	float: left;
+	font-weight: 'thin' !important;
+	font-size: 16px;
+	margin-right: 16px;
+}
+
+/* -----------
+ * BODY & PARAGRAPHS */
+
+body {
+	font: 17px @body-font, sans-serif;
+	font-weight: 300;
+
+	b, strong {
+		font: 17px @semibold-body-font, sans-serif;
+	}
+
+	i, em {
+		font: 17px @italic-body-font, sans-serif;
+	}
+}
+
+a {
+	color: @blue;
+	padding-bottom: 1px;
+
+	&:hover {
+		color: darken(@blue, 10%);
+	}
+}
+
+.justify {
+	text-align: justify !important;
+}
+
+.no-bullet {
+	list-style: none !important;
+	padding-left: 0 !important;
+}
+
+ul, ol {
+	padding-left: 18px !important;
+	margin: 5px 0 !important;
+	&:extend(.paragr-line-height);
+
+	li.blue-upper {
+		&:extend(.normal-line-height);
+		margin: 0 0 5px -18px !important;
+
+		font-family: @decorative-font;
+		text-transform: uppercase;
+		color: #555;
+
+		span.level {
+			background: #ccc;
+			color: white;
+			font-size: 81%;
+			.border-radius(5px);
+
+			padding: 2px 5px;
+			margin: -10px 0 0 10px;
+			display: inline-block;;
+		}
+	}
+}
+
+.normal-line-height {
+	line-height: normal !important;
+}
+
+.paragr-line-height {
+	line-height: 1.53em !important;
+}
+
+.smaller {
+	&:extend(.normal-line-height);
+	font-size: 90%;
+	font-weight: 300;
+}
+
+.headline {
+	display: inline-block;
+	margin: 0 0 10px 0;
+	width: 100%;
+
+	.title {
+		padding-left: 25px;
+		width: 75% !important;
+
+		h3 a {
+			font-family: @body-font;
+		}
+	}
+}
+
+p {
+	&:extend(.paragr-line-height);
+	margin: 10px 0 20px 0;
+
+	b {
+		font-family: @body-font;
+		font-weight: 900;
+	}
+}

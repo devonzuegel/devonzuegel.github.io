@@ -26,7 +26,7 @@
 </head>
 <body id="wrapper">
   <!--[if lt IE 7]>
-  <p class="browsehappy">You are using an <strong>outdated browser</strong>. Please <a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
+  <p class="browsehappy">You are using an<strong>outdated browser</strong>. Please<a href="http://browsehappy.com/">upgrade your browser</a>to improve your experience.</p>
   <![endif]-->
   <div id="nav-spacer"></div>
   <nav role="navigation" class="navbar navbar-default navbar-fixed-top custom">
@@ -81,14 +81,13 @@
     <h3><a href="/posts/batch-installing-fonts-in-multiple-subfolders">Batch installing fonts in multiple subdirectories</a></h3>
     <div class="time">February 2 2015</div>
   </div>
-</div><h2 id="misc">Misc</h2>
+</div><h2 id="misc-tools">Misc Tools</h2>
 <ul>
 <li>Batch converting <code>.erb</code> files to <code>.slim</code> (requires erb2slim and html2slim gems) by recursing through all sub-directories:</li>
 </ul>
 <pre class="highlight"><code class="hljs bash">$ <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> **/*.erb; <span class="hljs-keyword">do</span> erb2slim <span class="hljs-variable">$f</span> <span class="hljs-variable">${f/\.erb/.slim}</span>; <span class="hljs-keyword">done</span>
 $ rm **/*/erb
 </code></pre>
-<h2 id="other-tools-i-recommend">Other Tools I recommend</h2>
 <ul>
 <li><p><a href="http://docs.emmet.io/">Emmet.io</a> is a toolkit that allows you to expand css-like abbreviations to markup. For example, when you press <code>TAB</code> it dynamically parses this...:</p>
 <pre class="highlight"><code class="hljs smalltalk">  ul<span class="hljs-symbol">#nav</span>&gt;li.items<span class="hljs-char">$*</span><span class="hljs-number">4</span>&gt;a{<span class="hljs-class">Item</span> <span class="hljs-char">$}</span>
@@ -122,8 +121,9 @@ $ rm **/*/erb
           </div>
         </div>
         <div class="row headlines">
-          <h5>Featured</h5>
+          <h5>Writing</h5>
           <ul class="normal-line-height">
+            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro Technique</a></div>
             <div class="headline"><a href="/posts/workflow-optimizations-customizations" class="title">Workflow optimizations &amp; customizations</a></div>
             <div class="headline"><a href="/posts/the-new-campus-radicals" class="title">Editor's Note: The New Campus Radicals</a></div>
             <div class="headline"><a href="/posts/mortgaging-the-millennials-future" class="title">Mortgaging the Millennials’ Future</a></div>
@@ -180,5 +180,5 @@ var inject = function(){
 	} else {
 		inject();
 	}
-})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script>
 </body>

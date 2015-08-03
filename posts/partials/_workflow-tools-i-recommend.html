@@ -1,4 +1,4 @@
-<h2 id="misc">Misc</h2>
+<h2 id="misc-tools">Misc Tools</h2>
 
 <ul>
 <li>Batch converting <code>.erb</code> files to <code>.slim</code> (requires erb2slim and html2slim gems) by recursing through all sub-directories:</li>
@@ -7,8 +7,6 @@
 <pre class="highlight"><code class="hljs bash">$ <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> **/*.erb; <span class="hljs-keyword">do</span> erb2slim <span class="hljs-variable">$f</span> <span class="hljs-variable">${f/\.erb/.slim}</span>; <span class="hljs-keyword">done</span>
 $ rm **/*/erb
 </code></pre>
-
-<h2 id="other-tools-i-recommend">Other Tools I recommend</h2>
 
 <ul>
 <li><p><a href="http://docs.emmet.io/">Emmet.io</a> is a toolkit that allows you to expand css-like abbreviations to markup. For example, when you press <code>TAB</code> it dynamically parses this...:</p>
