@@ -73,7 +73,7 @@
 alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-string">''</span>{
   <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-4.4s "</span>, <span class="hljs-variable">$5</span>);
   <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%4s %-3.2d %-5.5s  "</span>, <span class="hljs-variable">$6</span>, <span class="hljs-variable">$7</span>, <span class="hljs-variable">$8</span>);
-  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-7.59s\n"</span>, <span class="hljs-variable">$9</span>);
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-7.59s\n"</span>, <span class="hljs-variable">$9</span>);   
 }<span class="hljs-string">'\'</span><span class="hljs-string">' | tail +2'</span>  <span class="hljs-comment"># Remove first line from output (formerly "total")</span>
 </code></pre>
 
@@ -134,6 +134,7 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
         <div class="row headlines">
           <h5>Writing</h5>
           <ul class="normal-line-height">
+            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro</a></div>
             <div class="headline"><a href="/posts/workflow-optimizations-customizations" class="title">Workflow optimizations &amp; customizations</a></div>
             <div class="headline"><a href="/posts/the-new-campus-radicals" class="title">Editor's Note: The New Campus Radicals</a></div>
             <div class="headline"><a href="/posts/mortgaging-the-millennials-future" class="title">Mortgaging the Millennials’ Future</a></div>

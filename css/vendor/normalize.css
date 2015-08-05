@@ -165,9 +165,8 @@ abbr[title] {
  * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
  */
 
-b,
-strong {
-    font-weight: bold;
+b, strong {
+    font-weight: bold !important;
 }
 
 blockquote {
