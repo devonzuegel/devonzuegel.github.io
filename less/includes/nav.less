@@ -60,12 +60,11 @@ nav {
 
 	@media(min-width: 768px) {
 		.active > a {
-			color: #666;
+			color: #666 !important;
 			border-top: 5px solid @blue-light;
-			// text-shadow: 0 0 0.04em lighten(black, 85%);
 
 			&:hover {
-				color: black;
+				color: black !important;
 				border-top: 5px solid lighten(@blue-dark, 15%);
 			}
 
@@ -76,10 +75,10 @@ nav {
 			margin-left: 20px;
 			background: none !important;
 			border-top: 5px solid transparent;
-			color: #ccc;
+			color: #ccc !important;
 
 			&:hover {
-				color: black;
+				color: black !important;
 				border-top: 5px solid @blue-dark;
 			}
 		}
@@ -90,10 +89,10 @@ nav {
 
 		.active > a {
 			background: lighten(@blue-light, 25%);
-			color: #666;
+			color: #666 !important;
 
 			&:hover {
-				color: black;
+				color: black !important;
 				background: lighten(@blue-light, 20%);
 			}
 		}
@@ -102,11 +101,11 @@ nav {
 			padding: 5px 5px 5px 10px;
 			margin: 5px 0px;
 			background: none;
-			color: #ccc;
+			color: #ccc !important;
 
 			&:hover {
 				background: lighten(@blue-light, 20%);
-				color: black;
+				color: black !important;
 			}
 		}
 

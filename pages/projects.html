@@ -53,63 +53,36 @@
   <h1>Projects</h1>
   <div class="space"></div>
   <div class="page-content"><h2 id="my-evernote">My Evernote</h2>
-
 <h6 id="-div-class-time-july-2015-div-br-"><div class='time'>July 2015</div><br></h6>
-
 <p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
-
 <p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
-
 <p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
-
 <p><img src="../assets/my-evernote.png" alt=""></p>
-
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
-
 <h2 id="zen-writer">Zen Writer</h2>
-
 <h6 id="-div-class-time-june-2015-div-br-"><div class='time'>June 2015</div><br></h6>
-
 <p>The most difficult part of writing is that first draft. Putting your ideas to paper to generate that initial content is hard, because it&#39;s natural to edit your thoughts while translating them into words. However, this can severely hamper progress and creativity during early drafts. I&#39;ve learned that I write better content faster if I don&#39;t censor myself initially and then only allow myself to revise and edit after I&#39;ve exhausted my ideas. However, it&#39;s extremely difficult to contain that urge to filter out the less well-formed ideas.</p>
-
 <p>During spring quarter finals, I was assigned a 10 page paper. Just three days before it was due I had a one page draft despite hours of research and staring at a blank screen. I had lots of ideas in my head, but every time I started typing I ended up using the delete button almost as much as all my other keys combined.</p>
-
 <p>Since I wasn&#39;t making any progress anyways, I decided to take a break and built a tiny text editor called <a href="//zenwriter.io">Zen Writer</a>. It disables the delete button, highlights the current line, and fades out past content so that your attention is focused on moving forward and generating more content.</p>
-
 <p>It didn&#39;t take much work to build a rough version, and as soon as I finished I was back to writing that first draft of my paper. In the first 15 minutes, I generated about 600 words. When I went back to revise what I&#39;d written, I was surprised to find that most of my changes were to fix minor typos rather than large, conceptual revisions.</p>
-
 <p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
-
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
-
 <h2 id="origamijs">OrigamiJS</h2>
-
 <h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
-
 <p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
-
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
-
 <h2 id="fiesta-machine-translator">Fiesta: Machine Translator</h2>
-
 <h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
-
 <p>Zoe Robert, John Luttig, and I built a Spanish to English machine translator, which we called Fiesta. It is based on the IBM Model 1 algorithm and also implements several Spanish-specific strategies for improving results.</p>
-
 <p>IBM Model 1 is an <strong>expectation-maximization statistical alignment algorithm</strong>. Given known pairings of Spanish and English sentences, it generates a matrix of probabilities whose rows correspond to the Spanish vocabulary and columns correspond to the English vocabulary. The value at any given cell in the matrix represents the probability that those two words have co-occurred within translations of each other. This table is then used to estimate a model for future translations.</p>
-
 <p>In short, IBM Model 1 looks for the most likely English word for a Spanish word (e.g. “dog”) based off our knowledge of co-occurrences within sentences. As such, if there are no translations of a given Spanish word <code>s</code> that contain a given English word <code>e</code>, the value of the cell at the corresponding row and column will be <code>0</code>.</p>
-
 <p>The algorithm requires 3 components:</p>
-
 <ul>
 <li>a language model to compute <code>P(E)</code> (the prior)</li>
 <li>a translation model to compute <code>P(S|E)</code> (the probability that a Spanish word <code>s</code> translates to an English word <code>e</code>)</li>
 <li>a decoder that produces the most probable translation</li>
 </ul>
-
 <h4 id="pseudocode">Pseudocode</h4>
-
 <pre class="highlight"><code class="hljs python">initialize transl_prob(e|s) uniformly
 do until convergence
   set count(e|s) to <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all e,s
@@ -127,50 +100,29 @@ do until convergence
     <span class="hljs-keyword">for</span> all e
       transl_prob(e|s) = count(e|s) / total_s(s)
 </code></pre>
-
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/fiesta">Github</a>.</p>
-
 <h2 id="octagon">Octagon</h2>
-
 <h6 id="-div-class-time-summer-2014-div-br-"><div class='time'>Summer 2014</div><br></h6>
-
 <p><img src="http://collectivehealth.com/wp-content/uploads/2014/08/formation-8-logo-700x192.png" alt="right-sm"></p>
-
 <p>This past summer, I designed and built an app called Octagon, a tool for venture capital firms. Octagon helps VCs better manage relationships with portfolio companies by visualizing important metrics about company growth and providing a repository for financial documents and quarterly updates. It also facilitates interaction between investors and board members and the startups in their portfolios in an analogous manner to CRM software. Octagon is currently in beta testing at Formation|8.</p>
-
 <p>I was responsible for the full-stack of the app, though I was lucky enough for the last few weeks of the project to work with a friend named Zack who helped me immensely with the front-end, especially user interaction and fully utilizing the capabilities of our graphing libraries.</p>
-
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/octagon">Github</a>.</p>
-
 <h2 id="paper-trail">Paper Trail</h2>
-
 <h6 id="-div-class-time-march-2014-present-div-br-"><div class='time'>March 2014 - present</div><br></h6>
-
 <p>Some of the greatest impact individuals can have on politics is driven by daily purchasing decisions. Any time an individual patronizes a corporation, (s)he is fueling the company&#39;s lobbying and donorship capabilities and is indirectly supporting their political causes. Unfortunately, the impact of corporate political contributions is largely opaque to the general public, and the research about corporations’ political activity is a tedious, complex task.</p>
-
 <p>In early 2014, I set out to solve this problem with a project called Paper Trail. The web app provides users access to political profiles of companies and manufacturers. Visualizations and statistics about companies political contributions and lobbying behavior help consumers make informed choices about where their money is going. In turn, consumers&#39; more thoughtful choices empower those corporations that represent their values.</p>
-
 <p>Paper Trail was the first programming project that I pursued outside of class and has evolved significantly since I first implemented it in early 2014. It began as a simple HTML/Javascript app into which users could query the names of companies and learn about their political contributions.</p>
-
 <p>You can find this initial prototype <a href="//stanford.edu/~devonz/paper_trail/about.html">here</a> and the open source code base on <a href="//github.com/devonzuegel/WWW/tree/master/paper_trail">Github</a>.</p>
-
 <p>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users&#39; existing workflow.</p>
-
 <p>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user&#39;s cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site — Amazon — and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon&#39;s fantastic API, and generally focusing our energy on specific goals rather than broad ones. </p>
-
 <p>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="//invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="//github.com/devonzuegel/papertrail-extension">Github</a>.</p>
-
 <h2 id="in-other-words">In Other Words</h2>
-
 <h6 id="-div-class-time-january-may-2011-div-br-"><div class='time'>January - May 2011</div><br></h6>
-
 <p><img src="http://www.freestyle.mvla.net/~DevonZ/project3/images/photo1.JPG" alt="right-md"></p>
-
 <p>My brother Jeffrey was born with Cerebral Palsy and is on the autistic spectrum. Life with Jeffrey is challenging for both of us because he doesn’t always communicate effectively in the conventional way, in “English.” However, he has found alternative modes with the help of his team of teachers, therapists, family, and friends.</p>
-
 <p>In my junior year in high school, I became fascinated with his growing ability to communicate in non-conventional ways and decided to devote several months to learning more about this process. After conducting extensive interviews and reading further into psychology and cognitive science, I published a documentary book called In Other Words about how he and his team discovers and develops those alternatives.</p>
-
-<p>You can find the book on <a href="http://www.blurb.com/b/2092327-in-other-words">Blurb.com</a>.</p></div>
+<p>You can find the book on <a href="http://www.blurb.com/b/2092327-in-other-words">Blurb.com</a>.</p>
+</div>
 </article></div><br>
     </div>
     <div class="col-md-3">
@@ -187,8 +139,8 @@ do until convergence
         <div class="row headlines">
           <h5>Writing</h5>
           <ul class="normal-line-height">
-            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro</a></div>
             <div class="headline"><a href="/posts/workflow-optimizations-customizations" class="title">Workflow optimizations &amp; customizations</a></div>
+            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro</a></div>
             <div class="headline"><a href="/posts/the-new-campus-radicals" class="title">Editor's Note: The New Campus Radicals</a></div>
             <div class="headline"><a href="/posts/mortgaging-the-millennials-future" class="title">Mortgaging the Millennials’ Future</a></div>
             <div class="headline"><a href="/posts/why-college-campuses-should-allow-concealed-carry" class="title">Why College Campuses Should Allow Concealed Carry</a></div>

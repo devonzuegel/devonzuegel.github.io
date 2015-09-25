@@ -1,10 +1,11 @@
 /*
-
 vim-hybrid theme by w0ng (https://github.com/w0ng/vim-hybrid)
-
 */
 
-/*background color*/
+
+.highlight, .highlight * {
+  font-size: 10pt !important;
+}
 
 .hljs {
   display: block; padding: 1.2em;

@@ -135,12 +135,14 @@ body {
   font: 17px 'San Francisco', sans-serif;
   font-weight: 300;
 }
-a {
-  color: #367da2;
+a,
+a em {
+  color: #367da2 !important;
   padding-bottom: 1px;
 }
-a:hover {
-  color: #295f7c;
+a:hover,
+a em:hover {
+  color: #295f7c !important;
 }
 .justify {
   text-align: justify !important;
@@ -294,11 +296,11 @@ nav .navbar-brand:hover {
 }
 @media (min-width: 768px) {
   .navbar-default .navbar-nav .active > a {
-    color: #666;
+    color: #666 !important;
     border-top: 5px solid #92bce0;
   }
   .navbar-default .navbar-nav .active > a:hover {
-    color: black;
+    color: black !important;
     border-top: 5px solid #5ca3c9;
   }
   .navbar-default .navbar-nav li > a {
@@ -306,31 +308,31 @@ nav .navbar-brand:hover {
     margin-left: 20px;
     background: none !important;
     border-top: 5px solid transparent;
-    color: #ccc;
+    color: #ccc !important;
   }
   .navbar-default .navbar-nav li > a:hover {
-    color: black;
+    color: black !important;
     border-top: 5px solid #367da2;
   }
 }
 @media (max-width: 768px) {
   .navbar-default .navbar-nav .active > a {
     background: #f5f9fc;
-    color: #666;
+    color: #666 !important;
   }
   .navbar-default .navbar-nav .active > a:hover {
-    color: black;
+    color: black !important;
     background: #e1edf7;
   }
   .navbar-default .navbar-nav li > a {
     padding: 5px 5px 5px 10px;
     margin: 5px 0px;
     background: none;
-    color: #ccc;
+    color: #ccc !important;
   }
   .navbar-default .navbar-nav li > a:hover {
     background: #e1edf7;
-    color: black;
+    color: black !important;
   }
 }
 a.anchor {
@@ -431,7 +433,7 @@ img[alt=right-lg] {
   margin: 10px 0;
 }
 #content #side-bar .headlines .headline .title {
-  font-family: 'San Francisco Display';
+  font-family: 'San Francisco';
   font-size: 16px;
   width: 100% !important;
   padding: 0 !important;

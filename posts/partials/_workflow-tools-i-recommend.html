@@ -1,13 +1,37 @@
 <h2 id="misc-tools">Misc Tools</h2>
-
 <ul>
-<li>Batch converting <code>.erb</code> files to <code>.slim</code> (requires erb2slim and html2slim gems) by recursing through all sub-directories:</li>
+<li>Batch converting <code>.erb</code> files to <code>.slim</code> (requires <code>erb2slim</code> and <code>html2slim</code> gems) by recursing through all sub-directories:</li>
 </ul>
-
 <pre class="highlight"><code class="hljs bash">$ <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> **/*.erb; <span class="hljs-keyword">do</span> erb2slim <span class="hljs-variable">$f</span> <span class="hljs-variable">${f/\.erb/.slim}</span>; <span class="hljs-keyword">done</span>
 $ rm **/*.erb
 </code></pre>
+<ul>
+<li>A Ruby script to pretty-print 2D arrays:</li>
+</ul>
+<pre class="highlight"><code class="hljs ruby"><span class="hljs-keyword">require</span> <span class="hljs-string">'colorize'</span>
 
+<span class="hljs-function"><span class="hljs-keyword">def</span> </span>print_table(table, with_header = <span class="hljs-keyword">true</span>)
+  <span class="hljs-comment"># Calculate widths</span>
+  widths = []
+  table.each <span class="hljs-keyword">do</span> |line|
+    line.each_with_index <span class="hljs-keyword">do</span> |col, c|
+      widths[c] = (widths[c] &amp;&amp; widths[c] &gt; col.length) ? widths[c] <span class="hljs-symbol">:</span> col.length
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+  <span class="hljs-comment"># Indent the last column left.</span>
+  last = widths.pop()
+  format = widths.collect { |n| <span class="hljs-string">"%-<span class="hljs-subst">#{n}</span>s"</span> }.join(<span class="hljs-string">"  |   "</span>.black) + <span class="hljs-string">"  <span class="hljs-subst">#{<span class="hljs-string">'|'</span>.black}</span>  %-<span class="hljs-subst">#{last}</span>s\n"</span>
+  table.each_with_index <span class="hljs-keyword">do</span> |line, i|
+    <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> &amp;&amp; with_header
+      printf(format.black, *line)
+    <span class="hljs-keyword">else</span>
+      printf(format, *line)
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Given a two-dimensional array, <code>print_table</code> pretty prints a table that looks a bit like this:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/6979755/9891532/af277164-5bbb-11e5-8456-89fc69e2fdb7.png" alt=""></p>
 <ul>
 <li><p><a href="http://docs.emmet.io/">Emmet.io</a> is a toolkit that allows you to expand css-like abbreviations to markup. For example, when you press <code>TAB</code> it dynamically parses this...:</p>
 <pre class="highlight"><code class="hljs smalltalk">  ul<span class="hljs-symbol">#nav</span>&gt;li.items<span class="hljs-char">$*</span><span class="hljs-number">4</span>&gt;a{<span class="hljs-class">Item</span> <span class="hljs-char">$}</span>

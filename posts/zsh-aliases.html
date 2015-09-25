@@ -57,13 +57,9 @@
   <div class="space"></div>
   <div class="space"></div>
   <div class="post-content"><p><img src='../assets/l-alias.png' width='250px' style='margin:0 0 15px 15px; float:right'></p>
-
 <p>Aliases are one of my favorite terminal customizations. They make the most frequently-used commands shorter and allow improvements on the standard ones, enabling you to tailor programming in the terminal to your individual needs and preferences. These aliases are stored in <code>~/.zshrc</code>.</p>
-
 <h3 id="listing-files">Listing files</h3>
-
 <p>The one alias that has improved my workflow the most is a quick, one-keypress command <code>l</code>. This replacement for the standard <code>ls</code> command prints the <strong>size</strong>, last-modified <strong>date</strong> and <strong>time</strong>, and the <strong>directory name</strong> of each file and sub-dir in the current directory. It orders the rows by the last-modified date, so the most current files and projects are up top on the list.</p>
-
 <pre class="highlight"><code class="hljs bash"><span class="hljs-comment"># Flags:</span>
 <span class="hljs-comment">#   -G: default colors, different for directories vs. files</span>
 <span class="hljs-comment">#   -F: includes a trailing `/` at the end of directory names</span>
@@ -76,18 +72,12 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
   <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-7.59s\n"</span>, <span class="hljs-variable">$9</span>);   
 }<span class="hljs-string">'\'</span><span class="hljs-string">' | tail +2'</span>  <span class="hljs-comment"># Remove first line from output (formerly "total")</span>
 </code></pre>
-
 <p><img src='../assets/lg-alias.png' width='240px' style='margin:5px 0 15px 15px; float:right'></p>
-
 <p>When looking to filter through filenames quickly, I use <code>lg #{regex}</code>, which pipes the result of <code>l</code> to a case-insensitive <code>grep</code> command.</p>
-
 <pre class="highlight"><code class="hljs elixir"><span class="hljs-keyword">alias</span> lg=<span class="hljs-string">'l | grep -i'</span>
 </code></pre>
-
 <h3 id="git">Git</h3>
-
 <p>My git aliases are a close second to the directory listing commands. The ones I use most frequently are:</p>
-
 <table>
 <thead>
 <tr>
@@ -114,10 +104,9 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
 </tr>
 </tbody>
 </table>
-
-<p><hr>
+<hr>
 <p>You can find my entire <code>.zshrc</code> file below. Feel free to use, abuse, and modify my aliases as you wish!</p>
-<script src="https://gist.github.com/devonzuegel/6c1f260d5e9ff101e0df.js"></script></p></div>
+<script src="https://gist.github.com/devonzuegel/6c1f260d5e9ff101e0df.js"></script></div>
 </article></div><br>
     </div>
     <div class="col-md-3">
@@ -134,8 +123,8 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
         <div class="row headlines">
           <h5>Writing</h5>
           <ul class="normal-line-height">
-            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro</a></div>
             <div class="headline"><a href="/posts/workflow-optimizations-customizations" class="title">Workflow optimizations &amp; customizations</a></div>
+            <div class="headline"><a href="/posts/pomodoro-technique" class="title">Pomodoro</a></div>
             <div class="headline"><a href="/posts/the-new-campus-radicals" class="title">Editor's Note: The New Campus Radicals</a></div>
             <div class="headline"><a href="/posts/mortgaging-the-millennials-future" class="title">Mortgaging the Millennials’ Future</a></div>
             <div class="headline"><a href="/posts/why-college-campuses-should-allow-concealed-carry" class="title">Why College Campuses Should Allow Concealed Carry</a></div>
