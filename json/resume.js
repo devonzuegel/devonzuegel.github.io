@@ -54,7 +54,7 @@ module.exports = {
 	},
 
 	"courses": [
-		{ 
+		{
 			"name": {
 				"dept": "CS",
 				"num": 	"106A",
@@ -64,7 +64,7 @@ module.exports = {
 			"completed": true,
 			"school_year": "freshman",
 			"quarter": "spring",
-		},	{ 
+		},	{
 			"name": {
 				"dept": "CS",
 				"num": 	"106B",
@@ -74,7 +74,7 @@ module.exports = {
 			"completed": true,
 			"school_year": "freshman",
 			"quarter": "summer",
-		},	{ 
+		},	{
 			"name": {
 				"dept": "CS",
 				"num": 	"107",
@@ -84,7 +84,7 @@ module.exports = {
 			"completed": true,
 			"school_year": "sophomore",
 			"quarter": "winter",
-		},	{ 
+		},	{
 			"name": {
 				"dept": "CS",
 				"num": 	"103",
@@ -94,7 +94,7 @@ module.exports = {
 			"completed": true,
 			"school_year": "sophomore",
 			"quarter": "autumn",
-		}, { 
+		}, {
 			"name": {
 				"dept": "CS",
 				"num": 	"142",
@@ -104,8 +104,8 @@ module.exports = {
 			"completed": true,
 			"school_year": "sophomore",
 			"quarter": "winter",
-		}, { 
-			"name": {			
+		}, {
+			"name": {
 				"dept": "CS",
 				"num": 	"227B",
 				"title": "General Game Playing",
@@ -183,7 +183,7 @@ module.exports = {
 				"include": true,
 			},
 		],
-		
+
 		"programming_languages": [
 			// comfort is 0-5, 5 being most comfortable
 			{
@@ -198,7 +198,7 @@ module.exports = {
 				"include": true,
 			}, {
 				"name": "Jade, Haml, Slim",
-				"months_exp": 5,				
+				"months_exp": 5,
 				"comfort": 5,
 				"include": true,
 			}, {
@@ -229,11 +229,11 @@ module.exports = {
 				"months_exp": 48,
 				"include": false,
 			}, {
-				"name": "InDesign", 
+				"name": "InDesign",
 				"months_exp": 8,
 				"include": false,
 			}, {
-				"name": "Adobe Creative Suite", 
+				"name": "Adobe Creative Suite",
 				"months_exp": 48,
 				"include": true,
 			}
@@ -273,6 +273,19 @@ module.exports = {
 		{
 
 			"title": ["Software Engineering Intern"],
+			"employer": "Signalfire",
+			"dates": {
+				"start": "June 2015",
+				"end": "Sept 2015",
+			},
+			"website": "//signalfire.com",
+			"bullet_pts": [
+				"SignalFire is a complete redesign of the modern venture firm. We have developed a first-of-its-kind platform to support recruiting, business development, and customer acquisition. We invest early at the seed stage in leaders with a passion for leveraging data and technology solutions to upend substantial markets. Our distributed network approach provides access to the best entrepreneurs and product leaders in virtually every key discipline, and our core team is made up of investors and engineers trained at General Catalyst, Bessemer, KPCB, Google, and Yahoo."
+			],
+
+		}, {
+
+			"title": ["Software Engineering Intern"],
 			"employer": "Formation 8",
 			"dates": {
 				"start": "June 2014",
@@ -281,11 +294,11 @@ module.exports = {
 			"website": "//formation8.com",
 			"bullet_pts": [
 				"Designed and built an app called Octagon in Node.js with Express, a Javascript-based web framework.",
-				"Octagon is a tool for venture capital firms to better manage relationships with portfolio companies by visualizing important metrics about company growth and acting as a repository for financial documents and quarterly updates."			
+				"Octagon is a tool for venture capital firms to better manage relationships with portfolio companies by visualizing important metrics about company growth and acting as a repository for financial documents and quarterly updates."
 			],
 
 		}, {
-			
+
 			"title": ["CS 106A & 106B Section Leader"],
 			"employer": "Stanford Section Leading",
 			"dates": {
@@ -299,7 +312,7 @@ module.exports = {
 			],
 
 		}, {
-			
+
 			"title": [
 				"Editor Emeritus",
 				"Editor in Chief",
@@ -322,7 +335,7 @@ module.exports = {
 			],
 
 		}, {
-			
+
 			"title": ["Marketing Intern"],
 			"employer": "Quixey",
 			"dates": {
@@ -335,7 +348,7 @@ module.exports = {
 			],
 
 		}, {
-			
+
 			"title": ["Human Factors Intern"],
 			"employer": "NASA Ames Research Center",
 			"dates": {
@@ -349,7 +362,7 @@ module.exports = {
 			],
 
 		}, {
-			
+
 			"title": ["Volunteer Puppy Raiser"],
 			"employer": "Guide Dogs for the Blind",
 			"dates": {
