@@ -11,13 +11,13 @@ module.exports = {
 			"github": {
 				"title": "Github",
 				"address": "github.com/devonzuegel",
-				"url": "//github.com/devonzuegel",
+				"url": "github.com/devonzuegel",
 			},
 
 			"twitter": {
 				"title": "Twitter",
 				"address": "@devonzuegel",
-				"url": "//twitter.com/devonzuegel",
+				"url": "twitter.com/devonzuegel",
 			},
 
 			"email": {
@@ -170,82 +170,94 @@ module.exports = {
 
 	"skills": {
 
-		"web_frameworks": [
-			{
-				"name": "Ruby on Rails",
-				"months_exp": 6,
-				"comfort": 4,
-				"include": true,
-			}, {
-				"name": "Node.js",
-				"months_exp": 6,
-				"comfort": 5,
-				"include": true,
-			},
-		],
-
-		"programming_languages": [
-			// comfort is 0-5, 5 being most comfortable
-			{
-				"name": "Javascript",
-				"months_exp": 8,
-				"comfort": 4,
-				"include": true,
-			}, {
-				"name": "Ruby",
-				"months_exp": 5,
-				"comfort": 3,
-				"include": true,
-			}, {
-				"name": "Jade, Haml, Slim",
-				"months_exp": 5,
-				"comfort": 5,
-				"include": true,
-			}, {
-				"name": "C",
-				"months_exp": 6,
-				"comfort": 3,
-				"include": true,
-			}, {
-				"name": "C++",
-				"months_exp": 5,
-				"comfort": 3,
-				"include": true,
-			}, {
-				"name": "Java",
-				"months_exp": 5,
-				"comfort": 3,
-				"include": true,
-			},
-		],
-
-		"adobe": [
-			{
-				"name": "Photoshop",
-				"months_exp": 48,
-				"include": false,
-			}, {
-				"name": "Illustrator",
-				"months_exp": 48,
-				"include": false,
-			}, {
-				"name": "InDesign",
-				"months_exp": 8,
-				"include": false,
-			}, {
-				"name": "Adobe Creative Suite",
-				"months_exp": 48,
-				"include": true,
-			}
-		],
-
-		"misc": [
-			{
-				"name": "Wordpress",
-				"months_exp": 16,
-				"include": false,
-			}
+		"to_include": [
+			{ "name": "Ruby on Rails" },
+			{ "name": "AWS Tools" },
+			{ "name": "TDD" },
+			{ "name": "Python" },
+			{ "name": "Node.js" },
+			{ "name": "C" },
+			{ "name": "C++" },
+			{ "name": "Java" },
+			{ "name": "Adobe Suite" }
 		]
+
+		// "web_frameworks": [
+		// 	{
+		// 		"name": "Ruby on Rails",
+		// 		"months_exp": 6,
+		// 		"comfort": 4,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "Node.js",
+		// 		"months_exp": 6,
+		// 		"comfort": 5,
+		// 		"include": true,
+		// 	},
+		// ],
+
+		// "programming_languages": [
+		// 	// comfort is 0-5, 5 being most comfortable
+		// 	{
+		// 		"name": "Javascript",
+		// 		"months_exp": 8,
+		// 		"comfort": 4,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "Ruby",
+		// 		"months_exp": 5,
+		// 		"comfort": 3,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "Jade, Haml, Slim",
+		// 		"months_exp": 5,
+		// 		"comfort": 5,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "C",
+		// 		"months_exp": 6,
+		// 		"comfort": 3,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "C++",
+		// 		"months_exp": 5,
+		// 		"comfort": 3,
+		// 		"include": true,
+		// 	}, {
+		// 		"name": "Java",
+		// 		"months_exp": 5,
+		// 		"comfort": 3,
+		// 		"include": true,
+		// 	},
+		// ],
+
+		// "adobe": [
+		// 	{
+		// 		"name": "Photoshop",
+		// 		"months_exp": 48,
+		// 		"include": false,
+		// 	}, {
+		// 		"name": "Illustrator",
+		// 		"months_exp": 48,
+		// 		"include": false,
+		// 	}, {
+		// 		"name": "InDesign",
+		// 		"months_exp": 8,
+		// 		"include": false,
+		// 	}, {
+		// 		"name": "Adobe Creative Suite",
+		// 		"months_exp": 48,
+		// 		"include": true,
+		// 	}
+		// ],
+
+		// "misc": [
+		// 	{
+		// 		"name": "Wordpress",
+		// 		"months_exp": 16,
+		// 		"include": false,
+		// 	}
+		// ]
 	},
 
 	"languages": [
@@ -263,7 +275,7 @@ module.exports = {
 
 
 			"name": "German",
-			"level": "Intermediate",
+			"level": "limited working",
 
 		}
 	],
@@ -278,10 +290,11 @@ module.exports = {
 				"start": "June 2015",
 				"end": "Sept 2015",
 			},
-			"website": "//signalfire.com",
+			"website": "signalfire.com",
 			"bullet_pts": [
-				"SignalFire is a complete redesign of the modern venture firm. We have developed a first-of-its-kind platform to support recruiting, business development, and customer acquisition. We invest early at the seed stage in leaders with a passion for leveraging data and technology solutions to upend substantial markets. Our distributed network approach provides access to the best entrepreneurs and product leaders in virtually every key discipline, and our core team is made up of investors and engineers trained at General Catalyst, Bessemer, KPCB, Google, and Yahoo."
-			],
+				"Incorporated patent data and inventor rank into Signalfire's engineer ranking algorithm & built out new search features, both of which are now in heavy use by the firm, its portfolio companies, & its partners.",
+				"Extended test coverage for previously under-tested features (especially the Elastic Search implementation and front-end code) as well as implementing tests for all of my new code."
+				],
 
 		}, {
 
@@ -291,10 +304,10 @@ module.exports = {
 				"start": "June 2014",
 				"end": "Sept 2014",
 			},
-			"website": "//formation8.com",
+			"website": "formation8.com",
 			"bullet_pts": [
-				"Designed and built an app called Octagon in Node.js with Express, a Javascript-based web framework.",
-				"Octagon is a tool for venture capital firms to better manage relationships with portfolio companies by visualizing important metrics about company growth and acting as a repository for financial documents and quarterly updates."
+				"Built the back-end of an app called Octagon in Node.js; collaborated with another intern to develop the front-end.",
+				"Octagon is a tool for venture capital firms to better manage relationships with portfolio companies by visualizing important metrics about company growth & acting as a repository for financial documents & quarterly updates. It is currently in beta testing at F8."
 			],
 
 		}, {
@@ -305,7 +318,7 @@ module.exports = {
 				"start": "January 2014",
 				"end": "present",
 			},
-			"website": "//cs198.stanford.edu",
+			"website": "cs198.stanford.edu",
 			"bullet_pts": [
 				"Teach weekly section, hold office hours, and assess assignments for introductory courses taught in Java and C++.",
 				"Mentor students new to computer science, introduce them to other opportunities, resources, and courses at Stanford."
@@ -325,13 +338,13 @@ module.exports = {
 				"start": "Feb 2014",
 				"end": "Sep 2014",
 			},
-			"website": "//stanfordreview.org",
+			"website": "stanfordreview.org",
 			"bullet_pts": [
 				"Led campaign to grow online presence of paper; increased viewership by 50% over course of the 5-month volume.",
 				"Restructured editing cycle, which increased the number of articles submitted for each issue by 30%.",
 				"Organized team-building events and projects for past and current members; strengthened partnerships with alumni.",
 				"Managed Wordpress site, Facebook page, Twitter account, and email digest.",
-				"Other roles: Executive Editor (Sep 2013 — Jan 2014), Opinions Editor (Sep 2014 — present) Deputy News Editor (Feb 2013 — Sep 2013).",
+				"Other roles: Executive Editor (Sep 2013 — Jan 2014), Opinions Editor (Sep 2014 — Jan 2015) Deputy News Editor (Feb 2013 — Sep 2013).",
 			],
 
 		}, {
@@ -342,7 +355,7 @@ module.exports = {
 				"start": "May 2012",
 				"end": "July 2012",
 			},
-			"website": "//quixey.com",
+			"website": "quixey.com",
 			"bullet_pts": [
 				"Designed & built a website for the press announcing the company’s investment round",
 			],
@@ -355,7 +368,7 @@ module.exports = {
 				"start": "June 2012",
 				"end": "Aug 2012",
 			},
-			"website": "//nasa.gov",
+			"website": "nasa.gov",
 			"bullet_pts": [
 				"Designed & built a searchable photo archive in Excel that was sharable across the network",
 				"Constructed an experimental replica of the workstation on the International Space Station",
@@ -369,7 +382,7 @@ module.exports = {
 				"start": "April 2012",
 				"end": "June 2013",
 			},
-			"website": "//guidedogs.com",
+			"website": "guidedogs.com",
 			"bullet_pts": [
 				"Raised a puppy to lead & accompany a blind individual throughout his daily life",
 				"Attended weekly trainings to learn how to work with the puppy",
@@ -386,14 +399,14 @@ module.exports = {
 				"start": "June 2014",
 				"end": "present",
 			},
-			"website": "//octagon-f8.herokuapp.com",
+			"website": "octagon-f8.herokuapp.com",
 			"bullet_pts": [
 				"Built the back-end with document-oriented MongoDB; collaborated with another intern to develop the front-end.",
 				"Deployed the app to Heroku; the tool is currently in Beta Testing by Formation | 8’s investment team.",
 				"Used tools such as Git for version control and Bower for managing front-end dependencies.",
 				"Open-source code can be found at github.com/devonzuegel/octogon.",
 			],
-			"include": true,
+			"include": false,
 		}, {
 
 			"name": "Paper Trail",
@@ -402,12 +415,12 @@ module.exports = {
 				"start": "April 2014",
 				"end": "present",
 			},
-			"website": "//stanford.edu/~devonz/paper_trail",
+			"website": "stanford.edu/~devonz/paper_trail",
 			"bullet_pts": [
 				"Built a Javascript-based application that presents information about corporations’ political contributions.",
 				"Open-source code can be found at github.com/devonzuegel/WWW/tree/master/paper_trail.",
 			],
-			"include": true,
+			"include": false,
 
 		}, {
 
@@ -417,7 +430,7 @@ module.exports = {
 				"start": "September 2010",
 				"end": "June 2012",
 			},
-			"website": "//freestyle.mvla.net/~DevonZ/project0/index.html",
+			"website": "freestyle.mvla.net/~DevonZ/project0/index.html",
 			"bullet_pts": [
 			 "Represents my first exposure & experimentation with web design",
 			],
@@ -431,12 +444,12 @@ module.exports = {
 				"start": "May 2011",
 				"end": "June 2011",
 			},
-			"website": "//freestyle.mvla.net/~DevonZ/project2/pages/animation.html",
+			"website": "freestyle.mvla.net/~DevonZ/project2/pages/animation.html",
 			"bullet_pts": [
 				"Created graphics with Adobe Illustrator & Photoshop, animated graphics in Adobe Flash",
 				"Won 2nd place for best 2010 junior animation at Freestyle Academy",
 			],
-			"include": true,
+			"include": false,
 
 		}, {
 
@@ -446,7 +459,7 @@ module.exports = {
 				"start": "January 2011",
 				"end": "April 2011",
 			},
-			"website": "//blurb.com/books/2092327-in-other-words",
+			"website": "blurb.com/books/2092327-in-other-words",
 			"bullet_pts": [
 				"Gained experience in interview- & research-based writing & in layout design",
 				"Won 2nd place for best 2011 junior documentary book at Freestyle Academy",
@@ -459,9 +472,8 @@ module.exports = {
 
 	"hobbies": [
 		"Triathlon",
-		"Backpacking",
-		"Graphic design & photography",
-		"Jazz guitar & singing",
+		"Philosophy",
+		"Design"
 	],
 
 }

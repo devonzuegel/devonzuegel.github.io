@@ -404,6 +404,8 @@ img[alt=right-lg] {
   max-width: 1000px;
   margin: auto;
   padding: 40px 30px;
+  display: block;
+  overflow: auto;
 }
 #content #main-content {
   padding-bottom: 25px;
@@ -468,17 +470,17 @@ img[alt=right-lg] {
 .alignright {
   float: right;
 }
-#wrapper {
-  min-height: 100%;
-  position: relative;
+#contact {
+  display: block;
+  overflow: auto;
 }
-#wrapper #footer {
+#footer {
   margin-top: 15px;
   padding: 5px;
   width: 100%;
   border-top: 1px solid #eee;
 }
-#wrapper #footer h4 {
+#footer h4 {
   margin: 0 !important;
   text-align: center;
   font-size: 70%;
