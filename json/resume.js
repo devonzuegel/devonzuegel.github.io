@@ -11,13 +11,13 @@ module.exports = {
 			"github": {
 				"title": "Github",
 				"address": "github.com/devonzuegel",
-				"url": "github.com/devonzuegel",
+				"url": "http://github.com/devonzuegel",
 			},
 
 			"twitter": {
 				"title": "Twitter",
 				"address": "@devonzuegel",
-				"url": "twitter.com/devonzuegel",
+				"url": "http://twitter.com/devonzuegel",
 			},
 
 			"email": {
