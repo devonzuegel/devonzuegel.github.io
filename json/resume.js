@@ -26,6 +26,12 @@ module.exports = {
 				"url": "mailto:devonz@cs.stanford.edu",
 			},
 
+			"instapaper": {
+				"title": "Instapaper",
+				"address": "devonzuegel",
+				"url": "https://www.instapaper.com/p/devonzuegel"
+			},
+
 			// "instagram": {
 			// 	"title": "Instagram",
 			// 	"address": "devon_marisa",
