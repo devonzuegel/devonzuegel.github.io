@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title></title><meta content="width=device-width, initial-scale=1" name="viewport" /><link href="css/main.css" rel="stylesheet" /></head><body class="index"><nav class="navbar navbar-static-top" role="navigation"><div class="container"><div class="navbar-header"><button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="navbar"><ul class="nav navbar-nav"><li class="active"><a href="/bills">Home</a></li><li><a href="about/">About</a></li></ul></div></div></nav><div class="wrap"><div class="container"><div class="row"><div class="col-sm-9"><main role="main"><section>
+<h1 id="predicting-congressional-bill-outcomes">Predicting Congressional Bill Outcomes</h1>
+
+<p>Over the course of this quarter, we built a predictor that identifies which US bills will pass in the House and in the Senate. Our motivation for this project is to learn more about what strategic tools have the greatest marginal impact in Congress, and our starting hypothesis was that lobbying dollars spent in one direction would be the single most impactful factor.</p>
+
+<p>The predictor is modeled on Congressional data from 1997 - 2010 from a wide range of sources. (We will go into further detail in the "Infrastructure" section.) We evaluated our system based on whether or not we were able to predict the outcome of a particular bill correctly.</p>
+
+<p><a name="infrastructure"></a></p>
+
+<h2 id="data-sources--infrastructure">Data Sources &amp; Infrastructure</h2>
+
+<p>We relied on several datasets to train our classifier. Specifically, we used:</p>
+
+<h4 id="us-library-of-congress-bills-data">U.S. Library of Congress' Bills Data</h4>
+
+<p>We retrieved bill data covering 1973-present as a bulk download from <a href="http://thomas.gov">thomas.gov</a>, an official source for legislative information that is run by the U.S. Library of Congress. Each document contains JSON for a particular bill, including identifying information, the outcome/status of the bill, amendment history, sponsor and co-sponsor information, details about the relevant congressional committees, and much more.</p>
+
+<p>You can learn more about this dataset from the <a href="https://theunitedstates.io/">@unitedstates project</a>'s wiki, found at <a href="http://github.com/unitedstates/congress/wiki/Bills">github.com/unitedstates/congress/wiki/Bills</a>.</p>
+
+<h4 id="maplights-congressional-bills-data">MapLight's Congressional Bills Data</h4>
+
+<p><img src="images/maplight-sample.png" style="float: right; width: 60%; margin: 20px" /></p>
+
+<p>We relied most heavily upon <a href="http://maplight.org/us-congress/bill/search/description?page=0&amp;solrsort=ds_last_action%20asc&amp;namespace=map_bill_search">MapLight's meticulously curated data</a> about the contributions given to members of Congress from interest groups that support or oppose various bills. You can find a screenshot of a bill profile page to the right.</p>
+
+<p>We want to give a shoutout to the MapLight team's <a href="http://maplight.org/content/about-maplight#howwedoit">fantastic work</a>. Without their careful, nonpartisan analysis, this project would not have been possible.</p>
+
+<p>The data was not available in a clean, structured format, so much of our effort was spent on extracting and preprocessing the information from MapLight's thousands of paginated webpages that contain the information we needed.</p>
+
+<blockquote>
+  <p>TODO: What steps did we take to extract the data? Where can people find the scripts we used to do this?</p>
+</blockquote>
+
+<p>We have made the structured data available <a href="">here</a> so that others can play around with it too.</p>
+
+<blockquote>
+  <p>TODO: add link on "here" to point to a zip file containing the bill data we used.</p>
+</blockquote>
+
+<ul>
+  <li>For bills from previous congresses (i.e. &gt;2 years old), if the status is “Referred to committee” or “Introduced” or “Reported to committee” then it’s a failure.
+And we aren’t training on current congressional data anyways</li>
+  <li>Possible Statuses:
+    <ul>
+      <li><strong>Enacted Laws:</strong> Enacted bills and joint resolutions (both bills and joint resolutions can be enacted as law)</li>
+      <li><strong>Passed Resolutions:</strong> Passed resolutions (for joint and concurrent resolutions, this means passed both chambers)</li>
+      <li><strong>Got A Vote:</strong> Bills and joint/concurrent resolutions that had a significant vote in one chamber</li>
+      <li><strong>Failed Legislation:</strong> Bills and resolutions that failed a vote on passage or failed a significant vote such as cloture, passage under suspension, or resolving differences</li>
+      <li><strong>Vetoed Bills (w/o Override):</strong> Bills that were vetoed and the veto was not overridden by Congress</li>
+      <li><strong>Other Legislation:</strong> Bills and resolutions that were introduced, referred to committee, or reported by committee but had no further action</li>
+    </ul>
+  </li>
+</ul>
+
+<p><code>
+&lt;&lt;[data/bill-outcome-statistics--1974-2015.csv]
+</code></p>
+
+<h4 id="govtracks-data">GovTrack's Data</h4>
+
+<hr />
+
+<!-- - [**U.S. Senate Lobbying Records:**](https://app.enigma.io/search/source/us.gov.senate.publicrecords.lobbying) Enigma offers lobbying information originally published by the Senate's public records department. Each row of this dataset corresponds to a lobbying transaction. Each transaction includes information about the lobbying client, the firm through which it is working, the industry to which the client belongs, the magnitude of the transaction in dollars, and several other pieces of metadata. We were disappointed to discover that the data did not include information on the recipients of lobbying funds nor the => left us with the challenge of
+-->
+
+<p>Required joining the three datasets</p>
+
+<p><a name="data-exploration"></a></p>
+
+<h2 id="data-exploration">Data Exploration</h2>
+
+<p>k-means clustering</p>
+
+<p><a name="approach"></a></p>
+
+<h2 id="approach">Approach</h2>
+
+<blockquote>
+  <p>Identify the challenges of building the system and the phenomena in the data that you're trying to capture. How should you model the task (e.g., using search, machine learning, logic, etc.)? There will be many ways to do this, but you should pick one or two and explain how the methods address the challenges as well as any pros and cons. What algorithms are appropriate for handling the models that you came up with, and what are the tradeoffs between accuracy and efficiency? Are there any implementation choices specific to your problem?</p>
+
+  <p>Besides your primary approach(es), you should have two types of other ones, baselines and oracles. These are really important as they tell you how significant the problem you're solving is. Baselines are simple algorithms, which might include predicting the majority label, using a small set of hand-crafted rules, training a simple classifier, etc. Baselines are meant to be extremely simple, but you might be surprised at how effective they are. Oracles are algorithms that "cheat" and look at the correct answer or involve humans. If your problem has two components (identifying entities and classifying them), an oracle uses the correct answer for one of the components, and sees how well the other can do. Baselines give lower bounds and oracles give upper bounds on your performance. If this gap is too small, then you probably don't have an interesting enough task.</p>
+</blockquote>
+
+<p>Features:</p>
+
+<ul>
+  <li>absolute amount of money spent supporting and opposing the bill</li>
+  <li>ratio of support:oppose</li>
+  <li>which member of congress sponsored the bill</li>
+  <li>number of amendments</li>
+  <li>general issue topic (pre-categorized by the Library of Congress data)</li>
+  <li>…</li>
+</ul>
+
+<p>Algorithms we tried:</p>
+
+<ul>
+  <li>Naive Bayes</li>
+  <li>SVM</li>
+  <li>…</li>
+</ul>
+
+<h4 id="baseline">Baseline</h4>
+
+<h4 id="oracle">Oracle</h4>
+
+<h4 id="main-approach">Main Approach</h4>
+
+<p><a name="literature-review"></a></p>
+
+<h2 id="literature-review">Literature review</h2>
+
+<blockquote>
+  <p>Have there been other attempts to build such a system? Compare and contrast your approach with existing work, citing the relevant papers. The comparison should be more than just high-level descriptions. You should try to fit your work and other work into the same framework. Are the two approaches complementary, orthogonal, or contradictory?</p>
+</blockquote>
+
+<p><a name="error-analysis"></a></p>
+
+<h2 id="error-analysis">Error analysis</h2>
+
+<blockquote>
+  <p>Design a few experiments to show the properties (both pros and cons) of your system. For example, if your system is supposed to deal with graphs with lots of cycles, then construct both examples with lots of cycles and ones without to test your hypothesis. Each experiment should ask a concise question, such as: Do we need to model the interactions between the ghosts in Pac-Man? or How well does the system scale up to large datasets? Analyze the data and show either graphs or tables to illustrate your point. What's the take-away message? Were there any surprises?</p>
+</blockquote>
+</section></main></div><div class="col-sm-3"><aside class="fixed" role="complementary"><nav class="list-group" role="navigation"><a class="list-group-item" href="#infrastructure">Data Sources & Infrastructure</a><a class="list-group-item" href="#data-exploration">Data Exploration</a><a class="list-group-item" href="#approach">Approach</a><a class="list-group-item" href="#literature-review">Literature Review</a><a class="list-group-item" href="#error-analysis">Error Analysis</a></nav></aside></div></div></div></div><footer role="contentinfo"><div class="container"><small>&copy;</small></div></footer><!--JavaScript--><script src="js/main.js"></script></body></html>
