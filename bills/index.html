@@ -1,9 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title></title><meta content="width=device-width, initial-scale=1" name="viewport" /><link href="css/main.css" rel="stylesheet" /></head><body class="index"><nav class="navbar navbar-static-top" role="navigation"><div class="container"><div class="navbar-header"><button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="navbar"><ul class="nav navbar-nav"><li class="active"><a href="/bills">Home</a></li><li><a href="about/">About</a></li></ul></div></div></nav><div class="wrap"><div class="container"><div class="row"><div class="col-sm-9"><main role="main"><section>
-<h1 id="predicting-congressional-bill-outcomes">Predicting Congressional Bill Outcomes</h1>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title></title><meta content="width=device-width, initial-scale=1" name="viewport" /><link href="css/main.css" rel="stylesheet" /></head><body class="index"><nav class="navbar navbar-static-top" role="navigation"><div class="container"><div class="navbar-header"><button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="navbar"><ul class="nav navbar-nav"><li class="active"><a href="/bills">Home</a></li><li><a href="about/">About</a></li></ul></div></div></nav><div class="wrap"><div class="container"><div class="row"><div class="col-sm-9"><main role="main"><section><h1 id="predicting-congressional-bill-outcomes">Predicting Congressional Bill Outcomes</h1>
 
-<p>Over the course of this quarter, we built a predictor that identifies which US bills will pass in the House and in the Senate. Our motivation for this project is to learn more about what strategic tools have the greatest marginal impact in Congress, and our starting hypothesis was that lobbying dollars spent in one direction would be the single most impactful factor.</p>
+<p>Over the course of this quarter, we built a predictor that identifies which US bills will succeed in both the House and in the Senate. Our motivation for this project was to learn about what strategic tools have the greatest marginal impact in Congress, and our starting hypothesis was that lobbying dollars spent in one direction would be the single most impactful factor.</p>
 
-<p>The predictor is modeled on Congressional data from 1997 - 2010 from a wide range of sources. (We will go into further detail in the "Infrastructure" section.) We evaluated our system based on whether or not we were able to predict the outcome of a particular bill correctly.</p>
+<p>The predictor is modeled on Congressional data from the 109th - 113th Congresses (spanning the years 1997 - 2010) from a wide range of sources. We will go into further detail about these sources in the "Infrastructure" section. We evaluated our system based on whether or not we were able to predict the outcome of a particular bill correctly.</p>
 
 <p><a name="infrastructure"></a></p>
 
@@ -11,114 +10,705 @@
 
 <p>We relied on several datasets to train our classifier. Specifically, we used:</p>
 
-<h4 id="us-library-of-congress-bills-data">U.S. Library of Congress' Bills Data</h4>
+<h4 id="data-from-govtrack--thomasgov">Data from GovTrack &amp; Thomas.gov</h4>
 
-<p>We retrieved bill data covering 1973-present as a bulk download from <a href="http://thomas.gov">thomas.gov</a>, an official source for legislative information that is run by the U.S. Library of Congress. Each document contains JSON for a particular bill, including identifying information, the outcome/status of the bill, amendment history, sponsor and co-sponsor information, details about the relevant congressional committees, and much more.</p>
-
-<p>You can learn more about this dataset from the <a href="https://theunitedstates.io/">@unitedstates project</a>'s wiki, found at <a href="http://github.com/unitedstates/congress/wiki/Bills">github.com/unitedstates/congress/wiki/Bills</a>.</p>
+<p>We downloaded metadata of all bills from the 109th - 113th Congresses from the <a href="https://github.com/unitedstates">@unitedstates</a> project's <a href="https://github.com/unitedstates/congress/wiki">bulk data downloads page</a>. This data originates from <a href="http://thomas.gov">thomas.gov</a> in a semi-structured format. In coordination with a group of open source contributors, GovTrack scraped this government website and stored the data in structured JSON. Documentation on the structure of these JSON files can be found on <a href="https://github.com/unitedstates/congress/wiki/bills">this page</a> in the group's wiki. We relied on this data for our bill outcomes as well as other metadata including amendment history, sponsor and co-sponsor information, and details about the relevant congressional committees.</p>
 
 <h4 id="maplights-congressional-bills-data">MapLight's Congressional Bills Data</h4>
 
-<p><img src="images/maplight-sample.png" style="float: right; width: 60%; margin: 20px" /></p>
+<p><img src="img/maplight-sample.png" style="float: right; width: 70%; margin: 20px" /></p>
 
-<p>We relied most heavily upon <a href="http://maplight.org/us-congress/bill/search/description?page=0&amp;solrsort=ds_last_action%20asc&amp;namespace=map_bill_search">MapLight's meticulously curated data</a> about the contributions given to members of Congress from interest groups that support or oppose various bills. You can find a screenshot of a bill profile page to the right.</p>
+<p>We relied most heavily upon <a href="http://maplight.org/us-congress/bill/search/description?page=0&amp;solrsort=ds_last_action%20asc&amp;namespace=map_bill_search">MapLight's data</a> about the contributions given to members of Congress from interest groups that support or oppose various bills. You can find a screenshot of a bill profile page to the right.</p>
 
 <p>We want to give a shoutout to the MapLight team's <a href="http://maplight.org/content/about-maplight#howwedoit">fantastic work</a>. Without their careful, nonpartisan analysis, this project would not have been possible.</p>
 
-<p>The data was not available in a clean, structured format, so much of our effort was spent on extracting and preprocessing the information from MapLight's thousands of paginated webpages that contain the information we needed.</p>
+<p>Still, the data was not available in a clean, structured format, so much of our effort was spent on extracting and preprocessing the information from MapLight's thousands of paginated webpages that contain the information we needed.</p>
 
-<blockquote>
-  <p>TODO: What steps did we take to extract the data? Where can people find the scripts we used to do this?</p>
-</blockquote>
+<p>We pulled information on each session for each kind of bill with a Python script that scraped the Maplight data for the 109th - 114th congressional sessions, where each bill had an outcome (SUCCESS or FAIL) from GovTrack associated with it. Many bills had several hundred features, including legislator lists, supporting and opposing industries, and organizations with their dollar amounts contributed.</p>
 
-<p>We have made the structured data available <a href="">here</a> so that others can play around with it too.</p>
+<p>We have made the structured data available <a href="https://www.dropbox.com/home/CS221%20scripts">here</a> so that others can play around with it, too.</p>
 
-<blockquote>
-  <p>TODO: add link on "here" to point to a zip file containing the bill data we used.</p>
-</blockquote>
+<h5 id="possible-statuses">Possible Statuses:</h5>
+
+<p><em>Note:</em> For bills from previous congresses (i.e. &gt; 2 years old), if the status is "Referred to committee" or "Introduced" or "Reported to committee" then it’s a failure.</p>
 
 <ul>
-  <li>For bills from previous congresses (i.e. &gt;2 years old), if the status is “Referred to committee” or “Introduced” or “Reported to committee” then it’s a failure.
-And we aren’t training on current congressional data anyways</li>
-  <li>Possible Statuses:
-    <ul>
-      <li><strong>Enacted Laws:</strong> Enacted bills and joint resolutions (both bills and joint resolutions can be enacted as law)</li>
-      <li><strong>Passed Resolutions:</strong> Passed resolutions (for joint and concurrent resolutions, this means passed both chambers)</li>
-      <li><strong>Got A Vote:</strong> Bills and joint/concurrent resolutions that had a significant vote in one chamber</li>
-      <li><strong>Failed Legislation:</strong> Bills and resolutions that failed a vote on passage or failed a significant vote such as cloture, passage under suspension, or resolving differences</li>
-      <li><strong>Vetoed Bills (w/o Override):</strong> Bills that were vetoed and the veto was not overridden by Congress</li>
-      <li><strong>Other Legislation:</strong> Bills and resolutions that were introduced, referred to committee, or reported by committee but had no further action</li>
-    </ul>
-  </li>
+  <li><strong>Enacted Laws:</strong> Enacted bills and joint resolutions (both bills and joint resolutions can be enacted as law)</li>
+  <li><strong>Passed Resolutions:</strong> Passed resolutions (for joint and concurrent resolutions, this means passed both chambers)</li>
+  <li><strong>Got A Vote:</strong> Bills and joint/concurrent resolutions that had a significant vote in one chamber</li>
+  <li><strong>Failed Legislation:</strong> Bills and resolutions that failed a vote on passage or failed a significant vote such as cloture, passage under suspension, or resolving differences</li>
+  <li><strong>Vetoed Bills (w/o Override):</strong> Bills that were vetoed and the veto was not overridden by Congress</li>
+  <li><strong>Other Legislation:</strong> Bills and resolutions that were introduced, referred to committee, or reported by committee but had no further action</li>
 </ul>
 
-<p><code>
-&lt;&lt;[data/bill-outcome-statistics--1974-2015.csv]
-</code></p>
+<h5 id="possible-bill-types">Possible Bill Types:</h5>
 
-<h4 id="govtracks-data">GovTrack's Data</h4>
-
-<hr />
-
-<!-- - [**U.S. Senate Lobbying Records:**](https://app.enigma.io/search/source/us.gov.senate.publicrecords.lobbying) Enigma offers lobbying information originally published by the Senate's public records department. Each row of this dataset corresponds to a lobbying transaction. Each transaction includes information about the lobbying client, the firm through which it is working, the industry to which the client belongs, the magnitude of the transaction in dollars, and several other pieces of metadata. We were disappointed to discover that the data did not include information on the recipients of lobbying funds nor the => left us with the challenge of
--->
-
-<p>Required joining the three datasets</p>
-
-<p><a name="data-exploration"></a></p>
-
-<h2 id="data-exploration">Data Exploration</h2>
-
-<p>k-means clustering</p>
+<ul>
+  <li><strong>HR:</strong> House Bill</li>
+  <li><strong>S:</strong> Senate Bill</li>
+  <li><strong>HJ Res:</strong> House Joint Resolution</li>
+  <li><strong>SJ Res:</strong> Senate Joint Resolution</li>
+  <li><strong>H Con Res:</strong> House Concurrent Resolution</li>
+  <li><strong>S Con Res:</strong> Senate Concurrent</li>
+  <li><strong>H Res:</strong> House Simple Resolution</li>
+  <li><strong>S Res:</strong> Senate Simple Resolution</li>
+</ul>
 
 <p><a name="approach"></a></p>
 
 <h2 id="approach">Approach</h2>
 
-<blockquote>
-  <p>Identify the challenges of building the system and the phenomena in the data that you're trying to capture. How should you model the task (e.g., using search, machine learning, logic, etc.)? There will be many ways to do this, but you should pick one or two and explain how the methods address the challenges as well as any pros and cons. What algorithms are appropriate for handling the models that you came up with, and what are the tradeoffs between accuracy and efficiency? Are there any implementation choices specific to your problem?</p>
-
-  <p>Besides your primary approach(es), you should have two types of other ones, baselines and oracles. These are really important as they tell you how significant the problem you're solving is. Baselines are simple algorithms, which might include predicting the majority label, using a small set of hand-crafted rules, training a simple classifier, etc. Baselines are meant to be extremely simple, but you might be surprised at how effective they are. Oracles are algorithms that "cheat" and look at the correct answer or involve humans. If your problem has two components (identifying entities and classifying them), an oracle uses the correct answer for one of the components, and sees how well the other can do. Baselines give lower bounds and oracles give upper bounds on your performance. If this gap is too small, then you probably don't have an interesting enough task.</p>
-</blockquote>
-
-<p>Features:</p>
-
-<ul>
-  <li>absolute amount of money spent supporting and opposing the bill</li>
-  <li>ratio of support:oppose</li>
-  <li>which member of congress sponsored the bill</li>
-  <li>number of amendments</li>
-  <li>general issue topic (pre-categorized by the Library of Congress data)</li>
-  <li>…</li>
-</ul>
-
-<p>Algorithms we tried:</p>
-
-<ul>
-  <li>Naive Bayes</li>
-  <li>SVM</li>
-  <li>…</li>
-</ul>
+<p>We modeled the challenge of classifying bill outcomes as a classic machine learning task. Using the data on congressional bills from the sources listed above, we were able to experiment with several machine learning approaches for the classification task.</p>
 
 <h4 id="baseline">Baseline</h4>
 
+<p>Using a conjecture from a previous study from Michigan State on bill advancement (see the section on Prior Work), we established a baseline prediction of a bill’s success using just one feature, the total sum of lobbying money in support for that bill.</p>
+
 <h4 id="oracle">Oracle</h4>
+
+<p>Our ground truth for bill outcomes is taken from our bill status data with GovTrack. In order to interpret bill status as a binary outcome (SUCCESS or FAIL), we mapped all possible statuses to their most likely outcomes. (See the section on GovTrack Data.)</p>
 
 <h4 id="main-approach">Main Approach</h4>
 
+<p>Our first step after collecting and cleaning the data was representing it in an appropriate feature form. Because we wanted to include unique lobbyists, legislators, organizations, and industries in our features and their effect on the bill outcome, we took on a text-classification "bag of words" approach to representing these features. For our particular data, we associated lobbying amounts (either given or received for, and in support or against a bill) to each feature instead of binary indicators (feature is present vs. not present). A few of the different numerical representations we considered were absolute value of money for a bill, ratio of money for and against a bill, and the net sum of the money for a bill (i.e. money given/received in favor of the bill - money given/received in opposition to the bill). Some examples of resulting features are given below:</p>
+
+<ul>
+  <li>If Senator Grinch received $14,000 total in support for <strong>Bill #1919: World Peace</strong> and $30,000 against, then the feature "Senator Grinch" would map to <code>-16,000</code>.</li>
+  <li>If the sum for representatives in a certain voting district of California was $3,000 in support and $1,000 against, then the feature "CA-2" would map to <code>2000</code>.</li>
+  <li>If the manufacturing industry contributed a total of $40,000 against and $0 in support, then the feature "manufacturing" would map to <code>-40,000</code>.</li>
+  <li>If organization "Red Cross" donated money in support of the bill, then the feature "Red Cross" would map to binary value "FOR".</li>
+  <li>The date a bill is introduced is converted in to a nominal - for example 01/01/2013 would be 1356998400, the unix representation of the timestamp.</li>
+</ul>
+
+<p>With our aggregated training examples, our resulting data included over 11,000 features for just under 3,000 bills. In order to further explore our features, we performed both Principal Components Analysis (PCA) and Chi-Squared evaluation to rank these features in order of significance. With Principal Component Analysis, features are recombined to form new dimensions. Looking at our top new dimensions in PCA, we can see that they are primarily linear combinations of weights from various legislators and organizations that align similarly in voting incentives and decisions. When looking at features with the highest chi-squared scores, we can see that lobbying money directed towards a district or state has a greater than chance impact on the outcome. A full list of the top 20 PCA dimensions and 20 features with the highest chi-squared scores given in the feature evaluation section.</p>
+
+<p>Our second step was to take our newly formed feature representation and assess a second baseline accuracy from naive or linear supervised classification algorithms. We used <strong>Naive Bayes</strong> and <strong>Logistic regression</strong> respectively to accomplish this, as they are relatively quick and simple classification algorithms.</p>
+
+<p>Our final step was to move to more sophisticated approaches that were more suitable for dealing with high-dimensional feature spaces. Similar to methods in classc text classification, we decided to use models like <strong>Support Vector Machines</strong> (SVMs) that are robust but also capable of modeling non-linear boundaries. We also experimented with Perceptron to see if this single-layer network could more effectively capture relationships betwee our various features. In order to perform both classifications, however, we had to first reduce our feature space using <strong>Principal Component Analysis</strong> (PCA). In addition to reducing our feature space from ~11,000 to ~500, PCA also helped us discover that these 500 features capture the most variation in the data.</p>
+
+<p>The full list of algorithms we applied to the data is listed below - for all algorithms, we employed a 10-fold cross evaluation to determine performance:</p>
+
+<ul>
+  <li>K-Means</li>
+  <li>Naive Bayes with and without PCA</li>
+  <li>Logistic Regression</li>
+  <li>SVM with PCA</li>
+  <li>Perceptron with PCA</li>
+</ul>
+
+<p>We will go into further detail about the results we achieved with each algorithm in the "Error Analysis" section.</p>
+
 <p><a name="literature-review"></a></p>
 
-<h2 id="literature-review">Literature review</h2>
+<h2 id="literature-review--prior-work">Literature Review &amp; Prior Work</h2>
 
-<blockquote>
-  <p>Have there been other attempts to build such a system? Compare and contrast your approach with existing work, citing the relevant papers. The comparison should be more than just high-level descriptions. You should try to fit your work and other work into the same framework. Are the two approaches complementary, orthogonal, or contradictory?</p>
-</blockquote>
+<h4 id="statistics-from-previous-congresses">Statistics from previous Congresses</h4>
+
+<p>GovTrack provided an important overview of the bill success rates of previous congresses, which you can find <a href="https://www.govtrack.us/congress/bills/statistics">here</a>. We did not directly utilize these statistics while building our predictors, but they provided important insight for understanding the basic probability distributions for possible bill outcomes. For instance, we had not realized how few bills explicitly fail based on a vote. According to GovTrack's data, nearly 0% of bills are considered "failed legislation". The vast majority of bills that don't become law simply die in committee or some other intermediate step.</p>
+
+<h4 id="lobbying--congressional-bill-advancement">Lobbying &amp; Congressional Bill Advancement</h4>
+
+<p>A Michigan State University paper titled <a href="http://www.academia.edu/8031510/Lobbying_and_Congressional_Bill_Advancement"><em>Lobbying &amp; Congressional Bill Advancement</em></a> studied the influence of lobbying on the advancement of congressional legislation. It found that "the amount of interest group lobbying is associated with majority party sponsorship, wide cosponsorship, and high-profile issues" and that "lobbying helps predict whether bills advance through committee and each chamber, independent of congressional factors typically associated with bill advancement".</p>
+
+<p>We began this project with the hypothesis that lobbying dollars would be a helpful predictor in determining bill outcomes. This paper reaffirmed our hypothesis, and as a result we made sure to include a variety of features in our algorithms that captured as many perspectives on lobbying behavior as possible. In particular, we included the following features as a direct result of the findings in this paper:</p>
+
+<ul>
+  <li>Net dollars spent on the bill (amount spent supporting minus the amount spent opposing it)</li>
+  <li>A series of features, each representing the absolute sum that a given legislator received regarding that bill</li>
+  <li>Absolute sum spent on the bill from a particular industry</li>
+  <li>A series of features, each representing the position that a particular organization or industry took on the bill</li>
+</ul>
+
+<h4 id="predicting-congressional-bill-outcomes-1">Predicting Congressional Bill Outcomes</h4>
+
+<p>In 2012, Stanford students took on a very similar question in <a href="http://cs229.stanford.edu/proj2012/CainChuaGampong-PredictingCongressionalBillOutcomes.pdf"><em>Predicting Congressional Bill Outcomes</em></a> for CS 229, the machine learning class. However, their approach was significantly different from ours. The 229 team aimed to answer the question "Can we predict the voting behavior of a Representative on a given bill using only the frequency of words in the bills text?", and they relied on text classification. Meanwhile, we aimed to predict the aggregate result of a vote (i.e. whether or not the bill succeeded), and we relied on a broader set of features including lobbying data and categorical information.</p>
+
+<h4 id="lobbying-on-effective-legislation-revolving-door-lobbyists-targeted-legislative-influence">Lobbying on Effective Legislation: Revolving Door Lobbyists’ Targeted Legislative Influence</h4>
+
+<p>A University of Texas at Austin paper titled <a href="http://www.papers.ssrn.com/sol3/papers.cfm?abstract_id=2592472"><em>Lobbying on Effective Legislation: Revolving Door Lobbyists’ Targeted Legislative Influence</em></a> studied the varying levels of influence exerted by lobbyists on each step of the legislative process. By linking lobbyists’ professional backgrounds to the bills in which they’ve been involved, the paper found that "lobbyists with significant professional experience on Capitol Hill are more likely to lobby on bills perceived as important by political elites and institutionally privileged by party leaders’ agendas". While the results of this paper were interesting, they were orthogonal to the direction our project ended up taking.</p>
+
+<h4 id="determining-swing-congressman-through-lobbying">Determining Swing Congressman Through Lobbying</h4>
+
+<p>A CalTech student project called <a href="http://www.predcongressvoters.blogspot.com"><em>Determining Swing Congressman Through Lobbying</em></a> discovered that most swing Republican congressmen receive little in terms of lobbying dollars. Their explanation for this phenomenon was that "swing republicans have little influence over other swing republicans and the entire group is small to begin with. Therefore when proposing a bill, it is in your best interest to try to get as many people from the opposing faction to switch to your side with the hope that they have enough influence to change the minds of the their particular hidden node."</p>
 
 <p><a name="error-analysis"></a></p>
 
-<h2 id="error-analysis">Error analysis</h2>
+<h2 id="error-analysis">Error Analysis</h2>
 
-<blockquote>
-  <p>Design a few experiments to show the properties (both pros and cons) of your system. For example, if your system is supposed to deal with graphs with lots of cycles, then construct both examples with lots of cycles and ones without to test your hypothesis. Each experiment should ask a concise question, such as: Do we need to model the interactions between the ghosts in Pac-Man? or How well does the system scale up to large datasets? Analyze the data and show either graphs or tables to illustrate your point. What's the take-away message? Were there any surprises?</p>
-</blockquote>
-</section></main></div><div class="col-sm-3"><aside class="fixed" role="complementary"><nav class="list-group" role="navigation"><a class="list-group-item" href="#infrastructure">Data Sources & Infrastructure</a><a class="list-group-item" href="#data-exploration">Data Exploration</a><a class="list-group-item" href="#approach">Approach</a><a class="list-group-item" href="#literature-review">Literature Review</a><a class="list-group-item" href="#error-analysis">Error Analysis</a></nav></aside></div></div></div></div><footer role="contentinfo"><div class="container"><small>&copy;</small></div></footer><!--JavaScript--><script src="js/main.js"></script></body></html>
+<h3 id="naive-bayes-with-principal-component-analysis-pca">Naive Bayes with Principal Component Analysis (PCA)</h3>
+
+<h5 id="summary">Summary</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correctly Classified Instances</td>
+      <td>705</td>
+      <td>26.1208%</td>
+    </tr>
+    <tr>
+      <td>Incorrectly Classified Instances</td>
+      <td>1994</td>
+      <td>73.8792%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We began by using Naive Bayes as our initial predictor, which performed poorly in the case of a PCA-transformed space. The predictor correctly classified points in the test set just over 26% of the time, far worse than the 50% that one would expect with chance. Our initial reaction was one of shock, but after some reflection we realized that the source of the problem was likely the approach's "naive" assumption of conditional independence between each of the features. This joint probability model can be expressed as:</p>
+
+<p><img alt="" src="https://upload.wikimedia.org/math/8/a/b/8ab63ece73d62513000361a1ecba849a.png" /></p>
+
+<p>It's intuitively obvious that many of the features are closely correlated. In particular, we included a wide variety of features representing many different aspects of the lobbying processes, and as a result one would expect there to be many features that communicate overlapping information about a given bill.</p>
+
+<p>In comparison to the classification in untransformed space, we can see that Naive Bayes suffers after pre-processing with PCA. This can be explained by the fact that PCA extracts features that maximize variation within the data, and is heavily dependent on covariations between features. Naive Bayes, on the other hand, applies a fundamentally different assumption with the data when creating its models and could even derive distortions from the PCA-selected features.</p>
+
+<h5 id="detailed-accuracy-by-class">Detailed Accuracy By Class</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Precision"><strong>Precision</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Recall"><strong>Recall</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#F-measure"><strong>F-Measure</strong></a></th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>0.067</td>
+      <td>0.806</td>
+      <td>0.124</td>
+      <td>SUCCESS</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>0.943</td>
+      <td>0.223</td>
+      <td>0.361</td>
+      <td>FAILURE</td>
+    </tr>
+    <tr>
+      <td>Weighted Avg.</td>
+      <td>0.886</td>
+      <td>0.261</td>
+      <td>0.346</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="confusion-matrix">Confusion Matrix</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>&lt;– classified as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>141</td>
+      <td>34</td>
+      <td>a = SUCCESS</td>
+    </tr>
+    <tr>
+      <td>1960</td>
+      <td>564</td>
+      <td>b = FAIL</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="naive-bayes-without-pca">Naive Bayes without PCA</h3>
+
+<h5 id="summary-1">Summary</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correctly Classified Instances</td>
+      <td>2060</td>
+      <td>75.7075%</td>
+    </tr>
+    <tr>
+      <td>Incorrectly Classified Instances</td>
+      <td>661</td>
+      <td>24.2925%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In comparison to the classification in untransformed space, we can see that Naive Bayes suffers after pre-processing with PCA. This can be explained by the fact that PCA extracts features that maximize variation within the data, and is heavily dependent on covariations between features. Naive Bayes, on the other hand, applies a fundamentally different assumption with the data when creating its models and could even derive distortions from the PCA-selected features.</p>
+
+<h5 id="detailed-accuracy-by-class-1">Detailed Accuracy By Class</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Precision"><strong>Precision</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Recall"><strong>Recall</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#F-measure"><strong>F-Measure</strong></a></th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>0.131</td>
+      <td>0.486</td>
+      <td>0.206</td>
+      <td>SUCCESS</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>0.956</td>
+      <td>0.776</td>
+      <td>0.857</td>
+      <td>FAIL</td>
+    </tr>
+    <tr>
+      <td>Weighted Avg.</td>
+      <td>0.902</td>
+      <td>0.757</td>
+      <td>0.814</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="confusion-matrix-1">Confusion Matrix</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>&lt;– classified as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>86</td>
+      <td>91</td>
+      <td>a = SUCCESS</td>
+    </tr>
+    <tr>
+      <td>570</td>
+      <td>1974</td>
+      <td>b = FAIL</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="logistic-regression-after-principal-component-analysis-pca">Logistic Regression after Principal Component Analysis (PCA)</h3>
+
+<h5 id="summary-2">Summary</h5>
+
+<p><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic Regression</a> was quite effective at predicting bill outcomes, coming in second place with an 83.7% success rate. The feature space was too large to perform logistic regression with reasonable time and computation power, so we had to first transform the data with PCA before creating the models.</p>
+
+<p>Intuitively, logistic regression in conjunction to PCA should perform relatively better than Naive Bayes; logistic regression is dependent on covariances and does not make the same probabilistic assumptions about independence as Naive Bayes. In fact, <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.109.3106&amp;rep=rep1&amp;type=pdf">Aguilera et al.</a> proposes that PCA actually enhances logistic regression of high-dimensional, multi-collinear data. Given this, it is no surprise that logistic regression results in a significant improvement from the baseline performance.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correctly Classified Instances</td>
+      <td>2259</td>
+      <td>83.6977%</td>
+    </tr>
+    <tr>
+      <td>Incorrectly Classified Instances</td>
+      <td>440</td>
+      <td>16.3023%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="detailed-accuracy-by-class-2">Detailed Accuracy By Class</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Precision"><strong>Precision</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Recall"><strong>Recall</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#F-measure"><strong>F-Measure</strong></a></th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>0.125</td>
+      <td>0.251</td>
+      <td>0.167</td>
+      <td>SUCCESS</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>0.944</td>
+      <td>0.878</td>
+      <td>0.91</td>
+      <td>FAILURE</td>
+    </tr>
+    <tr>
+      <td>Weighted Avg.</td>
+      <td>0.891</td>
+      <td>0.837</td>
+      <td>0.861</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="confusion-matrix-2">Confusion Matrix</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>&lt;– classified as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>44</td>
+      <td>131</td>
+      <td>a = SUCCESS</td>
+    </tr>
+    <tr>
+      <td>309</td>
+      <td>2215</td>
+      <td>b = FAIL</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="support-vector-machine-after-principal-component-analysis-pca">Support Vector Machine after Principal Component Analysis (PCA)</h3>
+
+<h5 id="summary-3">Summary</h5>
+
+<p><a href="https://en.wikipedia.org/wiki/Support_vector_machine">Support Vector Machine</a> performed the best out of the four methods we used, correctly predicting the outcome of almost 94% in 10-fold cross validation. This is not surprising, as SVM is generally a highly effective algorithm for large feature spaces, robust due to regularizations, and fast due to kernel use. In addition, SVM is capable of finding non-linear decision boundaries, which is ideal for features like ours with complex or dynamic relationships. Due to the performance and speed of this algorithm, we would most likely favor SVM over other approaches in this analysis.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correctly Classified Instances</td>
+      <td>2530</td>
+      <td>93.7384%</td>
+    </tr>
+    <tr>
+      <td>Incorrectly Classified Instances</td>
+      <td>169</td>
+      <td>6.2616%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="detailed-accuracy-by-class-3">Detailed Accuracy By Class</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Precision"><strong>Precision</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Recall"><strong>Recall</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#F-measure"><strong>F-Measure</strong></a></th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>0.074</td>
+      <td>0.003</td>
+      <td>0.65</td>
+      <td>SUCCESS</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>0.997</td>
+      <td>0.926</td>
+      <td>0.94</td>
+      <td>FAILURE</td>
+    </tr>
+    <tr>
+      <td>Weighted Avg.</td>
+      <td>0.937</td>
+      <td>0.866</td>
+      <td>0.921</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="confusion-matrix-3">Confusion Matrix</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>&lt;– classified as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>13</td>
+      <td>162</td>
+      <td>a = SUCCESS</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>2517</td>
+      <td>b = FAIL</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="voted-perceptron-after-principal-component-analysis-pca">Voted Perceptron after Principal Component Analysis (PCA)</h3>
+
+<h5 id="summary-4">Summary</h5>
+
+<p><a href="http://curtis.ml.cmu.edu/w/courses/index.php/Voted_Perceptron">Voted Perceptron</a> achieved an accuracy of 65% on our 10-fold cross validations. One explanation for the sub-par performance is that this algorithm is a "shallow" single layer variation of the far more powerful neural networks. In order to achieve higher accuracy in our classifications, a better approach would be applying full neural networks instead of the voted perceptron. One disadvantage to this however is that Perceptron was by far the slowest of all our algorithms (and neural nets even slower), which also presents a significant challenge in computational power and time.</p>
+
+<p>Number of perceptrons = 1133</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correctly Classified Instances</td>
+      <td>1755</td>
+      <td>65.0241%</td>
+    </tr>
+    <tr>
+      <td>Incorrectly Classified Instances</td>
+      <td>944</td>
+      <td>34.9759%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="detailed-accuracy-by-class-4">Detailed Accuracy By Class</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Precision"><strong>Precision</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#Recall"><strong>Recall</strong></a></th>
+      <th><a href="https://en.wikipedia.org/wiki/Precision_and_recall#F-measure"><strong>F-Measure</strong></a></th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>0.079</td>
+      <td>0.411</td>
+      <td>0.132</td>
+      <td>SUCCESS</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>0.942</td>
+      <td>0.667</td>
+      <td>0.781</td>
+      <td>FAIL</td>
+    </tr>
+    <tr>
+      <td>Weighted Avg.</td>
+      <td>0.886</td>
+      <td>0.65</td>
+      <td>0.739</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="confusion-matrix-4">Confusion Matrix</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>&lt;– classified as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>72</td>
+      <td>103</td>
+      <td>a = SUCCESS</td>
+    </tr>
+    <tr>
+      <td>841</td>
+      <td>1683</td>
+      <td>b = FAIL</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><a name="feature-analysis"></a></p>
+
+<h2 id="feature-analysis">Feature Analysis</h2>
+
+<h3 id="principal-component-analysis-pca--top-20-dimensions">Principal Component Analysis (PCA) – Top 20 Dimensions</h3>
+
+<ol>
+  <li>-0.061Steny-H_-Hoyer-0.06Jim-Clyburn-0.059Steve-Israel-0.059Henry-Cuellar-0.058Aaron-Schock-</li>
+  <li>-0.081Zack-Space-0.081Lincoln-Davis-0.08Stephanie-Herseth-Sandlin-0.078Ron-Klein-0.078Jim-Marshall-</li>
+  <li>-0.07Carol-Shea-Porter-0.065Julia-Brownley-0.064Donna-F_-Edwards-0.064Alan-S_-Lowenthal-0.063Ann-M_-Kuster-</li>
+  <li>-0.093Susan-M_-Collins-0.093Dianne-Feinstein-0.092Andrew-Lamar-Alexander-0.091Mary-L_-Landrieu-0.091John-Cornyn-</li>
+  <li>'0.09 National-Solid-Wastes-Management-Association+0.09 Coalition-for-a-Democratic-Workplace+0.09 American-Fire-Sprinkler-Association+0.09 National-Association-of-Electrical-Distributors+0.09 Forging-Industry-Association…' numeric</li>
+  <li>-0.131United-Technologies-0.131General-Mills-0.131Texas-Instruments-0.128Emerson-0.128Cisco-Systems-</li>
+  <li>-0.141Jim-Walsh-0.141Vito-Fossella-0.141Rahm-Emanuel-0.141Mike-Ferguson-0.14Ric-Keller-</li>
+  <li>-0.083National-Association-for-Hispanic-Elderly-0.083Social-Security-Works-0.083International-Union-of-Bricklayers-and-Allied-Craftworkers-0.081National-Association-of-Social-Workers-0.076Coalition-of-Labor-Union-Women-</li>
+  <li>'0.141Norm-Coleman+0.14 Mel-Martinez+0.14 Gordon-Smith+0.14 George-Voinovich+0.14 Mary-Elizabeth-Dole…' numeric</li>
+  <li>0.138Academy-of-Nutrition-and-Dietetics+0.138National-Association-of-States-United-for-Aging-and-Disabilities+0.138AIDS-United+0.138National-Skills-Coalition+0.138Association-of-Public-Health-Laboratories-</li>
+  <li>0.103IPNav-0.103Genzyme-0.103Milliken-<em>amp</em>-Company-0.103SanDisk-0.103CheckFree-</li>
+  <li>-0.131Electronics-for-Imaging-0.131Genzyme-0.131Bristol-Myers-Squibb-0.131Milliken-<em>amp</em>-Company-0.131Northrop-Grumman-</li>
+  <li>0.118National-Council-of-Women_s-Organizations+0.118Feminist-Majority-Foundation+0.118Women-Employed+0.106National-Hispanic-Council-on-Aging+0.106Labor-Council-for-Latin-American-Advancement-</li>
+  <li>0.152American-Nursery-<em>amp</em>-Landscape-Association+0.152Entertainment-Merchants-Association+0.152Jewelers-of-America+0.152Outdoor-Amusement-Business-Association+0.152National-Association-of-College-Stores-</li>
+  <li>-0.13United-Cerebral-Palsy-0.12National-Council-of-Negro-Women-0.12National-Caucus-and-Center-on-Black-Aged-0.12Alzheimer_s-Foundation-of-America-0.12Food-Research-and-Action-Center-</li>
+  <li>0.165American-College-of-Osteopathic-Surgeons+0.165Society-of-Critical-Care-Medicine+0.165College-of-American-Pathologists+0.165American-College-of-Emergency-Physicians+0.165Society-of-Thoracic-Surgeons-</li>
+  <li>-0.14National-Association-of-State-Directors-of-Special-Education-0.14Gay–Lesbian-<em>amp</em>-Straight-Education-Network+0.129American-Humane-Association+0.129National-Association-of-Biology-Teachers+0.129American-Planning-Association-</li>
+  <li>-0.102National-Association-of-State-Directors-of-Special-Education-0.102Gay–Lesbian-<em>amp</em>-Straight-Education-Network-0.086Easter-Seals-0.077Great-Lakes-United-0.077National-Association-of-Biology-Teachers-</li>
+  <li>-0.14National-Association-of-State-Directors-of-Special-Education-0.14Gay–Lesbian-<em>amp</em>-Straight-Education-Network+0.129American-Humane-Association+0.129National-Association-of-Biology-Teachers+0.129American-Planning-Association-</li>
+  <li>-0.102National-Association-of-State-Directors-of-Special-Education-0.102Gay–Lesbian-<em>amp</em>-Straight-Education-Network-0.086Easter-Seals-0.077Great-Lakes-United-0.077National-Association-of-Biology-Teachers-</li>
+</ol>
+
+<h3 id="chi-squared--x2--30">Chi-Squared – X^2 &gt; 30</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>X^2</th>
+      <th>Feature</th>
+      <th> </th>
+      <th>X^2</th>
+      <th>Feature</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>89.8923880629369</td>
+      <td>3380 CO-2</td>
+      <td> </td>
+      <td>36.76223164583791</td>
+      <td>2844 CA-30</td>
+    </tr>
+    <tr>
+      <td>79.80040374052612</td>
+      <td>2172 RI-1</td>
+      <td> </td>
+      <td>35.40637454025731</td>
+      <td>1957 FL-19</td>
+    </tr>
+    <tr>
+      <td>60.1202029956161</td>
+      <td>8682 HI-1</td>
+      <td> </td>
+      <td>34.89718884283977</td>
+      <td>1930 MN-8</td>
+    </tr>
+    <tr>
+      <td>54.52768113507649</td>
+      <td>992 TN-9</td>
+      <td> </td>
+      <td>33.14135402685864</td>
+      <td>2155 FL-9</td>
+    </tr>
+    <tr>
+      <td>51.77683157405656</td>
+      <td>8348 FL-21</td>
+      <td> </td>
+      <td>32.98479805045793</td>
+      <td>6978 NC-11</td>
+    </tr>
+    <tr>
+      <td>46.387541799794135</td>
+      <td>6999 NJ-4</td>
+      <td> </td>
+      <td>32.821832085436334</td>
+      <td>10487 Vic-Snyder</td>
+    </tr>
+    <tr>
+      <td>44.44898497236635</td>
+      <td>5872 IN-6</td>
+      <td> </td>
+      <td>32.30511053237073</td>
+      <td>3868 SC-5</td>
+    </tr>
+    <tr>
+      <td>41.90856911835769</td>
+      <td>8081 CA-35</td>
+      <td> </td>
+      <td>32.30511053237073</td>
+      <td>6366 OH-3</td>
+    </tr>
+    <tr>
+      <td>41.79451574235023</td>
+      <td>4145 NC-6</td>
+      <td> </td>
+      <td>31.618014693971677</td>
+      <td>9132 NY-8</td>
+    </tr>
+    <tr>
+      <td>38.684725603169774</td>
+      <td>1127 VA-11</td>
+      <td> </td>
+      <td>31.611224971149724</td>
+      <td>1126 VA-10</td>
+    </tr>
+    <tr>
+      <td>38.684725603169774</td>
+      <td>9345 NY-17</td>
+      <td> </td>
+      <td>31.296977526472173</td>
+      <td>4463 IL-2</td>
+    </tr>
+  </tbody>
+</table>
+</section></main></div><div class="col-sm-3"><aside class="fixed" role="complementary"><nav class="list-group" role="navigation"><a class="list-group-item" href="#infrastructure">Data Sources & Infrastructure</a><a class="list-group-item" href="#approach">Approach</a><a class="list-group-item" href="#literature-review">Literature Review</a><a class="list-group-item" href="#error-analysis">Error Analysis</a><a class="list-group-item" href="#feature-analysis">Feature Analysis</a></nav></aside></div></div></div></div><footer role="contentinfo"><div class="container"><small>&nbsp;</small></div></footer><!--JavaScript--><script src="js/main.js"></script></body></html>
