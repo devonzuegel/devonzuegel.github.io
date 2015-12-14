@@ -53,7 +53,19 @@
   <div class="space"></div>
   <h1>Projects</h1>
   <div class="space"></div>
-  <div class="page-content"><h2 id="my-evernote">My Evernote</h2>
+  <div class="page-content"><h2 id="congressional-bill-outcome-predictor">Congressional Bill Outcome Predictor</h2>
+<h6 id="-div-class-time-december-2015-div-br-"><div class='time'>December 2015</div><br></h6>
+<p>Emma Marriott, Arushi Jain, and I built a predictor that identifies which US bills will succeed in the House &amp; Senate. We tried several different prediction methods, including: Naive Bayes with and without Principal Component Analysis (PCA), Logistic Regression, Support Vector Machine (SVM) with PCA, and Perceptron with PCA. PCA identified the <code>500</code> most important features of a set of <code>11,000</code>. Each predictor was modeled on data from the 109th – 113th Congresses from a wide range of structured &amp; unstructured sources, including lobbying information. SVM with PCA proved to be the best model. It predicted bill outcomes with <code>94%</code> precision &amp; <code>87%</code> recall, resulting in an F-measure of <code>0.92</code>.</p>
+<p>You can learn more about our research and data <a href="http://devonzuegel.com/bills/">here</a>.</p>
+<h2 id="affitto">Affitto</h2>
+<h6 id="-div-class-time-november-2015-div-br-"><div class='time'>November 2015</div><br></h6>
+<p>San Francisco and the greater Bay Area have been struggling with housing shortages and decisions about how to best serve the community with policies to deal with this situation. At a micro level, we have a fairly good understanding of how individuals make economic decisions such as where tenants choose to live and how much rent landlords choose to charge. However, we lack tools to model the complex interactions of millions of individuals simultaneously making decisions and the emergent phenomena that result from these interactions.</p>
+<p>John Luttig and I built an Agent Based Model (ABM) to simulate emergent behavior within housing markets and explore the impact of policies such as rent control and zoning regulations. With this project, we aim to provide a tool for policymakers and stakeholders to better understand these interactions that in aggregate comprise the housing market. Understanding large-scale systems requires understanding how the results of individual actions can be more than the sum of its parts. We used ABM to simulate the actions and interactions of tenants and landlords.</p>
+<p>Here is a small version of one of our models. You may have to close the controls (by clicking the bottom of the control panel) in order to see the full simulation.</p>
+<iframe src='http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2-small/model.html' style='width:100%; height: 390px;' frameborder='no' border='0'></iframe>
+
+<p>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="//github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</p>
+<h2 id="my-evernote">My Evernote</h2>
 <h6 id="-div-class-time-july-2015-div-br-"><div class='time'>July 2015</div><br></h6>
 <p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
 <p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
@@ -152,7 +164,7 @@ do until convergence
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 30 November 2015 at 10:56 am</h4>
+      <h4>Last modified on 14 December 2015 at 02:42 pm</h4>
     </div>
   </div><script >(function(){
 	/* Did we just livereload? */
