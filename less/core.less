@@ -61,9 +61,16 @@ img {
 		img {
 			max-height: 75px;
 		}
-
 	}
 
+	&.large {
+		height: 230px;
+		width: 230px;
+
+		img {
+			max-height: 230px;
+		}
+	}
 }
 
 #content {
@@ -117,7 +124,7 @@ img {
 			border-left: 1px solid #eee;
 
 			.circle {
-				margin: -10px auto 25px auto !important;
+				margin: -15px auto 25px auto !important;
 			}
 
 			.contact-info {
@@ -143,6 +150,14 @@ img {
 .space {
 	display: block;
 	height: 5px;
+
+	&.double {
+		height: 10px;
+	}
+
+	&.triple {
+		height: 15px;
+	}
 }
 
 .alignright {
@@ -166,4 +181,8 @@ img {
 		font-size: 70%;
 		font-weight: 100;
 	}
+}
+
+.twitter-widget-0 {
+	margin: auto;
 }
