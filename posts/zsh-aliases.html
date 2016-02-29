@@ -57,7 +57,7 @@
   <div class="space"></div>
   <div class="space"></div>
   <div class="space"></div>
-  <div class="post-content"><p><img src='../assets/l-alias.png' width='250px' style='margin:0 0 15px 15px; float:right'></p>
+  <div class="post-content"><p><img src='../assets/zsh-aliases/l-alias.png' width='250px' style='margin:0 0 15px 15px; float:right'></p>
 <p>Aliases are one of my favorite terminal customizations. They make the most frequently-used commands shorter and allow improvements on the standard ones, enabling you to tailor programming in the terminal to your individual needs and preferences. These aliases are stored in <code>~/.zshrc</code>.</p>
 <h3 id="listing-files">Listing files</h3>
 <p>The one alias that has improved my workflow the most is a quick, one-keypress command <code>l</code>. This replacement for the standard <code>ls</code> command prints the <strong>size</strong>, last-modified <strong>date</strong> and <strong>time</strong>, and the <strong>directory name</strong> of each file and sub-dir in the current directory. It orders the rows by the last-modified date, so the most current files and projects are up top on the list.</p>
@@ -73,7 +73,7 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
   <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-7.59s\n"</span>, <span class="hljs-variable">$9</span>);   
 }<span class="hljs-string">'\'</span><span class="hljs-string">' | tail +2'</span>  <span class="hljs-comment"># Remove first line from output (formerly "total")</span>
 </code></pre>
-<p><img src='../assets/lg-alias.png' width='240px' style='margin:5px 0 15px 15px; float:right'></p>
+<p><img src='../assets/zsh-aliases/lg-alias.png' width='240px' style='margin:5px 0 15px 15px; float:right'></p>
 <p>When looking to filter through filenames quickly, I use <code>lg #{regex}</code>, which pipes the result of <code>l</code> to a case-insensitive <code>grep</code> command.</p>
 <pre class="highlight"><code class="hljs elixir"><span class="hljs-keyword">alias</span> lg=<span class="hljs-string">'l | grep -i'</span>
 </code></pre>
@@ -148,7 +148,7 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 27 November 2015 at 11:06 pm</h4>
+      <h4>Last modified on 29 February 2016 at 12:07 pm</h4>
     </div>
   </div><script >(function(){
 	/* Did we just livereload? */
