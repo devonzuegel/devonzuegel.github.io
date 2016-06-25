@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/devonz
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://devonzuegel.com
+  * I am devonz (https://keybase.io/devonz) on keybase.
+  * I have a public key with fingerprint 7EC8 3CA5 EA18 1B86 9F78  6363 7317 178A F0B8 32B1
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "010156ee5291ba13cb97029a24c72440e95f5f07aecc02b3630a14402b474e3a59e80a",
+            "fingerprint": "7ec83ca5ea181b869f7863637317178af0b832b1",
+            "host": "keybase.io",
+            "key_id": "7317178af0b832b1",
+            "kid": "010156ee5291ba13cb97029a24c72440e95f5f07aecc02b3630a14402b474e3a59e80a",
+            "uid": "54553a0ef2858c4faa001316f9c65f19",
+            "username": "devonz"
+        },
+        "service": {
+            "hostname": "devonzuegel.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1466828872,
+    "expire_in": 157680000,
+    "prev": "260561f59be8d54fab10a937af5c0e0a200470e59db09229d63032e6c5463439",
+    "seqno": 4,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.53
+Comment: https://keybase.io/crypto
+
+yMIpAnicrVJbSBRRGF4tsxa70P0hkiYfDGw5Z2bOXDZLEVKjNAu6WMJ6ZvbMOu7u
+zLo7u3lBkyQpCpV80AfJwC2VWKLQwqDSyIfsocKMRFSUMIou9BBUEHVG6iHosfNy
+ON//fd/5/p//0colDmfS8fEtd5Z07RxIejLSEXUcM5YX1jGK6a1h3HWMnyxeJOAl
+Ecvj172MmwEQQCQQglgZKhhyqiKLgJUxy6siy/OAyEhDGhAxUVXAKpzAAQwpziq8
+yBMOI5lIADNZjKYbPhIOhXXDorYiUSVOxYhgKEFFEmRNlAQqFjkoQlHCGlAkjlUg
+FVaYEVtBwyk4Qly6STH68CzG+wf/P+eOLtohHiEOA6KxEpJUXsMYAMhBQZNVAWlQ
+tokREjZwkFC2l8RMo5apz2IoFtNVYo/V7uOvepT4SMClmkEqDoVNy1TNAC1WWFbI
+bWutmpBNPkUUz28bj6IbXjpHKoiRcEQ3DcYNKVO1dNsX8oIgsZIkslkMqQ7pYeLR
+bQYSBQnQY39DYtSSFQASoIZkhUheRLtRIMAyJ2INqYAAzALAi4Ag2asAmWVlL50O
+xxJBRbzA8ZzdbYRUGSbj5mlM7KOWEd1nYCsaJkz9w+GypY4kp2NZSrK9Xw7nijV/
+tq7hSOrPog23Ct7jj62XTuXvfrKnYXnw6+f24oqT4dZEZblz4fm2xGxg8NW7G/sv
+5rNnbz6LpjKl3XfvuUbL1hUMVH0IHD5YqB4qRZPV/Pfk3r25sca8zWlFnbhnJOmx
+MLYJ5+Rc+FEefxPPfft66/OWk1crH94+Es2omvLfF8+kVWWu39h8rWm6re9L+Y7a
+sZLRlhfpjf6FXW3O66tMfa3Y1jdR1/oiZXV92svs2eb4zMTcSKI/Pr4vUTtxfujT
++ExssvNziTL41BV4MNC1YjKzda7/XHG2r9bTmz59q/ey/mV46jRKqWtfl/iGm9J7
+Tpy40rjBH8yYj+N5efuBo3m5HTOJoe5fV7s9YQ==
+=nN2W
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/devonz
+
+==================================================================
