@@ -29,48 +29,67 @@
         <div class="col-sm-10">
           <div id="main-content">
 <article id="page" class="page">
-  <div class="page-content"><h4 id="tiddlylisp">TiddlyLisp</h4>
-<h6 id="-div-class-time-january-2016-div-br-"><div class='time'>January 2016</div><br></h6>
+  <div class="page-content"><h1 id="projects">Projects</h1>
+<div class='space triple'></div>
+<div class='space triple'></div>
+
+<h2 id="-isostamp-isostamp-org-"><a href="//isostamp.org">Isostamp</a></h2>
+<div class='project-time'><div class='time'>March - June 2016</div><br></div>
+
+<p><a href="http://pubs.acs.org/doi/abs/10.1021/cb100338x">Isotopic signature transfer and mass pattern prediction</a> is an enabling technique for chemically-directed proteomics. It is an algorithm for the targeted detection and identification of modified species by mass spectrometry.</p>
+<p><a href="http://webyrd.net/">Will Byrd</a> and I helped <a href="https://bertozzigroup.stanford.edu/members.htm">Carolyn Bertozzi</a> and <a href="https://people.stanford.edu/cmwoo/">Christina Woo</a> to improve the Isostamp algorithm, open source the code, and make it possible to upload and analyze mass spec data through a web app rather than the original executable so users don&#39;t have to download and set up a OS-specific binary.</p>
+<p>You can find the code for the web app <a href="https://github.com/devonzuegel/isostamp-web-v2">here</a>. As soon as we release the core Isostamp C++ code I will link to it here too.</p>
+<h2 id="-tiddlylisp-github-com-devonzuegel-tiddly-lisp-"><a href="//github.com/devonzuegel/tiddly-lisp">TiddlyLisp</a></h2>
+<div class='project-time'><div class='time'>January 2016</div><br></div>
+
 <p>To learn the fundamentals of Lisp, I built a little interpreter based on Michael Nielsen&#39;s fantastic blog post <a href="http://www.michaelnielsen.org/ddi/lisp-as-the-maxwells-equations-of-software/"><em>Lisp as the Maxwell&#39;s Equations of Software</em></a>. I included extensions to resolve some of the challenge problems he mentioned at the end of the post, too.</p>
 <p>You can find the code for the interpreter on <a href="//github.com/devonzuegel/tiddly-lisp">Github</a>.</p>
-<h4 id="instanote">Instanote</h4>
-<h6 id="-div-class-time-january-2016-div-br-"><div class='time'>January 2016</div><br></h6>
-<p>About a month ago, I started using Instapaper obsessively. However, it left me with one major problem –– all of my Instapaper bookmarks and highlights were isolated from the knowledge that I (obsessively) store in Evernote, and I wanted to have them all in one place. After all, a <a href="https://en.wikipedia.org/wiki/Personal_knowledge_base">personal knowledge base</a> is useless if it doesn&#39;t contain half of the things I read throughout the day.</p>
+<h2 id="-instanote-https-instanote-archive-herokuapp-com-"><a href="https://instanote-archive.herokuapp.com">Instanote</a></h2>
+<div class='project-time'><div class='time'>January 2016</div><br></div>
+
+<p>About a month ago, I started using Instapaper obsessively. However, it left me with one major problem – all of my Instapaper bookmarks and highlights were isolated from the knowledge that I (obsessively) store in Evernote, and I wanted to have them all in one place. After all, a <a href="https://en.wikipedia.org/wiki/Personal_knowledge_base">personal knowledge base</a> is useless if it doesn&#39;t contain half of the things I read throughout the day.</p>
 <p>Instanote solves this problem by syncing the text of my archived Instapaper bookmarks with their respective highlights into Evernote every 10 minutes. I figured other people might have the same frustration with Instapaper, so I built out a little Heroku app that allows other people to sign up too rather than just hard-coding my login info into a hacky script.</p>
 <p>You can sign up at <a href="https://instanote-archive.herokuapp.com">instanote-archive.herokuapp.com</a> and see the source code on <a href="https://github.com/devonzuegel/instanote-archive">Github</a>.</p>
-<h4 id="congressional-bill-outcome-predictor">Congressional Bill Outcome Predictor</h4>
-<h6 id="-div-class-time-december-2015-div-br-"><div class='time'>December 2015</div><br></h6>
+<h2 id="-congressional-bill-outcome-predictor-http-devonzuegel-com-bills-"><a href="http://devonzuegel.com/bills/">Congressional Bill Outcome Predictor</a></h2>
+<div class='project-time'><div class='time'>December 2015</div><br></div>
+
 <p>Emma Marriott, Arushi Jain, and I built a predictor that identifies which US bills will succeed in the House &amp; Senate. We tried several different prediction methods, including: Naive Bayes with and without Principal Component Analysis (PCA), Logistic Regression, Support Vector Machine (SVM) with PCA, and Perceptron with PCA. PCA identified the <code>500</code> most important features of a set of <code>11,000</code>. Each predictor was modeled on data from the 109th – 113th Congresses from a wide range of structured &amp; unstructured sources, including lobbying information. SVM with PCA proved to be the best model. It predicted bill outcomes with <code>94%</code> precision &amp; <code>87%</code> recall, resulting in an F-measure of <code>0.92</code>.</p>
 <p>You can learn more about our research and data <a href="http://devonzuegel.com/bills/">here</a>.</p>
-<h4 id="affitto">Affitto</h4>
-<h6 id="-div-class-time-november-2015-div-br-"><div class='time'>November 2015</div><br></h6>
+<h2 id="-affitto-github-com-devonzuegel-affitto-"><a href="//github.com/devonzuegel/affitto">Affitto</a></h2>
+<div class='project-time'><div class='time'>November 2015</div><br></div>
+
 <p>San Francisco and the greater Bay Area have been struggling with housing shortages and decisions about how to best serve the community with policies to deal with this situation. At a micro level, we have a fairly good understanding of how individuals make economic decisions such as where tenants choose to live and how much rent landlords choose to charge. However, we lack tools to model the complex interactions of millions of individuals simultaneously making decisions and the emergent phenomena that result from these interactions.</p>
 <p>John Luttig and I built an Agent Based Model (ABM) to simulate emergent behavior within housing markets and explore the impact of policies such as rent control and zoning regulations. With this project, we aim to provide a tool for policymakers and stakeholders to better understand these interactions that in aggregate comprise the housing market. Understanding large-scale systems requires understanding how the results of individual actions can be more than the sum of its parts. We used ABM to simulate the actions and interactions of tenants and landlords.</p>
 <p>Here is a small version of one of our models. You may have to close the controls (by clicking the bottom of the control panel) in order to see the full simulation.</p>
 <iframe src='http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2-small/model.html' style='width:100%; height: 390px;' frameborder='no' border='0'></iframe>
 
 <p>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="//github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</p>
-<h4 id="my-evernote">My Evernote</h4>
-<h6 id="-div-class-time-july-2015-div-br-"><div class='time'>July 2015</div><br></h6>
+<h2 id="-my-evernote-myevernote-co-"><a href="//myevernote.co">My Evernote</a></h2>
+<div class='project-time'><div class='time'>July 2015</div><br></div>
+
 <p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
 <p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
 <p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
 <p><img src="../assets/my-evernote.png" alt=""></p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
-<h4 id="zen-writer">Zen Writer</h4>
-<h6 id="-div-class-time-june-2015-div-br-"><div class='time'>June 2015</div><br></h6>
+<h2 id="-zen-writer-zenwriter-io-"><a href="//zenwriter.io">Zen Writer</a></h2>
+<div class='project-time'><div class='time'>June 2015</div><br></div>
+
 <p>The most difficult part of writing is that first draft. Putting your ideas to paper to generate that initial content is hard, because it&#39;s natural to edit your thoughts while translating them into words. However, this can severely hamper progress and creativity during early drafts. I&#39;ve learned that I write better content faster if I don&#39;t censor myself initially and then only allow myself to revise and edit after I&#39;ve exhausted my ideas. However, it&#39;s extremely difficult to contain that urge to filter out the less well-formed ideas.</p>
 <p>During spring quarter finals, I was assigned a 10 page paper. Just three days before it was due I had a one page draft despite hours of research and staring at a blank screen. I had lots of ideas in my head, but every time I started typing I ended up using the delete button almost as much as all my other keys combined.</p>
 <p>Since I wasn&#39;t making any progress anyways, I decided to take a break and built a tiny text editor called <a href="//zenwriter.io">Zen Writer</a>. It disables the delete button, highlights the current line, and fades out past content so that your attention is focused on moving forward and generating more content.</p>
 <p>It didn&#39;t take much work to build a rough version, and as soon as I finished I was back to writing that first draft of my paper. In the first 15 minutes, I generated about 600 words. When I went back to revise what I&#39;d written, I was surprised to find that most of my changes were to fix minor typos rather than large, conceptual revisions.</p>
 <p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
-<h4 id="origamijs">OrigamiJS</h4>
-<h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
+<p>P.S. As a more robust solution to this problem, I now use the <a href="http://www.96problems.com/rough-draft/">First Draft</a> Mac app from <a href="http://www.96problems.com/">96 Problems</a>. It offers all the features I built, planned to build, or never even realized I needed in ZenWriter. Ben and the whole team are super responsive and helpful too, so in short I highly recommend the app if you&#39;re looking for a tool to solve this problem!</p>
+<h2 id="-origamijs-htmlpreview-github-io-https-raw-githubusercontent-com-devonzuegel-origamijs-master-example-coffee-html-"><a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">OrigamiJS</a></h2>
+<div class='project-time'><div class='time'>March 2015</div><br></div>
+
 <p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
-<h4 id="fiesta-machine-translator">Fiesta: Machine Translator</h4>
-<h6 id="-div-class-time-march-2015-div-br-"><div class='time'>March 2015</div><br></h6>
+<h2 id="-fiesta-machine-translator-github-com-devonzuegel-fiesta-"><a href="//github.com/devonzuegel/fiesta">Fiesta: Machine Translator</a></h2>
+<div class='project-time'><div class='time'>March 2015</div><br></div>
+
 <p>Zoe Robert, John Luttig, and I built a Spanish to English machine translator, which we called Fiesta. It is based on the IBM Model 1 algorithm and also implements several Spanish-specific strategies for improving results.</p>
 <p>IBM Model 1 is an <strong>expectation-maximization statistical alignment algorithm</strong>. Given known pairings of Spanish and English sentences, it generates a matrix of probabilities whose rows correspond to the Spanish vocabulary and columns correspond to the English vocabulary. The value at any given cell in the matrix represents the probability that those two words have co-occurred within translations of each other. This table is then used to estimate a model for future translations.</p>
 <p>In short, IBM Model 1 looks for the most likely English word for a Spanish word (e.g. “dog”) based off our knowledge of co-occurrences within sentences. As such, if there are no translations of a given Spanish word <code>s</code> that contain a given English word <code>e</code>, the value of the cell at the corresponding row and column will be <code>0</code>.</p>
@@ -99,14 +118,16 @@ do until convergence
       transl_prob(e|s) = count(e|s) / total_s(s)
 </code></pre>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/fiesta">Github</a>.</p>
-<h4 id="octagon">Octagon</h4>
-<h6 id="-div-class-time-summer-2014-div-br-"><div class='time'>Summer 2014</div><br></h6>
+<h2 id="octagon">Octagon</h2>
+<div class='project-time'><div class='time'>Summer 2014</div><br></div>
+
 <p><img src="http://michaelandassociate.com/fifteen/wp-content/uploads/2014/11/formation8.jpg" alt="right-sm"></p>
 <p>This past summer, I designed and built an app called Octagon, a tool for venture capital firms. Octagon helps VCs better manage relationships with portfolio companies by visualizing important metrics about company growth and providing a repository for financial documents and quarterly updates. It also facilitates interaction between investors and board members and the startups in their portfolios in an analogous manner to CRM software. Octagon is currently in beta testing at Formation|8.</p>
 <p>I was responsible for the full-stack of the app, though I was lucky enough for the last few weeks of the project to work with a friend named Zack who helped me immensely with the front-end, especially user interaction and fully utilizing the capabilities of our graphing libraries.</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/octagon">Github</a>.</p>
-<h4 id="paper-trail">Paper Trail</h4>
-<h6 id="-div-class-time-march-2014-present-div-br-"><div class='time'>March 2014 - present</div><br></h6>
+<h2 id="paper-trail">Paper Trail</h2>
+<div class='project-time'><div class='time'>March 2014 - present</div><br></div>
+
 <p>Some of the greatest impact individuals can have on politics is driven by daily purchasing decisions. Any time an individual patronizes a corporation, (s)he is fueling the company&#39;s lobbying and donorship capabilities and is indirectly supporting their political causes. Unfortunately, the impact of corporate political contributions is largely opaque to the general public, and the research about corporations’ political activity is a tedious, complex task.</p>
 <p>In early 2014, I set out to solve this problem with a project called Paper Trail. The web app provides users access to political profiles of companies and manufacturers. Visualizations and statistics about companies political contributions and lobbying behavior help consumers make informed choices about where their money is going. In turn, consumers&#39; more thoughtful choices empower those corporations that represent their values.</p>
 <p>Paper Trail was the first programming project that I pursued outside of class and has evolved significantly since I first implemented it in early 2014. It began as a simple HTML/Javascript app into which users could query the names of companies and learn about their political contributions.</p>
@@ -114,8 +135,9 @@ do until convergence
 <p>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users&#39; existing workflow.</p>
 <p>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user&#39;s cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site — Amazon — and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon&#39;s fantastic API, and generally focusing our energy on specific goals rather than broad ones. </p>
 <p>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="//invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="//github.com/devonzuegel/papertrail-extension">Github</a>.</p>
-<h4 id="in-other-words">In Other Words</h4>
-<h6 id="-div-class-time-january-may-2011-div-br-"><div class='time'>January - May 2011</div><br></h6>
+<h2 id="in-other-words">In Other Words</h2>
+<div class='project-time'><div class='time'>January - May 2011</div><br></div>
+
 <p><img src="http://bookshow.blurb.com/bookshow/cache/P2866696/md/cover_2.jpeg" alt="right-md"></p>
 <p>My brother Jeffrey was born with Cerebral Palsy and is on the autistic spectrum. Life with Jeffrey is challenging for both of us because he doesn’t always communicate effectively in the conventional way, in “English.” However, he has found alternative modes with the help of his team of teachers, therapists, family, and friends.</p>
 <p>In my junior year in high school, I became fascinated with his growing ability to communicate in non-conventional ways and decided to devote several months to learning more about this process. After conducting extensive interviews and reading further into psychology and cognitive science, I published a documentary book called In Other Words about how he and his team discovers and develops those alternatives.</p>
@@ -126,7 +148,7 @@ do until convergence
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 30 June 2016 at 07:09 pm</h4>
+      <h4>Last modified on 01 July 2016 at 12:55 am</h4>
     </div>
   </div><script >(function(){
 	/* Did we just livereload? */

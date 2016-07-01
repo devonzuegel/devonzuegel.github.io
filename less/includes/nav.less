@@ -1,13 +1,13 @@
 .simple-nav {
 	padding-top: 8px;
 	&.active a {
-		// color: @blue-dark !important;
-		text-decoration: underline ;
-		font-style: italic;
+		padding-bottom: 1px;
+		margin-bottom:  -1px;
+		border-bottom: 1px solid fade(@blue-dark, 40%) !important;
+		text-decoration: none !important;
 	}
 	&.brand {
 		background: @blue;
-		// font-style: italic;
 		&:hover {
 			background: @blue-dark !important;
 		}

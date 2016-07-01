@@ -10,7 +10,7 @@
 }
 
 .paragr-line-height {
-	line-height: 1.83em !important;
+	line-height: 1.63em !important;
 }
 
 /* -----------
@@ -39,12 +39,18 @@ h1 {
 
 h2 {
 	// color: @blue-dark;
-	font-weight: 600 !important;
-	font-size: 1.4em !important; //1em;
 	// border-bottom: 1px solid @blue-dark;
 	// text-transform: uppercase;
+	font-weight: 600 !important;
+	font-size: 1.4em !important; //1em;
 	font-weight: 600;
 	margin-top: 0;
+
+	a {
+		font-weight: 600 !important;
+		font-size: 1em !important; //1em;
+		font-weight: 600;
+	}
 }
 
 h3 {
@@ -106,6 +112,10 @@ a, a em {
 
 	&:hover {
 		color: darken(@blue, 10%) !important;
+		padding-bottom: 1px;
+		margin-bottom:  -1px;
+		border-bottom: 1px solid fade(@blue-dark, 40%) !important;
+		text-decoration: none !important;
 	}
 }
 

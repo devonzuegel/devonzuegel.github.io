@@ -58,7 +58,7 @@ ol li.blue-upper {
 ul,
 ol,
 p {
-  line-height: 1.83em !important;
+  line-height: 1.63em !important;
 }
 /* -----------
  * HEADINGS */
@@ -90,6 +90,11 @@ h2 {
   font-size: 1.4em !important;
   font-weight: 600;
   margin-top: 0;
+}
+h2 a {
+  font-weight: 600 !important;
+  font-size: 1em !important;
+  font-weight: 600;
 }
 h3 {
   font-weight: 500 !important;
@@ -142,6 +147,10 @@ a em {
 a:hover,
 a em:hover {
   color: #295f7c !important;
+  padding-bottom: 1px;
+  margin-bottom: -1px;
+  border-bottom: 1px solid rgba(54, 125, 162, 0.4) !important;
+  text-decoration: none !important;
 }
 .justify {
   text-align: justify !important;
@@ -272,8 +281,10 @@ table tr td {
   padding-top: 8px;
 }
 .simple-nav.active a {
-  text-decoration: underline ;
-  font-style: italic;
+  padding-bottom: 1px;
+  margin-bottom: -1px;
+  border-bottom: 1px solid rgba(54, 125, 162, 0.4) !important;
+  text-decoration: none !important;
 }
 .simple-nav.brand {
   background: #367da2;
