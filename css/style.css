@@ -1,59 +1,47 @@
+@import url('http://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,400italic,700');
 @font-face {
-  font-family: 'San Francisco';
-  src: url('../fonts/San-Francisco-Bold.ttf');
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-Black.ttf');
   font-weight: 700;
 }
 @font-face {
-  font-family: 'San Francisco';
-  src: url('../fonts/San-Francisco-Medium.ttf');
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-BlackItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-Bold.ttf');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-BoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-Regular.ttf');
   font-weight: 500;
 }
 @font-face {
-  font-family: 'San Francisco';
-  src: url('../fonts/San-Francisco-Regular.ttf');
-  font-weight: 300;
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-Italic.ttf');
+  font-weight: 500;
+  font-style: italic;
 }
 @font-face {
-  font-family: 'San Francisco';
-  src: url('../fonts/San-Francisco-Thick.ttf');
-  font-weight: 200;
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-Light.ttf');
+  font-weight: 400;
 }
 @font-face {
-  font-family: 'San Francisco';
-  src: url('../fonts/San-Francisco-Ultralight.ttf');
-  font-weight: 100;
-}
-@font-face {
-  font-family: 'DINComp';
-  src: url('../fonts/DINWeb.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel Light';
-  src: url('../fonts/Sentinel-Light.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel';
-  src: url('../fonts/Sentinel-Medium.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel Italic';
-  src: url('../fonts/Sentinel-LightItalic.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel BookItalic';
-  src: url('../fonts/Sentinel-BookItalic.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel Semibold';
-  src: url('../fonts/Sentinel-Semibold.woff') format('woff');
-}
-@font-face {
-  font-family: 'Sentinel Semibold Italic';
-  src: url('../fonts/Sentinel-SemiboldItalic.woff') format('woff');
-}
-@font-face {
-  font-family: 'Proxima Nova';
-  src: url('../fonts/ProximaNova-Light.woff') format('woff');
+  font-family: 'Merriweather';
+  src: url('../fonts/Merriweather-LightItalic.ttf');
+  font-weight: 400;
+  font-style: italic;
 }
 /* -------------------------
  * COLORS */
@@ -61,80 +49,91 @@
  * WIDTHS */
 /* -------------------------
  * PADDINGS */
+.normal-line-height,
+ul li.blue-upper,
+ol li.blue-upper {
+  line-height: 9em !important;
+}
+.paragr-line-height,
+ul,
+ol,
+p {
+  line-height: 1.83em !important;
+}
 /* -----------
  * HEADINGS */
 * {
-  font-weight: 300 !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'PT Serif', serif;
+  font-weight: 100 !important;
   color: #444;
   font-size: 15px;
+}
+.git .highlight * {
+  font-weight: 400 !important;
 }
 h2,
 h3,
 h4,
 h5,
 .time {
-  font-family: 'DINComp';
+  font-family: 'PT Serif', serif;
 }
 h1 {
   font-size: 2.7em !important;
   margin: 0 !important;
-  font-family: 'San Francisco';
+  font-family: 'PT Serif', serif;
 }
 h2 {
-  color: #367da2;
-  font-size: 1.2em;
-  border-bottom: 1px solid #367da2;
-  text-transform: uppercase;
+  font-weight: 600 !important;
+  font-size: 1.4em !important;
   font-weight: 600;
-  margin-top: 30px;
+  margin-top: 0;
 }
 h3 {
   font-weight: 500 !important;
-  font-family: 'San Francisco';
-  font-size: 1.4em !important;
+  font-family: 'PT Serif', serif;
+  font-size: 1em !important;
   margin: 15px 0 5px 0 !important;
 }
 h3 .block {
   font-weight: 500 !important;
-  font-family: 'San Francisco';
-  font-size: 16px;
+  font-family: 'PT Serif', serif;
+  font-size: 1em !important;
   line-height: 1.53em;
 }
 h3 a {
-  font-family: 'San Francisco';
+  font-family: 'PT Serif', serif;
 }
 h4 {
-  text-transform: uppercase;
   margin-bottom: 1px !important;
   margin-top: 20px !important;
   font-weight: 600;
   color: #bbb !important;
 }
 h5 {
-  font-family: 'San Francisco';
-  font-size: 1.6em !important;
+  font-family: 'PT Serif', serif;
+  font-size: 1em !important;
   margin: .6em 0 0 0 !important;
 }
 .time {
   color: #aaa;
+  font-weight: 0.9;
   font-weight: 100;
-  font-size: 10pt;
-  text-transform: uppercase;
+  font-style: italic !important;
+  font-size: 0.95em !important;
   float: left;
   margin: -3px 0 0 0;
 }
 .light {
   float: left;
   font-weight: 'thin' !important;
-  font-size: 16px;
+  font-size: 1em !important;
   margin-right: 16px;
 }
 /* -----------
  * BODY & PARAGRAPHS */
-body {
-  font: 17px 'San Francisco', sans-serif;
-  font-weight: 300;
-}
 a,
 a em {
   color: #367da2 !important;
@@ -159,15 +158,14 @@ ol {
 ul li.blue-upper,
 ol li.blue-upper {
   margin: 0 0 5px -18px !important;
-  font-family: 'DINComp';
-  text-transform: uppercase;
+  font-family: 'PT Serif', serif;
   color: #555;
 }
 ul li.blue-upper span.level,
 ol li.blue-upper span.level {
   background: #ccc;
   color: white;
-  font-size: 81%;
+  font-size: 1em !important;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -178,19 +176,8 @@ ol li.blue-upper span.level {
   margin: -10px 0 0 10px;
   display: inline-block;
 }
-.normal-line-height,
-ul li.blue-upper,
-ol li.blue-upper {
-  line-height: normal !important;
-}
-.paragr-line-height,
-ul,
-ol,
-p {
-  line-height: 1.53em !important;
-}
 .smaller {
-  font-size: 90%;
+  font-size: 1em !important;
   font-weight: 300;
 }
 .headline {
@@ -203,13 +190,13 @@ p {
   width: 75% !important;
 }
 .headline .title h3 a {
-  font-family: 'San Francisco';
+  font-family: 'PT Serif', serif;
 }
 p {
   margin: 10px 0 20px 0;
 }
 p b {
-  font-family: 'San Francisco';
+  font-family: 'PT Serif', serif;
   font-weight: 900;
 }
 blockquote {
@@ -217,8 +204,10 @@ blockquote {
   padding: 0px 20px !important;
 }
 blockquote p {
+  margin: 0;
   color: #aaa !important;
   font-style: italic !important;
+  font-weight: lighter !important;
 }
 pre {
   padding: 0px;
@@ -234,8 +223,16 @@ pre {
   border: none !important;
 }
 .gist .highlight,
+.gist .highlight *,
+pre,
+pre *,
+code,
+code * {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400 !important;
+}
+.gist .highlight,
 .gist .highlight * {
-  font-family: 'Inconsolata XL';
   background-color: white !important;
 }
 table tr {
@@ -271,94 +268,27 @@ table tr td {
   margin: 0;
   padding: 6px 13px;
 }
-/* -----------
- * NAVIGATION */
-nav {
-  font-family: 'DINComp';
-  text-transform: uppercase;
+.simple-nav {
+  padding-top: 8px;
 }
-nav .navbar-brand {
-  color: #92bce0 !important;
-  border-top: 10px solid transparent;
-  font-size: 2em;
-  font-family: 'DINComp';
-  font-weight: 600;
+.simple-nav.active a {
+  text-decoration: underline ;
+  font-style: italic;
 }
-nav .navbar-brand:hover {
-  color: #5ca3c9 !important;
+.simple-nav.brand {
+  background: #367da2;
+  display: inline-block;
+  line-height: 1.5em;
+  padding: 8px 10px;
+  margin: 15px -10px;
+  color: white !important;
+  text-decoration: none;
 }
-.navbar {
-  background: white;
-  border: none;
+.simple-nav.brand:hover {
+  background: #367da2 !important;
 }
-.navbar .navbar-toggle {
-  border: none;
-  background: none !important;
-}
-.navbar .navbar-toggle:hover {
-  border: none;
-  background-color: none !important;
-  color: #666;
-}
-.navbar .navbar-default .navbar-toggle:hover,
-.navbar .navbar-default .navbar-toggle:focus,
-.navbar .navbar-default .navbar-toggle .icon-bar {
-  background-color: none !important;
-}
-.navbar .container-fluid {
-  max-width: 1050px;
-  padding: 0 10px 5px 10px;
-  border-bottom: 1px solid #e7e7e7;
-}
-#nav-spacer {
-  height: 50px;
-}
-@media (min-width: 768px) {
-  .navbar-default .navbar-nav .active > a {
-    color: #666 !important;
-    border-top: 5px solid #92bce0;
-  }
-  .navbar-default .navbar-nav .active > a:hover {
-    color: black !important;
-    border-top: 5px solid #5ca3c9;
-  }
-  .navbar-default .navbar-nav li > a {
-    padding: 15px 4px 5px 4px;
-    margin-left: 20px;
-    background: none !important;
-    border-top: 5px solid transparent;
-    color: #ccc !important;
-  }
-  .navbar-default .navbar-nav li > a:hover {
-    color: black !important;
-    border-top: 5px solid #367da2;
-  }
-}
-@media (max-width: 768px) {
-  .navbar-default .navbar-nav .active > a {
-    background: #f5f9fc;
-    color: #666 !important;
-  }
-  .navbar-default .navbar-nav .active > a:hover {
-    color: black !important;
-    background: #e1edf7;
-  }
-  .navbar-default .navbar-nav li > a {
-    padding: 5px 5px 5px 10px;
-    margin: 5px 0px;
-    background: none;
-    color: #ccc !important;
-  }
-  .navbar-default .navbar-nav li > a:hover {
-    background: #e1edf7;
-    color: black !important;
-  }
-}
-a.anchor {
-  display: block;
-  position: relative;
-  top: -50px;
-  visibility: hidden;
+.simple-nav.brand:hover {
+  text-decoration: none;
 }
 .jumbotron {
   font-weight: 300;
@@ -368,7 +298,6 @@ a.anchor {
 }
 body {
   overflow-y: scroll;
-  font: Helvetica 14px;
 }
 img {
   max-width: 100%;
@@ -507,6 +436,7 @@ img[alt=right-lg] {
   overflow: auto;
 }
 #footer {
+  font-style: italic;
   margin-top: 15px;
   padding: 5px;
   width: 100%;
@@ -515,7 +445,7 @@ img[alt=right-lg] {
 #footer h4 {
   margin: 0 !important;
   text-align: center;
-  font-size: 70%;
+  font-size: 90%;
   font-weight: 100;
 }
 .twitter-widget-0 {

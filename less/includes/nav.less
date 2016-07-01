@@ -1,122 +1,25 @@
-
-
-/* -----------
- * NAVIGATION */
-
-nav {
-	font-family: @decorative-font;
-	text-transform: uppercase;
-
-	.navbar-brand {
-		color: @blue-light !important;
-		border-top: 10px solid transparent;
-		font-size: 2em;
-		font-family: @decorative-font;
-		font-weight: 600;
-
+.simple-nav {
+	padding-top: 8px;
+	&.active a {
+		// color: @blue-dark !important;
+		text-decoration: underline ;
+		font-style: italic;
+	}
+	&.brand {
+		background: @blue;
+		// font-style: italic;
 		&:hover {
-			color: lighten(@blue-dark, 15%) !important;
+			background: @blue-dark !important;
 		}
-	}
 
-}
-
-.navbar {
-	background: white;
-	border: none;
-
-	.navbar-toggle {
-		border: none;
-		background: none !important;
-
+		display: inline-block;
+		line-height: 1.5em;
+		padding: 8px 10px;
+		margin: 15px -10px;
+		color: white !important;
+		text-decoration: none;
 		&:hover {
-			border: none;
-			background-color: none !important;
-			color: #666;
+			text-decoration: none;
 		}
-
 	}
-
-	.navbar-default .navbar-toggle:hover,
-	.navbar-default .navbar-toggle:focus,
-	.navbar-default .navbar-toggle .icon-bar {
-		background-color: none !important;
-	}
-
-	.container-fluid {
-		max-width: @width-1 - 50px;
-		padding: 0 10px 5px 10px;
-		border-bottom: 1px solid #e7e7e7;
-	}
-
-}
-
-// compensates for sticky nav's height
-#nav-spacer {
-	height: 50px;
-}
-
-.navbar-default .navbar-nav {
-
-	@media(min-width: 768px) {
-		.active > a {
-			color: #666 !important;
-			border-top: 5px solid @blue-light;
-
-			&:hover {
-				color: black !important;
-				border-top: 5px solid lighten(@blue-dark, 15%);
-			}
-
-		}
-
-		li > a {
-			padding: 15px 4px 5px 4px;
-			margin-left: 20px;
-			background: none !important;
-			border-top: 5px solid transparent;
-			color: #ccc !important;
-
-			&:hover {
-				color: black !important;
-				border-top: 5px solid @blue-dark;
-			}
-		}
-
-	}
-
-	@media(max-width: 768px) {
-
-		.active > a {
-			background: lighten(@blue-light, 25%);
-			color: #666 !important;
-
-			&:hover {
-				color: black !important;
-				background: lighten(@blue-light, 20%);
-			}
-		}
-
-		li > a {
-			padding: 5px 5px 5px 10px;
-			margin: 5px 0px;
-			background: none;
-			color: #ccc !important;
-
-			&:hover {
-				background: lighten(@blue-light, 20%);
-				color: black !important;
-			}
-		}
-
-	}
-
-}
-
-// Offsetts html anchors to adjust for fixed header
-a.anchor {
-  display: block;
-  position: relative;
-  top: -50px;
-  visibility: hidden;
 }

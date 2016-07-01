@@ -1,15 +1,30 @@
-@body-font: 						'San Francisco'; //'Sentinel Light';
-@semibold-body-font: 		'San Francisco'; //'Sentinel Semibold';
-@italic-body-font: 			'San Francisco'; //'Sentinel Italic';
-@bold-italic-body-font: 'San Francisco'; //'Sentinel Semibold Italic';
-@decorative-font: 			'DINComp';							 //'Proxima Nova', sans-serif;
+@body-font: 						'PT Serif', serif;
+@semibold-body-font: 		@body-font;
+@italic-body-font: 			@body-font;
+@bold-italic-body-font: @body-font;
+@decorative-font: 			@body-font;
+@monospace-font: 				'Roboto Mono', monospace;
+
+.normal-line-height {
+	line-height: 9em !important;
+}
+
+.paragr-line-height {
+	line-height: 1.83em !important;
+}
 
 /* -----------
  * HEADINGS */
 * {
-	font-weight: 300 !important;
+	.font-smoothing();
+	font-family: @body-font;
+	font-weight: 100 !important;
 	color: #444;
 	font-size: 15px;
+}
+
+.git .highlight * {
+	font-weight: 400 !important;
 }
 
 h2, h3, h4, h5, .time {
@@ -23,24 +38,25 @@ h1 {
 }
 
 h2 {
-	color: @blue-dark;
-	font-size: 1.2em;
-	border-bottom: 1px solid @blue-dark;
-	text-transform: uppercase;
+	// color: @blue-dark;
+	font-weight: 600 !important;
+	font-size: 1.4em !important; //1em;
+	// border-bottom: 1px solid @blue-dark;
+	// text-transform: uppercase;
 	font-weight: 600;
-	margin-top: 30px;
+	margin-top: 0;
 }
 
 h3 {
 	font-weight: 500 !important;
 	font-family: @body-font;
-	font-size: 1.4em !important;
+	font-size: 1em !important; //1em !important;
 	margin: 15px 0 5px 0 !important;
 
 	.block {
 		font-weight: 500 !important;
 		font-family: @body-font;
-		font-size: 16px;
+		font-size: 1em !important; //16px;
 		line-height: 1.53em;
 	}
 
@@ -50,7 +66,7 @@ h3 {
 }
 
 h4 {
-	text-transform: uppercase;
+	// text-transform: uppercase;
 	margin-bottom: 1px !important;
 	margin-top: 20px !important;
 	font-weight: 600;
@@ -59,15 +75,17 @@ h4 {
 
 h5 {
 	font-family: @bold-italic-body-font;
-	font-size: 1.6em !important;
+	font-size: 1em !important; //1.6em !important;
 	margin: .6em 0 0 0 !important;
 }
 
 .time {
 	color: #aaa;
+	font-weight: 0.9;
 	font-weight: 100;
-	font-size: 10pt;
-	text-transform: uppercase;
+	font-style: italic !important;
+	font-size: 0.95em !important; //10pt;
+	// text-transform: uppercase;
 	float: left;
 	margin: -3px 0 0 0;
 }
@@ -75,17 +93,12 @@ h5 {
 .light {
 	float: left;
 	font-weight: 'thin' !important;
-	font-size: 16px;
+	font-size: 1em !important; //16px;
 	margin-right: 16px;
 }
 
 /* -----------
  * BODY & PARAGRAPHS */
-
-body {
-	font: 17px @body-font, sans-serif;
-	font-weight: 300;
-}
 
 a, a em {
 	color: @blue !important;
@@ -115,13 +128,13 @@ ul, ol {
 		margin: 0 0 5px -18px !important;
 
 		font-family: @decorative-font;
-		text-transform: uppercase;
+		// text-transform: uppercase;
 		color: #555;
 
 		span.level {
 			background: #ccc;
 			color: white;
-			font-size: 81%;
+			font-size: 1em !important; //81%;
 			.border-radius(5px);
 
 			padding: 2px 5px;
@@ -131,17 +144,9 @@ ul, ol {
 	}
 }
 
-.normal-line-height {
-	line-height: normal !important;
-}
-
-.paragr-line-height {
-	line-height: 1.53em !important;
-}
-
 .smaller {
 	// &:extend(.normal-line-height);
-	font-size: 90%;
+	font-size: 1em !important; //90%;
 	font-weight: 300;
 }
 
@@ -174,7 +179,9 @@ blockquote {
 	margin: 1em 15px !important;
 	padding: 0px 20px !important;
 	p {
+		margin: 0;
 	  color: #aaa !important;
 	  font-style: italic !important;
+	  font-weight: lighter !important;
 	}
 }

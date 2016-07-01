@@ -1,0 +1,10 @@
+head
+	meta(charset='utf-8')
+	meta(http-equiv='X-UA-Compatible', content='IE=edge')
+	title= getPreparedTitle()
+	meta(name='description', content='')
+	meta(name='viewport', content='width=device-width, initial-scale=1')
+	//Place favicon.ico and apple-touch-icon.png in the root directory
+  link(href='https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css')
+	!= getBlock('meta').add(site.meta).toHTML()
+	!= getBlock('styles').add(site.styles).toHTML()
