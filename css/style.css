@@ -291,7 +291,7 @@ table tr td {
   display: inline-block;
   line-height: 1.5em;
   padding: 8px 10px;
-  margin: 15px -10px;
+  margin: 0 -10px 15px -10px;
   color: white !important;
   text-decoration: none;
 }
