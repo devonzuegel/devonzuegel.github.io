@@ -296,7 +296,7 @@ table tr td {
   text-decoration: none;
 }
 .simple-nav.brand:hover {
-  padding: 8px 10px;
+  padding: 8px 10px 7px 10px;
   margin: 0 -10px 15px -10px;
   background: #367da2 !important;
   text-decoration: none;
