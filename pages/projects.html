@@ -34,12 +34,16 @@
   <div class="page-content"><h1 id="projects">Projects</h1>
 <div class='space triple'></div><div class='space'></div>
 
-<h2 id="-isostamp-isostamp-org-"><a href="//isostamp.org">Isostamp</a></h2>
-<div class='project-time'><div class='time'>March - June 2016</div><br></div>
+<h2 id="-mr-schelling-s-neighborhood-github-com-devonzuegel-affitto-"><a href="//github.com/devonzuegel/affitto">Mr. Schelling&#39;s Neighborhood</a></h2>
+<div class='project-time'><div class='time'>July 2016</div><br></div>
 
-<p><a href="http://pubs.acs.org/doi/abs/10.1021/cb100338x">Isotopic signature transfer and mass pattern prediction</a> is an enabling technique for chemically-directed proteomics. It is an algorithm for the targeted detection and identification of modified species by mass spectrometry.</p>
-<p><a href="http://webyrd.net/">Will Byrd</a> and I helped <a href="https://bertozzigroup.stanford.edu/members.htm">Carolyn Bertozzi</a> and <a href="https://people.stanford.edu/cmwoo/">Christina Woo</a> to improve the Isostamp algorithm, open source the code, and make it possible to upload and analyze mass spec data through a web app rather than the original executable so users don&#39;t have to download and set up a OS-specific binary.</p>
-<p>You can find the code for the web app <a href="https://github.com/devonzuegel/isostamp-web-v2">here</a>. As soon as we release the core Isostamp C++ code I will link to it here too.</p>
+<p>Ever since reading about Schelling&#39;s <a href="http://isites.harvard.edu/fs/docs/icb.topic185351.files/shelling1.pdf">&quot;general theory of tipping&quot;</a> in <a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/"><em>Seeing Around Corners</em></a>, I&#39;ve wanted to replicate some of his models and play around with agent-based modeling as a technique.</p>
+<p>Schelling&#39;s model of segregation found that if individuals have even just a slight preference to be surrounded by people of their own group or race, the emergent effect across a population can be total segregation, even if that is not the intention of any specific agent. This effect can be seen with a simple ABM, which I&#39;ve implemented below.</p>
+<p>You are looking at a birds-eye view of a simulated neighborhood containing two groups, blue and red with a handful of blank spaces. To start, the blues and reds are randomly distributed. Then, frame after frame, the agents are allowed to move. The agent is happy with its position if its nearest neighbors include at least a certain number of its own color; otherwise, they move to a random open space on the map.</p>
+<p>The default number of same-colored neighbors required to make an agent satisfied with its location is the threshold, and the percent of &quot;empty lost&quot; on the map is the percent open. You can adjust these with the controls in the top right corner of the model.</p>
+<iframe src='https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood-small.html' style='width:100%; height: 270px;' frameborder='no' border='0'></iframe>
+
+<p>You can find the ABM code on <a href="//github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">Github</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">here</a>.</p>
 <h2 id="-tiddlylisp-github-com-devonzuegel-tiddly-lisp-"><a href="//github.com/devonzuegel/tiddly-lisp">TiddlyLisp</a></h2>
 <div class='project-time'><div class='time'>January 2016</div><br></div>
 
@@ -150,7 +154,7 @@ do until convergence
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 01 July 2016 at 12:58 am</h4>
+      <h4>Last modified on 11 July 2016 at 10:49 pm</h4>
     </div>
   </div><script >(function(){
 	/* Did we just livereload? */
