@@ -1,0 +1,627 @@
+﻿[
+    {
+        "title": "BackStory with the American History Guys",
+        "xmlUrl": "http://feeds.feedburner.com/BackStoryRadio",
+        "htmlUrl": "http://www.backstoryradio.org/"
+    },
+    {
+        "title": "Open Source with Christopher Lydon",
+        "xmlUrl": "http://radioopensource.org/feed/",
+        "htmlUrl": "http://radioopensource.org/"
+    },
+    {
+        "title": "Andy Daly Podcast Pilot Project",
+        "xmlUrl": "http://rss.earwolf.com/the-andy-daly-podcast-pilot-project",
+        "htmlUrl": "http://www.earwolf.com/show/the-andy-daly-podcast-pilot-project/"
+    },
+    {
+        "title": "a16z",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:62921190/sounds.rss",
+        "htmlUrl": "http://www.a16z.com/"
+    },
+    {
+        "title": "Yilun's Audio Tours Singapore",
+        "xmlUrl": "http://feeds.feedburner.com/yilunaudiotours",
+        "htmlUrl": "http://yiluntours.blogspot.com/"
+    },
+    {
+        "title": "Gastropod",
+        "xmlUrl": "https://gastropod.com/feed/",
+        "htmlUrl": "https://gastropod.com/"
+    },
+    {
+        "title": "Flash Forward",
+        "xmlUrl": "http://rss.acast.com/flashforward",
+        "htmlUrl": "http://www.flashforwardpod.com/"
+    },
+    {
+        "title": "FlashBooks Podcast",
+        "xmlUrl": "https://www.getflashnotes.com/series/podcast/feed/",
+        "htmlUrl": "https://www.getflashnotes.com/"
+    },
+    {
+        "title": "Open Account with SuChin Pak",
+        "xmlUrl": "http://feeds.feedburner.com/OpenAccount",
+        "htmlUrl": "https://www.umpquabank.com/madetogrow/"
+    },
+    {
+        "title": "Only Human",
+        "xmlUrl": "http://feeds.wnyc.org/only-human",
+        "htmlUrl": "http://www.wnyc.org/shows/onlyhuman"
+    },
+    {
+        "title": "Love Me",
+        "xmlUrl": "http://www.cbc.ca/podcasting/includes/loveme.xml",
+        "htmlUrl": "http://www.cbc.ca/podcasting"
+    },
+    {
+        "title": "Stuff You Should Know",
+        "xmlUrl": "http://www.howstuffworks.com/podcasts/stuff-you-should-know.rss",
+        "htmlUrl": "http://www.howstuffworks.com/"
+    },
+    {
+        "title": "EconTalk",
+        "xmlUrl": "http://files.libertyfund.org/econtalk/EconTalk.xml",
+        "htmlUrl": "http://www.econtalk.org/"
+    },
+    {
+        "title": "Intermediate Spanish with Spanish Obsessed",
+        "xmlUrl": "https://spanishobsessed.com/wp-content/itunes/itunes%20intermediate",
+        "htmlUrl": "http://spanishobsessed.com/category/intermediate-spanish-audio-and-podcasts/"
+    },
+    {
+        "title": "The Wolf Den",
+        "xmlUrl": "http://rss.earwolf.com/wolf-den",
+        "htmlUrl": "http://www.earwolf.com/show/wolf-den/"
+    },
+    {
+        "title": "StartUp Podcast",
+        "xmlUrl": "http://feeds.hearstartup.com/hearstartup",
+        "htmlUrl": "http://gimletmedia.com/"
+    },
+    {
+        "title": "Startup School Radio",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:150759713/sounds.rss",
+        "htmlUrl": "http://www.aaronkharris.com/"
+    },
+    {
+        "title": "In Our Time",
+        "xmlUrl": "http://www.bbc.co.uk/programmes/b006qykl/episodes/downloads.rss",
+        "htmlUrl": "http://www.bbc.co.uk/programmes/b006qykl"
+    },
+    {
+        "title": "The History of Singapore",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:164245189/sounds.rss",
+        "htmlUrl": "http://www.thehistoryofsingapore.com/"
+    },
+    {
+        "title": "Radiolab",
+        "xmlUrl": "http://feeds.wnyc.org/radiolab",
+        "htmlUrl": "http://www.radiolab.org/series/podcasts/"
+    },
+    {
+        "title": "Here's The Thing with Alec Baldwin",
+        "xmlUrl": "http://feeds.feedburner.com/wnycheresthething",
+        "htmlUrl": "http://www.wnyc.org/shows/heresthething"
+    },
+    {
+        "title": "The Sporkful",
+        "xmlUrl": "http://feeds.feedburner.com/sporkful",
+        "htmlUrl": "http://www.wnyc.org/shows/sporkful"
+    },
+    {
+        "title": "LSE Review of Books",
+        "xmlUrl": "http://www.lse.ac.uk/assets/richmedia/webFeeds/lseReviewOfBooksBlog_iTunesRssAudioOnlyLatest300.xml",
+        "htmlUrl": "http://www.lse.ac.uk/newsAndMedia/videoAndAudio/channels/lseReviewOfBooksBlog/"
+    },
+    {
+        "title": "Advanced Spanish with Spanish Obsessed",
+        "xmlUrl": "https://spanishobsessed.com/wp-content/itunes/itunes%20advanced",
+        "htmlUrl": "http://spanishobsessed.com/category/advanced-spanish-audio-and-podcasts/"
+    },
+    {
+        "title": "Seminars About Long-term Thinking",
+        "xmlUrl": "http://longnow.org/projects/seminars/SALT.xml",
+        "htmlUrl": "http://longnow.org/"
+    },
+    {
+        "title": "Bank PhD the science of banking",
+        "xmlUrl": "http://bankphd.libsyn.com/rss",
+        "htmlUrl": "http://www.bankphd.com/"
+    },
+    {
+        "title": "The New Yorker Radio Hour",
+        "xmlUrl": "http://feeds.wnyc.org/newyorkerradiohour",
+        "htmlUrl": "http://www.wnyc.org/shows/tnyradiohour"
+    },
+    {
+        "title": "Common Sense with Dan Carlin",
+        "xmlUrl": "http://feeds.feedburner.com/dancarlin/commonsense?format=xml",
+        "htmlUrl": "http://www.dancarlin.com/"
+    },
+    {
+        "title": "Benjamen Walker's Theory of Everything",
+        "xmlUrl": "http://feeds.prx.org/toe",
+        "htmlUrl": "https://toe.prx.org/"
+    },
+    {
+        "title": "Under the Influence from CBC Radio",
+        "xmlUrl": "http://www.cbc.ca/podcasting/includes/undertheinfluence.xml",
+        "htmlUrl": "http://www.cbc.ca/podcasting"
+    },
+    {
+        "title": "Lit Summary Podcast",
+        "xmlUrl": "http://feeds.feedburner.com/LitSummaryPodcast",
+        "htmlUrl": "http://www.learnoutloud.com/Catalog/Literature/European-Classics/Lit-Summary-Podcast/24192"
+    },
+    {
+        "title": "Manager Tools Basics",
+        "xmlUrl": "https://files.manager-tools.com/files/public/feeds/manager-tools-basics.xml",
+        "htmlUrl": "http://www.manager-tools.com/"
+    },
+    {
+        "title": "London Review Podcasts",
+        "xmlUrl": "http://cdn.lrb.co.uk/feeds/podcasts",
+        "htmlUrl": "http://www.lrb.co.uk/audio-and-video"
+    },
+    {
+        "title": "The Singapod. Singapore Uncensored",
+        "xmlUrl": "http://gilakia.podbean.com/feed/",
+        "htmlUrl": "http://feeds.feedburner.com/ TheSingapodSingaporeUncensored"
+    },
+    {
+        "title": "The Pulse",
+        "xmlUrl": "http://feeds.feedburner.com/newsworks/ThePulse",
+        "htmlUrl": "http://www.newsworks.org/"
+    },
+    {
+        "title": "You Are Not So Smart",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:16745745/sounds.rss",
+        "htmlUrl": "http://www.youarenotsosmart.com/"
+    },
+    {
+        "title": "The Economist Radio (All audio)",
+        "xmlUrl": "http://feeds.feedburner.com/economist/audio_all",
+        "htmlUrl": "http://www.economist.com/"
+    },
+    {
+        "title": "Notes in Spanish Advanced",
+        "xmlUrl": "http://notesinspanish.libsyn.com/rss",
+        "htmlUrl": "http://www.notesinspanish.com/"
+    },
+    {
+        "title": "Hypercritical",
+        "xmlUrl": "http://feeds.5by5.tv/hypercritical",
+        "htmlUrl": "http://5by5.tv/hypercritical"
+    },
+    {
+        "title": "15 Minute History",
+        "xmlUrl": "http://feeds.feedburner.com/15MinuteHistory",
+        "htmlUrl": "http://15minutehistory.org/"
+    },
+    {
+        "title": "The Inquiry",
+        "xmlUrl": "http://www.bbc.co.uk/programmes/p029399x/episodes/downloads.rss",
+        "htmlUrl": "http://www.bbc.co.uk/programmes/p029399x"
+    },
+    {
+        "title": "The Bike Shed",
+        "xmlUrl": "https://simplecast.com/podcasts/282/rss",
+        "htmlUrl": "http://bikeshed.fm/"
+    },
+    {
+        "title": "Hidden Brain",
+        "xmlUrl": "http://www.npr.org/rss/podcast.php?id=510308",
+        "htmlUrl": "http://npr.org/series/423302056/hidden-brain"
+    },
+    {
+        "title": "Vox's The Weeds",
+        "xmlUrl": "http://feeds.feedburner.com/voxtheweeds",
+        "htmlUrl": "http://voxtheweeds.slate.libsynpro.com/podcast"
+    },
+    {
+        "title": "FT Alphachat",
+        "xmlUrl": "http://rss.acast.com/ft-alphachat",
+        "htmlUrl": "http://www.acast.com/ft-alphachat"
+    },
+    {
+        "title": "Bulletproof Radio",
+        "xmlUrl": "http://www.podcastone.com/podcast?categoryID2=806",
+        "htmlUrl": "http://podcastone.com/"
+    },
+    {
+        "title": "Spanish Podcast",
+        "xmlUrl": "http://newsinslowspanish.libsyn.com/rss",
+        "htmlUrl": "https://www.newsinslowspanish.com/"
+    },
+    {
+        "title": "Breaking Banks",
+        "xmlUrl": "http://www.voiceamerica.com/rss/itunes/2193",
+        "htmlUrl": "https://www.voiceamerica.com/show/2193/breaking-banks"
+    },
+    {
+        "title": "Longform",
+        "xmlUrl": "http://longform.libsyn.com/rss",
+        "htmlUrl": "http://longform.org/"
+    },
+    {
+        "title": "The Mistake Bank Podcast",
+        "xmlUrl": "http://feeds.feedburner.com/TheShopTalkPodcast",
+        "htmlUrl": "http://shoptalkpodcast.blogspot.com/"
+    },
+    {
+        "title": "Current's The Pub with Adam Ragusea",
+        "xmlUrl": "http://currentpubmedia.libsyn.com/rss",
+        "htmlUrl": "http://www.current.org/thepub"
+    },
+    {
+        "title": "Rationally Speaking",
+        "xmlUrl": "http://nycskeptics.org/storage/feeds/rs.xml",
+        "htmlUrl": "http://www.rationallyspeakingpodcast.org/"
+    },
+    {
+        "title": "On the Media",
+        "xmlUrl": "http://feeds.wnyc.org/onthemedia",
+        "htmlUrl": "http://www.wnyc.org/series/media-podcast"
+    },
+    {
+        "title": "The Psychology of Attractiveness Podcast",
+        "xmlUrl": "http://feeds.robertburriss.com/psychologyofattractivenesspodcast",
+        "htmlUrl": "http://psychologyofattractivenesspodcast.blogspot.com/"
+    },
+    {
+        "title": "Career Tools",
+        "xmlUrl": "https://files.manager-tools.com/files/public/feeds/career_tools_podcasts.xml",
+        "htmlUrl": "http://www.manager-tools.com/"
+    },
+    {
+        "title": "Conversations with Tyler",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:146429914/sounds.rss",
+        "htmlUrl": "https://medium.com/conversations-with-tyler"
+    },
+    {
+        "title": "Surprisingly Awesome",
+        "xmlUrl": "http://feeds.gimletmedia.com/surprisinglyawesome",
+        "htmlUrl": "https://gimletmedia.com/show/surprisingly-awesome/"
+    },
+    {
+        "title": "True North",
+        "xmlUrl": "http://truenorth.libsyn.com/rss",
+        "htmlUrl": "http://www.truenorthpodcast.com/"
+    },
+    {
+        "title": "Running Through Walls",
+        "xmlUrl": "http://runningthroughwalls.libsyn.com/rss",
+        "htmlUrl": "http://www.venrock.com/insights/"
+    },
+    {
+        "title": "Revisionist History",
+        "xmlUrl": "http://feeds.feedburner.com/RevisionistHistory",
+        "htmlUrl": "http://revisionisthistory.com/"
+    },
+    {
+        "title": "Anatomy of Next: Utopia",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:220400255/sounds.rss",
+        "htmlUrl": "http://foundersfund.com/"
+    },
+    {
+        "title": "Question of the Day",
+        "xmlUrl": "http://rss.earwolf.com/question-of-the-day",
+        "htmlUrl": "http://www.earwolf.com/show/question-of-the-day/"
+    },
+    {
+        "title": "Signal",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:179558566/sounds.rss",
+        "htmlUrl": "http://www.statnews.com/"
+    },
+    {
+        "title": "Embedded",
+        "xmlUrl": "http://www.npr.org/rss/podcast.php?id=510311",
+        "htmlUrl": "http://www.npr.org/series/469833353/embedded"
+    },
+    {
+        "title": "Open For Business",
+        "xmlUrl": "http://feeds.gimletmedia.com/hearopenforbusiness",
+        "htmlUrl": "http://creative.gimletmedia.com/openforbusiness"
+    },
+    {
+        "title": "99% Invisible",
+        "xmlUrl": "http://feeds.99percentinvisible.org/99percentinvisible",
+        "htmlUrl": "http://99percentinvisible.org/"
+    },
+    {
+        "title": "Manager Tools",
+        "xmlUrl": "https://files.manager-tools.com/files/public/feeds/manager-tools-podcasts.xml",
+        "htmlUrl": "http://www.manager-tools.com/podcasts/manager-tools"
+    },
+    {
+        "title": "CANADALAND",
+        "xmlUrl": "http://canadaland.libsyn.com/rss",
+        "htmlUrl": "http://www.canadalandshow.com/"
+    },
+    {
+        "title": "Planet Money",
+        "xmlUrl": "http://www.npr.org/rss/podcast.php?id=510289",
+        "htmlUrl": "http://www.npr.org/planetmoney"
+    },
+    {
+        "title": "Talking Machines",
+        "xmlUrl": "http://www.thetalkingmachines.com/blog/?format=RSS",
+        "htmlUrl": "http://www.thetalkingmachines.com/blog/"
+    },
+    {
+        "title": "Build Phase",
+        "xmlUrl": "https://simplecast.com/podcasts/272/rss",
+        "htmlUrl": "http://buildphase.fm/"
+    },
+    {
+        "title": "Charged Tech Podcast",
+        "xmlUrl": "http://podcast.char.gd/feed/podcast/",
+        "htmlUrl": "http://podcast.char.gd/"
+    },
+    {
+        "title": "Ungeniused",
+        "xmlUrl": "https://www.relay.fm/ungeniused/feed",
+        "htmlUrl": "https://www.relay.fm/ungeniused"
+    },
+    {
+        "title": "Freakonomics Radio",
+        "xmlUrl": "http://feeds.feedburner.com/freakonomicsradio",
+        "htmlUrl": "http://www.wnyc.org/articles/freakonomics-podcast"
+    },
+    {
+        "title": "Earwolf Challenge",
+        "xmlUrl": "http://rss.earwolf.com/earwolf-challenge",
+        "htmlUrl": "http://www.earwolf.com/show/earwolf-challenge/"
+    },
+    {
+        "title": "Latin American Spanish",
+        "xmlUrl": "http://nsslatino.libsyn.com/rss",
+        "htmlUrl": "http://newsinslowspanish.com/latino"
+    },
+    {
+        "title": "Rendered",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:11727054/sounds.rss",
+        "htmlUrl": "http://renderedradio.org/"
+    },
+    {
+        "title": "Reveal",
+        "xmlUrl": "http://feeds.revealradio.org/revealpodcast",
+        "htmlUrl": "http://www.revealnews.org/"
+    },
+    {
+        "title": "Upgrade",
+        "xmlUrl": "http://www.relay.fm/upgrade/feed",
+        "htmlUrl": "https://www.relay.fm/upgrade"
+    },
+    {
+        "title": "Reply All",
+        "xmlUrl": "http://feeds.gimletmedia.com/hearreplyall",
+        "htmlUrl": "http://gimletmedia.com/shows/reply-all"
+    },
+    {
+        "title": "Getting Curious with Jonathan Van Ness",
+        "xmlUrl": "http://www.maximumfun.org/feeds/gettingcurious.xml",
+        "htmlUrl": "http://gettingcurious.libsyn.com/podcast"
+    },
+    {
+        "title": "Criminal",
+        "xmlUrl": "http://feeds.feedburner.com/CriminalShow",
+        "htmlUrl": "http://thisiscriminal.com/"
+    },
+    {
+        "title": "The Eater Upsell",
+        "xmlUrl": "http://feeds.podtrac.com/xd1P4RCb1SHF",
+        "htmlUrl": "https://art19.com/shows/the-eater-upsell"
+    },
+    {
+        "title": "the memory palace",
+        "xmlUrl": "http://feeds.thememorypalace.us/thememorypalace",
+        "htmlUrl": "http://thememorypalace.us/"
+    },
+    {
+        "title": "Tumble Science Podcast for Kids",
+        "xmlUrl": "http://tumble.libsyn.com/rss",
+        "htmlUrl": "http://www.tumblepodcast.com/"
+    },
+    {
+        "title": "Giant Robots Smashing into Other Giant Robots Podcast",
+        "xmlUrl": "https://simplecast.com/podcasts/271/rss",
+        "htmlUrl": "http://giantrobots.fm/"
+    },
+    {
+        "title": "A History of the World in 100 Objects",
+        "xmlUrl": "http://www.bbc.co.uk/programmes/b00nrtd2/episodes/downloads.rss",
+        "htmlUrl": "http://www.bbc.co.uk/programmes/b00nrtd2"
+    },
+    {
+        "title": "This American Life",
+        "xmlUrl": "http://feed.thisamericanlife.org/talpodcast",
+        "htmlUrl": "http://www.thisamericanlife.org/"
+    },
+    {
+        "title": "The Secret History Of Hollywood - A Modern Guide To The Golden Age Of Cinema",
+        "xmlUrl": "http://www.attaboyclarence.com/the-secret-history-of-hollywood?format=RSS",
+        "htmlUrl": "http://www.attaboyclarence.com/the-secret-history-of-hollywood/"
+    },
+    {
+        "title": "Science Vs - New Season",
+        "xmlUrl": "http://feeds.gimletmedia.com/sciencevs",
+        "htmlUrl": "https://gimletmedia.com/show/science-vs/"
+    },
+    {
+        "title": "Origins - A podcast about Limited Partners, created by Notation Capital",
+        "xmlUrl": "https://simplecast.com/podcasts/1998/rss",
+        "htmlUrl": "http://notationcapital.com/"
+    },
+    {
+        "title": "Unplugged",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:199588731/sounds.rss",
+        "htmlUrl": "http://soundcloud.com/data4america"
+    },
+    {
+        "title": "Comedy Bang Bang: The Podcast",
+        "xmlUrl": "http://rss.earwolf.com/comedy-bang-bang",
+        "htmlUrl": "http://www.earwolf.com/show/comedy-bang-bang/"
+    },
+    {
+        "title": "Invisibilia",
+        "xmlUrl": "http://www.npr.org/rss/podcast.php?id=510307",
+        "htmlUrl": "http://www.npr.org/programs/invisibilia"
+    },
+    {
+        "title": "EconTalk Archives, 2014",
+        "xmlUrl": "http://files.libertyfund.org/econtalk/EconTalk2014.xml",
+        "htmlUrl": "http://www.econtalk.org/"
+    },
+    {
+        "title": "BuzzFeed's Internet Explorer",
+        "xmlUrl": "http://rss.acast.com/internetexplorer",
+        "htmlUrl": "http://www.acast.com/internetexplorer"
+    },
+    {
+        "title": "Liftoff",
+        "xmlUrl": "https://www.relay.fm/liftoff/feed",
+        "htmlUrl": "https://www.relay.fm/liftoff"
+    },
+    {
+        "title": "The Fierce Focus Show",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:174109160/sounds.rss",
+        "htmlUrl": "http://www.afiercefocus.com/"
+    },
+    {
+        "title": "BFM :: The History of Singapore",
+        "xmlUrl": "http://www.bfm.my/itunes-rss-hosg.html",
+        "htmlUrl": "http://www.bfm.my/podcast.html?qseaid=thosgpjthum"
+    },
+    {
+        "title": "I Have a Story for You",
+        "xmlUrl": "http://feeds.feedburner.com/IHaveAStoryForYouWithHannahSunAndTrisdonRunnels",
+        "htmlUrl": "https://lightswitchpodcasts.com/"
+    },
+    {
+        "title": "Millennial",
+        "xmlUrl": "http://feeds.millennialpodcast.org/millennialpodcast",
+        "htmlUrl": "http://millennialpodcast.org/"
+    },
+    {
+        "title": "The Ezra Klein Show",
+        "xmlUrl": "http://feeds.feedburner.com/TheEzraKleinShow",
+        "htmlUrl": "http://www.vox.com/"
+    },
+    {
+        "title": "Placemakers",
+        "xmlUrl": "http://feeds.feedburner.com/SlatePlacemakers",
+        "htmlUrl": "http://www.slate.com/placemakers"
+    },
+    {
+        "title": "Pin/Kings",
+        "xmlUrl": "http://www.espn.com/espnradio/podcast/feeds/itunes/podCast?id=17138574",
+        "htmlUrl": "http://www.espn.com/espnradio/podcast/index"
+    },
+    {
+        "title": "The Intern",
+        "xmlUrl": "http://rss.acast.com/theintern",
+        "htmlUrl": "http://www.acast.com/theintern"
+    },
+    {
+        "title": "Inconvenient Questions, Singapore",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:192181672/sounds.rss",
+        "htmlUrl": "http://inconvenientquestions.sg/"
+    },
+    {
+        "title": "Direct Current - An Energy.gov Podcast",
+        "xmlUrl": "http://energy.gov/podcasts/direct-current-energygov-podcast?format=itunes",
+        "htmlUrl": "http://energy.gov/podcasts/direct-current-energygov-podcast"
+    },
+    {
+        "title": "Analytical",
+        "xmlUrl": "http://engineered.network/analytical/feed",
+        "htmlUrl": "http://engineered.network/analytical"
+    },
+    {
+        "title": "Dan Carlin's Hardcore History",
+        "xmlUrl": "http://feeds.feedburner.com/dancarlin/history?format=xml",
+        "htmlUrl": "http://www.dancarlin.com/"
+    },
+    {
+        "title": "Marketplace All-in-One",
+        "xmlUrl": "http://feeds.americanpublicmedia.org/marketplaceallinone",
+        "htmlUrl": "http://www.marketplace.org/"
+    },
+    {
+        "title": "Too Much Information with Benjamen Walker | WFMU",
+        "xmlUrl": "https://wfmu.org/podcast/TI.xml",
+        "htmlUrl": "http://www.wfmu.org/playlists/TI"
+    },
+    {
+        "title": "The Coming To Singapore Podcast",
+        "xmlUrl": "http://www.comingtosingapore.com/feed/podcast/",
+        "htmlUrl": "http://www.comingtosingapore.com/"
+    },
+    {
+        "title": "Red Dot Radio Singapore",
+        "xmlUrl": "http://reddotradio.podomatic.com/rss2.xml",
+        "htmlUrl": "http://reddotradio.podomatic.com/"
+    },
+    {
+        "title": "React Podcast",
+        "xmlUrl": "http://feeds.feedburner.com/reactjspodcast",
+        "htmlUrl": "http://reactpodcast.com/"
+    },
+    {
+        "title": "Business Book Summaries",
+        "xmlUrl": "https://www.getflashnotes.com/series/business-book-summaries-podcast/feed/",
+        "htmlUrl": "https://www.getflashnotes.com/"
+    },
+    {
+        "title": "The Information's 411",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:171128901/sounds.rss",
+        "htmlUrl": "http://soundcloud.com/user-875591423"
+    },
+    {
+        "title": "Urban Edge Podcast",
+        "xmlUrl": "http://feeds.soundcloud.com/users/soundcloud:users:152329264/sounds.rss",
+        "htmlUrl": "http://urbanedge.blogs.rice.edu/"
+    },
+    {
+        "title": "Sampler",
+        "xmlUrl": "http://feeds.gimletmedia.com/samplershow",
+        "htmlUrl": "http://gimletmedia.com/sampler"
+    },
+    {
+        "title": "Imaginary Worlds",
+        "xmlUrl": "http://feeds.megaphone.fm/PP5304354299",
+        "htmlUrl": "http://imaginaryworldspodcast.org/"
+    },
+    {
+        "title": "Bite",
+        "xmlUrl": "http://feeds.feedburner.com/bite-podcast",
+        "htmlUrl": "http://www.motherjones.com/bite-podcast"
+    },
+    {
+        "title": "How to Start a Startup",
+        "xmlUrl": "http://awesound.com/feed/p9b669is",
+        "htmlUrl": "https://awesound.com/@ycombinator/playlist/how-to-start-a-startup?auid=ab0c24hq8"
+    },
+    {
+        "title": "No One Knows Anything",
+        "xmlUrl": "http://rss.acast.com/nooneknows",
+        "htmlUrl": "http://www.acast.com/nooneknows"
+    },
+    {
+        "title": "Radiolab Presents: More Perfect",
+        "xmlUrl": "http://feeds.wnyc.org/moreperfect",
+        "htmlUrl": "http://www.wnyc.org/shows/radiolabmoreperfect"
+    },
+    {
+        "title": "Presentable",
+        "xmlUrl": "https://www.relay.fm/presentable/feed",
+        "htmlUrl": "https://www.relay.fm/presentable"
+    },
+    {
+        "title": "Tentative",
+        "xmlUrl": "https://simplecast.com/podcasts/1088/rss",
+        "htmlUrl": "http://tentative.fm/"
+    }
+]
