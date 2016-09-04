@@ -4,9 +4,9 @@
         <description><![CDATA[Devon Zuegel's personal website]]></description>
         <link>http://devonzuegel.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 04 Sep 2016 19:01:37 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 04 Sep 2016 19:07:39 GMT</lastBuildDate>
         <atom:link href="http://devonzuegel.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 04 Sep 2016 19:01:24 GMT</pubDate>
+        <pubDate>Sun, 04 Sep 2016 19:07:27 GMT</pubDate>
         <item>
             <title><![CDATA[404 Page Not Found]]></title>
             <description><![CDATA[
@@ -197,43 +197,29 @@
             <pubDate>Fri, 01 Jul 2016 02:50:24 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Links]]></title>
-            <description><![CDATA[<!-- collection: pages -->
-<p>This is where I collect some of the ideas, historical facts, anecdotes, etc. that I would like more people to know about or just plain don&#39;t want to forget. I update it sporadically, and the process is not systematic in any way.</p>
-<h2 id="cybernetics-artificial-intelligence">Cybernetics &amp; Artificial Intelligence</h2>
-<p><a href="http://en.wikipedia.org/wiki/Cybernetics"><strong>Cybernetics</strong></a> is the study of the structures, constraints, and possiblities of regulatory systems. It abstracts concepts such as learning, adaptation, emergence, and communication from their mechanical / physical / biological / cognitive / social contexts and studies the influence of feedback loops and circular causal relationships.</p>
-<h4 id="artificial-genocide">Artificial Genocide</h4>
-<p><a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Atlantic article</a></p>
-<p><img src="http://cdn.theatlantic.com/static/coma/images/issues/200204/figure5-vs.gif" alt=""></p>
-<blockquote>
-<p>If societies can order themselves systematically but unconsciously, it stands to reason that they can also disorder themselves systematically but unconsciously</p>
-</blockquote>
-<h4 id="project-cybersyn-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Project Cybersyn <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
-<p><img src='http://www.redpepper.org.uk/wp-content/uploads/cybersyn.jpg' style='float:right; margin:15px; max-width:60%'/></p>
-<p>Chile&#39;s <a href="http://en.wikipedia.org/wiki/Project_Cybersyn"><strong>Project Cybersyn</strong></a> was a decision support system that aided in the management of the national economy based on a neural network approach to organizational design. Among other tasks, Cybersyn monitored production indicators directly in factories through 500 telex machines. This served to (1) alert workers and in extreme cases the central government if production indicators fell outise of acceptable ranges and (2) provide inputs into an economic simulation that the government could use to forecast the outcome of various decisions.</p>
-<p>This system played a key role in the newly nationalized sectors of Chile&#39;s economy from 1971-1973, but the project was destroyed following the military coup in September 1973.</p>
-<blockquote>
-<p><em>The futuristic operations room was furnished with seven swivel chairs (considered the best for creativity).</em></p>
-</blockquote>
-<!-- ## Rationality & Cognitive Biases -->
-<h2 id="political-philosophy">Political Philosophy</h2>
-<h4 id="politics-is-the-mindkiller-div-class-time-pull-right-style-margin-2px-14-feb-2015-div-">Politics is the Mindkiller <div class='time pull-right' style='margin:2px'>14 Feb 2015</div></h4>
-<p>I encourage everyone with the slightest political conviction and particularly those interested in pursuing a career in politics to read <a href="http://lesswrong.com/lw/gw/politics_is_the_mindkiller/"><strong>Politics is the Mindkiller</strong></a>. The essay&#39;s core argument is that &quot;It&#39;s just better for the spiritual growth of a community to discuss an issue without invoking color politics.&quot; Reading this piece marked a turning point in my intellectual development as someone with a history of strongly identifying with a particular political tribe (Libertarianism).</p>
-<blockquote>
-<p><em>Politics is an extension of war.  Arguments are soldiers.  Once you know which side you&#39;re on, you must support all arguments of that side, and attack all arguments that appear to favor the enemy side; otherwise it&#39;s like stabbing your soldiers in the back—providing aid and comfort to the enemy.  People who would be level-headed about evenhandedly weighing all sides of an issue in their professional life as scientists, can suddenly turn into slogan-chanting zombies when there&#39;s a Blue or Green position on an issue...</em></p>
-</blockquote>
-<h2 id="miscellaneous-studies">Miscellaneous studies</h2>
-<h4 id="addiction-at-rat-park-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Addiction at Rat Park <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
-<p><img src='http://sos.fishki.net/upload/en/201309/18/13402/d501eedb0fa9212d323b6b6d7681fa7f.png' style='float:right; margin:15px; max-width:50%'></p>
-<p><a href="http://en.wikipedia.org/wiki/Rat_Park?utm_source=hackernewsletter&amp;utm_medium=email&amp;utm_term=learn"><strong>Rat Park</strong></a> was 1970s study suggesting that addiction to opiates can be attributed to isolation and severe distress rather than any addictive property of the drug istelf. Principal investigator Bruce Alexander argued that prior addiction-related experiments are misrepresentative of the phenomenon because the rats were kept in cramped metal cages, tethered to a self-injection apparatus.</p>
-<p>Alexander built a &quot;Rat Park&quot; 200 times the area of a standard laboratory cage with an abundance of food and toys, and he populated the colony with ~20 rats. The rats had previously been forced to consume opiates for over two months. One group of these rats was brought to the park, while a control group was isolated in typical small cages. Both cohorts were given a choice between plain water and water laced with morphine. Those in Rat Park rarely chose the drugged water; meanwhile, the control group consumed much more morphine. Alexandar concluded that the rats wished to not disrupt their normal social behavior, and that while there were &quot;some minor withdrawl signs&quot; such as twitching, &quot;there were none of the mythic seizures and sweats you so often hear about&quot; among the rats in Rat Park.</p>
-<blockquote>
-<p><em>Although the use of opiates in the United States and England during the 19th century was greater than it is now, the incidence of dependence and addiction never reached one percent of the population and was declining at the end of the century. In Britain, heroin has been widely used in medication for coughs, diarrhea, and chronic pain until the present day; <strong>in 1972, British doctors prescribed 29 millions of doses of heroin to patients, yet a 1982 study of the statistics on iatrogenic addiction in the UK showed a &quot;virtual absence&quot; of such addicts</strong>. Recent research confirms that many people use heroin regularly for years, for either recreational or medical purposes, without becoming addicted.</em></p>
-</blockquote>
-]]></description>
-            <link>http://devonzuegel.com/pages/links</link>
-            <guid isPermaLink="true">http://devonzuegel.com/pages/links</guid>
-            <pubDate>Fri, 01 Jul 2016 02:20:00 GMT</pubDate>
+            <title><![CDATA[Contact]]></title>
+            <description><![CDATA[
+<div class="contact col-sm-4">
+  <h4>Github</h4><a href="http://github.com/devonzuegel">github.com/devonzuegel</a>
+  <h4>Twitter</h4><a href="http://twitter.com/devonzuegel">@devonzuegel</a>
+  <h4>Email</h4><a href="mailto:devonz@cs.stanford.edu">devonz@cs.stanford.edu</a>
+  <h4>Instapaper</h4><a href="https://www.instapaper.com/p/devonzuegel">devonzuegel</a>
+  <h4></h4><a></a>
+  <h4>Resume</h4><a href="/assets/Devon_Zuegel--Resume.pdf">PDF</a>
+</div>
+<div class="col-sm-8"><p>This site is where I can riff on ideas, be wrong, and learn from those mistakes. Of course I try to be correct, and I always write what I believe to be true, but the greatest value most often comes from someone messaging me to point out a body of research I missed or angle I misinterpreted.</p>
+<p>In this vein, please don&#39;t hesitate to let me know what you think! The whole point is to share what I know and to learn the rest.</p>
+
+</div>
+<div class="col-xs-12">
+  <h4>Spotify</h4>
+  <div class="space triple"></div>
+  <iframe src="https://embed.spotify.com/?uri=spotify%3Auser%3A123589098%3Aplaylist%3A4qo0rRTKF8bFogGPWc7eJ3&amp;theme=white" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+  <div class="space triple"></div>
+</div>]]></description>
+            <link>http://devonzuegel.com/pages/contact</link>
+            <guid isPermaLink="true">http://devonzuegel.com/pages/contact</guid>
+            <pubDate>Fri, 12 Aug 2016 20:00:18 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Writing]]></title>
@@ -467,6 +453,45 @@
             <pubDate>Fri, 12 Aug 2016 08:06:04 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Links]]></title>
+            <description><![CDATA[<!-- collection: pages -->
+<p>This is where I collect some of the ideas, historical facts, anecdotes, etc. that I would like more people to know about or just plain don&#39;t want to forget. I update it sporadically, and the process is not systematic in any way.</p>
+<h2 id="cybernetics-artificial-intelligence">Cybernetics &amp; Artificial Intelligence</h2>
+<p><a href="http://en.wikipedia.org/wiki/Cybernetics"><strong>Cybernetics</strong></a> is the study of the structures, constraints, and possiblities of regulatory systems. It abstracts concepts such as learning, adaptation, emergence, and communication from their mechanical / physical / biological / cognitive / social contexts and studies the influence of feedback loops and circular causal relationships.</p>
+<h4 id="artificial-genocide">Artificial Genocide</h4>
+<p><a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Atlantic article</a></p>
+<p><img src="http://cdn.theatlantic.com/static/coma/images/issues/200204/figure5-vs.gif" alt=""></p>
+<blockquote>
+<p>If societies can order themselves systematically but unconsciously, it stands to reason that they can also disorder themselves systematically but unconsciously</p>
+</blockquote>
+<h4 id="project-cybersyn-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Project Cybersyn <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
+<p><img src='http://www.redpepper.org.uk/wp-content/uploads/cybersyn.jpg' style='float:right; margin:15px; max-width:60%'/></p>
+<p>Chile&#39;s <a href="http://en.wikipedia.org/wiki/Project_Cybersyn"><strong>Project Cybersyn</strong></a> was a decision support system that aided in the management of the national economy based on a neural network approach to organizational design. Among other tasks, Cybersyn monitored production indicators directly in factories through 500 telex machines. This served to (1) alert workers and in extreme cases the central government if production indicators fell outise of acceptable ranges and (2) provide inputs into an economic simulation that the government could use to forecast the outcome of various decisions.</p>
+<p>This system played a key role in the newly nationalized sectors of Chile&#39;s economy from 1971-1973, but the project was destroyed following the military coup in September 1973.</p>
+<blockquote>
+<p><em>The futuristic operations room was furnished with seven swivel chairs (considered the best for creativity).</em></p>
+</blockquote>
+<!-- ## Rationality & Cognitive Biases -->
+<h2 id="political-philosophy">Political Philosophy</h2>
+<h4 id="politics-is-the-mindkiller-div-class-time-pull-right-style-margin-2px-14-feb-2015-div-">Politics is the Mindkiller <div class='time pull-right' style='margin:2px'>14 Feb 2015</div></h4>
+<p>I encourage everyone with the slightest political conviction and particularly those interested in pursuing a career in politics to read <a href="http://lesswrong.com/lw/gw/politics_is_the_mindkiller/"><strong>Politics is the Mindkiller</strong></a>. The essay&#39;s core argument is that &quot;It&#39;s just better for the spiritual growth of a community to discuss an issue without invoking color politics.&quot; Reading this piece marked a turning point in my intellectual development as someone with a history of strongly identifying with a particular political tribe (Libertarianism).</p>
+<blockquote>
+<p><em>Politics is an extension of war.  Arguments are soldiers.  Once you know which side you&#39;re on, you must support all arguments of that side, and attack all arguments that appear to favor the enemy side; otherwise it&#39;s like stabbing your soldiers in the back—providing aid and comfort to the enemy.  People who would be level-headed about evenhandedly weighing all sides of an issue in their professional life as scientists, can suddenly turn into slogan-chanting zombies when there&#39;s a Blue or Green position on an issue...</em></p>
+</blockquote>
+<h2 id="miscellaneous-studies">Miscellaneous studies</h2>
+<h4 id="addiction-at-rat-park-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Addiction at Rat Park <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
+<p><img src='http://sos.fishki.net/upload/en/201309/18/13402/d501eedb0fa9212d323b6b6d7681fa7f.png' style='float:right; margin:15px; max-width:50%'></p>
+<p><a href="http://en.wikipedia.org/wiki/Rat_Park?utm_source=hackernewsletter&amp;utm_medium=email&amp;utm_term=learn"><strong>Rat Park</strong></a> was 1970s study suggesting that addiction to opiates can be attributed to isolation and severe distress rather than any addictive property of the drug istelf. Principal investigator Bruce Alexander argued that prior addiction-related experiments are misrepresentative of the phenomenon because the rats were kept in cramped metal cages, tethered to a self-injection apparatus.</p>
+<p>Alexander built a &quot;Rat Park&quot; 200 times the area of a standard laboratory cage with an abundance of food and toys, and he populated the colony with ~20 rats. The rats had previously been forced to consume opiates for over two months. One group of these rats was brought to the park, while a control group was isolated in typical small cages. Both cohorts were given a choice between plain water and water laced with morphine. Those in Rat Park rarely chose the drugged water; meanwhile, the control group consumed much more morphine. Alexandar concluded that the rats wished to not disrupt their normal social behavior, and that while there were &quot;some minor withdrawl signs&quot; such as twitching, &quot;there were none of the mythic seizures and sweats you so often hear about&quot; among the rats in Rat Park.</p>
+<blockquote>
+<p><em>Although the use of opiates in the United States and England during the 19th century was greater than it is now, the incidence of dependence and addiction never reached one percent of the population and was declining at the end of the century. In Britain, heroin has been widely used in medication for coughs, diarrhea, and chronic pain until the present day; <strong>in 1972, British doctors prescribed 29 millions of doses of heroin to patients, yet a 1982 study of the statistics on iatrogenic addiction in the UK showed a &quot;virtual absence&quot; of such addicts</strong>. Recent research confirms that many people use heroin regularly for years, for either recreational or medical purposes, without becoming addicted.</em></p>
+</blockquote>
+]]></description>
+            <link>http://devonzuegel.com/pages/links</link>
+            <guid isPermaLink="true">http://devonzuegel.com/pages/links</guid>
+            <pubDate>Fri, 01 Jul 2016 02:20:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[Projects]]></title>
             <description><![CDATA[<h1 id="projects">Projects</h1>
 <div class='space triple'></div><div class='space'></div>
@@ -687,31 +712,6 @@ do until convergence
             <guid isPermaLink="true">http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</guid>
             <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
             <pubDate>Sat, 28 Nov 2015 07:00:19 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Contact]]></title>
-            <description><![CDATA[
-<div class="contact col-sm-4">
-  <h4>Github</h4><a href="http://github.com/devonzuegel">github.com/devonzuegel</a>
-  <h4>Twitter</h4><a href="http://twitter.com/devonzuegel">@devonzuegel</a>
-  <h4>Email</h4><a href="mailto:devonz@cs.stanford.edu">devonz@cs.stanford.edu</a>
-  <h4>Instapaper</h4><a href="https://www.instapaper.com/p/devonzuegel">devonzuegel</a>
-  <h4></h4><a></a>
-  <h4>Resume</h4><a href="/assets/Devon_Zuegel--Resume.pdf">PDF</a>
-</div>
-<div class="col-sm-8"><p>This site is where I can riff on ideas, be wrong, and learn from those mistakes. Of course I try to be correct, and I always write what I believe to be true, but the greatest value most often comes from someone messaging me to point out a body of research I missed or angle I misinterpreted.</p>
-<p>In this vein, please don&#39;t hesitate to let me know what you think! The whole point is to share what I know and to learn the rest.</p>
-
-</div>
-<div class="col-xs-12">
-  <h4>Spotify</h4>
-  <div class="space triple"></div>
-  <iframe src="https://embed.spotify.com/?uri=spotify%3Auser%3A123589098%3Aplaylist%3A4qo0rRTKF8bFogGPWc7eJ3&amp;theme=white" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
-  <div class="space triple"></div>
-</div>]]></description>
-            <link>http://devonzuegel.com/pages/contact</link>
-            <guid isPermaLink="true">http://devonzuegel.com/pages/contact</guid>
-            <pubDate>Fri, 12 Aug 2016 20:00:18 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Automator Workflow to stitch PDFs into a single document]]></title>
