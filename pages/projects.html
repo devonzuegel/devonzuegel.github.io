@@ -31,9 +31,45 @@
           <div class="col-sm-12">
             <div id="main-content">
 <article id="page" class="page">
-  <div class="page-content"><h1 id="projects">Projects</h1>
+  <div class="page-content"><script type="text/javascript"> // Hack to fix scrolling to Mr Schelling's Neighborhood 
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+</script>
+
+<h1 id="projects">Projects</h1>
+<ul>
+<li><a href="#mfp-api">MyFitnessPal API</a></li>
+<li><a href="#isostamp">Isostamp</a></li>
+<li><a href="#schelling-neighborhood">Mr. Schelling&#39;s Neighborhood</a></li>
+<li><a href="#tiddly-lisp">TiddlyLisp</a></li>
+<li><a href="#instanote">Instanote</a></li>
+<li><a href="#congressional-bills">Congressional Bill Outcome Predictor</a></li>
+<li><a href="#affitto">Affitto</a></li>
+<li><a href="#my-evernote">My Evernote</a></li>
+<li><a href="#zen-writer">Zen Writer</a></li>
+<li><a href="#origami-js">OrigamiJS</a></li>
+<li><a href="#fiesta">Fiesta: Machine Translator</a></li>
+<li><a href="#octagon">Octagon</a></li>
+<li><a href="#paper-trail">Paper Trail</a></li>
+<li><a href="#in-other-words">In Other Words</a></li>
+</ul>
 <div class='space triple'></div><div class='space'></div>
 
+<p><a name='mfp-api' class='anchor' /></p>
+<h2 id="myfitnesspal-api">MyFitnessPal API</h2>
+<div class='project-time'><div class='time'>August - September 2016</div><br></div>
+
+<p>I&#39;ve tracked my eating habits for the past eight years, and I&#39;ve since added other health and productivity metrics. Data have piled up in the spreadsheets, services, and other tools I&#39;ve used to collect these measurements. So far I&#39;ve done little with it, but I always imagined that they would one day uncover some pattern that would suggest changes in the way I eat, work, or exercise.</p>
+<p>So in 2016 when I started experiencing extreme fatigue nearly every afternoon, I decided to investigate whether there was a connection between the food I was eating and my energy levels. My hypothesis was that eating carbohydrates was making me “crash” in the afternoon, because I tended to feel better those days I stuck with just veggies and protein for lunch.</p>
+<p>To test this hypothesis, I went to MyFitnessPal (MFP), where I&#39;d been collecting data about my eating habits since high school. To my dismay, they did not have a public API or even a tool that would let me export more than a few months of data at a time. I found a few third-party tools that let me cobble together the logs, but they felt as if they were duct-taped together.</p>
+<p>At this point, any reasonable person would have just accepted this fact and used the manual workarounds to export the data. After all, my goal was to find data to confirm or falsify my hypothesis, not to have a beautiful REST API from which I could continuously pull my food logs.</p>
+<p>Instead of being reasonable person, I decided to build a little service that would pull all of my logs each day, persist it to a separate database, and then surface the data with a JSON API. I initially planned to write a simple web scraper to do the retrieval work. With a bit more digging through Github&#39;s less-than-spectacular search (and encouragement from John &lt;3), I found a project by someone even less reasonable than me that inspired the approach I ended up taking.</p>
+<p>Nathan Reynolds (<a href="https://github.com/nathforge">nathforge</a> on Github) had figured out that in fact MyFitnessPal <em>did</em> have an API, it just was for internal use in the official iPhone app only. Not only was the API completely undocumented, but the MFP team had created a custom byte encoding by which to send the data. I still have no idea how he figured out the spec of this encoding, because a lot of the design choices made appear completely random. However he did it, Nathan had built up this codec that took the stream of bytes and parsed them into a human-readable form.</p>
+<p>Nathan&#39;s <a href="https://github.com/nathforge/myfitnesspal-sync"><code>myfitnesspal-sync</code></a> was a goldmine for understanding MFP&#39;s arcane encoding, but it had some drawbacks. The package didn&#39;t support every type of packet, which mean I would have had to extend his code to be able to sync all of my data from MFP. Also, I didn&#39;t particularly like the interface he&#39;d designed, and it was completely untested. It also had to be manually run from the command line, whereas I wanted something that would continuously sync the data. On top of all this, I&#39;d be looking for a reason to write some Ruby this summer, so I figured this was a good excuse to do that.</p>
+<p>I first wrote a package to decode the MFP packets and the encode human-readable data back into the byte form. All the while I was plagiarizing Nathan&#39;s detective work (yay open source!). Thanks Nathan, you are a hero.</p>
+<p>Once I was satisfied with my Ruby implementation of the codec, I built a tiny Sinatra API to surface the data. This part is still a work-in-progress. It <em>works</em>, but it isn&#39;t particularly robust. There&#39;s still a bit more work to do.</p>
+<p>I still haven&#39;t gotten around to a significant amount of data analysis. I did use Metabase to analyze the data in my Heroku Postgres instance over the holidays, but there&#39;s definitely more to dig into.</p>
+<p>You can find the code for the full API <a href="https://github.com/devonzuegel/myfitnesspal-ruby">on Github</a>. The module for just the codec implementation is in that repository in the <a href="https://github.com/devonzuegel/myfitnesspal-ruby/tree/master/lib"><code>lib</code></a> directory. Once the API itself is stable, I&#39;ll make it available to anyone who wants to sync and retrieve their MFP data.</p>
+<p><a name='isostamp' class='anchor' /></p>
 <h2 id="-isostamp-https-isostamp-org-"><a href="https://isostamp.org">Isostamp</a></h2>
 <div class='project-time'><div class='time'>March - July 2016</div><br></div>
 
@@ -42,6 +78,7 @@
 <p>You can find the code for the API at <a href="https://github.com/devonzuegel/tagfinder-api">github.com/devonzuegel/tagfinder-api</a>.</p>
 <p>You can upload your own data and learn more about Isostamp at <a href="Isostamp.org">Isostamp.org</a>, and you can find the code for the web app at <a href="https://github.com/devonzuegel/Isostamp-web-v2">github.com/devonzuegel/Isostamp-web-v2</a>.</p>
 <p>We will be open-sourcing the C++ code for the algorithm soon.</p>
+<p><a name='schelling-neighborhood' class='anchor' /></p>
 <h2 id="-mr-schelling-s-neighborhood-https-rawgit-com-devonzuegel-affitto-master-models-mr-schellings-neighborhood-mr-schellings-neighborhood-html-"><a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">Mr. Schelling&#39;s Neighborhood</a></h2>
 <div class='project-time'><div class='time'>July 2016</div><br></div>
 
@@ -52,22 +89,26 @@
 <iframe src='https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood-small.html' style='width:100%; height: 270px;' frameborder='no' border='0'></iframe>
 
 <p>You can find the ABM code on <a href="//github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">Github</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">here</a>.</p>
+<p><a name='tiddly-lisp' class='anchor' /></p>
 <h2 id="-tiddlylisp-github-com-devonzuegel-tiddly-lisp-"><a href="//github.com/devonzuegel/tiddly-lisp">TiddlyLisp</a></h2>
 <div class='project-time'><div class='time'>January 2016</div><br></div>
 
 <p>To learn the fundamentals of Lisp, I built a little interpreter based on Michael Nielsen&#39;s fantastic blog post <a href="http://www.michaelnielsen.org/ddi/lisp-as-the-maxwells-equations-of-software/"><em>Lisp as the Maxwell&#39;s Equations of Software</em></a>. I included extensions to resolve some of the challenge problems he mentioned at the end of the post, too.</p>
 <p>You can find the code for the interpreter on <a href="//github.com/devonzuegel/tiddly-lisp">Github</a>.</p>
+<p><a name='instanote' class='anchor' /></p>
 <h2 id="-instanote-https-instanote-archive-herokuapp-com-"><a href="https://instanote-archive.herokuapp.com">Instanote</a></h2>
 <div class='project-time'><div class='time'>January 2016</div><br></div>
 
 <p>About a month ago, I started using Instapaper obsessively. However, it left me with one major problem – all of my Instapaper bookmarks and highlights were isolated from the knowledge that I (obsessively) store in Evernote, and I wanted to have them all in one place. After all, a <a href="https://en.wikipedia.org/wiki/Personal_knowledge_base">personal knowledge base</a> is useless if it doesn&#39;t contain half of the things I read throughout the day.</p>
 <p>Instanote solves this problem by syncing the text of my archived Instapaper bookmarks with their respective highlights into Evernote every 10 minutes. I figured other people might have the same frustration with Instapaper, so I built out a little Heroku app that allows other people to sign up too rather than just hard-coding my login info into a hacky script.</p>
 <p>You can sign up at <a href="https://instanote-archive.herokuapp.com">instanote-archive.herokuapp.com</a> and see the source code on <a href="https://github.com/devonzuegel/instanote-archive">Github</a>.</p>
+<p><a name='congressional-bills' class='anchor' /></p>
 <h2 id="-congressional-bill-outcome-predictor-http-devonzuegel-com-bills-"><a href="http://devonzuegel.com/bills/">Congressional Bill Outcome Predictor</a></h2>
 <div class='project-time'><div class='time'>December 2015</div><br></div>
 
 <p>Emma Marriott, Arushi Jain, and I built a predictor that identifies which US bills will succeed in the House &amp; Senate. We tried several different prediction methods, including: Naive Bayes with and without Principal Component Analysis (PCA), Logistic Regression, Support Vector Machine (SVM) with PCA, and Perceptron with PCA. PCA identified the <code>500</code> most important features of a set of <code>11,000</code>. Each predictor was modeled on data from the 109th – 113th Congresses from a wide range of structured &amp; unstructured sources, including lobbying information. SVM with PCA proved to be the best model. It predicted bill outcomes with <code>94%</code> precision &amp; <code>87%</code> recall, resulting in an F-measure of <code>0.92</code>.</p>
 <p>You can learn more about our research and data <a href="http://devonzuegel.com/bills/">here</a>.</p>
+<p><a name='affitto' class='anchor' /></p>
 <h2 id="-affitto-github-com-devonzuegel-affitto-"><a href="//github.com/devonzuegel/affitto">Affitto</a></h2>
 <div class='project-time'><div class='time'>November 2015</div><br></div>
 
@@ -77,6 +118,7 @@
 <iframe src='http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2-small/model.html' style='width:100%; height: 390px;' frameborder='no' border='0'></iframe>
 
 <p>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="//github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</p>
+<p><a name='my-evernote' class='anchor' /></p>
 <h2 id="-my-evernote-myevernote-co-"><a href="//myevernote.co">My Evernote</a></h2>
 <div class='project-time'><div class='time'>July 2015</div><br></div>
 
@@ -85,6 +127,7 @@
 <p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
 <p><img src="../assets/my-evernote.png" alt=""></p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
+<p><a name='zen-writer' class='anchor' /></p>
 <h2 id="-zen-writer-zenwriter-io-"><a href="//zenwriter.io">Zen Writer</a></h2>
 <div class='project-time'><div class='time'>June 2015</div><br></div>
 
@@ -95,11 +138,13 @@
 <p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
 <p>P.S. As a more robust solution to this problem, I now use the <a href="http://www.96problems.com/rough-draft/">First Draft</a> Mac app from <a href="http://www.96problems.com/">96 Problems</a>. It offers all the features I built, planned to build, or never even realized I needed in ZenWriter. Ben and the whole team are super responsive and helpful too, so in short I highly recommend the app if you&#39;re looking for a tool to solve this problem!</p>
+<p><a name='origami-js' class='anchor' /></p>
 <h2 id="-origamijs-htmlpreview-github-io-https-raw-githubusercontent-com-devonzuegel-origamijs-master-example-coffee-html-"><a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">OrigamiJS</a></h2>
 <div class='project-time'><div class='time'>March 2015</div><br></div>
 
 <p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
+<p><a name='fiesta' class='anchor' /></p>
 <h2 id="-fiesta-machine-translator-github-com-devonzuegel-fiesta-"><a href="//github.com/devonzuegel/fiesta">Fiesta: Machine Translator</a></h2>
 <div class='project-time'><div class='time'>March 2015</div><br></div>
 
@@ -131,6 +176,7 @@ do until convergence
       transl_prob(e|s) = count(e|s) / total_s(s)
 </code></pre>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/fiesta">Github</a>.</p>
+<p><a name='octagon' class='anchor' /></p>
 <h2 id="octagon">Octagon</h2>
 <div class='project-time'><div class='time'>Summer 2014</div><br></div>
 
@@ -138,6 +184,7 @@ do until convergence
 <p>This past summer, I designed and built an app called Octagon, a tool for venture capital firms. Octagon helps VCs better manage relationships with portfolio companies by visualizing important metrics about company growth and providing a repository for financial documents and quarterly updates. It also facilitates interaction between investors and board members and the startups in their portfolios in an analogous manner to CRM software. Octagon is currently in beta testing at Formation|8.</p>
 <p>I was responsible for the full-stack of the app, though I was lucky enough for the last few weeks of the project to work with a friend named Zack who helped me immensely with the front-end, especially user interaction and fully utilizing the capabilities of our graphing libraries.</p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/octagon">Github</a>.</p>
+<p><a name='paper-trail' class='anchor' /></p>
 <h2 id="paper-trail">Paper Trail</h2>
 <div class='project-time'><div class='time'>March 2014 - present</div><br></div>
 
@@ -148,6 +195,7 @@ do until convergence
 <p>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users&#39; existing workflow.</p>
 <p>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user&#39;s cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site — Amazon — and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon&#39;s fantastic API, and generally focusing our energy on specific goals rather than broad ones. </p>
 <p>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="//invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="//github.com/devonzuegel/papertrail-extension">Github</a>.</p>
+<p><a name='in-other-words' class='anchor' /></p>
 <h2 id="in-other-words">In Other Words</h2>
 <div class='project-time'><div class='time'>January - May 2011</div><br></div>
 
@@ -162,7 +210,7 @@ do until convergence
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 31 July 2016 at 10:16 pm</h4>
+      <h4>Last modified on 07 February 2017 at 11:29 am</h4>
     </div>
   </div><script >(function(){
 	/* Did we just livereload? */
