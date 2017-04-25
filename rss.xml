@@ -4,9 +4,9 @@
         <description><![CDATA[Devon Zuegel's personal website]]></description>
         <link>http://devonzuegel.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 07 Feb 2017 19:29:32 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 14 Apr 2017 04:29:08 GMT</lastBuildDate>
         <atom:link href="http://devonzuegel.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 07 Feb 2017 19:10:39 GMT</pubDate>
+        <pubDate>Fri, 14 Apr 2017 03:42:52 GMT</pubDate>
         <item>
             <title><![CDATA[404 Page Not Found]]></title>
             <description><![CDATA[
@@ -198,6 +198,45 @@
             <pubDate>Tue, 07 Feb 2017 19:15:08 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Links]]></title>
+            <description><![CDATA[<!-- collection: pages -->
+<p>This is where I collect some of the ideas, historical facts, anecdotes, etc. that I would like more people to know about or just plain don&#39;t want to forget. I update it sporadically, and the process is not systematic in any way.</p>
+<h2 id="cybernetics-artificial-intelligence">Cybernetics &amp; Artificial Intelligence</h2>
+<p><a href="http://en.wikipedia.org/wiki/Cybernetics"><strong>Cybernetics</strong></a> is the study of the structures, constraints, and possiblities of regulatory systems. It abstracts concepts such as learning, adaptation, emergence, and communication from their mechanical / physical / biological / cognitive / social contexts and studies the influence of feedback loops and circular causal relationships.</p>
+<h4 id="artificial-genocide">Artificial Genocide</h4>
+<p><a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Atlantic article</a></p>
+<p><img src="http://cdn.theatlantic.com/static/coma/images/issues/200204/figure5-vs.gif" alt=""></p>
+<blockquote>
+<p>If societies can order themselves systematically but unconsciously, it stands to reason that they can also disorder themselves systematically but unconsciously</p>
+</blockquote>
+<h4 id="project-cybersyn-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Project Cybersyn <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
+<p><img src='http://www.redpepper.org.uk/wp-content/uploads/cybersyn.jpg' style='float:right; margin:15px; max-width:60%'/></p>
+<p>Chile&#39;s <a href="http://en.wikipedia.org/wiki/Project_Cybersyn"><strong>Project Cybersyn</strong></a> was a decision support system that aided in the management of the national economy based on a neural network approach to organizational design. Among other tasks, Cybersyn monitored production indicators directly in factories through 500 telex machines. This served to (1) alert workers and in extreme cases the central government if production indicators fell outise of acceptable ranges and (2) provide inputs into an economic simulation that the government could use to forecast the outcome of various decisions.</p>
+<p>This system played a key role in the newly nationalized sectors of Chile&#39;s economy from 1971-1973, but the project was destroyed following the military coup in September 1973.</p>
+<blockquote>
+<p><em>The futuristic operations room was furnished with seven swivel chairs (considered the best for creativity).</em></p>
+</blockquote>
+<!-- ## Rationality & Cognitive Biases -->
+<h2 id="political-philosophy">Political Philosophy</h2>
+<h4 id="politics-is-the-mindkiller-div-class-time-pull-right-style-margin-2px-14-feb-2015-div-">Politics is the Mindkiller <div class='time pull-right' style='margin:2px'>14 Feb 2015</div></h4>
+<p>I encourage everyone with the slightest political conviction and particularly those interested in pursuing a career in politics to read <a href="http://lesswrong.com/lw/gw/politics_is_the_mindkiller/"><strong>Politics is the Mindkiller</strong></a>. The essay&#39;s core argument is that &quot;It&#39;s just better for the spiritual growth of a community to discuss an issue without invoking color politics.&quot; Reading this piece marked a turning point in my intellectual development as someone with a history of strongly identifying with a particular political tribe (Libertarianism).</p>
+<blockquote>
+<p><em>Politics is an extension of war.  Arguments are soldiers.  Once you know which side you&#39;re on, you must support all arguments of that side, and attack all arguments that appear to favor the enemy side; otherwise it&#39;s like stabbing your soldiers in the back—providing aid and comfort to the enemy.  People who would be level-headed about evenhandedly weighing all sides of an issue in their professional life as scientists, can suddenly turn into slogan-chanting zombies when there&#39;s a Blue or Green position on an issue...</em></p>
+</blockquote>
+<h2 id="miscellaneous-studies">Miscellaneous studies</h2>
+<h4 id="addiction-at-rat-park-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Addiction at Rat Park <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
+<p><img src='http://sos.fishki.net/upload/en/201309/18/13402/d501eedb0fa9212d323b6b6d7681fa7f.png' style='float:right; margin:15px; max-width:50%'></p>
+<p><a href="http://en.wikipedia.org/wiki/Rat_Park?utm_source=hackernewsletter&amp;utm_medium=email&amp;utm_term=learn"><strong>Rat Park</strong></a> was 1970s study suggesting that addiction to opiates can be attributed to isolation and severe distress rather than any addictive property of the drug istelf. Principal investigator Bruce Alexander argued that prior addiction-related experiments are misrepresentative of the phenomenon because the rats were kept in cramped metal cages, tethered to a self-injection apparatus.</p>
+<p>Alexander built a &quot;Rat Park&quot; 200 times the area of a standard laboratory cage with an abundance of food and toys, and he populated the colony with ~20 rats. The rats had previously been forced to consume opiates for over two months. One group of these rats was brought to the park, while a control group was isolated in typical small cages. Both cohorts were given a choice between plain water and water laced with morphine. Those in Rat Park rarely chose the drugged water; meanwhile, the control group consumed much more morphine. Alexandar concluded that the rats wished to not disrupt their normal social behavior, and that while there were &quot;some minor withdrawl signs&quot; such as twitching, &quot;there were none of the mythic seizures and sweats you so often hear about&quot; among the rats in Rat Park.</p>
+<blockquote>
+<p><em>Although the use of opiates in the United States and England during the 19th century was greater than it is now, the incidence of dependence and addiction never reached one percent of the population and was declining at the end of the century. In Britain, heroin has been widely used in medication for coughs, diarrhea, and chronic pain until the present day; <strong>in 1972, British doctors prescribed 29 millions of doses of heroin to patients, yet a 1982 study of the statistics on iatrogenic addiction in the UK showed a &quot;virtual absence&quot; of such addicts</strong>. Recent research confirms that many people use heroin regularly for years, for either recreational or medical purposes, without becoming addicted.</em></p>
+</blockquote>
+]]></description>
+            <link>http://devonzuegel.com/pages/links</link>
+            <guid isPermaLink="true">http://devonzuegel.com/pages/links</guid>
+            <pubDate>Fri, 01 Jul 2016 02:20:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[Contact]]></title>
             <description><![CDATA[
 <div class="contact col-sm-4">
@@ -387,28 +426,28 @@
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/prohibition-anarchy-how-the-war-on-drugs-helps-violence-flourish"><img src="//stanfordreview.org/wp-content/uploads/Mexico-articleLarge.jpg"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/prohibition-anarchy-how-the-war-on-drugs-helps-violence-flourish"><img src="http://blogs.uww.edu/introtolatinamerica/files/2011/10/zetas-drug-cartel.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/prohibition-anarchy-how-the-war-on-drugs-helps-violence-flourish">Prohibition &amp; Anarchy: How the War on Drugs helps Violence Flourish</a></h3>
     <div class="time">22 May 2014</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/what-happened-at-mtgox-the-collapse-of-the-worlds-largest-bitcoin-exchange"><img src="//stanfordreview.org/wp-content/uploads/mtgox_where_is_our_money-1024x682.jpg"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/what-happened-at-mtgox-the-collapse-of-the-worlds-largest-bitcoin-exchange"><img src="https://cdn3.sbnation.com/assets/4023651/DSCF4053.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/what-happened-at-mtgox-the-collapse-of-the-worlds-largest-bitcoin-exchange">What happened at MtGox? The Collapse of the World's Largest Bitcoin Exchange</a></h3>
     <div class="time">22 April 2014</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/consistency-is-key-a-letter-to-the-stanford-gsc"><img src="//lh4.googleusercontent.com/hRaaxxtSKdKqWXwZ2uF88RvKJElTK21Yr8NzbMAoQ6Fz77936SC28eDZMGZKH9Fv1hm7vhJqTzR3XiXf7U6XnrTfd1KZiCOmto3JA72OexeLXKFcwCg6ughP4PpGZSH6qA"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/consistency-is-key-a-letter-to-the-stanford-gsc"><img src="http://www.slingshotpower.com/wp-content/uploads/2015/09/bigstock-Stanford-University-Tower-30803042.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/consistency-is-key-a-letter-to-the-stanford-gsc">Consistency is Key: A Letter to the Stanford GSC</a></h3>
     <div class="time">19 April 2014</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/beginning-of-volume-letter"><img src="//stanfordreview.org/wp-content/uploads/political_square.png"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/beginning-of-volume-letter"><img src="https://spl.stanford.edu/sites/default/files/palm_drive_1.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/beginning-of-volume-letter">Beginning of Volume Letter</a></h3>
     <div class="time">23 February 2014</div>
@@ -422,28 +461,28 @@
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/the-affordable-care-act-you"><img src="//stanfordreview.org/wp-content/uploads/obamacare_survey_pie_chart.png"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/the-affordable-care-act-you"><img src="http://www-cdn.sciencebuddies.org/Files/7234/6/medicines-and-syringe.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/the-affordable-care-act-you">The Affordable Care Act &amp; You</a></h3>
     <div class="time">08 December 2013</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/an-interview-with-dr-bhattacharya"><img src="//iis-db.stanford.edu/news/3405/3405-small_jay_square..jpg"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/an-interview-with-dr-bhattacharya"><img src="../assets/headline-images/bhattacharya-square.png"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/an-interview-with-dr-bhattacharya">An Interview with Dr. Bhattacharya</a></h3>
     <div class="time">05 December 2013</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/is-the-u-s-tax-code-fair"><img src="//stanfordreview.org/wp-content/uploads/Screen-Shot-2013-02-19-at-11.19.11-AM-300x164.png"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/is-the-u-s-tax-code-fair"><img src="http://s.hswstatic.com/gif/write-tax-code1.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/is-the-u-s-tax-code-fair">Is the U.S. Tax Code Fair?</a></h3>
     <div class="time">17 February 2013</div>
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/why-college-campuses-should-allow-concealed-carry"><img src="//stanfordreview.org/wp-content/uploads/Shooting_range_Glockwikimediacommons-300x225.jpg"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/why-college-campuses-should-allow-concealed-carry"><img src="http://thewellarmedwoman.com/image/data/the-well-armed-woman-articles/women-and-guns/conceal%20carry%20gun%20and%20purse.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/why-college-campuses-should-allow-concealed-carry">Why College Campuses Should Allow Concealed Carry</a></h3>
     <div class="time">18 January 2013</div>
@@ -454,43 +493,54 @@
             <pubDate>Fri, 12 Aug 2016 08:06:04 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Links]]></title>
-            <description><![CDATA[<!-- collection: pages -->
-<p>This is where I collect some of the ideas, historical facts, anecdotes, etc. that I would like more people to know about or just plain don&#39;t want to forget. I update it sporadically, and the process is not systematic in any way.</p>
-<h2 id="cybernetics-artificial-intelligence">Cybernetics &amp; Artificial Intelligence</h2>
-<p><a href="http://en.wikipedia.org/wiki/Cybernetics"><strong>Cybernetics</strong></a> is the study of the structures, constraints, and possiblities of regulatory systems. It abstracts concepts such as learning, adaptation, emergence, and communication from their mechanical / physical / biological / cognitive / social contexts and studies the influence of feedback loops and circular causal relationships.</p>
-<h4 id="artificial-genocide">Artificial Genocide</h4>
-<p><a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Atlantic article</a></p>
-<p><img src="http://cdn.theatlantic.com/static/coma/images/issues/200204/figure5-vs.gif" alt=""></p>
-<blockquote>
-<p>If societies can order themselves systematically but unconsciously, it stands to reason that they can also disorder themselves systematically but unconsciously</p>
-</blockquote>
-<h4 id="project-cybersyn-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Project Cybersyn <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
-<p><img src='http://www.redpepper.org.uk/wp-content/uploads/cybersyn.jpg' style='float:right; margin:15px; max-width:60%'/></p>
-<p>Chile&#39;s <a href="http://en.wikipedia.org/wiki/Project_Cybersyn"><strong>Project Cybersyn</strong></a> was a decision support system that aided in the management of the national economy based on a neural network approach to organizational design. Among other tasks, Cybersyn monitored production indicators directly in factories through 500 telex machines. This served to (1) alert workers and in extreme cases the central government if production indicators fell outise of acceptable ranges and (2) provide inputs into an economic simulation that the government could use to forecast the outcome of various decisions.</p>
-<p>This system played a key role in the newly nationalized sectors of Chile&#39;s economy from 1971-1973, but the project was destroyed following the military coup in September 1973.</p>
-<blockquote>
-<p><em>The futuristic operations room was furnished with seven swivel chairs (considered the best for creativity).</em></p>
-</blockquote>
-<!-- ## Rationality & Cognitive Biases -->
-<h2 id="political-philosophy">Political Philosophy</h2>
-<h4 id="politics-is-the-mindkiller-div-class-time-pull-right-style-margin-2px-14-feb-2015-div-">Politics is the Mindkiller <div class='time pull-right' style='margin:2px'>14 Feb 2015</div></h4>
-<p>I encourage everyone with the slightest political conviction and particularly those interested in pursuing a career in politics to read <a href="http://lesswrong.com/lw/gw/politics_is_the_mindkiller/"><strong>Politics is the Mindkiller</strong></a>. The essay&#39;s core argument is that &quot;It&#39;s just better for the spiritual growth of a community to discuss an issue without invoking color politics.&quot; Reading this piece marked a turning point in my intellectual development as someone with a history of strongly identifying with a particular political tribe (Libertarianism).</p>
-<blockquote>
-<p><em>Politics is an extension of war.  Arguments are soldiers.  Once you know which side you&#39;re on, you must support all arguments of that side, and attack all arguments that appear to favor the enemy side; otherwise it&#39;s like stabbing your soldiers in the back—providing aid and comfort to the enemy.  People who would be level-headed about evenhandedly weighing all sides of an issue in their professional life as scientists, can suddenly turn into slogan-chanting zombies when there&#39;s a Blue or Green position on an issue...</em></p>
-</blockquote>
-<h2 id="miscellaneous-studies">Miscellaneous studies</h2>
-<h4 id="addiction-at-rat-park-div-class-time-pull-right-style-margin-2px-15-feb-2015-div-">Addiction at Rat Park <div class='time pull-right' style='margin:2px'>15 Feb 2015</div></h4>
-<p><img src='http://sos.fishki.net/upload/en/201309/18/13402/d501eedb0fa9212d323b6b6d7681fa7f.png' style='float:right; margin:15px; max-width:50%'></p>
-<p><a href="http://en.wikipedia.org/wiki/Rat_Park?utm_source=hackernewsletter&amp;utm_medium=email&amp;utm_term=learn"><strong>Rat Park</strong></a> was 1970s study suggesting that addiction to opiates can be attributed to isolation and severe distress rather than any addictive property of the drug istelf. Principal investigator Bruce Alexander argued that prior addiction-related experiments are misrepresentative of the phenomenon because the rats were kept in cramped metal cages, tethered to a self-injection apparatus.</p>
-<p>Alexander built a &quot;Rat Park&quot; 200 times the area of a standard laboratory cage with an abundance of food and toys, and he populated the colony with ~20 rats. The rats had previously been forced to consume opiates for over two months. One group of these rats was brought to the park, while a control group was isolated in typical small cages. Both cohorts were given a choice between plain water and water laced with morphine. Those in Rat Park rarely chose the drugged water; meanwhile, the control group consumed much more morphine. Alexandar concluded that the rats wished to not disrupt their normal social behavior, and that while there were &quot;some minor withdrawl signs&quot; such as twitching, &quot;there were none of the mythic seizures and sweats you so often hear about&quot; among the rats in Rat Park.</p>
-<blockquote>
-<p><em>Although the use of opiates in the United States and England during the 19th century was greater than it is now, the incidence of dependence and addiction never reached one percent of the population and was declining at the end of the century. In Britain, heroin has been widely used in medication for coughs, diarrhea, and chronic pain until the present day; <strong>in 1972, British doctors prescribed 29 millions of doses of heroin to patients, yet a 1982 study of the statistics on iatrogenic addiction in the UK showed a &quot;virtual absence&quot; of such addicts</strong>. Recent research confirms that many people use heroin regularly for years, for either recreational or medical purposes, without becoming addicted.</em></p>
-</blockquote>
+            <title><![CDATA[A Public Bus Named Desire]]></title>
+            <description><![CDATA[<!-- img: http://i.imgur.com/B0WjzI5.jpg -->
+<p>When I first stumbled across the streetcar vs bus rapid transit (BRT) debate, I was strongly biased towards streetcars. My opinion was largely shaped by the few weeks I spent in Berlin this past summer. While I was in Germany, I relied most heavily on Berlin&#39;s friendly yellow Metrotrams. I really only used the U-bahn and S-bahn when I had to make long, cross-city trips, where the travel time difference was more than 10 or 15 minutes. I used the bus system only once, despite the fact that it was just as extensive as the Metrotram lines.</p>
+<p><img src="http://techreleased.techreleased.netdna-cdn.com/wp-content/uploads/2012/07/28ac57a0085c.jpg" alt="berlin-metrotram"></p>
+<p>At the time, I naturally gravitated towards the Metrotrams without consciously considering buses, its main substitute. For all obvious intents and purposes, the bus and metro systems are basically equivalent, so it&#39;s strange that I used one so heavily while all but ignoring the other. I can think of a few reasons why this might have happened:</p>
+<ul>
+<li>As a first-time visitor to the city with a limited grasp of the German language, I liked the sense of direction the fixed tracks offered. When trying to figure out how to get somewhere, it was nice to see the <strong>rails trailing through the city, clearly marking the Metrotram&#39;s route</strong>.</li>
+<li>Somehow the trams <strong>felt more predictable and dependabe</strong> than the buses. This is plainly wrong – bus routes as just as well-defined and stable (at least in the short-term), and all transit options in Berlin run almost perfectly on time (yay for German precision, unlike the Catrain and BART...). My hypothesis is that this perception is another byproduct of the fixed tracks, because they foster <strong>a sense of permanence that boosts the entire system&#39;s credibility</strong>.</li>
+<li>I&#39;ve always associated buses with the sketchiest, most obnoxious transit riders. My main exposure to buses has been riding SF&#39;s dingy, smelly cars crushed by mobs of drunk Giants fans and overly talkative tourists. I&#39;m confident in saying that buses have a similar image problem among most middle-class Americans. My <strong>stigmatized perception of buses</strong> governed my transit decisions, despite the fact that Berlin&#39;s buses are actually very clean, and its riders are on the whole very polite.</li>
+</ul>
+<p>Upon further reflection, I see that streetcars&#39; advantages (as expressed in <a href="http://devonzuegel.com/posts/streetcars-vs-buses-primer">a previous post</a>) all have one trait in common: they are a product of perception. Meanwhile, <strong>buses&#39; advantages are far easier to quantify</strong>. As a result, it is easy for BRT advocates to dismiss streetcars&#39; advantages as petty and unimportant.</p>
+<p>I have begrudgingly come to agree that BRT is the way forward; streetcars&#39; modest advantages simply cannot justify their cost. However, rather than dismissing them entirely, <strong>it is critical that planners incorporate streetcars&#39; advantages into BRT systems</strong>. A few ideas for how they could do this:</p>
+<div style='float: right; width: 350px; padding: 20px'>
+    <img src='http://seattletransitblog.com/wp-content/uploads/2014/05/6335549553_26b9e3410a_b.jpg' />
+
+    <img src='https://classes.lt.unt.edu/Fall_2011/CECS_5030_020/aja0029/pictures/dirty%20subway.jpg'/>
+
+    <img src='https://chrissantosra.files.wordpress.com/2012/03/4-seoul-metro-train.jpg?w=611'/>
+
+    <img src='http://www.nikdaum.com/news/osi26.jpg'/>
+
+    <img src='http://nydetailing.com/images/interior-clean-bus.jpg'/>
+</div>
+
+<ul>
+<li><p><strong>Paint bus routes directly onto the streets.</strong> This paint would serve the same function as tram rails running through the city, offering a sense of direction and permanence for a fairly low price.</p>
+<div>
+</li>
+<li><p><strong>Emphasize a clean aesthetic</strong> on both the interior and exterior of the buses. Implement a <strong>zero-tolerance policy for messes</strong>, and design the interior and exterior of the buses with <strong>long-term aesthetics</strong> in mind.</p>
+<ul>
+<li>All forms of public transit –– but especially buses –– are vulnerable to stigmatization as being dirty and unsafe. Given the sheer volume and diversity of riders, it&#39;s easy to descend below a basic level of sanitation, comfort, and even safety. Any public vehicle quickly devolves into a moving trashcan and graffiti canvas without proper custodial attention. (Never use Caltrain&#39;s onboard bathrooms towards the end of rush hour. Just don&#39;t.) However, this is not inevitable!</li>
+<li>Immediate cleanup of messes reminiscent of the <a href="http://99percentinvisible.org/episode/clean-trains/">NYC subway&#39;s zero-tolerance policy</a> for graffiti in the mid 80s could minimize <a href="https://en.wikipedia.org/wiki/Broken_windows_theory">broken windows</a> behavior.<ul>
+<li>Riders take far less care with their messes when a space is already dirty, which means that once a vehicle is gross it often spirals down to the depths of disgust until it is finally cleaned. It&#39;s important to keep to cleanliness above that critical threshold to ensure that it doesn&#39;t enter that spiral.</li>
+<li>People are less inclined to use transit if it is dirty. This results in thinning out of riders, leaving the space to sketchier characters. I for one feel much more safer riding public transit alongside a large, diverse group of people rather than in a vehicle that is nearly-empty with the exception of one or two sketchy people. This has a cyclical effect –– without a critical mass of reputable-looking individuals, others are less likely to take that form of transit. This leads to a downward spiral of perception as well as actual safety.</li>
+</ul>
+</li>
+<li>Certain materials, colors, and designs are better suited for long-term use. For example, the brushed aluminum seats on the Seoul metro (to the right) are easy to clean and long-lasting, and they&#39;re even shiny! Those cars look like they belong in an industrial kitchen, not an urban transit system. In contrast, seats in many American buses are made of much less durable materials. I have a particularly vivid memory of the buses that hauled my elementary school classes off to various field trips. The seats were outfitted with an ugly vinyl that were brittle and cracked, revealing filthy yellow padding below. A simple choice of more durable, attractive materials would have single-handedly improved my childhood impression of mass transit. (Lucky for the school, we were a captive audience.) If the seats had looked more like the radiant blue of the bus seats pictured to the right, I would have seen mass transit as just another way to get around rather than as a stinky death trap.</li>
+</ul>
+</li>
+</ul>
+<p>It&#39;s true that none of the benefits of streetcars account for tangible differences. If riders&#39; only goal was to get from point A to point B as fast and cheaply as possible, BRT would categorically sweep streetcars in this debate. However, <strong>riders care about more than just speed and cost; their transit decisions are also influenced by comfort and safety, and they are just as much shaped by perception as the actual experience</strong>.</p>
+<p>Streetcars clearly win on this count –– they are just so cute! They harken to an older time, and they feel more permanent and sturdy than buses. <strong>These factors do not outweigh the advantages of BRT, but they should not be ignored.</strong> The perfect system would incorporate the advantages of both options, and there are easy, low-cost steps that could be taken in that direction.</p>
+<p>I&#39;d love to hear others&#39; ideas for incorporating the advantages (and cuteness!) of streetcars into BRT systems! Feel free <a href="mailto:devonz@cs.stanford.edu">shoot me an email</a> or <a href="twitter.com/devonzuegel">tweet at me</a> with your thoughts.</p>
 ]]></description>
-            <link>http://devonzuegel.com/pages/links</link>
-            <guid isPermaLink="true">http://devonzuegel.com/pages/links</guid>
-            <pubDate>Fri, 01 Jul 2016 02:20:00 GMT</pubDate>
+            <link>http://devonzuegel.com/posts/a-bus-named-desire</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/a-bus-named-desire</guid>
+            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
+            <pubDate>Thu, 24 Mar 2016 08:17:37 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Projects]]></title>
@@ -514,6 +564,7 @@
 <li><a href="#octagon">Octagon</a></li>
 <li><a href="#paper-trail">Paper Trail</a></li>
 <li><a href="#in-other-words">In Other Words</a></li>
+<li><a href="#bubble">Bubble</a></li>
 </ul>
 <div class='space triple'></div><div class='space'></div>
 
@@ -588,7 +639,7 @@
 <p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
 <p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
 <p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
-<p><img src="../assets/my-evernote.png" alt=""></p>
+<p><img src="../assets/my-evernote.jpg" alt=""></p>
 <p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
 <p><a name='zen-writer' class='anchor' /></p>
 <h2 id="-zen-writer-zenwriter-io-"><a href="//zenwriter.io">Zen Writer</a></h2>
@@ -666,81 +717,21 @@ do until convergence
 <p>My brother Jeffrey was born with Cerebral Palsy and is on the autistic spectrum. Life with Jeffrey is challenging for both of us because he doesn’t always communicate effectively in the conventional way, in “English.” However, he has found alternative modes with the help of his team of teachers, therapists, family, and friends.</p>
 <p>In my junior year in high school, I became fascinated with his growing ability to communicate in non-conventional ways and decided to devote several months to learning more about this process. After conducting extensive interviews and reading further into psychology and cognitive science, I published a documentary book called In Other Words about how he and his team discovers and develops those alternatives.</p>
 <p>You can find the book on <a href="http://www.blurb.com/b/2092327-in-other-words">Blurb.com</a>.</p>
+<p><a name='bubble' class='anchor' /></p>
+<h2 id="bubble">Bubble</h2>
+<div class='project-time'><div class='time'>January 2012</div><br></div>
+
+
+
+<p><img src="../assets/bubble.jpg" alt=""></p>
 ]]></description>
             <link>http://devonzuegel.com/pages/projects</link>
             <guid isPermaLink="true">http://devonzuegel.com/pages/projects</guid>
-            <pubDate>Tue, 07 Feb 2017 19:29:22 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[A Public Bus Named Desire]]></title>
-            <description><![CDATA[<!-- img: http://i.imgur.com/B0WjzI5.jpg -->
-<p>When I first stumbled across the streetcar vs bus rapid transit (BRT) debate, I was strongly biased towards streetcars. My opinion was largely shaped by the few weeks I spent in Berlin this past summer. While I was in Germany, I relied most heavily on Berlin&#39;s friendly yellow Metrotrams. I really only used the U-bahn and S-bahn when I had to make long, cross-city trips, where the travel time difference was more than 10 or 15 minutes. I used the bus system only once, despite the fact that it was just as extensive as the Metrotram lines.</p>
-<p><img src="http://techreleased.techreleased.netdna-cdn.com/wp-content/uploads/2012/07/28ac57a0085c.jpg" alt="berlin-metrotram"></p>
-<p>At the time, I naturally gravitated towards the Metrotrams without consciously considering buses, its main substitute. For all obvious intents and purposes, the bus and metro systems are basically equivalent, so it&#39;s strange that I used one so heavily while all but ignoring the other. I can think of a few reasons why this might have happened:</p>
-<ul>
-<li>As a first-time visitor to the city with a limited grasp of the German language, I liked the sense of direction the fixed tracks offered. When trying to figure out how to get somewhere, it was nice to see the <strong>rails trailing through the city, clearly marking the Metrotram&#39;s route</strong>.</li>
-<li>Somehow the trams <strong>felt more predictable and dependabe</strong> than the buses. This is plainly wrong – bus routes as just as well-defined and stable (at least in the short-term), and all transit options in Berlin run almost perfectly on time (yay for German precision, unlike the Catrain and BART...). My hypothesis is that this perception is another byproduct of the fixed tracks, because they foster <strong>a sense of permanence that boosts the entire system&#39;s credibility</strong>.</li>
-<li>I&#39;ve always associated buses with the sketchiest, most obnoxious transit riders. My main exposure to buses has been riding SF&#39;s dingy, smelly cars crushed by mobs of drunk Giants fans and overly talkative tourists. I&#39;m confident in saying that buses have a similar image problem among most middle-class Americans. My <strong>stigmatized perception of buses</strong> governed my transit decisions, despite the fact that Berlin&#39;s buses are actually very clean, and its riders are on the whole very polite.</li>
-</ul>
-<p>Upon further reflection, I see that streetcars&#39; advantages (as expressed in <a href="http://devonzuegel.com/posts/streetcars-vs-buses-primer">a previous post</a>) all have one trait in common: they are a product of perception. Meanwhile, <strong>buses&#39; advantages are far easier to quantify</strong>. As a result, it is easy for BRT advocates to dismiss streetcars&#39; advantages as petty and unimportant.</p>
-<p>I have begrudgingly come to agree that BRT is the way forward; streetcars&#39; modest advantages simply cannot justify their cost. However, rather than dismissing them entirely, <strong>it is critical that planners incorporate streetcars&#39; advantages into BRT systems</strong>. A few ideas for how they could do this:</p>
-<div style='float: right; width: 350px; padding: 20px'>
-    <img src='http://seattletransitblog.com/wp-content/uploads/2014/05/6335549553_26b9e3410a_b.jpg' />
-
-    <img src='https://classes.lt.unt.edu/Fall_2011/CECS_5030_020/aja0029/pictures/dirty%20subway.jpg'/>
-
-    <img src='https://chrissantosra.files.wordpress.com/2012/03/4-seoul-metro-train.jpg?w=611'/>
-
-    <img src='http://www.nikdaum.com/news/osi26.jpg'/>
-
-    <img src='http://nydetailing.com/images/interior-clean-bus.jpg'/>
-</div>
-
-<ul>
-<li><p><strong>Paint bus routes directly onto the streets.</strong> This paint would serve the same function as tram rails running through the city, offering a sense of direction and permanence for a fairly low price.</p>
-<div>
-</li>
-<li><p><strong>Emphasize a clean aesthetic</strong> on both the interior and exterior of the buses. Implement a <strong>zero-tolerance policy for messes</strong>, and design the interior and exterior of the buses with <strong>long-term aesthetics</strong> in mind.</p>
-<ul>
-<li>All forms of public transit –– but especially buses –– are vulnerable to stigmatization as being dirty and unsafe. Given the sheer volume and diversity of riders, it&#39;s easy to descend below a basic level of sanitation, comfort, and even safety. Any public vehicle quickly devolves into a moving trashcan and graffiti canvas without proper custodial attention. (Never use Caltrain&#39;s onboard bathrooms towards the end of rush hour. Just don&#39;t.) However, this is not inevitable!</li>
-<li>Immediate cleanup of messes reminiscent of the <a href="http://99percentinvisible.org/episode/clean-trains/">NYC subway&#39;s zero-tolerance policy</a> for graffiti in the mid 80s could minimize <a href="https://en.wikipedia.org/wiki/Broken_windows_theory">broken windows</a> behavior.<ul>
-<li>Riders take far less care with their messes when a space is already dirty, which means that once a vehicle is gross it often spirals down to the depths of disgust until it is finally cleaned. It&#39;s important to keep to cleanliness above that critical threshold to ensure that it doesn&#39;t enter that spiral.</li>
-<li>People are less inclined to use transit if it is dirty. This results in thinning out of riders, leaving the space to sketchier characters. I for one feel much more safer riding public transit alongside a large, diverse group of people rather than in a vehicle that is nearly-empty with the exception of one or two sketchy people. This has a cyclical effect –– without a critical mass of reputable-looking individuals, others are less likely to take that form of transit. This leads to a downward spiral of perception as well as actual safety.</li>
-</ul>
-</li>
-<li>Certain materials, colors, and designs are better suited for long-term use. For example, the brushed aluminum seats on the Seoul metro (to the right) are easy to clean and long-lasting, and they&#39;re even shiny! Those cars look like they belong in an industrial kitchen, not an urban transit system. In contrast, seats in many American buses are made of much less durable materials. I have a particularly vivid memory of the buses that hauled my elementary school classes off to various field trips. The seats were outfitted with an ugly vinyl that were brittle and cracked, revealing filthy yellow padding below. A simple choice of more durable, attractive materials would have single-handedly improved my childhood impression of mass transit. (Lucky for the school, we were a captive audience.) If the seats had looked more like the radiant blue of the bus seats pictured to the right, I would have seen mass transit as just another way to get around rather than as a stinky death trap.</li>
-</ul>
-</li>
-</ul>
-<p>It&#39;s true that none of the benefits of streetcars account for tangible differences. If riders&#39; only goal was to get from point A to point B as fast and cheaply as possible, BRT would categorically sweep streetcars in this debate. However, <strong>riders care about more than just speed and cost; their transit decisions are also influenced by comfort and safety, and they are just as much shaped by perception as the actual experience</strong>.</p>
-<p>Streetcars clearly win on this count –– they are just so cute! They harken to an older time, and they feel more permanent and sturdy than buses. <strong>These factors do not outweigh the advantages of BRT, but they should not be ignored.</strong> The perfect system would incorporate the advantages of both options, and there are easy, low-cost steps that could be taken in that direction.</p>
-<p>I&#39;d love to hear others&#39; ideas for incorporating the advantages (and cuteness!) of streetcars into BRT systems! Feel free <a href="mailto:devonz@cs.stanford.edu">shoot me an email</a> or <a href="twitter.com/devonzuegel">tweet at me</a> with your thoughts.</p>
-]]></description>
-            <link>http://devonzuegel.com/posts/a-bus-named-desire</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/a-bus-named-desire</guid>
-            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Thu, 24 Mar 2016 08:17:37 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Automator Workflow to stitch PDFs into a single document]]></title>
-            <description><![CDATA[<!-- img: http://green-romp.com/blog/wp-content/uploads/2013/08/Automator_icon.png -->
-<p><img src='../assets/automator-pdf/combine-pdfs.png' width='350px' style='float:right'></p>
-<p>I recently made a Mac <a href="../assets/Combine-PDF-Files.workflow.zip">Automator Workflow</a> that allows you to easily stitch together multiple PDFs into a single document. The workflow creates a new PDF while also  To use the workflow on your own computer:</p>
-<ol>
-<li><a href="../assets/automator-pdf/Combine-PDF-Files.workflow.zip">Download</a> the <code>.zip</code> file and extract the workflow from the archive.</li>
-<li>When OSX prompts you with &quot;Do you want to install the “Combine PDF Files” service?&quot;, click &quot;Install&quot;.</li>
-<li>Navigate to the directory in which the PDFs you wish to combine can be found. Select all of the files at once, and right-click the selection. At the bottom of the menu, click the option called &quot;Combine PDF Files&quot;.</li>
-<li>The workflow will ask you to name the new file (including its extension) and to choose its location. Voila!</li>
-</ol>
-]]></description>
-            <link>http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</guid>
-            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Thu, 24 Mar 2016 08:17:43 GMT</pubDate>
+            <pubDate>Fri, 14 Apr 2017 04:28:57 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[An Interview with Dr. Bhattacharya]]></title>
-            <description><![CDATA[<p><img src="//stanfordreview.org/wp-content/uploads/battacharya.png" alt=""></p>
+            <description><![CDATA[<p><img src="../assets/headline-images/bhattacharya.png" alt=""></p>
 <p><em>Jay Bhattacharya is an associate professor of Medicine at Stanford and, by courtesy, of Economics. He has been studying the healthcare market for 20 years. He received a BA in economics, an MD and a PhD from Stanford University, where he has taught since 2001.</em> </p>
 <h3 id="what-is-the-basic-structure-of-the-affordable-care-act-aca-">What is the basic structure of the Affordable Care Act (ACA)?</h3>
 <p>The big context is that there are about 15 to 16 million uninsured people in the US. People view it as a problem, because there’s a lot of financial risk associated with being uninsured, so the ACA aims to expand insurance coverage in two ways. The first is that all people under 138% of the federal poverty line now immediately qualify for Medicaid, while before there were other tests that had to be met. The Congressional Budget Office has said that it’ll cover about 13 million people. The second biggest mechanism is probably these insurance exchanges, which are essentially marketplaces where insurance companies can offer health insurance plans that are regulated by the government.</p>
@@ -777,28 +768,38 @@ do until convergence
             <link>http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</link>
             <guid isPermaLink="true">http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</guid>
             <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Sat, 28 Nov 2015 07:00:19 GMT</pubDate>
+            <pubDate>Fri, 14 Apr 2017 04:07:20 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Batch installing fonts in multiple subdirectories]]></title>
-            <description><![CDATA[<!-- img: http://i.stack.imgur.com/o76m6.png -->
-<p>I&#39;m a digital pack rat, especially when it comes to fonts. Every time I see a nice typeface, I immediately forget whatever it is I&#39;m actually reading and instead dig into the source code, find its name, and search the corners of the web for a a free copy. It doesn&#39;t help that my favored form of procrastination is scrolling through pages upon pages of fonts on sites like <a href="https://www.myfonts.com/">MyFonts.com</a> and <a href="http://www.fontsquirrel.com/">FontSquirrel.com</a>. The result is that I frequently find myself with a mess of directories bloated with <code>.ttf</code> and <code>.otf</code> files. <img src='http://i.imgur.com/VTK3tEG.png' width='270px' style='float:right; margin:15px'/></p>
-<p>The sad hangover to my embarrassingly frequent font binges is actually installing them. OSX has no easy way to get multiple fonts into Font Book all at once, leaving you with the painful task of installing them by hand, one by one. It&#39;s particularly unpleasant when the files are in multiple subfolders, the common format of the downloaded bundles I love so much.</p>
-<p>Luckily, it&#39;s easy to install all fonts within the subfolders of a directory from the command line with the following steps:</p>
+            <title><![CDATA[Automator Workflow to stitch PDFs into a single document]]></title>
+            <description><![CDATA[<!-- img: http://green-romp.com/blog/wp-content/uploads/2013/08/Automator_icon.png -->
+<p><img src='../assets/automator-pdf/combine-pdfs.png' width='350px' style='float:right'></p>
+<p>I recently made a Mac <a href="../assets/Combine-PDF-Files.workflow.zip">Automator Workflow</a> that allows you to easily stitch together multiple PDFs into a single document. The workflow creates a new PDF while also  To use the workflow on your own computer:</p>
 <ol>
-<li><p>First, <strong>locate the parent directory</strong> of all of the font files you wish to install. In my case, the directory is <code>~/Downloads/fonts-to-install</code>.</p>
-</li>
-<li><p>Next, <strong>open your terminal</strong> and <strong>enter the following command</strong> to install the fonts directly into Font Book. If you are dealing with <code>.otf</code> s or some other file type, replace <code>&quot;*.ttf&quot;</code> with <code>&quot;*.otf&quot;</code>.</p>
-</li>
+<li><a href="../assets/automator-pdf/Combine-PDF-Files.workflow.zip">Download</a> the <code>.zip</code> file and extract the workflow from the archive.</li>
+<li>When OSX prompts you with &quot;Do you want to install the “Combine PDF Files” service?&quot;, click &quot;Install&quot;.</li>
+<li>Navigate to the directory in which the PDFs you wish to combine can be found. Select all of the files at once, and right-click the selection. At the bottom of the menu, click the option called &quot;Combine PDF Files&quot;.</li>
+<li>The workflow will ask you to name the new file (including its extension) and to choose its location. Voila!</li>
 </ol>
-<pre class="highlight"><code class="hljs bash">find ~/Downloads/fonts-to-install\ Fonts/ -name <span class="hljs-string">"*.ttf"</span> -exec cp -iv {} /Library/Fonts \;
-</code></pre>
-<p>And that&#39;s that! Go use your newly-saved font-installing time for something fun.</p>
 ]]></description>
-            <link>http://devonzuegel.com/posts/batch-installing-fonts-in-multiple-subfolders</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/batch-installing-fonts-in-multiple-subfolders</guid>
+            <link>http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</guid>
             <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Thu, 24 Mar 2016 08:17:50 GMT</pubDate>
+            <pubDate>Fri, 14 Apr 2017 03:59:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Bowling with People Who Are Actually Interesting]]></title>
+            <description><![CDATA[<p>My earbuds are in nearly every waking moment that I&#39;m not working or relaxing. Podcasts and audiobooks fill my once-silent hours of walking to class, getting ready in the morning, and waiting in lines. When I see someone I know heading towards me on the street, I usually keep my head down and walk a little faster so I don&#39;t have to interrupt the middle of a particularly good episode.</p>
+<p>In my free time, I read essays by bloggers living around the world and spend time with almost exclusively my closest friends. I&#39;ve never been a Stanford football game, and I don&#39;t understand the usage of &quot;we&quot; when fans discuss home team sports. The number of chance interactions I have with acquaintances and periphery friends has steadily decreased as I&#39;ve hooked into the internet and opted out of the mainstream culture around me – after all, smalltalk is rarely as interesting as a podcasts.</p>
+<p><a href="http://bowlingalone.com/">Robert Putnam is right</a> – we are opting out of mainstream culture. Civil engagement is at an all-time low, and national and local identity is fragmenting. Unlike our parents, my generation doesn&#39;t necessarily perceive our immediate physical surroundings as our community. &quot;The nation is some lines on a map, some laws you follow. No one particularly cares about it,&quot; said Gwern in an essay entitled <a href="https://www.gwern.net/The%20Melancholy%20of%20Subculture%20Society"><em>The Melancholy of Subculture Society</em></a>. Traditional cultural identities lose their meaning as physical location becomes increasingly irrelevant.</p>
+<p>However, this shift is strengthening the social fabric rather than degrading it. Just as globalizing the marketplace of goods increases the choice, quality, and accessibility of consumption, globalizing the marketplace of ideas yields analogous gains from trade. We are no longer confined to the stale ideas of our local newspaper or our polemic uncle&#39;s close-minded political views — now we have tweets and blogs. A larger market gives us more options to choose from, and in turn we engage in better quality ideas. An internet connection is like going from a small high school to a large university. Maybe as a teenager you were the only one who folded origami in your hometown, but in college there&#39;s an entire club devoted to it, filled with members who can share their expertise and organically improve everyone&#39;s folding skills just by connecting with each other.</p>
+<p>New channels of communication also enable richer conversations among the people with whom we&#39;re already close. When I discuss a challenging intellectual topic or personal issue with friends, we often intentionally move the conversation to Facebook chat. I find that writing my thoughts brings logical clarity and self-reflection that are easy to lose in fast-paced dialogue, and it enables me to detach from some emotional biases that degrade the quality of conversation.</p>
+<p>Historically, cultural fragmentation has fallen along the lines of physical proximity. Traditional cultural identity is just a subtle form of in-group, out-group tribalism. It forms the foundation of social disorders such as racism and destructive nationalism and the countless atrocities humans have committed against each other over time. Social cleavages due to the results of geographical lotteries have divided people around the world and turned them against each other. Robert Putnam is right in his diagnosis that traditional social groups are declining as we become ever hooked into TV and the internet—  but I&#39;d much rather have cultural fragmentation along lines of interests and ideas anyway.</p>
+]]></description>
+            <link>http://devonzuegel.com/posts/bowling-alone-cultural-fragmentation</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/bowling-alone-cultural-fragmentation</guid>
+            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
+            <pubDate>Sat, 02 Jul 2016 01:24:19 GMT</pubDate>
         </item>
     </channel>
 </rss>
