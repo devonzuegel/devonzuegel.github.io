@@ -4,9 +4,9 @@
         <description><![CDATA[Devon Zuegel's personal website]]></description>
         <link>http://devonzuegel.com</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 14 Apr 2017 04:29:08 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 19 Jun 2017 06:47:40 GMT</lastBuildDate>
         <atom:link href="http://devonzuegel.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 14 Apr 2017 03:42:52 GMT</pubDate>
+        <pubDate>Mon, 19 Jun 2017 06:29:31 GMT</pubDate>
         <item>
             <title><![CDATA[404 Page Not Found]]></title>
             <description><![CDATA[
@@ -198,6 +198,35 @@
             <pubDate>Tue, 07 Feb 2017 19:15:08 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Contact]]></title>
+            <description><![CDATA[
+<div class="contact col-sm-4">
+  <h4>Github</h4><a href="http://github.com/devonzuegel">github.com/devonzuegel</a>
+  <h4>Twitter</h4><a href="http://twitter.com/devonzuegel">@devonzuegel</a>
+  <h4>Email</h4><a href="mailto:devonz@cs.stanford.edu">devonz@cs.stanford.edu</a>
+  <h4>Instapaper</h4><a href="https://www.instapaper.com/p/devonzuegel">devonzuegel</a>
+  <h4></h4><a></a>
+  <h4>Resume</h4><a href="/assets/Devon_Zuegel--Resume.pdf">PDF</a>
+  <h4>Medium</h4><a href="https://medium.com/@devonmarisa">@devonmarisa</a>
+</div>
+<div class="col-sm-8"><p>This site is where I can riff on ideas, be wrong, and learn from those mistakes. Of course I try to be correct, and I always write what I believe to be true, but the greatest value most often comes from someone messaging me to point out a body of research I missed or angle I misinterpreted.</p>
+<p>In this vein, please don&#39;t hesitate to let me know what you think! The whole point is to share what I know and to learn the rest.</p>
+
+</div>
+<div class="col-xs-12">
+  <h4>Instagram</h4><a href="http://www.instagram.com/devon_marisa/">devon_marisa</a><div class="space"></div>
+  <script src="//lightwidget.com/widgets/lightwidget.js"></script>
+  <iframe src="//lightwidget.com/widgets/320ccff5db125348a54fd436b8fb14bc.html" scrolling="no" allowtransparency="true" style="width: 100%; border: 0; overflow: hidden;" class="lightwidget-widget"></iframe>
+  <h4>Spotify</h4>
+  <div class="space triple"></div>
+  <iframe src="https://embed.spotify.com/?uri=spotify%3Auser%3A123589098%3Aplaylist%3A4qo0rRTKF8bFogGPWc7eJ3&amp;theme=white" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+  <div class="space triple"></div>
+</div>]]></description>
+            <link>http://devonzuegel.com/pages/contact</link>
+            <guid isPermaLink="true">http://devonzuegel.com/pages/contact</guid>
+            <pubDate>Mon, 19 Jun 2017 06:33:59 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[Links]]></title>
             <description><![CDATA[<!-- collection: pages -->
 <p>This is where I collect some of the ideas, historical facts, anecdotes, etc. that I would like more people to know about or just plain don&#39;t want to forget. I update it sporadically, and the process is not systematic in any way.</p>
@@ -237,33 +266,197 @@
             <pubDate>Fri, 01 Jul 2016 02:20:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Contact]]></title>
-            <description><![CDATA[
-<div class="contact col-sm-4">
-  <h4>Github</h4><a href="http://github.com/devonzuegel">github.com/devonzuegel</a>
-  <h4>Twitter</h4><a href="http://twitter.com/devonzuegel">@devonzuegel</a>
-  <h4>Email</h4><a href="mailto:devonz@cs.stanford.edu">devonz@cs.stanford.edu</a>
-  <h4>Instapaper</h4><a href="https://www.instapaper.com/p/devonzuegel">devonzuegel</a>
-  <h4></h4><a></a>
-  <h4>Resume</h4><a href="/assets/Devon_Zuegel--Resume.pdf">PDF</a>
-</div>
-<div class="col-sm-8"><p>This site is where I can riff on ideas, be wrong, and learn from those mistakes. Of course I try to be correct, and I always write what I believe to be true, but the greatest value most often comes from someone messaging me to point out a body of research I missed or angle I misinterpreted.</p>
-<p>In this vein, please don&#39;t hesitate to let me know what you think! The whole point is to share what I know and to learn the rest.</p>
+            <title><![CDATA[Projects]]></title>
+            <description><![CDATA[<script type="text/javascript"> // Hack to fix scrolling to Mr Schelling's Neighborhood 
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+</script>
 
-</div>
-<div class="col-xs-12">
-  <h4>Spotify</h4>
-  <div class="space triple"></div>
-  <iframe src="https://embed.spotify.com/?uri=spotify%3Auser%3A123589098%3Aplaylist%3A4qo0rRTKF8bFogGPWc7eJ3&amp;theme=white" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
-  <div class="space triple"></div>
-</div>]]></description>
-            <link>http://devonzuegel.com/pages/contact</link>
-            <guid isPermaLink="true">http://devonzuegel.com/pages/contact</guid>
-            <pubDate>Fri, 12 Aug 2016 20:00:18 GMT</pubDate>
+<h1 id="projects">Projects</h1>
+<ul>
+<li><a href="#mfp-api">MyFitnessPal API</a></li>
+<li><a href="#isostamp">Isostamp</a></li>
+<li><a href="#schelling-neighborhood">Mr. Schelling&#39;s Neighborhood</a></li>
+<li><a href="#tiddly-lisp">TiddlyLisp</a></li>
+<li><a href="#instanote">Instanote</a></li>
+<li><a href="#congressional-bills">Congressional Bill Outcome Predictor</a></li>
+<li><a href="#affitto">Affitto</a></li>
+<li><a href="#my-evernote">My Evernote</a></li>
+<li><a href="#zen-writer">Zen Writer</a></li>
+<li><a href="#origami-js">OrigamiJS</a></li>
+<li><a href="#fiesta">Fiesta: Machine Translator</a></li>
+<li><a href="#octagon">Octagon</a></li>
+<li><a href="#paper-trail">Paper Trail</a></li>
+<li><a href="#in-other-words">In Other Words</a></li>
+<li><a href="#bubble">Bubble</a></li>
+</ul>
+<div class='space triple'></div><div class='space'></div>
+
+<p><a name='mfp-api' class='anchor' /></p>
+<h2 id="myfitnesspal-api">MyFitnessPal API</h2>
+<div class='project-time'><div class='time'>August - September 2016</div><br></div>
+
+<p>I&#39;ve tracked my eating habits for the past eight years, and I&#39;ve since added other health and productivity metrics. Data have piled up in the spreadsheets, services, and other tools I&#39;ve used to collect these measurements. So far I&#39;ve done little with it, but I always imagined that they would one day uncover some pattern that would suggest changes in the way I eat, work, or exercise.</p>
+<p>So in 2016 when I started experiencing extreme fatigue nearly every afternoon, I decided to investigate whether there was a connection between the food I was eating and my energy levels. My hypothesis was that eating carbohydrates was making me “crash” in the afternoon, because I tended to feel better those days I stuck with just veggies and protein for lunch.</p>
+<p>To test this hypothesis, I went to MyFitnessPal (MFP), where I&#39;d been collecting data about my eating habits since high school. To my dismay, they did not have a public API or even a tool that would let me export more than a few months of data at a time. I found a few third-party tools that let me cobble together the logs, but they felt as if they were duct-taped together.</p>
+<p>At this point, any reasonable person would have just accepted this fact and used the manual workarounds to export the data. After all, my goal was to find data to confirm or falsify my hypothesis, not to have a beautiful REST API from which I could continuously pull my food logs.</p>
+<p>Instead of being reasonable person, I decided to build a little service that would pull all of my logs each day, persist it to a separate database, and then surface the data with a JSON API. I initially planned to write a simple web scraper to do the retrieval work. With a bit more digging through Github&#39;s less-than-spectacular search (and encouragement from John &lt;3), I found a project by someone even less reasonable than me that inspired the approach I ended up taking.</p>
+<p>Nathan Reynolds (<a href="https://github.com/nathforge">nathforge</a> on Github) had figured out that in fact MyFitnessPal <em>did</em> have an API, it just was for internal use in the official iPhone app only. Not only was the API completely undocumented, but the MFP team had created a custom byte encoding by which to send the data. I still have no idea how he figured out the spec of this encoding, because a lot of the design choices made appear completely random. However he did it, Nathan had built up this codec that took the stream of bytes and parsed them into a human-readable form.</p>
+<p>Nathan&#39;s <a href="https://github.com/nathforge/myfitnesspal-sync"><code>myfitnesspal-sync</code></a> was a goldmine for understanding MFP&#39;s arcane encoding, but it had some drawbacks. The package didn&#39;t support every type of packet, which mean I would have had to extend his code to be able to sync all of my data from MFP. Also, I didn&#39;t particularly like the interface he&#39;d designed, and it was completely untested. It also had to be manually run from the command line, whereas I wanted something that would continuously sync the data. On top of all this, I&#39;d be looking for a reason to write some Ruby this summer, so I figured this was a good excuse to do that.</p>
+<p>I first wrote a package to decode the MFP packets and the encode human-readable data back into the byte form. All the while I was plagiarizing Nathan&#39;s detective work (yay open source!). Thanks Nathan, you are a hero.</p>
+<p>Once I was satisfied with my Ruby implementation of the codec, I built a tiny Sinatra API to surface the data. This part is still a work-in-progress. It <em>works</em>, but it isn&#39;t particularly robust. There&#39;s still a bit more work to do.</p>
+<p>I still haven&#39;t gotten around to a significant amount of data analysis. I did use Metabase to analyze the data in my Heroku Postgres instance over the holidays, but there&#39;s definitely more to dig into.</p>
+<p>You can find the code for the full API <a href="https://github.com/devonzuegel/myfitnesspal-ruby">on Github</a>. The module for just the codec implementation is in that repository in the <a href="https://github.com/devonzuegel/myfitnesspal-ruby/tree/master/lib"><code>lib</code></a> directory. Once the API itself is stable, I&#39;ll make it available to anyone who wants to sync and retrieve their MFP data.</p>
+<p><a name='isostamp' class='anchor' /></p>
+<h2 id="-isostamp-https-isostamp-org-"><a href="https://isostamp.org">Isostamp</a></h2>
+<div class='project-time'><div class='time'>March - July 2016</div><br></div>
+
+<p><a href="http://pubs.acs.org/doi/abs/10.1021/cb100338x">Isotopic signature transfer and mass pattern prediction (Isostamp)</a> is an enabling technique for chemically-directed proteomics. Specifically, it is an algorithm for the targeted detection and identification of modified species by mass spectrometry (MS).</p>
+<p>Will Byrd and I worked with the Bertozzi Lab to develop their Isostamp algorithm. We also built a simple API so developers can run the executable in the cloud, and we built a web application that enables other labs to use Isostamp to upload and analyze their own data.</p>
+<p>You can find the code for the API at <a href="https://github.com/devonzuegel/tagfinder-api">github.com/devonzuegel/tagfinder-api</a>.</p>
+<p>You can upload your own data and learn more about Isostamp at <a href="Isostamp.org">Isostamp.org</a>, and you can find the code for the web app at <a href="https://github.com/devonzuegel/Isostamp-web-v2">github.com/devonzuegel/Isostamp-web-v2</a>.</p>
+<p>We will be open-sourcing the C++ code for the algorithm soon.</p>
+<p><a name='schelling-neighborhood' class='anchor' /></p>
+<h2 id="-mr-schelling-s-neighborhood-https-rawgit-com-devonzuegel-affitto-master-models-mr-schellings-neighborhood-mr-schellings-neighborhood-html-"><a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">Mr. Schelling&#39;s Neighborhood</a></h2>
+<div class='project-time'><div class='time'>July 2016</div><br></div>
+
+<p>Ever since reading about Schelling&#39;s <a href="http://isites.harvard.edu/fs/docs/icb.topic185351.files/shelling1.pdf">&quot;general theory of tipping&quot;</a> in <a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/"><em>Seeing Around Corners</em></a>, I&#39;ve wanted to replicate some of his models and play around with agent-based modeling as a technique.</p>
+<p>Schelling&#39;s model of segregation found that if individuals have even just a slight preference to be surrounded by people of their own group or race, the emergent effect across a population can be total segregation, even if that is not the intention of any specific agent. This effect can be seen with a simple ABM, which I&#39;ve implemented below.</p>
+<p>You are looking at a birds-eye view of a simulated neighborhood containing two groups, blue and red with a handful of blank spaces. To start, the blues and reds are randomly distributed. Then, frame after frame, the agents are allowed to move. The agent is happy with its position if its nearest neighbors include at least a certain number of its own color; otherwise, they move to a random open space on the map.</p>
+<p>The default number of same-colored neighbors required to make an agent satisfied with its location is the threshold, and the percent of &quot;empty lost&quot; on the map is the percent open. You can adjust these with the controls in the top right corner of the model.</p>
+<iframe src='https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood-small.html' style='width:100%; height: 270px;' frameborder='no' border='0'></iframe>
+
+<p>You can find the ABM code on <a href="//github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">Github</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">here</a>.</p>
+<p><a name='tiddly-lisp' class='anchor' /></p>
+<h2 id="-tiddlylisp-github-com-devonzuegel-tiddly-lisp-"><a href="//github.com/devonzuegel/tiddly-lisp">TiddlyLisp</a></h2>
+<div class='project-time'><div class='time'>January 2016</div><br></div>
+
+<p>To learn the fundamentals of Lisp, I built a little interpreter based on Michael Nielsen&#39;s fantastic blog post <a href="http://www.michaelnielsen.org/ddi/lisp-as-the-maxwells-equations-of-software/"><em>Lisp as the Maxwell&#39;s Equations of Software</em></a>. I included extensions to resolve some of the challenge problems he mentioned at the end of the post, too.</p>
+<p>You can find the code for the interpreter on <a href="//github.com/devonzuegel/tiddly-lisp">Github</a>.</p>
+<p><a name='instanote' class='anchor' /></p>
+<h2 id="-instanote-https-instanote-archive-herokuapp-com-"><a href="https://instanote-archive.herokuapp.com">Instanote</a></h2>
+<div class='project-time'><div class='time'>January 2016</div><br></div>
+
+<p>About a month ago, I started using Instapaper obsessively. However, it left me with one major problem – all of my Instapaper bookmarks and highlights were isolated from the knowledge that I (obsessively) store in Evernote, and I wanted to have them all in one place. After all, a <a href="https://en.wikipedia.org/wiki/Personal_knowledge_base">personal knowledge base</a> is useless if it doesn&#39;t contain half of the things I read throughout the day.</p>
+<p>Instanote solves this problem by syncing the text of my archived Instapaper bookmarks with their respective highlights into Evernote every 10 minutes. I figured other people might have the same frustration with Instapaper, so I built out a little Heroku app that allows other people to sign up too rather than just hard-coding my login info into a hacky script.</p>
+<p>You can sign up at <a href="https://instanote-archive.herokuapp.com">instanote-archive.herokuapp.com</a> and see the source code on <a href="https://github.com/devonzuegel/instanote-archive">Github</a>.</p>
+<p><a name='congressional-bills' class='anchor' /></p>
+<h2 id="-congressional-bill-outcome-predictor-http-devonzuegel-com-bills-"><a href="http://devonzuegel.com/bills/">Congressional Bill Outcome Predictor</a></h2>
+<div class='project-time'><div class='time'>December 2015</div><br></div>
+
+<p>Emma Marriott, Arushi Jain, and I built a predictor that identifies which US bills will succeed in the House &amp; Senate. We tried several different prediction methods, including: Naive Bayes with and without Principal Component Analysis (PCA), Logistic Regression, Support Vector Machine (SVM) with PCA, and Perceptron with PCA. PCA identified the <code>500</code> most important features of a set of <code>11,000</code>. Each predictor was modeled on data from the 109th – 113th Congresses from a wide range of structured &amp; unstructured sources, including lobbying information. SVM with PCA proved to be the best model. It predicted bill outcomes with <code>94%</code> precision &amp; <code>87%</code> recall, resulting in an F-measure of <code>0.92</code>.</p>
+<p>You can learn more about our research and data <a href="http://devonzuegel.com/bills/">here</a>.</p>
+<p><a name='affitto' class='anchor' /></p>
+<h2 id="-affitto-github-com-devonzuegel-affitto-"><a href="//github.com/devonzuegel/affitto">Affitto</a></h2>
+<div class='project-time'><div class='time'>November 2015</div><br></div>
+
+<p>San Francisco and the greater Bay Area have been struggling with housing shortages and decisions about how to best serve the community with policies to deal with this situation. At a micro level, we have a fairly good understanding of how individuals make economic decisions such as where tenants choose to live and how much rent landlords choose to charge. However, we lack tools to model the complex interactions of millions of individuals simultaneously making decisions and the emergent phenomena that result from these interactions.</p>
+<p>John Luttig and I built an Agent Based Model (ABM) to simulate emergent behavior within housing markets and explore the impact of policies such as rent control and zoning regulations. With this project, we aim to provide a tool for policymakers and stakeholders to better understand these interactions that in aggregate comprise the housing market. Understanding large-scale systems requires understanding how the results of individual actions can be more than the sum of its parts. We used ABM to simulate the actions and interactions of tenants and landlords.</p>
+<p>Here is a small version of one of our models. You may have to close the controls (by clicking the bottom of the control panel) in order to see the full simulation.</p>
+<iframe src='http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2-small/model.html' style='width:100%; height: 390px;' frameborder='no' border='0'></iframe>
+
+<p>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="//github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</p>
+<p><a name='my-evernote' class='anchor' /></p>
+<h2 id="-my-evernote-myevernote-co-"><a href="//myevernote.co">My Evernote</a></h2>
+<div class='project-time'><div class='time'>July 2015</div><br></div>
+
+<p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
+<p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
+<p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
+<p><img src="../assets/my-evernote.jpg" alt=""></p>
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
+<p><a name='zen-writer' class='anchor' /></p>
+<h2 id="-zen-writer-zenwriter-io-"><a href="//zenwriter.io">Zen Writer</a></h2>
+<div class='project-time'><div class='time'>June 2015</div><br></div>
+
+<p>The most difficult part of writing is that first draft. Putting your ideas to paper to generate that initial content is hard, because it&#39;s natural to edit your thoughts while translating them into words. However, this can severely hamper progress and creativity during early drafts. I&#39;ve learned that I write better content faster if I don&#39;t censor myself initially and then only allow myself to revise and edit after I&#39;ve exhausted my ideas. However, it&#39;s extremely difficult to contain that urge to filter out the less well-formed ideas.</p>
+<p>During spring quarter finals, I was assigned a 10 page paper. Just three days before it was due I had a one page draft despite hours of research and staring at a blank screen. I had lots of ideas in my head, but every time I started typing I ended up using the delete button almost as much as all my other keys combined.</p>
+<p>Since I wasn&#39;t making any progress anyways, I decided to take a break and built a tiny text editor called <a href="//zenwriter.io">Zen Writer</a>. It disables the delete button, highlights the current line, and fades out past content so that your attention is focused on moving forward and generating more content.</p>
+<p>It didn&#39;t take much work to build a rough version, and as soon as I finished I was back to writing that first draft of my paper. In the first 15 minutes, I generated about 600 words. When I went back to revise what I&#39;d written, I was surprised to find that most of my changes were to fix minor typos rather than large, conceptual revisions.</p>
+<p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
+<p>P.S. As a more robust solution to this problem, I now use the <a href="http://www.96problems.com/rough-draft/">First Draft</a> Mac app from <a href="http://www.96problems.com/">96 Problems</a>. It offers all the features I built, planned to build, or never even realized I needed in ZenWriter. Ben and the whole team are super responsive and helpful too, so in short I highly recommend the app if you&#39;re looking for a tool to solve this problem!</p>
+<p><a name='origami-js' class='anchor' /></p>
+<h2 id="-origamijs-htmlpreview-github-io-https-raw-githubusercontent-com-devonzuegel-origamijs-master-example-coffee-html-"><a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">OrigamiJS</a></h2>
+<div class='project-time'><div class='time'>March 2015</div><br></div>
+
+<p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
+<p><a name='fiesta' class='anchor' /></p>
+<h2 id="-fiesta-machine-translator-github-com-devonzuegel-fiesta-"><a href="//github.com/devonzuegel/fiesta">Fiesta: Machine Translator</a></h2>
+<div class='project-time'><div class='time'>March 2015</div><br></div>
+
+<p>Zoe Robert, John Luttig, and I built a Spanish to English machine translator, which we called Fiesta. It is based on the IBM Model 1 algorithm and also implements several Spanish-specific strategies for improving results.</p>
+<p>IBM Model 1 is an <strong>expectation-maximization statistical alignment algorithm</strong>. Given known pairings of Spanish and English sentences, it generates a matrix of probabilities whose rows correspond to the Spanish vocabulary and columns correspond to the English vocabulary. The value at any given cell in the matrix represents the probability that those two words have co-occurred within translations of each other. This table is then used to estimate a model for future translations.</p>
+<p>In short, IBM Model 1 looks for the most likely English word for a Spanish word (e.g. “dog”) based off our knowledge of co-occurrences within sentences. As such, if there are no translations of a given Spanish word <code>s</code> that contain a given English word <code>e</code>, the value of the cell at the corresponding row and column will be <code>0</code>.</p>
+<p>The algorithm requires 3 components:</p>
+<ul>
+<li>a language model to compute <code>P(E)</code> (the prior)</li>
+<li>a translation model to compute <code>P(S|E)</code> (the probability that a Spanish word <code>s</code> translates to an English word <code>e</code>)</li>
+<li>a decoder that produces the most probable translation</li>
+</ul>
+<h4 id="pseudocode">Pseudocode</h4>
+<pre class="highlight"><code class="hljs python">initialize transl_prob(e|s) uniformly
+do until convergence
+  set count(e|s) to <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all e,s
+  set total_s(s) to <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all s
+  <span class="hljs-keyword">for</span> all sentence pairs (en_sentence, sp_sentence)
+    set total_e(e) = <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all e
+    <span class="hljs-keyword">for</span> all words e <span class="hljs-keyword">in</span> en_sentence
+      <span class="hljs-keyword">for</span> all words s <span class="hljs-keyword">in</span> sp_sentence
+        total_e(e) += transl_prob(e|s)
+    <span class="hljs-keyword">for</span> all words e <span class="hljs-keyword">in</span> en_sentence
+      <span class="hljs-keyword">for</span> all words s <span class="hljs-keyword">in</span> sp_sentence
+        count(e|s) += transl_prob(e|s) / total_e(e)
+        total_s(s) += transl_prob(e|s) / total_e(e)
+  <span class="hljs-keyword">for</span> all s
+    <span class="hljs-keyword">for</span> all e
+      transl_prob(e|s) = count(e|s) / total_s(s)
+</code></pre>
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/fiesta">Github</a>.</p>
+<p><a name='octagon' class='anchor' /></p>
+<h2 id="octagon">Octagon</h2>
+<div class='project-time'><div class='time'>Summer 2014</div><br></div>
+
+<p><img src="http://michaelandassociate.com/fifteen/wp-content/uploads/2014/11/formation8.jpg" alt="right-sm"></p>
+<p>This past summer, I designed and built an app called Octagon, a tool for venture capital firms. Octagon helps VCs better manage relationships with portfolio companies by visualizing important metrics about company growth and providing a repository for financial documents and quarterly updates. It also facilitates interaction between investors and board members and the startups in their portfolios in an analogous manner to CRM software. Octagon is currently in beta testing at Formation|8.</p>
+<p>I was responsible for the full-stack of the app, though I was lucky enough for the last few weeks of the project to work with a friend named Zack who helped me immensely with the front-end, especially user interaction and fully utilizing the capabilities of our graphing libraries.</p>
+<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/octagon">Github</a>.</p>
+<p><a name='paper-trail' class='anchor' /></p>
+<h2 id="paper-trail">Paper Trail</h2>
+<div class='project-time'><div class='time'>March 2014 - present</div><br></div>
+
+<p>Some of the greatest impact individuals can have on politics is driven by daily purchasing decisions. Any time an individual patronizes a corporation, (s)he is fueling the company&#39;s lobbying and donorship capabilities and is indirectly supporting their political causes. Unfortunately, the impact of corporate political contributions is largely opaque to the general public, and the research about corporations’ political activity is a tedious, complex task.</p>
+<p>In early 2014, I set out to solve this problem with a project called Paper Trail. The web app provides users access to political profiles of companies and manufacturers. Visualizations and statistics about companies political contributions and lobbying behavior help consumers make informed choices about where their money is going. In turn, consumers&#39; more thoughtful choices empower those corporations that represent their values.</p>
+<p>Paper Trail was the first programming project that I pursued outside of class and has evolved significantly since I first implemented it in early 2014. It began as a simple HTML/Javascript app into which users could query the names of companies and learn about their political contributions.</p>
+<p>You can find this initial prototype <a href="//stanford.edu/~devonz/paper_trail/about.html">here</a> and the open source code base on <a href="//github.com/devonzuegel/WWW/tree/master/paper_trail">Github</a>.</p>
+<p>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users&#39; existing workflow.</p>
+<p>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user&#39;s cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site — Amazon — and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon&#39;s fantastic API, and generally focusing our energy on specific goals rather than broad ones. </p>
+<p>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="//invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="//github.com/devonzuegel/papertrail-extension">Github</a>.</p>
+<p><a name='in-other-words' class='anchor' /></p>
+<h2 id="in-other-words">In Other Words</h2>
+<div class='project-time'><div class='time'>January - May 2011</div><br></div>
+
+<p><img src="http://bookshow.blurb.com/bookshow/cache/P2866696/md/cover_2.jpeg" alt="right-md"></p>
+<p>My brother Jeffrey was born with Cerebral Palsy and is on the autistic spectrum. Life with Jeffrey is challenging for both of us because he doesn’t always communicate effectively in the conventional way, in “English.” However, he has found alternative modes with the help of his team of teachers, therapists, family, and friends.</p>
+<p>In my junior year in high school, I became fascinated with his growing ability to communicate in non-conventional ways and decided to devote several months to learning more about this process. After conducting extensive interviews and reading further into psychology and cognitive science, I published a documentary book called In Other Words about how he and his team discovers and develops those alternatives.</p>
+<p>You can find the book on <a href="http://www.blurb.com/b/2092327-in-other-words">Blurb.com</a>.</p>
+<p><a name='bubble' class='anchor' /></p>
+<h2 id="bubble">Bubble</h2>
+<div class='project-time'><div class='time'>January 2012</div><br></div>
+
+
+
+<p><img src="../assets/bubble.jpg" alt=""></p>
+]]></description>
+            <link>http://devonzuegel.com/pages/projects</link>
+            <guid isPermaLink="true">http://devonzuegel.com/pages/projects</guid>
+            <pubDate>Fri, 14 Apr 2017 04:28:57 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Writing]]></title>
             <description><![CDATA[
+<p><i>I post on Medium now. You can find me at <a href='https://medium.com/@devonmarisa'>@devonmarisa</a>.</i></p>
+<hr/>
 <div class="headline">
   <div class="circle small pull-left"><a href="/posts/podcast-and-audiobook-starter-kit"><img src="http://cdn8.openculture.com/wp-content/uploads/2010/04/bigstock_Audio_book_14340599-e1330386218724.jpg"/></a></div>
   <div class="title pull-left">
@@ -286,7 +479,7 @@
   </div>
 </div>
 <div class="headline">
-  <div class="circle small pull-left"><a href="/posts/google-maps-convinced-me-to-ditch-my-car"><img src="http://www.geospatialworld.net/wp-content/uploads/2016/06/Google.jpeg"/></a></div>
+  <div class="circle small pull-left"><a href="/posts/google-maps-convinced-me-to-ditch-my-car"><img src="../assets/headline-images/map.jpg"/></a></div>
   <div class="title pull-left">
     <h3><a href="/posts/google-maps-convinced-me-to-ditch-my-car">Google Maps Convinced Me to Ditch My Car</a></h3>
     <div class="time">30 June 2016</div>
@@ -490,7 +683,65 @@
 </div>]]></description>
             <link>http://devonzuegel.com/pages/posts</link>
             <guid isPermaLink="true">http://devonzuegel.com/pages/posts</guid>
-            <pubDate>Fri, 12 Aug 2016 08:06:04 GMT</pubDate>
+            <pubDate>Mon, 19 Jun 2017 06:43:26 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Automator Workflow to stitch PDFs into a single document]]></title>
+            <description><![CDATA[<!-- img: http://green-romp.com/blog/wp-content/uploads/2013/08/Automator_icon.png -->
+<p><img src='../assets/automator-pdf/combine-pdfs.png' width='350px' style='float:right'></p>
+<p>I recently made a Mac <a href="../assets/Combine-PDF-Files.workflow.zip">Automator Workflow</a> that allows you to easily stitch together multiple PDFs into a single document. The workflow creates a new PDF while also  To use the workflow on your own computer:</p>
+<ol>
+<li><a href="../assets/automator-pdf/Combine-PDF-Files.workflow.zip">Download</a> the <code>.zip</code> file and extract the workflow from the archive.</li>
+<li>When OSX prompts you with &quot;Do you want to install the “Combine PDF Files” service?&quot;, click &quot;Install&quot;.</li>
+<li>Navigate to the directory in which the PDFs you wish to combine can be found. Select all of the files at once, and right-click the selection. At the bottom of the menu, click the option called &quot;Combine PDF Files&quot;.</li>
+<li>The workflow will ask you to name the new file (including its extension) and to choose its location. Voila!</li>
+</ol>
+]]></description>
+            <link>http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</guid>
+            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
+            <pubDate>Fri, 14 Apr 2017 03:59:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[An Interview with Dr. Bhattacharya]]></title>
+            <description><![CDATA[<p><img src="../assets/headline-images/bhattacharya.png" alt=""></p>
+<p><em>Jay Bhattacharya is an associate professor of Medicine at Stanford and, by courtesy, of Economics. He has been studying the healthcare market for 20 years. He received a BA in economics, an MD and a PhD from Stanford University, where he has taught since 2001.</em> </p>
+<h3 id="what-is-the-basic-structure-of-the-affordable-care-act-aca-">What is the basic structure of the Affordable Care Act (ACA)?</h3>
+<p>The big context is that there are about 15 to 16 million uninsured people in the US. People view it as a problem, because there’s a lot of financial risk associated with being uninsured, so the ACA aims to expand insurance coverage in two ways. The first is that all people under 138% of the federal poverty line now immediately qualify for Medicaid, while before there were other tests that had to be met. The Congressional Budget Office has said that it’ll cover about 13 million people. The second biggest mechanism is probably these insurance exchanges, which are essentially marketplaces where insurance companies can offer health insurance plans that are regulated by the government.</p>
+<p>On top of that basic structure, the ACA puts in place a number of other regulations, the employer and individual mandates being probably the two most well-known. The employer mandate requires all businesses with more than 50 employees to provide health insurance for them. If they don’t, they have to pay a penalty, $2-3 thousand per employee. The individual mandate says that if you don’t have insurance through Medicaid, through your employer, or some other source, then you’re required to buy insurance. If you don’t, they there will be a penalty. I guess the Supreme Court calls it a tax. It amounts to about $700 or 2.5% of your income, whichever is more, per year. So those are the basic coverage provisions of the ACA.</p>
+<p>The ACA requires insurance companies to accept all clients, including those with pre-existing conditions. Some experts have voiced concerns about eliminating risk from an inherently-risk based market. What are your thoughts on this subject?</p>
+<p>There are also a bunch of provisions that change what qualifies as an insurance product. Among these include things like you have to provide certain kinds of care. There’s an entity called the US Preventative Services Task Force that says if the evidence supports that such-and-such a service is efficacious, then every insurer has to cover it with zero copayment. So for instance, that means that if somebody comes to you, the insurer, and they say, “Hey, I’ve got diabetes, I’ve got heart disease, I’ve got hyper-tension,” you aren’t allowed to say, “No, I won’t insure you.”</p>
+<p>The way the insurance companies work is that they look at the predicted health costs of a given risk pool and set their premiums based on that. The ACA provisions make it so that it&#39;s more expensive to cover this pool, because you have to cover more services and riskier people; in turn, the premiums end up being higher. There&#39;s no such thing as a free lunch. You have to pay for these provisions somehow.</p>
+<h3 id="the-legislation-only-allows-discrimination-based-on-age-premium-rating-area-family-composition-and-tobacco-use-what-are-the-consequences-of-prohibiting-price-discrimination-based-on-gender-race-and-so-on-and-having-to-offer-the-same-premiums-to-people-of-the-same-age-group-and-geographic-location-">The legislation only allows discrimination based on &quot;age, premium rating area, family composition, and tobacco use.&quot; What are the consequences of prohibiting price discrimination based on gender, race, and so on, and having to offer the same premiums to people of the same age group and geographic location?</h3>
+<p>I don&#39;t think you&#39;re constitutionally permitted to price based on race, even though minorities on average tend to have higher health costs. Also, politically, they didn&#39;t want to allow different prices based on gender, even though women tend to have higher health costs than men. Instead, all these groups are pooled together.</p>
+<p>This makes insurance look like a better deal for those people who would typically have relatively high health costs. But what that means is that it&#39;ll be much more difficult to get the people with low health costs to sign up, because insurance will look like a bad deal for those people. This is a problem called &quot;adverse selection&quot;, and people are very worried about it in the insurance market, because of these community rating provisions that we&#39;ve been talking about. At least I&#39;m really worried about it.</p>
+<p>Even the pricing based on age is greatly restricted. The ACA has defined that the largest ratio for the premiums an insurance company can charge for the oldest and youngest people on their plan is 3:1, while in general it’s usually on the order of 6:1 or 7:1. This is simply because a teenager or college-aged student is on average much less expensive to insure than somebody in their late 60s or 70s. There are all sorts of other restrictions that fall under this umbrella called &quot;community rating laws&quot;, which make it so that people get charged the same premium for health insurance no matter what their risk.</p>
+<p>Now this ﻿sounds﻿ good, but it actually has some important negative economic consequences. The first is that -- with a 3:1 ratio -- insurers aren&#39;t going to charge the young an actuarially fair price. Instead, what they&#39;ll charge is a much higher price than the young would normally have to pay for health insurance in order to finance the 3:1 ratio. This is one of the main economic problems caused by the ACA: it makes insurance products on the exchange dependent on recruiting lots of young healthy people, or else the premiums on the market will be extremely high. But in order to recruit these young people, you basically have to threaten them. You have to say, “We&#39;re going to charge you this penalty if you don&#39;t sign up”.</p>
+<p>Also, if you&#39;re a “low-income” young person (I&#39;ll tell you what that means in a minute), then you qualify for a subsidy from the federal government to buy insurance on the exchanges. Again, the idea is to induce young people to sign up. So you got the penalty and these subsidies as ways to “incentivize” them to join the exchanges.</p>
+<p>So what does “low income” mean? The subsidy scheme goes from 133% (where Medicare ends) to 400% of the poverty line—that’s well into the middle class. For instance, for someone with a family of 5, you can make up to $110 thousand a year and still qualify for money from the federal government to buy insurance on the exchanges. If you&#39;re a single person, then you can make up to $45 thousand per year. That&#39;s a lot of money for a young person to make.</p>
+<h3 id="so-how-do-you-expect-this-to-play-out-">So how do you expect this to play out?</h3>
+<p>If you&#39;re relatively poor, the exchange subsidies by the federal government are very generous, so a lot of those low-income people will sign up. But if you&#39;re above say 350% of poverty line, you&#39;re relatively healthy and relatively young, it&#39;s actually better for you on average to just pay the penalty. That means that the premiums on the exchange will be much higher than the old individual market, which didn&#39;t have so many of these community rating provisions.</p>
+<h3 id="the-individual-mandate-is-one-of-the-most-controversial-parts-of-the-affordable-care-act-on-both-political-and-economic-levels-what-are-your-thoughts-on-this-part-of-the-legislation-">The individual mandate is one of the most controversial parts of the Affordable Care Act on both political and economic levels. What are your thoughts on this part of the legislation?</h3>
+<p>The first thing to note is that the individual mandate is absolutely necessary if you have a community rating law. [It’s] an attempt to address the adverse selection problem by essentially forcing people for whom insurance would otherwise be a bad deal to join in. There&#39;s no need for an individual mandate when there&#39;s no adverse selection.</p>
+<p>This certainly is a controversial feature, largely because it gives the law this sense of &quot;the government knows better than you do what&#39;s good for you, so they&#39;re going to force you to do it&quot;. A lot of people don&#39;t like that. However, as an economist, I think the results will reflect the financial position that people are in. People will do what&#39;s financially good for them. I think the key thing to look at is: who&#39;s going to benefit and who&#39;s going to lose?</p>
+<h3 id="are-those-people-who-wouldn-t-be-buying-health-insurance-if-it-weren-t-for-the-individual-mandate-the-losers-">Are those people who wouldn’t be buying health insurance if it weren’t for the individual mandate the “losers”?</h3>
+<p>Well those aren&#39;t the only losers, though they certainly are losers. Another group are those people who have existing insurance on the individual market—many of them have been receiving cancellation letters, because their insurance plans don’t meet the requirements of the ACA. So because they don&#39;t meet those, the ACA considers them as &quot;bad insurance&quot;. The people who had that insurance, though, considered it good insurance! They were paying for the things they wanted, not the things the government--in particular the ACA--thinks they ought to have.</p>
+<h3 id="the-affordable-care-act-is-complex-and-it-can-be-intimidating-to-try-to-make-sense-of-how-it-will-impact-the-typical-american-do-you-see-this-complexity-as-a-potential-weakness-of-the-legislation-">The Affordable Care Act is complex, and it can be intimidating to try to make sense of how it will impact the typical American. Do you see this complexity as a potential weakness of the legislation?</h3>
+<p>It&#39;s a very difficult system. It&#39;s something like one-sixth of the US economy, with different actors with different points of view-- doctors, hospitals, insurers, individuals, employers. Basically every facet of domestic life is touched by this legislation. So if you&#39;re going to do this sort of legislation, I don&#39;t see how you could do it without a complex set of regulations. The question is &quot;Is it wise to do it this way?&quot; or &quot;Are there other, simpler ways to do it?&quot;</p>
+<p>The administration has often oversimplified and, in some places, directly misled the American public about what the likely effects of this legislation are. The most famous example is President Obama&#39;s promise that “if you like your insurance then you can keep it.” It was clear from the very beginning, based on the structure of the law, that that wasn&#39;t going to be true.</p>
+<p>A big ticket item is that the employer mandate was due to go into effect in January 2014, but the administration delayed it a year. And there are a couple of reasons I think they did that, though none of these are the official reasons they gave. The ACA defines &quot;affordable&quot; as the value of 9.5% or less of your income. So if you make $100k, an affordable plan would be $9500. For a young person with that income, that would actually be a very, very expensive health plan. For me, with a family of 5, a $9500 plan would be a very cheap plan. On average, families pay about $17k per year for insurance, while to cover a single person costs about $5 thousand per year.</p>
+<p>Now, any company with more than 50 full-time employees has to offer them affordable insurance. The technical problem is that...suppose you have a worker who comes to the insurance exchange and says &quot;Look, I only make 200% of the poverty line, and my employer isn&#39;t offering me insurance coverage” -- the federal government is then supposed to give that worker a whole bunch of money so they can go buy insurance on the exchange, but at least in principle they ought to check with the employer to make sure the employer actually doesn&#39;t offer that guy a plan. And it&#39;s technically a very difficult problem, because currently there&#39;s no reporting by employers. The ACA requires reporting, but it&#39;s been difficult to get that system going in a centralized way.</p>
+<p>But there&#39;s also a second, very important economic reason that has gone too unnoticed. If the employer gives you an &quot;affordable&quot; health plan, then you don&#39;t qualify for the subsidies, even if you&#39;re low income on the exchange. The way they define affordability is based on a price of health insurance for a single person. Imagine you have a family of 4 or 5, and your employer offers you a plan for a single person that&#39;s $5 thousand—well under 9.5% your income—they also give you an option to cover your entire family for $16 thousand. Well that&#39;s ﻿not﻿ &quot;affordable&quot;, since it&#39;s more than 9.5% of your income. What that means is that if you get insurance coverage for yourself but not your family, you can get that relatively cheaply from your employer. But then your family&#39;s not covered. However, when they go to the exchange to get insurance, they don’t qualify for federal subsidies, because technically you’re all covered by your employer. This creates all kinds of strange incentives. For instance, if the husband and wife got a divorce, the family then qualifies for exchange subsidies, even if they don&#39;t change any behavior other than they get divorced.</p>
+<p>But the more common thing that&#39;s likely to happen is that a lot of employers will just drop coverage and pay the penalty, and it&#39;ll actually be better for the workers, too, especially if they are low-income. If their employer drops insurance, they can then raise wages, and the workers will still qualify for federal subsidies on the exchange. It&#39;s a win-win for workers and employers. I&#39;ve done a published calculation (content.healthaffairs.org/content/32/9/1531.abstract) where I found that for 37 million employees who currently get insurance, it&#39;s financially beneficial for their employer to drop coverage for them. It&#39;s also financially beneficial for the worker. But there&#39;s no such thing as a free lunch-- we say that it&#39;s good for the employers, it&#39;s good for the employees, but it’s bad for taxpayers. The estimates of the costs of the law are way lower than what they ultimately will be, because they don&#39;t sufficiently account for the economic benefit to workers and employers of dropping coverage, especially for employees.</p>
+<h3 id="what-are-the-economic-effects-of-requiring-insurance-packages-to-include-certain-provisions-and-coverage-for-example-birth-control-">What are the economic effects of requiring insurance packages to include certain provisions and coverage, for example birth control?</h3>
+<p>In general, it raises the premiums-- the more things that are covered, the more that you have to charge to be able to pay the costs. If you&#39;re not paying it in the copay, then you&#39;re paying it in the premium. Nothing is free.</p>
+<p>The ACA requires insurers to extend dependent coverage to adult children up to 26 years old. Do you think this is going to have a net positive effect to those children or over time it&#39;ll cause the premiums to rise?</p>
+<p>Before, it was only kids under 21 who were covered as dependents under most family insurance plans. What it&#39;s done is it&#39;s raised the premiums for insurance for parents who have kids from 21 and 26. It&#39;s parents continuing to pay for the kids’ insurance. Again, it&#39;s not ﻿free﻿ coverage. So that&#39;s one effect-- it&#39;s raised the premiums for parents. The second thing is that it deprives the individual market of young, healthy people who could potentially pool with the sicker people. A 23-year-old who&#39;s covered by their parents has no incentive to go buy insurance in the exchange market. They don&#39;t have to pay a penalty, because they&#39;re already covered. What that means is that there&#39;s one fewer young, healthy person to pool with the older, sicker people on the exchange, making the adverse selection problem that we talked about earlier worse.</p>
+]]></description>
+            <link>http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</guid>
+            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
+            <pubDate>Fri, 14 Apr 2017 04:07:20 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[A Public Bus Named Desire]]></title>
@@ -543,263 +794,25 @@
             <pubDate>Thu, 24 Mar 2016 08:17:37 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Projects]]></title>
-            <description><![CDATA[<script type="text/javascript"> // Hack to fix scrolling to Mr Schelling's Neighborhood 
-  document.body.scrollTop = document.documentElement.scrollTop = 0;
-</script>
-
-<h1 id="projects">Projects</h1>
-<ul>
-<li><a href="#mfp-api">MyFitnessPal API</a></li>
-<li><a href="#isostamp">Isostamp</a></li>
-<li><a href="#schelling-neighborhood">Mr. Schelling&#39;s Neighborhood</a></li>
-<li><a href="#tiddly-lisp">TiddlyLisp</a></li>
-<li><a href="#instanote">Instanote</a></li>
-<li><a href="#congressional-bills">Congressional Bill Outcome Predictor</a></li>
-<li><a href="#affitto">Affitto</a></li>
-<li><a href="#my-evernote">My Evernote</a></li>
-<li><a href="#zen-writer">Zen Writer</a></li>
-<li><a href="#origami-js">OrigamiJS</a></li>
-<li><a href="#fiesta">Fiesta: Machine Translator</a></li>
-<li><a href="#octagon">Octagon</a></li>
-<li><a href="#paper-trail">Paper Trail</a></li>
-<li><a href="#in-other-words">In Other Words</a></li>
-<li><a href="#bubble">Bubble</a></li>
-</ul>
-<div class='space triple'></div><div class='space'></div>
-
-<p><a name='mfp-api' class='anchor' /></p>
-<h2 id="myfitnesspal-api">MyFitnessPal API</h2>
-<div class='project-time'><div class='time'>August - September 2016</div><br></div>
-
-<p>I&#39;ve tracked my eating habits for the past eight years, and I&#39;ve since added other health and productivity metrics. Data have piled up in the spreadsheets, services, and other tools I&#39;ve used to collect these measurements. So far I&#39;ve done little with it, but I always imagined that they would one day uncover some pattern that would suggest changes in the way I eat, work, or exercise.</p>
-<p>So in 2016 when I started experiencing extreme fatigue nearly every afternoon, I decided to investigate whether there was a connection between the food I was eating and my energy levels. My hypothesis was that eating carbohydrates was making me “crash” in the afternoon, because I tended to feel better those days I stuck with just veggies and protein for lunch.</p>
-<p>To test this hypothesis, I went to MyFitnessPal (MFP), where I&#39;d been collecting data about my eating habits since high school. To my dismay, they did not have a public API or even a tool that would let me export more than a few months of data at a time. I found a few third-party tools that let me cobble together the logs, but they felt as if they were duct-taped together.</p>
-<p>At this point, any reasonable person would have just accepted this fact and used the manual workarounds to export the data. After all, my goal was to find data to confirm or falsify my hypothesis, not to have a beautiful REST API from which I could continuously pull my food logs.</p>
-<p>Instead of being reasonable person, I decided to build a little service that would pull all of my logs each day, persist it to a separate database, and then surface the data with a JSON API. I initially planned to write a simple web scraper to do the retrieval work. With a bit more digging through Github&#39;s less-than-spectacular search (and encouragement from John &lt;3), I found a project by someone even less reasonable than me that inspired the approach I ended up taking.</p>
-<p>Nathan Reynolds (<a href="https://github.com/nathforge">nathforge</a> on Github) had figured out that in fact MyFitnessPal <em>did</em> have an API, it just was for internal use in the official iPhone app only. Not only was the API completely undocumented, but the MFP team had created a custom byte encoding by which to send the data. I still have no idea how he figured out the spec of this encoding, because a lot of the design choices made appear completely random. However he did it, Nathan had built up this codec that took the stream of bytes and parsed them into a human-readable form.</p>
-<p>Nathan&#39;s <a href="https://github.com/nathforge/myfitnesspal-sync"><code>myfitnesspal-sync</code></a> was a goldmine for understanding MFP&#39;s arcane encoding, but it had some drawbacks. The package didn&#39;t support every type of packet, which mean I would have had to extend his code to be able to sync all of my data from MFP. Also, I didn&#39;t particularly like the interface he&#39;d designed, and it was completely untested. It also had to be manually run from the command line, whereas I wanted something that would continuously sync the data. On top of all this, I&#39;d be looking for a reason to write some Ruby this summer, so I figured this was a good excuse to do that.</p>
-<p>I first wrote a package to decode the MFP packets and the encode human-readable data back into the byte form. All the while I was plagiarizing Nathan&#39;s detective work (yay open source!). Thanks Nathan, you are a hero.</p>
-<p>Once I was satisfied with my Ruby implementation of the codec, I built a tiny Sinatra API to surface the data. This part is still a work-in-progress. It <em>works</em>, but it isn&#39;t particularly robust. There&#39;s still a bit more work to do.</p>
-<p>I still haven&#39;t gotten around to a significant amount of data analysis. I did use Metabase to analyze the data in my Heroku Postgres instance over the holidays, but there&#39;s definitely more to dig into.</p>
-<p>You can find the code for the full API <a href="https://github.com/devonzuegel/myfitnesspal-ruby">on Github</a>. The module for just the codec implementation is in that repository in the <a href="https://github.com/devonzuegel/myfitnesspal-ruby/tree/master/lib"><code>lib</code></a> directory. Once the API itself is stable, I&#39;ll make it available to anyone who wants to sync and retrieve their MFP data.</p>
-<p><a name='isostamp' class='anchor' /></p>
-<h2 id="-isostamp-https-isostamp-org-"><a href="https://isostamp.org">Isostamp</a></h2>
-<div class='project-time'><div class='time'>March - July 2016</div><br></div>
-
-<p><a href="http://pubs.acs.org/doi/abs/10.1021/cb100338x">Isotopic signature transfer and mass pattern prediction (Isostamp)</a> is an enabling technique for chemically-directed proteomics. Specifically, it is an algorithm for the targeted detection and identification of modified species by mass spectrometry (MS).</p>
-<p>Will Byrd and I worked with the Bertozzi Lab to develop their Isostamp algorithm. We also built a simple API so developers can run the executable in the cloud, and we built a web application that enables other labs to use Isostamp to upload and analyze their own data.</p>
-<p>You can find the code for the API at <a href="https://github.com/devonzuegel/tagfinder-api">github.com/devonzuegel/tagfinder-api</a>.</p>
-<p>You can upload your own data and learn more about Isostamp at <a href="Isostamp.org">Isostamp.org</a>, and you can find the code for the web app at <a href="https://github.com/devonzuegel/Isostamp-web-v2">github.com/devonzuegel/Isostamp-web-v2</a>.</p>
-<p>We will be open-sourcing the C++ code for the algorithm soon.</p>
-<p><a name='schelling-neighborhood' class='anchor' /></p>
-<h2 id="-mr-schelling-s-neighborhood-https-rawgit-com-devonzuegel-affitto-master-models-mr-schellings-neighborhood-mr-schellings-neighborhood-html-"><a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">Mr. Schelling&#39;s Neighborhood</a></h2>
-<div class='project-time'><div class='time'>July 2016</div><br></div>
-
-<p>Ever since reading about Schelling&#39;s <a href="http://isites.harvard.edu/fs/docs/icb.topic185351.files/shelling1.pdf">&quot;general theory of tipping&quot;</a> in <a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/"><em>Seeing Around Corners</em></a>, I&#39;ve wanted to replicate some of his models and play around with agent-based modeling as a technique.</p>
-<p>Schelling&#39;s model of segregation found that if individuals have even just a slight preference to be surrounded by people of their own group or race, the emergent effect across a population can be total segregation, even if that is not the intention of any specific agent. This effect can be seen with a simple ABM, which I&#39;ve implemented below.</p>
-<p>You are looking at a birds-eye view of a simulated neighborhood containing two groups, blue and red with a handful of blank spaces. To start, the blues and reds are randomly distributed. Then, frame after frame, the agents are allowed to move. The agent is happy with its position if its nearest neighbors include at least a certain number of its own color; otherwise, they move to a random open space on the map.</p>
-<p>The default number of same-colored neighbors required to make an agent satisfied with its location is the threshold, and the percent of &quot;empty lost&quot; on the map is the percent open. You can adjust these with the controls in the top right corner of the model.</p>
-<iframe src='https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood-small.html' style='width:100%; height: 270px;' frameborder='no' border='0'></iframe>
-
-<p>You can find the ABM code on <a href="//github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">Github</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">here</a>.</p>
-<p><a name='tiddly-lisp' class='anchor' /></p>
-<h2 id="-tiddlylisp-github-com-devonzuegel-tiddly-lisp-"><a href="//github.com/devonzuegel/tiddly-lisp">TiddlyLisp</a></h2>
-<div class='project-time'><div class='time'>January 2016</div><br></div>
-
-<p>To learn the fundamentals of Lisp, I built a little interpreter based on Michael Nielsen&#39;s fantastic blog post <a href="http://www.michaelnielsen.org/ddi/lisp-as-the-maxwells-equations-of-software/"><em>Lisp as the Maxwell&#39;s Equations of Software</em></a>. I included extensions to resolve some of the challenge problems he mentioned at the end of the post, too.</p>
-<p>You can find the code for the interpreter on <a href="//github.com/devonzuegel/tiddly-lisp">Github</a>.</p>
-<p><a name='instanote' class='anchor' /></p>
-<h2 id="-instanote-https-instanote-archive-herokuapp-com-"><a href="https://instanote-archive.herokuapp.com">Instanote</a></h2>
-<div class='project-time'><div class='time'>January 2016</div><br></div>
-
-<p>About a month ago, I started using Instapaper obsessively. However, it left me with one major problem – all of my Instapaper bookmarks and highlights were isolated from the knowledge that I (obsessively) store in Evernote, and I wanted to have them all in one place. After all, a <a href="https://en.wikipedia.org/wiki/Personal_knowledge_base">personal knowledge base</a> is useless if it doesn&#39;t contain half of the things I read throughout the day.</p>
-<p>Instanote solves this problem by syncing the text of my archived Instapaper bookmarks with their respective highlights into Evernote every 10 minutes. I figured other people might have the same frustration with Instapaper, so I built out a little Heroku app that allows other people to sign up too rather than just hard-coding my login info into a hacky script.</p>
-<p>You can sign up at <a href="https://instanote-archive.herokuapp.com">instanote-archive.herokuapp.com</a> and see the source code on <a href="https://github.com/devonzuegel/instanote-archive">Github</a>.</p>
-<p><a name='congressional-bills' class='anchor' /></p>
-<h2 id="-congressional-bill-outcome-predictor-http-devonzuegel-com-bills-"><a href="http://devonzuegel.com/bills/">Congressional Bill Outcome Predictor</a></h2>
-<div class='project-time'><div class='time'>December 2015</div><br></div>
-
-<p>Emma Marriott, Arushi Jain, and I built a predictor that identifies which US bills will succeed in the House &amp; Senate. We tried several different prediction methods, including: Naive Bayes with and without Principal Component Analysis (PCA), Logistic Regression, Support Vector Machine (SVM) with PCA, and Perceptron with PCA. PCA identified the <code>500</code> most important features of a set of <code>11,000</code>. Each predictor was modeled on data from the 109th – 113th Congresses from a wide range of structured &amp; unstructured sources, including lobbying information. SVM with PCA proved to be the best model. It predicted bill outcomes with <code>94%</code> precision &amp; <code>87%</code> recall, resulting in an F-measure of <code>0.92</code>.</p>
-<p>You can learn more about our research and data <a href="http://devonzuegel.com/bills/">here</a>.</p>
-<p><a name='affitto' class='anchor' /></p>
-<h2 id="-affitto-github-com-devonzuegel-affitto-"><a href="//github.com/devonzuegel/affitto">Affitto</a></h2>
-<div class='project-time'><div class='time'>November 2015</div><br></div>
-
-<p>San Francisco and the greater Bay Area have been struggling with housing shortages and decisions about how to best serve the community with policies to deal with this situation. At a micro level, we have a fairly good understanding of how individuals make economic decisions such as where tenants choose to live and how much rent landlords choose to charge. However, we lack tools to model the complex interactions of millions of individuals simultaneously making decisions and the emergent phenomena that result from these interactions.</p>
-<p>John Luttig and I built an Agent Based Model (ABM) to simulate emergent behavior within housing markets and explore the impact of policies such as rent control and zoning regulations. With this project, we aim to provide a tool for policymakers and stakeholders to better understand these interactions that in aggregate comprise the housing market. Understanding large-scale systems requires understanding how the results of individual actions can be more than the sum of its parts. We used ABM to simulate the actions and interactions of tenants and landlords.</p>
-<p>Here is a small version of one of our models. You may have to close the controls (by clicking the bottom of the control panel) in order to see the full simulation.</p>
-<iframe src='http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2-small/model.html' style='width:100%; height: 390px;' frameborder='no' border='0'></iframe>
-
-<p>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="//github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</p>
-<p><a name='my-evernote' class='anchor' /></p>
-<h2 id="-my-evernote-myevernote-co-"><a href="//myevernote.co">My Evernote</a></h2>
-<div class='project-time'><div class='time'>July 2015</div><br></div>
-
-<p>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I&#39;ve read and annotated with Evernote&#39;s <a href="//evernote.com/clearly/">Clearly extension</a>.</p>
-<p>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I&#39;ve always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren&#39;t necessarily from that platform, simply clipped with Evernote into a notebook.</p>
-<p>As a fun way to solve this little problem of mine and to teach myself more about Rails testing frameworks, I&#39;m working on a little app called <a href="//myevernote.co">My Evernote</a>. When I&#39;m done, it&#39;ll automatically sync all of your notes except those you especially tag <code>#private</code>. Then each evening you receive an email asking which of the synced notes you want to &quot;publish&quot; on your feed. It&#39;s a simple app, but I quickly learned that the Evernote documentation for Rails is basically non-existent, so it&#39;s also been a fun way to add to that.</p>
-<p><img src="../assets/my-evernote.jpg" alt=""></p>
-<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/my-evernote">Github</a> and the app at <a href="//myevernote.co">myevernote.co</a>.</p>
-<p><a name='zen-writer' class='anchor' /></p>
-<h2 id="-zen-writer-zenwriter-io-"><a href="//zenwriter.io">Zen Writer</a></h2>
-<div class='project-time'><div class='time'>June 2015</div><br></div>
-
-<p>The most difficult part of writing is that first draft. Putting your ideas to paper to generate that initial content is hard, because it&#39;s natural to edit your thoughts while translating them into words. However, this can severely hamper progress and creativity during early drafts. I&#39;ve learned that I write better content faster if I don&#39;t censor myself initially and then only allow myself to revise and edit after I&#39;ve exhausted my ideas. However, it&#39;s extremely difficult to contain that urge to filter out the less well-formed ideas.</p>
-<p>During spring quarter finals, I was assigned a 10 page paper. Just three days before it was due I had a one page draft despite hours of research and staring at a blank screen. I had lots of ideas in my head, but every time I started typing I ended up using the delete button almost as much as all my other keys combined.</p>
-<p>Since I wasn&#39;t making any progress anyways, I decided to take a break and built a tiny text editor called <a href="//zenwriter.io">Zen Writer</a>. It disables the delete button, highlights the current line, and fades out past content so that your attention is focused on moving forward and generating more content.</p>
-<p>It didn&#39;t take much work to build a rough version, and as soon as I finished I was back to writing that first draft of my paper. In the first 15 minutes, I generated about 600 words. When I went back to revise what I&#39;d written, I was surprised to find that most of my changes were to fix minor typos rather than large, conceptual revisions.</p>
-<p>I finished that first draft in just over 2 hours and spent another hour the following day to revise my work, and the resulting paper was among the best I&#39;ve written in my time at Stanford. Since then, I use Zen Writer every time I get stuck writing, from emails to blog posts to READMEs. I hope other people find it useful too, though I will warn you that it&#39;s still very rough and simple!</p>
-<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/zen-writer">Github</a> and the app at <a href="//zenwriter.io">zenwriter.io</a>.</p>
-<p>P.S. As a more robust solution to this problem, I now use the <a href="http://www.96problems.com/rough-draft/">First Draft</a> Mac app from <a href="http://www.96problems.com/">96 Problems</a>. It offers all the features I built, planned to build, or never even realized I needed in ZenWriter. Ben and the whole team are super responsive and helpful too, so in short I highly recommend the app if you&#39;re looking for a tool to solve this problem!</p>
-<p><a name='origami-js' class='anchor' /></p>
-<h2 id="-origamijs-htmlpreview-github-io-https-raw-githubusercontent-com-devonzuegel-origamijs-master-example-coffee-html-"><a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">OrigamiJS</a></h2>
-<div class='project-time'><div class='time'>March 2015</div><br></div>
-
-<p>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <code>&lt;h*&gt;</code> and <code>&lt;p&gt;</code> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they&#39;re using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</p>
-<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/origamijs">Github</a> and example usage <a href="//htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</p>
-<p><a name='fiesta' class='anchor' /></p>
-<h2 id="-fiesta-machine-translator-github-com-devonzuegel-fiesta-"><a href="//github.com/devonzuegel/fiesta">Fiesta: Machine Translator</a></h2>
-<div class='project-time'><div class='time'>March 2015</div><br></div>
-
-<p>Zoe Robert, John Luttig, and I built a Spanish to English machine translator, which we called Fiesta. It is based on the IBM Model 1 algorithm and also implements several Spanish-specific strategies for improving results.</p>
-<p>IBM Model 1 is an <strong>expectation-maximization statistical alignment algorithm</strong>. Given known pairings of Spanish and English sentences, it generates a matrix of probabilities whose rows correspond to the Spanish vocabulary and columns correspond to the English vocabulary. The value at any given cell in the matrix represents the probability that those two words have co-occurred within translations of each other. This table is then used to estimate a model for future translations.</p>
-<p>In short, IBM Model 1 looks for the most likely English word for a Spanish word (e.g. “dog”) based off our knowledge of co-occurrences within sentences. As such, if there are no translations of a given Spanish word <code>s</code> that contain a given English word <code>e</code>, the value of the cell at the corresponding row and column will be <code>0</code>.</p>
-<p>The algorithm requires 3 components:</p>
-<ul>
-<li>a language model to compute <code>P(E)</code> (the prior)</li>
-<li>a translation model to compute <code>P(S|E)</code> (the probability that a Spanish word <code>s</code> translates to an English word <code>e</code>)</li>
-<li>a decoder that produces the most probable translation</li>
-</ul>
-<h4 id="pseudocode">Pseudocode</h4>
-<pre class="highlight"><code class="hljs python">initialize transl_prob(e|s) uniformly
-do until convergence
-  set count(e|s) to <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all e,s
-  set total_s(s) to <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all s
-  <span class="hljs-keyword">for</span> all sentence pairs (en_sentence, sp_sentence)
-    set total_e(e) = <span class="hljs-number">0</span> <span class="hljs-keyword">for</span> all e
-    <span class="hljs-keyword">for</span> all words e <span class="hljs-keyword">in</span> en_sentence
-      <span class="hljs-keyword">for</span> all words s <span class="hljs-keyword">in</span> sp_sentence
-        total_e(e) += transl_prob(e|s)
-    <span class="hljs-keyword">for</span> all words e <span class="hljs-keyword">in</span> en_sentence
-      <span class="hljs-keyword">for</span> all words s <span class="hljs-keyword">in</span> sp_sentence
-        count(e|s) += transl_prob(e|s) / total_e(e)
-        total_s(s) += transl_prob(e|s) / total_e(e)
-  <span class="hljs-keyword">for</span> all s
-    <span class="hljs-keyword">for</span> all e
-      transl_prob(e|s) = count(e|s) / total_s(s)
-</code></pre>
-<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/fiesta">Github</a>.</p>
-<p><a name='octagon' class='anchor' /></p>
-<h2 id="octagon">Octagon</h2>
-<div class='project-time'><div class='time'>Summer 2014</div><br></div>
-
-<p><img src="http://michaelandassociate.com/fifteen/wp-content/uploads/2014/11/formation8.jpg" alt="right-sm"></p>
-<p>This past summer, I designed and built an app called Octagon, a tool for venture capital firms. Octagon helps VCs better manage relationships with portfolio companies by visualizing important metrics about company growth and providing a repository for financial documents and quarterly updates. It also facilitates interaction between investors and board members and the startups in their portfolios in an analogous manner to CRM software. Octagon is currently in beta testing at Formation|8.</p>
-<p>I was responsible for the full-stack of the app, though I was lucky enough for the last few weeks of the project to work with a friend named Zack who helped me immensely with the front-end, especially user interaction and fully utilizing the capabilities of our graphing libraries.</p>
-<p>You can find the open source code for the project on <a href="//github.com/devonzuegel/octagon">Github</a>.</p>
-<p><a name='paper-trail' class='anchor' /></p>
-<h2 id="paper-trail">Paper Trail</h2>
-<div class='project-time'><div class='time'>March 2014 - present</div><br></div>
-
-<p>Some of the greatest impact individuals can have on politics is driven by daily purchasing decisions. Any time an individual patronizes a corporation, (s)he is fueling the company&#39;s lobbying and donorship capabilities and is indirectly supporting their political causes. Unfortunately, the impact of corporate political contributions is largely opaque to the general public, and the research about corporations’ political activity is a tedious, complex task.</p>
-<p>In early 2014, I set out to solve this problem with a project called Paper Trail. The web app provides users access to political profiles of companies and manufacturers. Visualizations and statistics about companies political contributions and lobbying behavior help consumers make informed choices about where their money is going. In turn, consumers&#39; more thoughtful choices empower those corporations that represent their values.</p>
-<p>Paper Trail was the first programming project that I pursued outside of class and has evolved significantly since I first implemented it in early 2014. It began as a simple HTML/Javascript app into which users could query the names of companies and learn about their political contributions.</p>
-<p>You can find this initial prototype <a href="//stanford.edu/~devonz/paper_trail/about.html">here</a> and the open source code base on <a href="//github.com/devonzuegel/WWW/tree/master/paper_trail">Github</a>.</p>
-<p>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users&#39; existing workflow.</p>
-<p>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user&#39;s cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site — Amazon — and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon&#39;s fantastic API, and generally focusing our energy on specific goals rather than broad ones. </p>
-<p>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="//invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="//github.com/devonzuegel/papertrail-extension">Github</a>.</p>
-<p><a name='in-other-words' class='anchor' /></p>
-<h2 id="in-other-words">In Other Words</h2>
-<div class='project-time'><div class='time'>January - May 2011</div><br></div>
-
-<p><img src="http://bookshow.blurb.com/bookshow/cache/P2866696/md/cover_2.jpeg" alt="right-md"></p>
-<p>My brother Jeffrey was born with Cerebral Palsy and is on the autistic spectrum. Life with Jeffrey is challenging for both of us because he doesn’t always communicate effectively in the conventional way, in “English.” However, he has found alternative modes with the help of his team of teachers, therapists, family, and friends.</p>
-<p>In my junior year in high school, I became fascinated with his growing ability to communicate in non-conventional ways and decided to devote several months to learning more about this process. After conducting extensive interviews and reading further into psychology and cognitive science, I published a documentary book called In Other Words about how he and his team discovers and develops those alternatives.</p>
-<p>You can find the book on <a href="http://www.blurb.com/b/2092327-in-other-words">Blurb.com</a>.</p>
-<p><a name='bubble' class='anchor' /></p>
-<h2 id="bubble">Bubble</h2>
-<div class='project-time'><div class='time'>January 2012</div><br></div>
-
-
-
-<p><img src="../assets/bubble.jpg" alt=""></p>
-]]></description>
-            <link>http://devonzuegel.com/pages/projects</link>
-            <guid isPermaLink="true">http://devonzuegel.com/pages/projects</guid>
-            <pubDate>Fri, 14 Apr 2017 04:28:57 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[An Interview with Dr. Bhattacharya]]></title>
-            <description><![CDATA[<p><img src="../assets/headline-images/bhattacharya.png" alt=""></p>
-<p><em>Jay Bhattacharya is an associate professor of Medicine at Stanford and, by courtesy, of Economics. He has been studying the healthcare market for 20 years. He received a BA in economics, an MD and a PhD from Stanford University, where he has taught since 2001.</em> </p>
-<h3 id="what-is-the-basic-structure-of-the-affordable-care-act-aca-">What is the basic structure of the Affordable Care Act (ACA)?</h3>
-<p>The big context is that there are about 15 to 16 million uninsured people in the US. People view it as a problem, because there’s a lot of financial risk associated with being uninsured, so the ACA aims to expand insurance coverage in two ways. The first is that all people under 138% of the federal poverty line now immediately qualify for Medicaid, while before there were other tests that had to be met. The Congressional Budget Office has said that it’ll cover about 13 million people. The second biggest mechanism is probably these insurance exchanges, which are essentially marketplaces where insurance companies can offer health insurance plans that are regulated by the government.</p>
-<p>On top of that basic structure, the ACA puts in place a number of other regulations, the employer and individual mandates being probably the two most well-known. The employer mandate requires all businesses with more than 50 employees to provide health insurance for them. If they don’t, they have to pay a penalty, $2-3 thousand per employee. The individual mandate says that if you don’t have insurance through Medicaid, through your employer, or some other source, then you’re required to buy insurance. If you don’t, they there will be a penalty. I guess the Supreme Court calls it a tax. It amounts to about $700 or 2.5% of your income, whichever is more, per year. So those are the basic coverage provisions of the ACA.</p>
-<p>The ACA requires insurance companies to accept all clients, including those with pre-existing conditions. Some experts have voiced concerns about eliminating risk from an inherently-risk based market. What are your thoughts on this subject?</p>
-<p>There are also a bunch of provisions that change what qualifies as an insurance product. Among these include things like you have to provide certain kinds of care. There’s an entity called the US Preventative Services Task Force that says if the evidence supports that such-and-such a service is efficacious, then every insurer has to cover it with zero copayment. So for instance, that means that if somebody comes to you, the insurer, and they say, “Hey, I’ve got diabetes, I’ve got heart disease, I’ve got hyper-tension,” you aren’t allowed to say, “No, I won’t insure you.”</p>
-<p>The way the insurance companies work is that they look at the predicted health costs of a given risk pool and set their premiums based on that. The ACA provisions make it so that it&#39;s more expensive to cover this pool, because you have to cover more services and riskier people; in turn, the premiums end up being higher. There&#39;s no such thing as a free lunch. You have to pay for these provisions somehow.</p>
-<h3 id="the-legislation-only-allows-discrimination-based-on-age-premium-rating-area-family-composition-and-tobacco-use-what-are-the-consequences-of-prohibiting-price-discrimination-based-on-gender-race-and-so-on-and-having-to-offer-the-same-premiums-to-people-of-the-same-age-group-and-geographic-location-">The legislation only allows discrimination based on &quot;age, premium rating area, family composition, and tobacco use.&quot; What are the consequences of prohibiting price discrimination based on gender, race, and so on, and having to offer the same premiums to people of the same age group and geographic location?</h3>
-<p>I don&#39;t think you&#39;re constitutionally permitted to price based on race, even though minorities on average tend to have higher health costs. Also, politically, they didn&#39;t want to allow different prices based on gender, even though women tend to have higher health costs than men. Instead, all these groups are pooled together.</p>
-<p>This makes insurance look like a better deal for those people who would typically have relatively high health costs. But what that means is that it&#39;ll be much more difficult to get the people with low health costs to sign up, because insurance will look like a bad deal for those people. This is a problem called &quot;adverse selection&quot;, and people are very worried about it in the insurance market, because of these community rating provisions that we&#39;ve been talking about. At least I&#39;m really worried about it.</p>
-<p>Even the pricing based on age is greatly restricted. The ACA has defined that the largest ratio for the premiums an insurance company can charge for the oldest and youngest people on their plan is 3:1, while in general it’s usually on the order of 6:1 or 7:1. This is simply because a teenager or college-aged student is on average much less expensive to insure than somebody in their late 60s or 70s. There are all sorts of other restrictions that fall under this umbrella called &quot;community rating laws&quot;, which make it so that people get charged the same premium for health insurance no matter what their risk.</p>
-<p>Now this ﻿sounds﻿ good, but it actually has some important negative economic consequences. The first is that -- with a 3:1 ratio -- insurers aren&#39;t going to charge the young an actuarially fair price. Instead, what they&#39;ll charge is a much higher price than the young would normally have to pay for health insurance in order to finance the 3:1 ratio. This is one of the main economic problems caused by the ACA: it makes insurance products on the exchange dependent on recruiting lots of young healthy people, or else the premiums on the market will be extremely high. But in order to recruit these young people, you basically have to threaten them. You have to say, “We&#39;re going to charge you this penalty if you don&#39;t sign up”.</p>
-<p>Also, if you&#39;re a “low-income” young person (I&#39;ll tell you what that means in a minute), then you qualify for a subsidy from the federal government to buy insurance on the exchanges. Again, the idea is to induce young people to sign up. So you got the penalty and these subsidies as ways to “incentivize” them to join the exchanges.</p>
-<p>So what does “low income” mean? The subsidy scheme goes from 133% (where Medicare ends) to 400% of the poverty line—that’s well into the middle class. For instance, for someone with a family of 5, you can make up to $110 thousand a year and still qualify for money from the federal government to buy insurance on the exchanges. If you&#39;re a single person, then you can make up to $45 thousand per year. That&#39;s a lot of money for a young person to make.</p>
-<h3 id="so-how-do-you-expect-this-to-play-out-">So how do you expect this to play out?</h3>
-<p>If you&#39;re relatively poor, the exchange subsidies by the federal government are very generous, so a lot of those low-income people will sign up. But if you&#39;re above say 350% of poverty line, you&#39;re relatively healthy and relatively young, it&#39;s actually better for you on average to just pay the penalty. That means that the premiums on the exchange will be much higher than the old individual market, which didn&#39;t have so many of these community rating provisions.</p>
-<h3 id="the-individual-mandate-is-one-of-the-most-controversial-parts-of-the-affordable-care-act-on-both-political-and-economic-levels-what-are-your-thoughts-on-this-part-of-the-legislation-">The individual mandate is one of the most controversial parts of the Affordable Care Act on both political and economic levels. What are your thoughts on this part of the legislation?</h3>
-<p>The first thing to note is that the individual mandate is absolutely necessary if you have a community rating law. [It’s] an attempt to address the adverse selection problem by essentially forcing people for whom insurance would otherwise be a bad deal to join in. There&#39;s no need for an individual mandate when there&#39;s no adverse selection.</p>
-<p>This certainly is a controversial feature, largely because it gives the law this sense of &quot;the government knows better than you do what&#39;s good for you, so they&#39;re going to force you to do it&quot;. A lot of people don&#39;t like that. However, as an economist, I think the results will reflect the financial position that people are in. People will do what&#39;s financially good for them. I think the key thing to look at is: who&#39;s going to benefit and who&#39;s going to lose?</p>
-<h3 id="are-those-people-who-wouldn-t-be-buying-health-insurance-if-it-weren-t-for-the-individual-mandate-the-losers-">Are those people who wouldn’t be buying health insurance if it weren’t for the individual mandate the “losers”?</h3>
-<p>Well those aren&#39;t the only losers, though they certainly are losers. Another group are those people who have existing insurance on the individual market—many of them have been receiving cancellation letters, because their insurance plans don’t meet the requirements of the ACA. So because they don&#39;t meet those, the ACA considers them as &quot;bad insurance&quot;. The people who had that insurance, though, considered it good insurance! They were paying for the things they wanted, not the things the government--in particular the ACA--thinks they ought to have.</p>
-<h3 id="the-affordable-care-act-is-complex-and-it-can-be-intimidating-to-try-to-make-sense-of-how-it-will-impact-the-typical-american-do-you-see-this-complexity-as-a-potential-weakness-of-the-legislation-">The Affordable Care Act is complex, and it can be intimidating to try to make sense of how it will impact the typical American. Do you see this complexity as a potential weakness of the legislation?</h3>
-<p>It&#39;s a very difficult system. It&#39;s something like one-sixth of the US economy, with different actors with different points of view-- doctors, hospitals, insurers, individuals, employers. Basically every facet of domestic life is touched by this legislation. So if you&#39;re going to do this sort of legislation, I don&#39;t see how you could do it without a complex set of regulations. The question is &quot;Is it wise to do it this way?&quot; or &quot;Are there other, simpler ways to do it?&quot;</p>
-<p>The administration has often oversimplified and, in some places, directly misled the American public about what the likely effects of this legislation are. The most famous example is President Obama&#39;s promise that “if you like your insurance then you can keep it.” It was clear from the very beginning, based on the structure of the law, that that wasn&#39;t going to be true.</p>
-<p>A big ticket item is that the employer mandate was due to go into effect in January 2014, but the administration delayed it a year. And there are a couple of reasons I think they did that, though none of these are the official reasons they gave. The ACA defines &quot;affordable&quot; as the value of 9.5% or less of your income. So if you make $100k, an affordable plan would be $9500. For a young person with that income, that would actually be a very, very expensive health plan. For me, with a family of 5, a $9500 plan would be a very cheap plan. On average, families pay about $17k per year for insurance, while to cover a single person costs about $5 thousand per year.</p>
-<p>Now, any company with more than 50 full-time employees has to offer them affordable insurance. The technical problem is that...suppose you have a worker who comes to the insurance exchange and says &quot;Look, I only make 200% of the poverty line, and my employer isn&#39;t offering me insurance coverage” -- the federal government is then supposed to give that worker a whole bunch of money so they can go buy insurance on the exchange, but at least in principle they ought to check with the employer to make sure the employer actually doesn&#39;t offer that guy a plan. And it&#39;s technically a very difficult problem, because currently there&#39;s no reporting by employers. The ACA requires reporting, but it&#39;s been difficult to get that system going in a centralized way.</p>
-<p>But there&#39;s also a second, very important economic reason that has gone too unnoticed. If the employer gives you an &quot;affordable&quot; health plan, then you don&#39;t qualify for the subsidies, even if you&#39;re low income on the exchange. The way they define affordability is based on a price of health insurance for a single person. Imagine you have a family of 4 or 5, and your employer offers you a plan for a single person that&#39;s $5 thousand—well under 9.5% your income—they also give you an option to cover your entire family for $16 thousand. Well that&#39;s ﻿not﻿ &quot;affordable&quot;, since it&#39;s more than 9.5% of your income. What that means is that if you get insurance coverage for yourself but not your family, you can get that relatively cheaply from your employer. But then your family&#39;s not covered. However, when they go to the exchange to get insurance, they don’t qualify for federal subsidies, because technically you’re all covered by your employer. This creates all kinds of strange incentives. For instance, if the husband and wife got a divorce, the family then qualifies for exchange subsidies, even if they don&#39;t change any behavior other than they get divorced.</p>
-<p>But the more common thing that&#39;s likely to happen is that a lot of employers will just drop coverage and pay the penalty, and it&#39;ll actually be better for the workers, too, especially if they are low-income. If their employer drops insurance, they can then raise wages, and the workers will still qualify for federal subsidies on the exchange. It&#39;s a win-win for workers and employers. I&#39;ve done a published calculation (content.healthaffairs.org/content/32/9/1531.abstract) where I found that for 37 million employees who currently get insurance, it&#39;s financially beneficial for their employer to drop coverage for them. It&#39;s also financially beneficial for the worker. But there&#39;s no such thing as a free lunch-- we say that it&#39;s good for the employers, it&#39;s good for the employees, but it’s bad for taxpayers. The estimates of the costs of the law are way lower than what they ultimately will be, because they don&#39;t sufficiently account for the economic benefit to workers and employers of dropping coverage, especially for employees.</p>
-<h3 id="what-are-the-economic-effects-of-requiring-insurance-packages-to-include-certain-provisions-and-coverage-for-example-birth-control-">What are the economic effects of requiring insurance packages to include certain provisions and coverage, for example birth control?</h3>
-<p>In general, it raises the premiums-- the more things that are covered, the more that you have to charge to be able to pay the costs. If you&#39;re not paying it in the copay, then you&#39;re paying it in the premium. Nothing is free.</p>
-<p>The ACA requires insurers to extend dependent coverage to adult children up to 26 years old. Do you think this is going to have a net positive effect to those children or over time it&#39;ll cause the premiums to rise?</p>
-<p>Before, it was only kids under 21 who were covered as dependents under most family insurance plans. What it&#39;s done is it&#39;s raised the premiums for insurance for parents who have kids from 21 and 26. It&#39;s parents continuing to pay for the kids’ insurance. Again, it&#39;s not ﻿free﻿ coverage. So that&#39;s one effect-- it&#39;s raised the premiums for parents. The second thing is that it deprives the individual market of young, healthy people who could potentially pool with the sicker people. A 23-year-old who&#39;s covered by their parents has no incentive to go buy insurance in the exchange market. They don&#39;t have to pay a penalty, because they&#39;re already covered. What that means is that there&#39;s one fewer young, healthy person to pool with the older, sicker people on the exchange, making the adverse selection problem that we talked about earlier worse.</p>
-]]></description>
-            <link>http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/an-interview-with-dr-bhattacharya</guid>
-            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Fri, 14 Apr 2017 04:07:20 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Automator Workflow to stitch PDFs into a single document]]></title>
-            <description><![CDATA[<!-- img: http://green-romp.com/blog/wp-content/uploads/2013/08/Automator_icon.png -->
-<p><img src='../assets/automator-pdf/combine-pdfs.png' width='350px' style='float:right'></p>
-<p>I recently made a Mac <a href="../assets/Combine-PDF-Files.workflow.zip">Automator Workflow</a> that allows you to easily stitch together multiple PDFs into a single document. The workflow creates a new PDF while also  To use the workflow on your own computer:</p>
+            <title><![CDATA[Batch installing fonts in multiple subdirectories]]></title>
+            <description><![CDATA[<!-- img: http://i.stack.imgur.com/o76m6.png -->
+<p>I&#39;m a digital pack rat, especially when it comes to fonts. Every time I see a nice typeface, I immediately forget whatever it is I&#39;m actually reading and instead dig into the source code, find its name, and search the corners of the web for a a free copy. It doesn&#39;t help that my favored form of procrastination is scrolling through pages upon pages of fonts on sites like <a href="https://www.myfonts.com/">MyFonts.com</a> and <a href="http://www.fontsquirrel.com/">FontSquirrel.com</a>. The result is that I frequently find myself with a mess of directories bloated with <code>.ttf</code> and <code>.otf</code> files. <img src='http://i.imgur.com/VTK3tEG.png' width='270px' style='float:right; margin:15px'/></p>
+<p>The sad hangover to my embarrassingly frequent font binges is actually installing them. OSX has no easy way to get multiple fonts into Font Book all at once, leaving you with the painful task of installing them by hand, one by one. It&#39;s particularly unpleasant when the files are in multiple subfolders, the common format of the downloaded bundles I love so much.</p>
+<p>Luckily, it&#39;s easy to install all fonts within the subfolders of a directory from the command line with the following steps:</p>
 <ol>
-<li><a href="../assets/automator-pdf/Combine-PDF-Files.workflow.zip">Download</a> the <code>.zip</code> file and extract the workflow from the archive.</li>
-<li>When OSX prompts you with &quot;Do you want to install the “Combine PDF Files” service?&quot;, click &quot;Install&quot;.</li>
-<li>Navigate to the directory in which the PDFs you wish to combine can be found. Select all of the files at once, and right-click the selection. At the bottom of the menu, click the option called &quot;Combine PDF Files&quot;.</li>
-<li>The workflow will ask you to name the new file (including its extension) and to choose its location. Voila!</li>
+<li><p>First, <strong>locate the parent directory</strong> of all of the font files you wish to install. In my case, the directory is <code>~/Downloads/fonts-to-install</code>.</p>
+</li>
+<li><p>Next, <strong>open your terminal</strong> and <strong>enter the following command</strong> to install the fonts directly into Font Book. If you are dealing with <code>.otf</code> s or some other file type, replace <code>&quot;*.ttf&quot;</code> with <code>&quot;*.otf&quot;</code>.</p>
+</li>
 </ol>
+<pre class="highlight"><code class="hljs bash">find ~/Downloads/fonts-to-install\ Fonts/ -name <span class="hljs-string">"*.ttf"</span> -exec cp -iv {} /Library/Fonts \;
+</code></pre>
+<p>And that&#39;s that! Go use your newly-saved font-installing time for something fun.</p>
 ]]></description>
-            <link>http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/automator-workflow-to-stitch-pdfs-together-into-a-single-document</guid>
+            <link>http://devonzuegel.com/posts/batch-installing-fonts-in-multiple-subfolders</link>
+            <guid isPermaLink="true">http://devonzuegel.com/posts/batch-installing-fonts-in-multiple-subfolders</guid>
             <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Fri, 14 Apr 2017 03:59:17 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Bowling with People Who Are Actually Interesting]]></title>
-            <description><![CDATA[<p>My earbuds are in nearly every waking moment that I&#39;m not working or relaxing. Podcasts and audiobooks fill my once-silent hours of walking to class, getting ready in the morning, and waiting in lines. When I see someone I know heading towards me on the street, I usually keep my head down and walk a little faster so I don&#39;t have to interrupt the middle of a particularly good episode.</p>
-<p>In my free time, I read essays by bloggers living around the world and spend time with almost exclusively my closest friends. I&#39;ve never been a Stanford football game, and I don&#39;t understand the usage of &quot;we&quot; when fans discuss home team sports. The number of chance interactions I have with acquaintances and periphery friends has steadily decreased as I&#39;ve hooked into the internet and opted out of the mainstream culture around me – after all, smalltalk is rarely as interesting as a podcasts.</p>
-<p><a href="http://bowlingalone.com/">Robert Putnam is right</a> – we are opting out of mainstream culture. Civil engagement is at an all-time low, and national and local identity is fragmenting. Unlike our parents, my generation doesn&#39;t necessarily perceive our immediate physical surroundings as our community. &quot;The nation is some lines on a map, some laws you follow. No one particularly cares about it,&quot; said Gwern in an essay entitled <a href="https://www.gwern.net/The%20Melancholy%20of%20Subculture%20Society"><em>The Melancholy of Subculture Society</em></a>. Traditional cultural identities lose their meaning as physical location becomes increasingly irrelevant.</p>
-<p>However, this shift is strengthening the social fabric rather than degrading it. Just as globalizing the marketplace of goods increases the choice, quality, and accessibility of consumption, globalizing the marketplace of ideas yields analogous gains from trade. We are no longer confined to the stale ideas of our local newspaper or our polemic uncle&#39;s close-minded political views — now we have tweets and blogs. A larger market gives us more options to choose from, and in turn we engage in better quality ideas. An internet connection is like going from a small high school to a large university. Maybe as a teenager you were the only one who folded origami in your hometown, but in college there&#39;s an entire club devoted to it, filled with members who can share their expertise and organically improve everyone&#39;s folding skills just by connecting with each other.</p>
-<p>New channels of communication also enable richer conversations among the people with whom we&#39;re already close. When I discuss a challenging intellectual topic or personal issue with friends, we often intentionally move the conversation to Facebook chat. I find that writing my thoughts brings logical clarity and self-reflection that are easy to lose in fast-paced dialogue, and it enables me to detach from some emotional biases that degrade the quality of conversation.</p>
-<p>Historically, cultural fragmentation has fallen along the lines of physical proximity. Traditional cultural identity is just a subtle form of in-group, out-group tribalism. It forms the foundation of social disorders such as racism and destructive nationalism and the countless atrocities humans have committed against each other over time. Social cleavages due to the results of geographical lotteries have divided people around the world and turned them against each other. Robert Putnam is right in his diagnosis that traditional social groups are declining as we become ever hooked into TV and the internet—  but I&#39;d much rather have cultural fragmentation along lines of interests and ideas anyway.</p>
-]]></description>
-            <link>http://devonzuegel.com/posts/bowling-alone-cultural-fragmentation</link>
-            <guid isPermaLink="true">http://devonzuegel.com/posts/bowling-alone-cultural-fragmentation</guid>
-            <dc:creator><![CDATA[Devon Zuegel]]></dc:creator>
-            <pubDate>Sat, 02 Jul 2016 01:24:19 GMT</pubDate>
+            <pubDate>Thu, 24 Mar 2016 08:17:50 GMT</pubDate>
         </item>
     </channel>
 </rss>
