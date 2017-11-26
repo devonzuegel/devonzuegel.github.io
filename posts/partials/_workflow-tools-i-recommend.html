@@ -1,40 +1,48 @@
-<h2 id="misc-tools">Misc Tools</h2>
+<h2>Misc Tools</h2>
+
 <ul>
 <li>Batch converting <code>.erb</code> files to <code>.slim</code> (requires <code>erb2slim</code> and <code>html2slim</code> gems) by recursing through all sub-directories:</li>
 </ul>
-<pre class="highlight"><code class="hljs bash">$ <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> **/*.erb; <span class="hljs-keyword">do</span> erb2slim <span class="hljs-variable">$f</span> <span class="hljs-variable">${f/\.erb/.slim}</span>; <span class="hljs-keyword">done</span>
-$ rm **/*.erb
-</code></pre>
+
+<div class="highlight"><pre lang="shell">$ for f in <strong>/*.erb; do erb2slim $f ${f/.erb/.slim}; done
+$ rm </strong>/*.erb
+</pre></div>
+
 <ul>
 <li>A Ruby script to pretty-print 2D arrays:</li>
 </ul>
-<pre class="highlight"><code class="hljs ruby"><span class="hljs-keyword">require</span> <span class="hljs-string">'colorize'</span>
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> </span>print_table(table, with_header = <span class="hljs-keyword">true</span>)
-  <span class="hljs-comment"># Calculate widths</span>
+<div class="highlight"><pre lang="ruby">require &#39;colorize&#39;
+
+def print_table(table, with_header = true)
+  # Calculate widths
   widths = []
-  table.each <span class="hljs-keyword">do</span> |line|
-    line.each_with_index <span class="hljs-keyword">do</span> |col, c|
-      widths[c] = (widths[c] &amp;&amp; widths[c] &gt; col.length) ? widths[c] <span class="hljs-symbol">:</span> col.length
-    <span class="hljs-keyword">end</span>
-  <span class="hljs-keyword">end</span>
-  <span class="hljs-comment"># Indent the last column left.</span>
+  table.each do |line|
+    line.each_with_index do |col, c|
+      widths[c] = (widths[c] &amp;&amp; widths[c] &gt; col.length) ? widths[c] : col.length
+    end
+  end
+  # Indent the last column left.
   last = widths.pop()
-  format = widths.collect { |n| <span class="hljs-string">"%-<span class="hljs-subst">#{n}</span>s"</span> }.join(<span class="hljs-string">"  |   "</span>.black) + <span class="hljs-string">"  <span class="hljs-subst">#{<span class="hljs-string">'|'</span>.black}</span>  %-<span class="hljs-subst">#{last}</span>s\n"</span>
-  table.each_with_index <span class="hljs-keyword">do</span> |line, i|
-    <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> &amp;&amp; with_header
-      printf(format.black, *line)
-    <span class="hljs-keyword">else</span>
-      printf(format, *line)
-    <span class="hljs-keyword">end</span>
-  <span class="hljs-keyword">end</span>
-<span class="hljs-keyword">end</span>
-</code></pre>
+  format = widths.collect { |n| &quot;%-#{n}s&quot; }.join(&quot;  |   &quot;.black) + &quot;  #{&#39;|&#39;.black}  %-#{last}s\n&quot;
+  table.each_with_index do |line, i|
+    if i == 0 &amp;&amp; with_header
+      printf(format.black, <em>line)
+    else
+      printf(format, </em>line)
+    end
+  end
+end
+</pre></div>
+
 <p>Given a two-dimensional array, <code>print_table</code> pretty prints a table that looks a bit like this:</p>
-<p><img src="https://cloud.githubusercontent.com/assets/6979755/9891532/af277164-5bbb-11e5-8456-89fc69e2fdb7.png" alt=""></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/6979755/9891532/af277164-5bbb-11e5-8456-89fc69e2fdb7.png" alt="" title="" /></p>
+
 <ul>
 <li><p><a href="https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en">JSON Formatter</a> enables syntax highlighting and collapsible trees with indent guides when working with raw JSON in your browser. One of my favorite features is that holding down <code>cmd</code> while collapsing a subtree collapses all of its siblings, too.</p>
-<p><div class='space'></div>
-<img src="../../assets/workflow-optimizations-customizations/json-formatter-example.webp" alt=""></p>
-</li>
+
+<div class='space'></div>
+
+<p><img src="../../assets/workflow-optimizations-customizations/json-formatter-example.webp" alt="" title="" /></p></li>
 </ul>

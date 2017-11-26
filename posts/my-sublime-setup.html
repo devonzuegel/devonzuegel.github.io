@@ -6,11 +6,7 @@
   <meta name="description" content=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <!--Place favicon.ico and apple-touch-icon.png in the root directory-->
-  <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic" rel="stylesheet" type="text/css"/><meta name="generator" content="DocPad v6.70.1" /><style >html.wait {
-	cursor: wait !important;
-	opacity: 0;
-	transition: opacity 0.5s ease;
-}</style><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic" rel="stylesheet" type="text/css"/><meta name="generator" content="DocPad v6.79.4" /><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
 </head>
 <body>
   <div id="wrapper">
@@ -20,9 +16,9 @@
           <div class="col-sm-12"><a href="../../" class="simple-nav brand">Devon Zuegel</a></div>
           <div class="col-sm-12">
             <div class="simple-nav"><a href="http://notes.devonzuegel.com">Notes</a></div>
-            <div class="simple-nav"><a href="/pages/posts">Writing</a></div>
-            <div class="simple-nav"><a href="/pages/projects">Projects</a></div>
-            <div class="simple-nav"><a href="/pages/contact">Contact</a></div>
+            <div class="simple-nav"><a href="/pages/posts.html">Writing</a></div>
+            <div class="simple-nav"><a href="/pages/projects.html">Projects</a></div>
+            <div class="simple-nav"><a href="/pages/contact.html">Contact</a></div>
             <div class="space triple"></div>
             <div class="space triple"></div>
           </div>
@@ -53,136 +49,120 @@
       <li><a href="#user-preferences">My User Preferences files</a></li>
     </ul>
   </div>
-</div><p>I love sharing little tips and tricks I&#39;ve incorporated into my workflow, so I&#39;m excited to write up this post surveying the key customizations I&#39;ve made. I hope you enjoy reading it as much as I&#39;ve enjoyed writing it.</p>
-<p>Better yet, I love learning new ways to better use Sublime! If there&#39;s anything here that I&#39;ve missed, please don&#39;t hesitate to <a href="mailto:devonz@cs.stanford.edu">email</a> or <a href="http://twitter.com/devonzuegel">tweet</a> at me with your additions.</p>
-<i>I update this post sporadically as I learn new things about Sublime. Last time I updated it was <b>30 June 2016</b>.</i><br/><br/><a name="packages" class="anchor"></a><h2 id="useful-packages">Useful packages</h2>
-<p><em>You can download a <code>.zip</code> containing all of the packages mentioned below <a href="../assets/my-sublime-setup/packages.zip">here</a>.</em></p>
+</div>I love sharing little tips and tricks I've incorporated into my workflow, so I'm excited to write up this post surveying the key customizations I've made. I hope you enjoy reading it as much as I've enjoyed writing it.
+
+Better yet, I love learning new ways to better use Sublime! If there's anything here that I've missed, please don't hesitate to [email](mailto:devonz@cs.stanford.edu) or [tweet](http://twitter.com/devonzuegel) at me with your additions.
+<i>I update this post sporadically as I learn new things about Sublime. Last time I updated it was <b>25 November 2017</b>.</i><br/><br/><a name="packages" class="anchor"></a>## Useful packages ##
+
+*You can download a `.zip` containing all of the packages mentioned below [here](../assets/my-sublime-setup/packages.zip).*
+
 <video src='../assets/my-sublime-setup/alignment.mov' style='width: 200px; margin: 20px; float: right' autobuffer='autobuffer' autoplay loop></video>
 
-<h4 id="alignment">Alignment</h4>
-<p>The easiest way to single-handedly make a block of code more readable is to align its contents, whether it&#39;s the values of a hash or the equals signs initializing a handful of variables at the beginning of a method. However, it&#39;s a pain the butt (and frankly not worth the time) to manually go through line-by-line adding the right spacing. With the Sublime alignment package, you can simply select the parts of the lines you want to be aligned and hold down <code>cmd + ctrl + a</code> to achieve the same result. (In the short recorded example to the right, I held down the <code>opt</code> button while dragging my mouse along the beginning of each line to select the relevant lines even faster.)</p>
-<p>Thanks to <a href="https://twitter.com/backus">John Backus</a> for sharing this package with me.</p>
-<h4 id="all-autocomplete">All Autocomplete</h4>
-<p>Extends Sublime&#39;s autocompletion to find matches in all open files.</p>
-<h4 id="autospell">AutoSpell</h4>
-<p>Auto-replaces obvious spelling mistakes in <code>.md</code> and <code>.txt</code> files.</p>
-<h4 id="bracket-highlighter">Bracket Highlighter</h4>
-<p>Highlights or underlines the innermost brackets of the code you&#39;re currently editing. You can see it in action in the alignment video above.</p>
-<h4 id="filediffs">FileDiffs</h4>
-<p>Enables you to run quick diffs between any combination of open tabs, your clipboard, and files from the current project.</p>
-<h4 id="fold-comments">Fold Comments</h4>
-<p>Quickly fold all comments in the current document.</p>
-<p><img src='../assets/my-sublime-setup/gitgutter-ex.png' style='float: right; width: 340px; margin: 20px'/></p>
-<h4 id="gitgutter">GitGutter</h4>
-<p>Small, unobtrusive symbols to the left gutter of Sublime indicate the lines&#39; git status (if you are in a git repository).</p>
-<h4 id="origami">Origami</h4>
-<p>Allows you to split Sublime into panes however you like with simple keyboard shortcuts. You can find my custom key bindings below, which include extensions to Origami&#39;s default shortcuts.</p>
-<h4 id="package-resource-viewer">Package Resource Viewer</h4>
-<p>Enables quick viewing and editing of all your packages. It&#39;s a bit shocking that this doesn&#39;t come with Sublime by default; without this, you have to manually go through the bowels of your file system to find any <code>.tmLanguage</code>, <code>.sublime-package</code>, etc. files that you wanted to edit. In contrast, this plugin gives you fuzzy search over all of these packages directly from Sublime. In short –– it&#39;s great!</p>
-<h4 id="ruby-markers">Ruby Markers</h4>
-<p>Executes Ruby code and updates <code># =&gt;</code> markers with the results. This one is particularly useful for demoing features of the language or testing the output of little scripts as you write them. If you&#39;ve ever seen <a href="http://www.rubytapas.com/">Ruby Tapas</a> (and if you haven&#39;t, you should!!!!), Avdi uses <code>xmpfilter</code> and <code>rcodetools</code> with Emacs to get this same behavior for his mini tutorials.</p>
-<p><img src='../assets/my-sublime-setup/ruby-markers.gif' style='margin: 10px; width: 95%'/></p>
-<p>Note that you may have to change the package settings from <code>&quot;ruby_manager&quot;: &quot;auto&quot;</code> to <code>&quot;ruby_manager&quot;: &quot;rvm&quot;</code> in order to get this to work.</p>
-<p>Thanks to <a href="https://twitter.com/backus">John Backus</a> for sharing this package with me.</p>
-<h4 id="schemr-themr">Schemr &amp; Themr</h4>
-<p>These two packages enable you to quickly cycle through color schemes and themes (respectively) from any file rather than having to open your preferences file, manually update their file paths, switch back to your original open file to see the changes, and repeat each time you want to test out a new style. These packages aren&#39;t so critical for long-term use (I haven&#39;t changed my theme in months, and I don&#39;t plan on doing so in the near future), but they are really nice when you are first setting up your coding environment.</p>
-<a name="key-bindings" class="anchor"></a><h2 id="useful-key-bindings">Useful key bindings</h2>
-<table>
-<thead>
-<tr>
-<th><strong>Shortcut</strong></th>
-<th><strong>Result</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>select, <code>cmd + g</code></td>
-<td>Selects all instances of the originally selected text</td>
-</tr>
-<tr>
-<td>select, <code>cmd + d</code></td>
-<td>Similar to <code>cmd + g</code>, except it adds each following instance one at a time</td>
-</tr>
-<tr>
-<td><code>cmd + f</code></td>
-<td>search current document for string (or regex, if the <code>*</code> button to the left is toggled on)</td>
-</tr>
-<tr>
-<td><code>cmd + shift + f</code></td>
-<td>expanded find menu; find &amp; replace; advanced search, enabling you to specify what folders / types of files you wish to search</td>
-</tr>
-<tr>
-<td><code>cmd + shift + i</code></td>
-<td>Auto indents code (works better for languages like C++ or Ruby, which have block endings defined more than just whitespace)</td>
-</tr>
-<tr>
-<td><code>ctrl + cmd + up/down arrow</code></td>
-<td>Move current line(s) up/down</td>
-</tr>
-<tr>
-<td><code>cmd + shift + d</code></td>
-<td>Duplicate current line(s)</td>
-</tr>
-<tr>
-<td><code>cmd + x</code></td>
-<td>Cut current line(s)</td>
-</tr>
-<tr>
-<td>hold <code>cmd</code> while selecting</td>
-<td>Make multiple selections</td>
-</tr>
-<tr>
-<td><code>opt + drag cursor</code></td>
-<td>Make multiple selections (alternate)</td>
-</tr>
-<tr>
-<td><code>cmd + k + 1</code></td>
-<td>Fold 1st layer of code (replace <code>1</code> with <code>2, 3, ...</code> to fold 2nd, 3rd, ... layers)</td>
-</tr>
-</tbody>
-</table>
-<a name="custom-key-bindings" class="anchor"></a><h2 id="my-custom-key-bindings">My custom key bindings</h2>
-<script src="https://gist.github.com/devonzuegel/cfce33d637a06583cda7.js"></script><a name="theme-and-scheme" class="anchor"></a><h2 id="my-theme-color-scheme">My theme &amp; color scheme</h2>
-<p>A Sublime color scheme defines the syntax highlighting and canvas color of your editor, while a theme defines the styling of the sidebars, tabs, and find-and-replace menu.</p>
-<h4 id="pisco-sour-color-scheme">Pisco Sour color scheme</h4>
-<ul>
-<li>You can download my Pisco Sour color scheme <a href="(../assets/my-sublime-setup/pisco-sour.tmTheme">here</a>.</li>
-<li>I created this theme with <a href="http://tmtheme-editor.herokuapp.com">tmTheme Editor</a>. Feel free to use or update my theme however you want.</li>
-</ul>
-<h4 id="spaceblack-theme">Spaceblack theme</h4>
-<ul>
-<li>You can download the Spaceblack theme <a href="(../assets/my-sublime-setup/Spaceblack.sublime-theme">here</a>.</li>
-</ul>
-<h4 id="screenshots">Screenshots</h4>
-<p>Here are a few screenshots of my Sublime setup:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"><strong>Multimarkdown</strong></th>
-<th style="text-align:center"><strong>Python</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><img src="../assets/my-sublime-setup/md-sample.png" alt=""></td>
-<td style="text-align:center"><img src="../assets/my-sublime-setup/py-sample.png" alt=""></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>Ruby</strong></td>
-<td style="text-align:center"><strong>Haskell</strong></td>
-</tr>
-<tr>
-<td style="text-align:center"><img src="../assets/my-sublime-setup/rb-sample.png" alt=""></td>
-<td style="text-align:center"><img src="../assets/my-sublime-setup/hs-sample.png" alt=""></td>
-</tr>
-</tbody>
-</table>
-<a name="user-preferences" class="anchor"></a><h2 id="my-user-preferences-files">My User Preferences files</h2>
-<p>Sublime User Preferences files are where you define your color scheme, theme, and a variety of other customizations like line padding, minimap toggling, and line highlighting. You can find your <code>/User/Preferences.sublime-settings</code> file by pressing <code>cmd + /</code> or by going up to the <strong>Sublime Text &gt; Preferences &gt; Settings – User</strong> menu. Here is my User Preferences file:</p>
+#### Alignment ####
+
+The easiest way to single-handedly make a block of code more readable is to align its contents, whether it's the values of a hash or the equals signs initializing a handful of variables at the beginning of a method. However, it's a pain the butt (and frankly not worth the time) to manually go through line-by-line adding the right spacing. With the Sublime alignment package, you can simply select the parts of the lines you want to be aligned and hold down `cmd + ctrl + a` to achieve the same result. (In the short recorded example to the right, I held down the `opt` button while dragging my mouse along the beginning of each line to select the relevant lines even faster.)
+
+Thanks to [John Backus](https://twitter.com/backus) for sharing this package with me.
+
+#### All Autocomplete ####
+
+Extends Sublime's autocompletion to find matches in all open files.
+
+#### AutoSpell ####
+
+Auto-replaces obvious spelling mistakes in `.md` and `.txt` files.
+
+#### Bracket Highlighter ####
+
+Highlights or underlines the innermost brackets of the code you're currently editing. You can see it in action in the alignment video above.
+
+
+#### FileDiffs ####
+
+Enables you to run quick diffs between any combination of open tabs, your clipboard, and files from the current project.
+
+#### Fold Comments ####
+
+Quickly fold all comments in the current document.
+
+<img src='../assets/my-sublime-setup/gitgutter-ex.png' style='float: right; width: 340px; margin: 20px'/>
+
+#### GitGutter ####
+
+Small, unobtrusive symbols to the left gutter of Sublime indicate the lines' git status (if you are in a git repository).
+
+#### Origami ####
+
+Allows you to split Sublime into panes however you like with simple keyboard shortcuts. You can find my custom key bindings below, which include extensions to Origami's default shortcuts.
+
+#### Package Resource Viewer ####
+
+Enables quick viewing and editing of all your packages. It's a bit shocking that this doesn't come with Sublime by default; without this, you have to manually go through the bowels of your file system to find any `.tmLanguage`, `.sublime-package`, etc. files that you wanted to edit. In contrast, this plugin gives you fuzzy search over all of these packages directly from Sublime. In short –– it's great!
+
+#### Ruby Markers ####
+
+Executes Ruby code and updates `# =>` markers with the results. This one is particularly useful for demoing features of the language or testing the output of little scripts as you write them. If you've ever seen [Ruby Tapas](http://www.rubytapas.com/) (and if you haven't, you should!!!!), Avdi uses `xmpfilter` and `rcodetools` with Emacs to get this same behavior for his mini tutorials.
+
+<img src='../assets/my-sublime-setup/ruby-markers.gif' style='margin: 10px; width: 95%'/>
+
+Note that you may have to change the package settings from `"ruby_manager": "auto"` to `"ruby_manager": "rvm"` in order to get this to work.
+
+Thanks to [John Backus](https://twitter.com/backus) for sharing this package with me.
+
+#### Schemr & Themr ####
+
+These two packages enable you to quickly cycle through color schemes and themes (respectively) from any file rather than having to open your preferences file, manually update their file paths, switch back to your original open file to see the changes, and repeat each time you want to test out a new style. These packages aren't so critical for long-term use (I haven't changed my theme in months, and I don't plan on doing so in the near future), but they are really nice when you are first setting up your coding environment.
+
+<a name="key-bindings" class="anchor"></a>## Useful key bindings ##
+
+| **Shortcut**                 | **Result**                                            |
+| --                           | --                                                    |
+| select, `cmd + g`            | Selects all instances of the originally selected text |
+| select, `cmd + d`            | Similar to `cmd + g`, except it adds each following instance one at a time                                                                 |
+| `cmd + f`                    | search current document for string (or regex, if the `*` button to the left is toggled on)                                                      |
+| `cmd + shift + f`            | expanded find menu; find & replace; advanced search, enabling you to specify what folders / types of files you wish to search               |
+| `cmd + shift + i` | Auto indents code (works better for languages like C++ or Ruby, which have block endings defined more than just whitespace)                            |
+| `ctrl + cmd + up/down arrow` | Move current line(s) up/down                          |
+| `cmd + shift + d`            | Duplicate current line(s)                             |
+| `cmd + x`                    | Cut current line(s)                                   |
+| hold `cmd` while selecting   | Make multiple selections                              |
+| `opt + drag cursor`          | Make multiple selections (alternate)                  |
+| `cmd + k + 1`                | Fold 1st layer of code (replace `1` with `2, 3, ...` to fold 2nd, 3rd, ... layers)                                                             |
+
+<a name="custom-key-bindings" class="anchor"></a>## My custom key bindings ##
+
+<script src="https://gist.github.com/devonzuegel/cfce33d637a06583cda7.js"></script><a name="theme-and-scheme" class="anchor"></a>## My theme & color scheme ##
+
+A Sublime color scheme defines the syntax highlighting and canvas color of your editor, while a theme defines the styling of the sidebars, tabs, and find-and-replace menu.
+
+#### Pisco Sour color scheme ####
+
+- You can download my Pisco Sour color scheme [here]((../assets/my-sublime-setup/pisco-sour.tmTheme).
+- I created this theme with [tmTheme Editor](http://tmtheme-editor.herokuapp.com). Feel free to use or update my theme however you want.
+
+#### Spaceblack theme ####
+
+- You can download the Spaceblack theme [here]((../assets/my-sublime-setup/Spaceblack.sublime-theme).
+
+#### Screenshots ####
+
+Here are a few screenshots of my Sublime setup:
+
+| **Multimarkdown** | **Python**  |
+| :---:             | :---:       |
+| ![](../assets/my-sublime-setup/md-sample.png) | ![](../assets/my-sublime-setup/py-sample.png) |
+| **Ruby**          | **Haskell** |
+| ![](../assets/my-sublime-setup/rb-sample.png) | ![](../assets/my-sublime-setup/hs-sample.png) |
+<a name="user-preferences" class="anchor"></a>## My User Preferences files ##
+
+Sublime User Preferences files are where you define your color scheme, theme, and a variety of other customizations like line padding, minimap toggling, and line highlighting. You can find your `/User/Preferences.sublime-settings` file by pressing `cmd + /` or by going up to the **Sublime Text > Preferences > Settings – User** menu. Here is my User Preferences file:
+
 <script src="https://gist.github.com/devonzuegel/814f072e819d83873932.js"></script>
 
-<p>Sublime allows allows you to define language-specific user preferences. This particularly comes in handy for Markdown and plain-text editing, since they are so different from programming-centric uses of Sublime. For instance, I prefer not to have lines wrap around while I&#39;m programming, but I can&#39;t live without it while working with real paragraphs rather than concise lines of code that are &lt; 80 characters long. Also, I prefer my code-left-aligned, while I like having broad margins on either side of my text while writing.</p>
-<p>To access and edit language-specific preference files, go to <strong>Sublime Text &gt; Preferences &gt; Package Settings &gt; Markdown Editing &gt; MultiMarkdown Settings –– User</strong> (replacing &quot;Markdown Editing&quot; and &quot;Multimarkdown Settings –– User&quot; with the language with which you&#39;re working).</p>
+Sublime allows allows you to define language-specific user preferences. This particularly comes in handy for Markdown and plain-text editing, since they are so different from programming-centric uses of Sublime. For instance, I prefer not to have lines wrap around while I'm programming, but I can't live without it while working with real paragraphs rather than concise lines of code that are < 80 characters long. Also, I prefer my code-left-aligned, while I like having broad margins on either side of my text while writing.
+
+To access and edit language-specific preference files, go to **Sublime Text > Preferences > Package Settings > Markdown Editing > MultiMarkdown Settings –– User** (replacing "Markdown Editing" and "Multimarkdown Settings –– User" with the language with which you're working).
+
 <script src="https://gist.github.com/devonzuegel/a5d84bef5bdfc03008b9.js"></script></div>
 </article></div><br/>
           </div>
@@ -190,56 +170,7 @@
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 30 June 2016 at 07:31 pm</h4>
+      <h4>Last modified on 25 November 2017 at 12:56 pm</h4>
     </div>
-  </div><script >(function(){
-	/* Did we just livereload? */
-var log = !!(localStorage && console && console.log && true);
-if ( log && localStorage.getItem('/docpad-livereload/reloaded') === 'yes' ) {
-	localStorage.removeItem('/docpad-livereload/reloaded');
-	console.log('LiveReload completed at', new Date())
-}
-
-/* Listen for the regenerated event and perform a reload of the page when the event occurs */
-var listen = function(){
-	var primus = new Primus('/docpad-livereload');
-	primus.on('data', function(data){
-		if ( data && data.message ) {
-			if ( data.message === 'generateBefore' ) {
-				if ( log ) {
-					console.log('LiveReload started at', new Date());
-				}
-				if ( typeof document.getElementsByTagName !== 'undefined' ) {
-	document.getElementsByTagName('html')[0].className += ' wait';
-}
-			}
-			else if ( data.message === 'generateAfter' ) {
-				if ( log ) {
-					localStorage.setItem('/docpad-livereload/reloaded', 'yes');
-				}
-				document.location.reload();
-			}
-		}
-	});
-};
-	/* Inject socket into our page */
-var inject = function(){
-	var t = document.createElement('script');
-	t.type = 'text/javascript';
-	t.async = 'async';
-	t.src = '/primus/primus.js';
-	t.onload = listen;
-	var s = document.getElementsByTagName('script')[0];
-	s.parentNode.insertBefore(t, s);
-};
-	if ( typeof Primus !== 'undefined' ) {
-		listen();
-	} else {
-		inject();
-	}
-})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script><style >html.wait {
-	cursor: wait !important;
-	opacity: 0;
-	transition: opacity 0.5s ease;
-}</style><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  </div><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
 </body>

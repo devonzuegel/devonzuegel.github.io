@@ -6,11 +6,7 @@
   <meta name="description" content=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <!--Place favicon.ico and apple-touch-icon.png in the root directory-->
-  <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic" rel="stylesheet" type="text/css"/><meta name="generator" content="DocPad v6.70.1" /><style >html.wait {
-	cursor: wait !important;
-	opacity: 0;
-	transition: opacity 0.5s ease;
-}</style><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic" rel="stylesheet" type="text/css"/><meta name="generator" content="DocPad v6.79.4" /><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
 </head>
 <body>
   <div id="wrapper">
@@ -20,9 +16,9 @@
           <div class="col-sm-12"><a href="../../" class="simple-nav brand">Devon Zuegel</a></div>
           <div class="col-sm-12">
             <div class="simple-nav"><a href="http://notes.devonzuegel.com">Notes</a></div>
-            <div class="simple-nav"><a href="/pages/posts">Writing</a></div>
-            <div class="simple-nav"><a href="/pages/projects">Projects</a></div>
-            <div class="simple-nav"><a href="/pages/contact">Contact</a></div>
+            <div class="simple-nav"><a href="/pages/posts.html">Writing</a></div>
+            <div class="simple-nav"><a href="/pages/projects.html">Projects</a></div>
+            <div class="simple-nav"><a href="/pages/contact.html">Contact</a></div>
             <div class="space triple"></div>
             <div class="space triple"></div>
           </div>
@@ -40,55 +36,60 @@
   <div class="space"></div>
   <div class="post-content"><!-- img: http://wallpoper.com/images/00/44/69/33/whelk-shell-3_00446933.jpg -->
 <p><img src='../assets/zsh-aliases/l-alias.png' width='250px' style='margin:0 0 15px 15px; float:right'></p>
+
 <p>Aliases are one of my favorite terminal customizations. They make the most frequently-used commands shorter and allow improvements on the standard ones, enabling you to tailor programming in the terminal to your individual needs and preferences. These aliases are stored in <code>~/.zshrc</code>.</p>
-<h3 id="listing-files">Listing files</h3>
+
+<h3>Listing files</h3>
+
 <p>The one alias that has improved my workflow the most is a quick, one-keypress command <code>l</code>. This replacement for the standard <code>ls</code> command prints the <strong>size</strong>, last-modified <strong>date</strong> and <strong>time</strong>, and the <strong>directory name</strong> of each file and sub-dir in the current directory. It orders the rows by the last-modified date, so the most current files and projects are up top on the list.</p>
-<pre class="highlight"><code class="hljs bash"><span class="hljs-comment"># Flags:</span>
-<span class="hljs-comment">#   -G: default colors, different for directories vs. files</span>
-<span class="hljs-comment">#   -F: includes a trailing `/` at the end of directory names</span>
-<span class="hljs-comment">#   -l: display long format (file types, permissions, number of hard</span>
-<span class="hljs-comment">#       links, owner, group, size, last-modified date, and filename)</span>
-<span class="hljs-comment">#   -t: sort the list of files by modification time</span>
-alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-string">''</span>{
-  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-4.4s "</span>, <span class="hljs-variable">$5</span>);
-  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%4s %-3.2d %-5.5s  "</span>, <span class="hljs-variable">$6</span>, <span class="hljs-variable">$7</span>, <span class="hljs-variable">$8</span>);
-  <span class="hljs-built_in">printf</span>(<span class="hljs-string">"%-7.59s\n"</span>, <span class="hljs-variable">$9</span>);   
-}<span class="hljs-string">'\'</span><span class="hljs-string">' | tail +2'</span>  <span class="hljs-comment"># Remove first line from output (formerly "total")</span>
-</code></pre>
+
+<div class="highlight"><pre lang="shell">
+
+<h1>Flags:</h1>
+
+
+
+<h1>-G: default colors, different for directories vs. files</h1>
+
+
+
+<h1>-F: includes a trailing <code>/</code> at the end of directory names</h1>
+
+
+
+<h1>-l: display long format (file types, permissions, number of hard</h1>
+
+
+
+<h1>links, owner, group, size, last-modified date, and filename)</h1>
+
+
+
+<h1>-t: sort the list of files by modification time</h1>
+
+alias l=&#39;ls -GF -lt | awk &#39;\&#39;&#39;{
+  printf(&quot;%-4.4s &quot;, $5);
+  printf(&quot;%4s %-3.2d %-5.5s  &quot;, $6, $7, $8);
+  printf(&quot;%-7.59s\n&quot;, $9);<br>}&#39;\&#39;&#39; | tail +2&#39;  # Remove first line from output (formerly &quot;total&quot;)
+</pre></div>
+
 <p><img src='../assets/zsh-aliases/lg-alias.png' width='240px' style='margin:5px 0 15px 15px; float:right'></p>
+
 <p>When looking to filter through filenames quickly, I use <code>lg #{regex}</code>, which pipes the result of <code>l</code> to a case-insensitive <code>grep</code> command.</p>
-<pre class="highlight"><code class="hljs elixir"><span class="hljs-keyword">alias</span> lg=<span class="hljs-string">'l | grep -i'</span>
-</code></pre>
-<h3 id="git">Git</h3>
+
+<div class="highlight"><pre lang="shell">alias lg=&#39;l | grep -i&#39;
+</pre></div>
+
+<h3>Git</h3>
+
 <p>My git aliases are a close second to the directory listing commands. The ones I use most frequently are:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Alias</th>
-<th style="text-align:left">Original Command</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><code>gac &#39;My commit message&#39;</code></td>
-<td style="text-align:left"><code>git add -A &amp;&amp; git commit</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>gp</code></td>
-<td style="text-align:left"><code>git push</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>gch #{branchname}</code></td>
-<td style="text-align:left"><code>git checkout #{branchname}</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><code>gb</code></td>
-<td style="text-align:left"><code>git branch</code></td>
-</tr>
-</tbody>
-</table>
-<hr>
+
+<p>| Alias                         | Original Command               |<br />| :---------------------------- | :----------------------------- |<br />| <code>gac &#39;My commit message&#39;</code>     | <code>git add -A &amp;&amp; git commit</code>     |<br />| <code>gp</code>                          | <code>git push</code>                     |<br />| <code>gch #{branchname}</code>           | <code>git checkout #{branchname}</code>   |<br />| <code>gb</code>                          | <code>git branch</code>                   |</p>
+
+<hr />
+
 <p>You can find my entire <code>.zshrc</code> file below. Feel free to use, abuse, and modify my aliases as you wish!</p>
+
 <script src="https://gist.github.com/devonzuegel/6c1f260d5e9ff101e0df.js"></script></div>
 </article></div><br/>
           </div>
@@ -96,56 +97,7 @@ alias l=<span class="hljs-string">'ls -GF -lt | awk '</span>\<span class="hljs-s
       </div>
     </div>
     <div id="footer" class="col-lg-12">
-      <h4>Last modified on 24 March 2016 at 01:18 am</h4>
+      <h4>Last modified on 25 November 2017 at 12:56 pm</h4>
     </div>
-  </div><script >(function(){
-	/* Did we just livereload? */
-var log = !!(localStorage && console && console.log && true);
-if ( log && localStorage.getItem('/docpad-livereload/reloaded') === 'yes' ) {
-	localStorage.removeItem('/docpad-livereload/reloaded');
-	console.log('LiveReload completed at', new Date())
-}
-
-/* Listen for the regenerated event and perform a reload of the page when the event occurs */
-var listen = function(){
-	var primus = new Primus('/docpad-livereload');
-	primus.on('data', function(data){
-		if ( data && data.message ) {
-			if ( data.message === 'generateBefore' ) {
-				if ( log ) {
-					console.log('LiveReload started at', new Date());
-				}
-				if ( typeof document.getElementsByTagName !== 'undefined' ) {
-	document.getElementsByTagName('html')[0].className += ' wait';
-}
-			}
-			else if ( data.message === 'generateAfter' ) {
-				if ( log ) {
-					localStorage.setItem('/docpad-livereload/reloaded', 'yes');
-				}
-				document.location.reload();
-			}
-		}
-	});
-};
-	/* Inject socket into our page */
-var inject = function(){
-	var t = document.createElement('script');
-	t.type = 'text/javascript';
-	t.async = 'async';
-	t.src = '/primus/primus.js';
-	t.onload = listen;
-	var s = document.getElementsByTagName('script')[0];
-	s.parentNode.insertBefore(t, s);
-};
-	if ( typeof Primus !== 'undefined' ) {
-		listen();
-	} else {
-		inject();
-	}
-})();</script><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script><style >html.wait {
-	cursor: wait !important;
-	opacity: 0;
-	transition: opacity 0.5s ease;
-}</style><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  </div><script  src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script  src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment.js"></script><script  src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script><script  src="../js/google-analytics.js"></script><link  rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" /><link  rel="stylesheet" href="../css/style.css" /><link  rel="stylesheet" href="../css/vendor/normalize.css" /><link  rel="stylesheet" href="../css/vendor/highlightjs/hybrid.css" /><link  rel="stylesheet" href="../css/vendor/main.css" /><link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
 </body>
