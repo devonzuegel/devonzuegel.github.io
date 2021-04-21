@@ -59,3 +59,4 @@ want to write about your project.
 
 Anyone and everyone is welcome to [contribute](CONTRIBUTING.md). Hundreds of
 developers have helped make the HTML5 Boilerplate what it is today.
+
