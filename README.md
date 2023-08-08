@@ -34,7 +34,7 @@ Check "Apply to all" and then click "Replace".
 
 #### Step 3: Push `master` to GitHub
 
-It will take a few minutes for the changes to propagate to the live site.
+It will take a few minutes for the changes to propagate to the live site. You can follow along to see if the job is complete at https://github.com/devonzuegel/devonzuegel.github.io/actions.
 
 
 ## Things to improve
