@@ -1,5 +1,3 @@
-# devonzuegel.github.io
-
 ## How to update this site
 
 #### Step 1: Download the site from devon.postach.io
