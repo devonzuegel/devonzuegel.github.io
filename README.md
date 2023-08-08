@@ -42,3 +42,4 @@ It will take a few minutes for the changes to propagate to the live site.
 ## Things to improve
 
 - [ ] `wget` downloads everything such that the `.html` extension is preserved in the path. It's good that the extension is in the filenames, but I don't want the contents of the html files themselves to point to e.g. `.../about-me.html`, because it makes the urls ugly. I want them to point to `.../about-me`. In theory this should be easy to fix, but I haven't found the right flags for `wget` to fix this.
+- [ ] I should also have it download the postach.io CSS, JS, etc. I thought `wget` would've already done that given the flags I gave it, but apparently not.
