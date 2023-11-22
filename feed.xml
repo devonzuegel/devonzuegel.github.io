@@ -2,28 +2,29 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="text">devonzuegel.com</title>
   <id>http://devon.postach.io/feed.xml</id>
-  <updated>2023-11-22T17:39:16.482000Z</updated>
+  <updated>2023-11-22T18:46:32.207000Z</updated>
   <link href="http://devon.postach.io/" />
   <link href="http://devon.postach.io/feed.xml" rel="self" />
   <generator>Werkzeug</generator>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">A libertarian just won Argentina's presidency... what's going on?</title>
-    <id>https://devon.postach.io/a-libertarian-just-won-argentina-s-presidency-what-s-going-on</id>
-    <updated>2023-11-22T17:39:16.482000Z</updated>
+    <id>https://devon.postach.io/post/a-libertarian-just-won-argentina-s-presidency-what-s-going-on</id>
+    <updated>2023-11-22T18:46:32.207000Z</updated>
     <published>2023-11-21T23:24:11Z</published>
-    <link href="https://devon.postach.io/a-libertarian-just-won-argentina-s-presidency-what-s-going-on" />
+    <link href="https://devon.postach.io/post/a-libertarian-just-won-argentina-s-presidency-what-s-going-on" />
     <author>
       <name>Devon Zuegel</name>
     </author>
     <category term="argentina" />
     <category term="latin-america" />
     <category term="monetary-policy" />
+    <category term="inflation" />
     <category term="elections" />
     <content type="html">&lt;div&gt;If you're wondering how the heck a hardline libertarian just won the Argentinian presidential election, here's some background.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;First, a key fact is that the government is printing money at an accelerating rate, resulting in &lt;a href=&quot;https://www.bloomberg.com/news/articles/2023-11-13/argentina-s-inflation-hits-143-in-final-release-before-election&quot;&gt;143% annual inflation&lt;/a&gt; as of the most recent count. The economy is &lt;a href=&quot;https://datacommons.org/tools/timeline#place=country%2FARG&amp;statsVar=Amount_EconomicActivity_GrossDomesticProduction_Nominal_PerCapita&amp;chart=%7B%22amount-PerCapita%22%3A%7B%22pc%22%3Afalse%2C%22delta%22%3Afalse%7D%7D&quot;&gt;deteriorating rapidly&lt;/a&gt;, the poverty rate has spiked to &lt;a href=&quot;https://chequeado.com/el-explicador/como-evoluciono-la-pobreza-con-cada-presidente/&quot;&gt;more than 40%&lt;/a&gt;, and the &lt;a href=&quot;https://devonzuegel.com/inside-argentina-s-currency-exchange-black-markets.html&quot;&gt;daily indignities of Argentina's topsy turvy monetary policy&lt;/a&gt; are mounting. If you ask an Argentinian, it's a question of &lt;span style=&quot;font-style: italic;&quot;&gt;when&lt;/span&gt; hyperinflation will kick in, not if.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;Second, the race came down to two candidates:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Sergio Massa:&lt;/span&gt; Current Minister of Economy, in charge of the state treasury. (Yes, he's they head guy overseeing the economy just as the government prints all of those increasingly worthless pesos!)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Javier Milei:&lt;/span&gt; A political outsider with hardline libertarian beliefs who wants to dramatically reduce the scope of government and is seen as a loose canon for his eccentric personal beliefs.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;div&gt;Second, the race came down to two candidates:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Sergio Massa:&lt;/span&gt; Current Minister of Economy, in charge of the state treasury. (Yes, he's they head guy overseeing the economy just as the government prints all of those increasingly worthless pesos!)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Javier Milei:&lt;/span&gt; A political outsider with hardline libertarian beliefs who wants to dramatically reduce the scope of government and is seen as a loose canon for his eccentric personal beliefs.&lt;div class=&quot;small-wrap-pull-right&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/0f8c836e-b763-45f6-8866-2093a34510b3/b643e998-d047-4c62-9f4c-f147b35c8764.jpg&quot;  width=&quot;63&quot;/&gt;&lt;div class=&quot;caption&quot;&gt;Milei is a character...&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Milei's radical platform included plans to:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Dollarize the economy&lt;/span&gt;, i.e. adopt the US dollar as the country's currency so that leaders like Massa can't just keep printing money. This is like Argentina tying itself to the proverbial mast.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Cut a huge portion of the government&lt;/span&gt; to curb rampant corruption and patronage. An astonishing &lt;a href=&quot;https://en.mercopress.com/2020/07/27/in-argentina-55-of-all-registered-workers-are-employed-by-government#google_vignette&quot;&gt;55%&lt;/a&gt;* of workers registered in Argentina work for the government and directly benefit from increased government spending, so this will be extremely unpopular. (*The 55% number is a bit misleading because a lot of Argentina's economic activity is in the informal sector, so a huge portion of the workforce is not registered.)&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Massa represents the incumbent establishment:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Massa identifies as a Peronist, the same party as the current sitting president, Alberto Fernández. Many Argentinians think that &lt;span style=&quot;font-weight: bold;&quot;&gt;Massa has been the top dog leading the government&lt;/span&gt; since Fernández's popularity waned dramatically in the past few years. (Fernández decided not to run again even though he's only in his first term.)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Practically this means that &lt;span style=&quot;font-weight: bold;&quot;&gt;electing Massa would have meant more of the same&lt;/span&gt;. He would have continued solving political problems by handing out subsidies/jobs and solving the resulting fiscal shortfalls by printing more pesos.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;In short, this was an election between &lt;span style=&quot;font-weight: bold;&quot;&gt;continuity vs change&lt;/span&gt;. Few predicted that Milei would win because he is... &lt;a href=&quot;https://x.com/artirkel/status/1726383744079348169?s=46&quot;&gt;quirky&lt;/a&gt;, to say the least. All you need to do is watch some of his YouTube videos to see that he's a bit unhinged. Sure, Massa is associated with the country's current economic woes, but people thought &quot;at least he's a known quantity and has experience in politics&quot;.&lt;/div&gt;
@@ -37,14 +38,17 @@
 &lt;div&gt; No one knows if Milei has what it takes to achieve the goals he's set out for the country. He's good at capturing attention, but is he good at leading? He lacks experience pushing policies through, and Argentinians have a tendency to ignore and resist changes from a centralized authority, so we'll see how far he gets.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt; But this is at least a good first step. I'm happy to see Argentinians sending a clear message that the current leaders who are leading the country further down a path of ruin that they do &lt;span style=&quot;font-style: italic;&quot;&gt;not&lt;/span&gt; have popular support. I'm cautiously optimistic that this could be a turning point in the country's history. Argentina is a wonderful place and deserves better. &lt;span style=&quot;font-weight: bold;&quot;&gt;Viva la libertad, carajo!&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;
+&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;div&gt;&lt;style&gt;.caption {margin-top: -2px !important;    line-height: 1.4}&lt;/style&gt;&lt;/div&gt;
 </content>
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">To rent or to sell, that is the question</title>
-    <id>https://devon.postach.io/to-rent-or-to-sell-that-is-the-question</id>
+    <id>https://devon.postach.io/post/to-rent-or-to-sell-that-is-the-question</id>
     <updated>2023-09-10T23:54:08.881000Z</updated>
     <published>2023-09-10T23:28:44Z</published>
-    <link href="https://devon.postach.io/to-rent-or-to-sell-that-is-the-question" />
+    <link href="https://devon.postach.io/post/to-rent-or-to-sell-that-is-the-question" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -149,10 +153,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">The unconference toolbox</title>
-    <id>https://devon.postach.io/the-unconference-toolbox</id>
+    <id>https://devon.postach.io/post/the-unconference-toolbox</id>
     <updated>2023-09-10T23:46:22.984000Z</updated>
     <published>2023-07-04T02:43:23Z</published>
-    <link href="https://devon.postach.io/the-unconference-toolbox" />
+    <link href="https://devon.postach.io/post/the-unconference-toolbox" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -172,10 +176,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Israel's water miracle</title>
-    <id>https://devon.postach.io/israel-s-water-miracle</id>
+    <id>https://devon.postach.io/post/israel-s-water-miracle</id>
     <updated>2023-09-10T23:46:20.982000Z</updated>
     <published>2023-07-01T02:14:24Z</published>
-    <link href="https://devon.postach.io/israel-s-water-miracle" />
+    <link href="https://devon.postach.io/post/israel-s-water-miracle" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -199,10 +203,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">America's hidden urban laboratory: the South</title>
-    <id>https://devon.postach.io/america-s-hidden-urban-laboratory-the-south</id>
+    <id>https://devon.postach.io/post/america-s-hidden-urban-laboratory-the-south</id>
     <updated>2023-09-10T23:46:27.346000Z</updated>
     <published>2023-06-14T18:38:47Z</published>
-    <link href="https://devon.postach.io/america-s-hidden-urban-laboratory-the-south" />
+    <link href="https://devon.postach.io/post/america-s-hidden-urban-laboratory-the-south" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -256,10 +260,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Why do home buyers look at price/sqft more than renters?</title>
-    <id>https://devon.postach.io/why-do-home-buyers-look-at-price-sqft-more-than-renters</id>
+    <id>https://devon.postach.io/post/why-do-home-buyers-look-at-price-sqft-more-than-renters</id>
     <updated>2023-09-10T23:46:24.697000Z</updated>
     <published>2023-01-09T01:15:41Z</published>
-    <link href="https://devon.postach.io/why-do-home-buyers-look-at-price-sqft-more-than-renters" />
+    <link href="https://devon.postach.io/post/why-do-home-buyers-look-at-price-sqft-more-than-renters" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -299,10 +303,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Numbers for understanding cities</title>
-    <id>https://devon.postach.io/numbers-for-understanding-cities</id>
+    <id>https://devon.postach.io/post/numbers-for-understanding-cities</id>
     <updated>2023-09-10T23:46:25.178000Z</updated>
     <published>2022-09-19T17:49:45Z</published>
-    <link href="https://devon.postach.io/numbers-for-understanding-cities" />
+    <link href="https://devon.postach.io/post/numbers-for-understanding-cities" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -325,10 +329,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Inside Argentina's currency exchange black markets</title>
-    <id>https://devon.postach.io/inside-argentina-s-currency-exchange-black-markets</id>
+    <id>https://devon.postach.io/post/inside-argentina-s-currency-exchange-black-markets</id>
     <updated>2023-09-10T23:46:24.367000Z</updated>
     <published>2022-09-10T03:08:00Z</published>
-    <link href="https://devon.postach.io/inside-argentina-s-currency-exchange-black-markets" />
+    <link href="https://devon.postach.io/post/inside-argentina-s-currency-exchange-black-markets" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -408,10 +412,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Uncharted waters: what startups can learn from pirates about compensation</title>
-    <id>https://devon.postach.io/uncharted-waters-what-startups-can-learn-from-pirates-about-compensation</id>
+    <id>https://devon.postach.io/post/uncharted-waters-what-startups-can-learn-from-pirates-about-compensation</id>
     <updated>2023-09-10T23:46:25.426000Z</updated>
     <published>2022-09-10T02:37:38Z</published>
-    <link href="https://devon.postach.io/uncharted-waters-what-startups-can-learn-from-pirates-about-compensation" />
+    <link href="https://devon.postach.io/post/uncharted-waters-what-startups-can-learn-from-pirates-about-compensation" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -473,10 +477,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Buenos Aires recommendations</title>
-    <id>https://devon.postach.io/buenos-aires-recommendations</id>
+    <id>https://devon.postach.io/post/buenos-aires-recommendations</id>
     <updated>2023-09-10T23:46:25.146000Z</updated>
     <published>2022-03-06T19:36:53Z</published>
-    <link href="https://devon.postach.io/buenos-aires-recommendations" />
+    <link href="https://devon.postach.io/post/buenos-aires-recommendations" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -535,10 +539,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Field notes: Panamá, SEZs, &amp;amp; biotech</title>
-    <id>https://devon.postach.io/field-notes-panama-sezs-biotech</id>
+    <id>https://devon.postach.io/post/field-notes-panama-sezs-biotech</id>
     <updated>2023-09-10T23:46:29.018000Z</updated>
     <published>2022-02-05T22:39:50Z</published>
-    <link href="https://devon.postach.io/field-notes-panama-sezs-biotech" />
+    <link href="https://devon.postach.io/post/field-notes-panama-sezs-biotech" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -561,7 +565,7 @@
 &lt;div&gt;Another reason I was excited to visit Panamá was that I lived in a tiny rural village called El Águila in 2010 as part of a high school exchange program. I hadn't been back in 12 years, so I was excited to reconnect with my host family. It was fascinating and invigorating to see how the country had changed!&lt;div style=&quot;display: none !important&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/55d7a16e-a420-4f9f-a109-5d2ba4938335/3d5dafd3-5936-4f59-a57f-20a037ec2824.jpg&quot;  width=&quot;54&quot;/&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;But I'm getting ahead of myself. I've broken down my field notes into three sections:&lt;/div&gt;&lt;ol&gt;&lt;li&gt;&lt;div&gt;Stem cells, biotech, &amp; regulation&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;SEZs &amp; new city developments&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Panamanian urbanism, economic development, &amp; general observations&lt;/div&gt;&lt;/li&gt;&lt;/ol&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;h3&gt;I. Stem cells, biotech, &amp; regulation&lt;/h3&gt;&lt;div&gt;We learned some conflicting information about the legal status of commercial stem cell treatments in Panamá, and I'm still trying to sort it out. If you know a doctor or lawyer who specializes in this area, &lt;a href=&quot;http://devonzuegel.com/contact&quot; rev=&quot;en_rl_none&quot;&gt;I'd love to hear from you&lt;/a&gt;.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;Before the trip, I did some online sleuthing to get some background on the issue. Highlights:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Panama passed a law in 2004 making embryonic stem cell work illegal, which at the same time opened the door to legally working with adult stem cells in ways not yet approved in the US.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Dr. Riordan at the Panama Stem Cell Institute has performed &quot;over 10,000 procedures&quot; using stem cells to treat autism and many other conditions since they opened in Panamá in 2006. (&lt;a href=&quot;https://clippings.devonzuegel.com/stem-cell-therapy-for-autism-at-the-panama-stem-cell-institute&quot; rev=&quot;en_rl_none&quot;&gt;Parents' Guide to Cord Blood&lt;/a&gt;)&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;They sell commercial stem cell treatments (e.g. they charge $13,000-$18,000 for autism treatments) so they're not just doing clinical trials, which you're not supposed to charge for.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The article says that the clinic and lab are &quot;fully licensed by the national medical authorities and adhere to international standards&quot;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The clinic registered a clinical trial for autism in 2014, which included 20 participants.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The clinic was originally based in Costa Rica, but it moved to Panamá in 2006. (&lt;a href=&quot;https://clippings.devonzuegel.com/stem-cell-institute-panama-cellmedicine-reviews-complaints-treatments-cost-vs-costa-rica&quot; rev=&quot;en_rl_none&quot;&gt;Stem Cell Transplant Institute&lt;/a&gt;)&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;It appears that they moved because they were not allowed to perform treatments because &quot;efficacy and safety were uncertain&quot;, although they were &quot;allowed to store adult stem cells extracted from patients’ own fat tissue, bone marrow and donated umbilical cords&quot;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Stem cell treatments have since been approved by Costa Rica's government, and there are active clinics that offer these treatments to patients.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;li&gt;&lt;div&gt;&lt;a href=&quot;https://www.bioxcellerator.com/blog/is-stem-cell-therapy-legal-in-panama&quot; rev=&quot;en_rl_none&quot;&gt;BioXcellerator&lt;/a&gt; writes that &quot;not only is stem cell therapy legal in Panama, it is quickly becoming one of the global leaders in research of non-surgical therapeutic options for care.&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;div&gt;Before the trip, I did some online sleuthing to get some background on the issue. Highlights:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Panama passed a law in 2004 making embryonic stem cell work illegal, which at the same time opened the door to legally working with adult stem cells in ways not yet approved in the US.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Dr. Riordan at the Panama Stem Cell Institute has performed &quot;over 10,000 procedures&quot; using stem cells to treat autism and many other conditions since they opened in Panamá in 2006. (&lt;a href=&quot;https://clippings.devonzuegel.com/post/stem-cell-therapy-for-autism-at-the-panama-stem-cell-institute&quot; rev=&quot;en_rl_none&quot;&gt;Parents' Guide to Cord Blood&lt;/a&gt;)&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;They sell commercial stem cell treatments (e.g. they charge $13,000-$18,000 for autism treatments) so they're not just doing clinical trials, which you're not supposed to charge for.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The article says that the clinic and lab are &quot;fully licensed by the national medical authorities and adhere to international standards&quot;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The clinic registered a clinical trial for autism in 2014, which included 20 participants.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;The clinic was originally based in Costa Rica, but it moved to Panamá in 2006. (&lt;a href=&quot;https://clippings.devonzuegel.com/post/stem-cell-institute-panama-cellmedicine-reviews-complaints-treatments-cost-vs-costa-rica&quot; rev=&quot;en_rl_none&quot;&gt;Stem Cell Transplant Institute&lt;/a&gt;)&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;It appears that they moved because they were not allowed to perform treatments because &quot;efficacy and safety were uncertain&quot;, although they were &quot;allowed to store adult stem cells extracted from patients’ own fat tissue, bone marrow and donated umbilical cords&quot;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Stem cell treatments have since been approved by Costa Rica's government, and there are active clinics that offer these treatments to patients.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;li&gt;&lt;div&gt;&lt;a href=&quot;https://www.bioxcellerator.com/blog/is-stem-cell-therapy-legal-in-panama&quot; rev=&quot;en_rl_none&quot;&gt;BioXcellerator&lt;/a&gt; writes that &quot;not only is stem cell therapy legal in Panama, it is quickly becoming one of the global leaders in research of non-surgical therapeutic options for care.&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;My general understanding from that pre-travel prep was that commercialization of stem cells is legal in Panamá, and that it's a small but growing industry. However, when I got boots on the ground, I began to hear different things...&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Firstly, there are very few stem cell clinics here. From talking to several medical professionals, I was only able to learn about two in the entire country: &lt;a href=&quot;https://www.neilriordan.com/stem-cell-institute/&quot; rev=&quot;en_rl_none&quot;&gt;Stem Cell Institute&lt;/a&gt; and &lt;a href=&quot;https://www.cordondevida.net/&quot; rev=&quot;en_rl_none&quot;&gt;Cordon de Vida&lt;/a&gt;. This was surprising to me, since some uses of stem cells have been legal in the country since 2004 (as described above) and I'd expect droves of doctors to take advantage of the opportunity to serve medical tourists who can't get these treatments in the US.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;I met with a Panamanian orthopedic surgeon who's considering starting a stem cell clinic for medical tourism. He didn't seem terribly concerned about the legal status, though he hadn't opened the clinic yet so he may not be aware of the hurdles.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;I met with &quot;the only stem cell researcher in Panamá&quot; to understand her perspective on the technology's legal status.&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;She's opposed to commercialization of stem cells in Panamá for anything that (a) doesn't have lots of clinical trials first and (b) hasn't already gone through approvals through the Panamanian FDA.&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;She considers it illegal to sell stem cell treatments in Panamá, since they don't meet either of those criteria.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;However, it's not really enforced so there are several commercial stem cell clinics that have popped up charging for &quot;clinical trials&quot;, which you're not supposed to do&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div&gt;She's extremely excited about the future of stem cells, but just thinks it's too early to be offering them in a commercial setting. She believes that the technology is still at the stage where it's only ethical to use it in clinical trials, in which the patients do not pay for the treatment.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;She hopes that Panamá becomes a center for medical tourism because it is on the cutting edge but not because it's a haven for people escaping the US FDA.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Misc/related thoughts:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;I've heard there is a &lt;a href=&quot;https://data.worldbank.org/indicator/SH.MED.PHYS.ZS?end=2019&amp;locations=PA-JP-US-MX-CR-GB-BS&amp;start=1960&amp;view=chart&quot; rev=&quot;en_rl_none&quot;&gt;shortage of medical professionals in Panamá&lt;/a&gt;, which could be a barrier to becoming a medical tourism hub. Additionally, Panamanian labor law states that &quot;only 10% of your business workforce can be filled by foreign workers&quot;, which means the shortage can't be solved by simply importing talent from elsewhere.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Stem cell treatments are legal in Costa Rica and Colombia, so I'm planning a trip to those countries as well to dig into similar questions. If you know anyone I should speak to while I'm there, please let me know. I'm also open to other suggestions for places that welcome stem cell treatments.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -599,10 +603,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Inflation propagates unevenly</title>
-    <id>https://devon.postach.io/inflation-propagates-unevenly</id>
+    <id>https://devon.postach.io/post/inflation-propagates-unevenly</id>
     <updated>2023-09-10T23:46:24.199000Z</updated>
     <published>2022-01-02T17:28:35Z</published>
-    <link href="https://devon.postach.io/inflation-propagates-unevenly" />
+    <link href="https://devon.postach.io/post/inflation-propagates-unevenly" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -646,10 +650,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Tutorial: Telegram → Logseq quick notes</title>
-    <id>https://devon.postach.io/tutorial-telegram-logseq-quick-notes</id>
+    <id>https://devon.postach.io/post/tutorial-telegram-logseq-quick-notes</id>
     <updated>2023-09-10T23:46:31.505000Z</updated>
     <published>2021-12-30T02:53:36Z</published>
-    <link href="https://devon.postach.io/tutorial-telegram-logseq-quick-notes" />
+    <link href="https://devon.postach.io/post/tutorial-telegram-logseq-quick-notes" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -699,10 +703,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Remote work will break the US monopoly on global talent</title>
-    <id>https://devon.postach.io/remote-work-will-break-the-us-monopoly-on-global-talent</id>
+    <id>https://devon.postach.io/post/remote-work-will-break-the-us-monopoly-on-global-talent</id>
     <updated>2023-09-10T23:46:27.487000Z</updated>
     <published>2021-11-08T04:52:28Z</published>
-    <link href="https://devon.postach.io/remote-work-will-break-the-us-monopoly-on-global-talent" />
+    <link href="https://devon.postach.io/post/remote-work-will-break-the-us-monopoly-on-global-talent" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -717,8 +721,8 @@
     <category term="countries" />
     <category term="immigration" />
     <content type="html">&lt;div&gt;&lt;div class=&quot;short-summary&quot;&gt;Remote work is creating a new economic niche, and countries that put in the work to fill it will finally be able to compete with the US to attract talent. This is the once-in-a-generation opportunity for small, stable countries to grow, diversify, and up-skill their economy.&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;The United States has been the &lt;a href=&quot;https://clippings.devonzuegel.com/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot; rev=&quot;en_rl_none&quot;&gt;#1 target destination&lt;/a&gt; for immigrants for generations. It has a mythical reputation as the place where anyone can go from rags to riches. It's been much more stable than many regions, and the American standard of living is much higher than the world average. However, the US makes it difficult to enter the country, preventing prospective immigrants from accessing these opportunities.&lt;div class=&quot;large-wrap-pull-right&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/4bb9e7e0-0010-48c2-9118-e3ea57ebca08/6148ed2b-4fb1-483e-a04e-02d446923f79.png&quot;  width=&quot;90&quot;/&gt;&lt;div class=&quot;caption&quot;&gt;Competition for talent follows a steep &lt;a href=&quot;https://en.wikipedia.org/wiki/Power_law&quot;&gt;power law&lt;/a&gt;.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;Even so, it's been hard to compete with the US for talent. Countries' ability to compete for immigrants has historically followed a steep power law. In a &lt;a href=&quot;https://clippings.devonzuegel.com/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot;&gt;2016 Gallup poll&lt;/a&gt;, 3.5x more prospective migrants wanted to move to the US than to Germany, the second-most desirable location.&lt;/div&gt;
+&lt;div&gt;The United States has been the &lt;a href=&quot;https://clippings.devonzuegel.com/post/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot; rev=&quot;en_rl_none&quot;&gt;#1 target destination&lt;/a&gt; for immigrants for generations. It has a mythical reputation as the place where anyone can go from rags to riches. It's been much more stable than many regions, and the American standard of living is much higher than the world average. However, the US makes it difficult to enter the country, preventing prospective immigrants from accessing these opportunities.&lt;div class=&quot;large-wrap-pull-right&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/4bb9e7e0-0010-48c2-9118-e3ea57ebca08/6148ed2b-4fb1-483e-a04e-02d446923f79.png&quot;  width=&quot;90&quot;/&gt;&lt;div class=&quot;caption&quot;&gt;Competition for talent follows a steep &lt;a href=&quot;https://en.wikipedia.org/wiki/Power_law&quot;&gt;power law&lt;/a&gt;.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;div&gt;Even so, it's been hard to compete with the US for talent. Countries' ability to compete for immigrants has historically followed a steep power law. In a &lt;a href=&quot;https://clippings.devonzuegel.com/post/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot;&gt;2016 Gallup poll&lt;/a&gt;, 3.5x more prospective migrants wanted to move to the US than to Germany, the second-most desirable location.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Remote work has changed this equation dramatically. Accelerated by the pandemic, it's more possible than ever to attract highly skilled, highly paid residents and bring their high incomes and valuable know-how into your community. &lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -736,7 +740,7 @@
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;&lt;div class=&quot;heading&quot;&gt;This strategy is defensible&lt;/div&gt;&lt;/div&gt;&lt;div&gt;It's difficult for the largest, richest countries to copy this strategy, because:&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Immigration is politically unpopular in places like the US, France, Japan, and UK. Compared to countries that haven't received much immigration in the past, it is unlikely for these economic juggernauts to dramatically change direction and put out the welcome mat, even to highly skilled immigrants. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;In addition, these countries have giant populations, so even with the political will to welcome immigrants, the bureaucracy is likely to act more slowly than smaller, more nimble countries.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Large countries also have less to gain on a percentage basis. If 10,000 highly skilled Hong Kongers move to the US (population 330 million), it will show up as a small blip on the overall GDP of the country. If that same group moves to The Caymans (population 65 thousand), growth would skyrocket.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;This is great news for smaller, less wealthy countries, because it gives them a defensible advantage against &lt;a href=&quot;https://clippings.devonzuegel.com/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot; rev=&quot;en_rl_none&quot;&gt;the incumbents&lt;/a&gt;.&lt;/div&gt;
+&lt;div&gt;This is great news for smaller, less wealthy countries, because it gives them a defensible advantage against &lt;a href=&quot;https://clippings.devonzuegel.com/post/which-countries-do-migrants-want-to-move-to-world-economic-forum&quot; rev=&quot;en_rl_none&quot;&gt;the incumbents&lt;/a&gt;.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;&lt;div class=&quot;heading&quot;&gt;Which countries are well-positioned for this opportunity?&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Here are some characteristics that make a country especially well-positioned to take advantage of this opportunity. They're not all necessary for success—I can't think of any countries meet all of these criteria anyways—but the more the country has, the more likely it will be competitive at attracting immigrants:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;Small and nimble&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Good climate, natural beauty&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Timezone that matches some of the world's biggest economies&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Short flight to the world's biggest economies&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Short flights to immigrants' home countries&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;English-speaking&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Political and monetary stability&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Openness to change/innovation – e.g. regulatory arbitrage as a bonus&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Low cost of living&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Good educational opportunities &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Here are some countries that meet many of these criteria. Which countries would you add to the list?&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Uruguay&lt;/span&gt; – Island of stability in a sea of instability in Latin America. Nestled between Argentina and Brazil (two countries with growing social unrest and, in Argentina's case, high inflation). Good timezone to collaborate with both the US and Europe. I'd expect Uruguay to be especially interested in this strategy, given attracting immigrants is &lt;a href=&quot;https://www.americasquarterly.org/article/three-priorities-for-uruguays-new-president/&quot; rev=&quot;en_rl_none&quot;&gt;one of the current president's top priorities&lt;/a&gt;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Canada&lt;/span&gt; – Stable, high quality of living, good educational system including world-class universities, close to the US, English-speaking, &lt;a href=&quot;https://twitter.com/pt/status/1072199359998046208&quot; rev=&quot;en_rl_none&quot;&gt;welcomes immigrants&lt;/a&gt;, access to great amenities like restaurants, already has a strong base of knowledge workers.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Croatia&lt;/span&gt; – Beautiful, in the EU but lower cost of living than other EU members, one of the safest countries in the world, short flight to centers of commerce like London and Paris and Berlin.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Singapore&lt;/span&gt; – English-speaking, physical safety. This city state has long been a place for highly educated, high net worth people from around the region to move to escape political instability and high taxes. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Caribbean islands&lt;/span&gt; – Proximity to the US, beautiful climate, relative safety. The native language for many of these island nations is English, &quot;the language of commerce&quot;.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Panama&lt;/span&gt; – Stable and safe relative to its neighbors. Could be attractive for people in the Central American region to move there and still be close to home. I could also imagine people from South America moving there, since they have a shared language and it's closer to the US than Uruguay. The US dollar is widely used in Panama. Also, Panama has world famous beaches and surfing, which are very attractive to a certain subset of knowledge workers. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Costa Rica&lt;/span&gt; – Similar story to Panama, with the addition that it also has a thriving biotech manufacturing sector. &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;div class=&quot;heading&quot;&gt;Immigrant groups to cater to&lt;/div&gt;&lt;/div&gt;&lt;div&gt;The following groups have lots of people who are highly educated and have a lot of potential to contribute to the knowledge economy, yet have growing reasons to leave their home. A smart country would do well to attract these high-potential people and make it as easy as possible to put down roots:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Cubans&lt;/span&gt; – Stuck in a Communist regime, &lt;a href=&quot;https://www.statnews.com/2017/02/08/cuba-doctors-meager-pay/&quot; rev=&quot;en_rl_none&quot;&gt;surplus of doctors&lt;/a&gt; (and so many other countries have a shortage of doctors!)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Hong Kongers&lt;/span&gt; – Fleeing the growing influence of the Chinese government in Hong Kong; in some cases they are coordinating immigration as a group, which brings additional opportunities for becoming the place for Hong Kongers to end up. (The Taiwanese may be in a similar position soon.)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Argentinians&lt;/span&gt; – Recession, high inflation, low social trust, high taxes, high crime&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Brazilians&lt;/span&gt; – Recession, political instability, extremely high crime&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Venezuelans&lt;/span&gt; – Hyperinflation, physical danger, repressive government&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Lebanon&lt;/span&gt; – Sectarian conflict, economic meltdown&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Nigeria &lt;/span&gt;– Growing political instability, high poverty, poor infrastructure&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -758,10 +762,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Urban sprawl is a tragedy of the commons</title>
-    <id>https://devon.postach.io/urban-sprawl-is-a-tragedy-of-the-commons</id>
+    <id>https://devon.postach.io/post/urban-sprawl-is-a-tragedy-of-the-commons</id>
     <updated>2023-09-10T23:46:31.487000Z</updated>
     <published>2021-11-04T16:59:08Z</published>
-    <link href="https://devon.postach.io/urban-sprawl-is-a-tragedy-of-the-commons" />
+    <link href="https://devon.postach.io/post/urban-sprawl-is-a-tragedy-of-the-commons" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -831,10 +835,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">My questions about Próspera, answered</title>
-    <id>https://devon.postach.io/my-questions-about-prospera-answered</id>
+    <id>https://devon.postach.io/post/my-questions-about-prospera-answered</id>
     <updated>2023-09-10T23:46:24.591000Z</updated>
     <published>2021-08-30T16:54:29Z</published>
-    <link href="https://devon.postach.io/my-questions-about-prospera-answered" />
+    <link href="https://devon.postach.io/post/my-questions-about-prospera-answered" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -855,10 +859,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Podcasts &amp;amp; conferences I've spoken at</title>
-    <id>https://devon.postach.io/podcasts-conferences-i-ve-spoken-at</id>
+    <id>https://devon.postach.io/post/podcasts-conferences-i-ve-spoken-at</id>
     <updated>2023-09-10T23:46:22.602000Z</updated>
     <published>2021-08-26T00:11:07Z</published>
-    <link href="https://devon.postach.io/podcasts-conferences-i-ve-spoken-at" />
+    <link href="https://devon.postach.io/post/podcasts-conferences-i-ve-spoken-at" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -868,10 +872,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #5: The evolution of urban utopias (guest episode from Caos Planejado)</title>
-    <id>https://devon.postach.io/owd-5-the-evolution-of-urban-utopias-guest-episode-from-caos-planejado</id>
+    <id>https://devon.postach.io/post/owd-5-the-evolution-of-urban-utopias-guest-episode-from-caos-planejado</id>
     <updated>2023-09-10T23:46:32.914000Z</updated>
     <published>2021-07-10T22:31:55Z</published>
-    <link href="https://devon.postach.io/owd-5-the-evolution-of-urban-utopias-guest-episode-from-caos-planejado" />
+    <link href="https://devon.postach.io/post/owd-5-the-evolution-of-urban-utopias-guest-episode-from-caos-planejado" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1137,10 +1141,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">What are startup cities for?</title>
-    <id>https://devon.postach.io/what-are-startup-cities-for</id>
+    <id>https://devon.postach.io/post/what-are-startup-cities-for</id>
     <updated>2023-09-10T23:46:34.198000Z</updated>
     <published>2021-07-02T16:42:47Z</published>
-    <link href="https://devon.postach.io/what-are-startup-cities-for" />
+    <link href="https://devon.postach.io/post/what-are-startup-cities-for" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1164,10 +1168,10 @@
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/36b45ce4-566f-434f-8808-e4319e9aabbb.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Competitive governance:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Innovate on how governments deliver services to their residents, and in turn exert competitive pressure on other jurisdictions to push them to improve their services as well.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://e-estonia.com/&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Estonia&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;offers 99% of its public services online, and it has an e-residency program that provides foreigners access to Estonia’s transparent business environment. I personally know Argentinians who've chosen to start businesses via e-Estonia because they trust it more than their local government.&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/5c3ee603-9e06-4e35-a78e-8051ee2d0148.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;http://ojs.instituteforcompgov.org/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=http%3A%2F%2Fojs.instituteforcompgov.org%2Findex.php%2Fjsj%2Fissue%2Fdownload%2F4%2FSpecial%2520Issue%2520on%2520the%2520Honduran%2520ZEDEs#page=10&amp;zoom=auto,-253,648&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Próspera&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;is introducing new democratic institutions to Honduras, providing citizens new avenues for democratic political participation. For example, Próspera has something called a &quot;snap referendum&quot;: any council action can be vetoed by popular referendum within 14 days, giving residents more sovereignty over their community than any other jurisdiction in Honduras. &lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/1f3a4fc8-b74a-4504-b908-64e7e3819062.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;a href=&quot;https://www.morazan.city/publications&quot;&gt;Ciudad Morazán&lt;/a&gt; has created a simplified version of Honduran law. I think of this as redesigning the law with &quot;user experience&quot; in mind, which is not legislators' typical framing when they write laws.&lt;/div&gt;
-&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/6d192552-9f0e-473b-b240-f7370b75720b.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Lifestyle:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Offer a different quality of life than what’s otherwise available to a potential resident.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://clippings.devonzuegel.com/the-gated-communities-of-buenos-aires-argentina-bloomberg&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Gated communities&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;are popular in Buenos Aires, a city where muggings and burglaries are common, because these private neighborhoods offer a safe place to raise a family.&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/6d192552-9f0e-473b-b240-f7370b75720b.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Lifestyle:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Offer a different quality of life than what’s otherwise available to a potential resident.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://clippings.devonzuegel.com/post/the-gated-communities-of-buenos-aires-argentina-bloomberg&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Gated communities&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;are popular in Buenos Aires, a city where muggings and burglaries are common, because these private neighborhoods offer a safe place to raise a family.&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/6df30dad-50df-46c3-bb80-29d886057e50.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://medium.com/culdesac/introducing-culdesac-3fbfe7c4219c&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Culdesac&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;is building &quot;the first car-free neighborhood built from scratch in the US&quot; to provide Arizonans an alternative to the car-centric development in the rest of Tempe.&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/4e06f9c0-c033-4342-95f0-d10894a45c43.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;a href=&quot;https://www.morazan.city/&quot;&gt;Ciudad Morazán&lt;/a&gt; is building a community that is safer and less polluted than other Honduran neighborhoods, where violent crime, littering, and poor sanitation are common.&lt;/div&gt;
-&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/3efc32c8-331b-41a6-bac1-bb29ef60cd24.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Community:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;A place for like-minded people to live together.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://devonzuegel.com/chautauqua-an-idea-embedded-in-a-place&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Chautauqua&lt;/a&gt; is a town in upstate NY that &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;has a 9-week program each summer that offers sermons, lectures on a wide array of topics, operas, ballets, theatre, and beyond. This program attracts people with shared values and cultural preferences.&lt;/span&gt;&lt;/div&gt;
+&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/3efc32c8-331b-41a6-bac1-bb29ef60cd24.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Community:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;A place for like-minded people to live together.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://devonzuegel.com/post/chautauqua-an-idea-embedded-in-a-place&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Chautauqua&lt;/a&gt; is a town in upstate NY that &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;has a 9-week program each summer that offers sermons, lectures on a wide array of topics, operas, ballets, theatre, and beyond. This program attracts people with shared values and cultural preferences.&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/3b6ac1fb-3388-4797-9345-c144fd33f781.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://masterplan.substack.com/p/master-plan-dryden-brown-bluebook&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Praxis Society&lt;/a&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;is &quot;building a community founded on shared values, through online and in-person events. And simultaneously, [they are] also working on acquiring a beautiful piece of land and having everyone move there together.&quot;&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/2b9869a0-dddd-4c7f-bf88-515208118f7a.jpg&quot; /&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: bold; text-decoration: none;-en-paragraph:true;&quot;&gt;Technological &amp; social experimentation:&lt;/span&gt; &lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;Create a space for experimentation with everything from life-extension, &lt;/span&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt; new forms of social structure, &lt;/span&gt;&lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;VTOLs, medical tourism, space travel, and beyond.&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li dir=&quot;ltr&quot;&gt;&lt;div&gt;&lt;a href=&quot;https://www.dezeen.com/2017/07/24/seasteading-institute-floating-cities-designed-for-unregulated-innovation-architecture-mini-living-initiative/&quot; style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;The Seasteading Institute&lt;/a&gt;&lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;'s goal is to develop &quot;open spaces for experimenting with new societies&quot; in order to &quot;allow the next generation of pioneers to peacefully test new ideas for how to live together&quot;.&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;span style=&quot;font-style: normal; font-weight: 400; text-decoration: none;-en-paragraph:true;&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/ac8b73d8-13c8-49b2-8cf2-130ac5f767a5/6db87fa5-8311-48d3-9169-2a2599ce5749.jpg&quot; /&gt;&lt;/span&gt;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;&lt;a href=&quot;https://twitter.com/balajis/status/1269178671086006273&quot;&gt;Cloud cities&lt;/a&gt; are the idea of bringing a community together on the internet first, and then collectively bargaining for a country or city to compete to govern in a way that serves that community's goals and values. After the cloud community successfully negotiates with a host government, they migrate there en masse. Balaji describes it like this: &quot;If you can get 100k people in the cloud, making $100k annually each, you can simultaneously negotiate with 50 governments to legalize self-driving cars. Cloud first, land last.&quot;&lt;/div&gt;
@@ -1180,10 +1184,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Field notes: Miami</title>
-    <id>https://devon.postach.io/field-notes-miami</id>
+    <id>https://devon.postach.io/post/field-notes-miami</id>
     <updated>2023-09-10T23:47:30.031000Z</updated>
     <published>2021-04-21T19:29:17Z</published>
-    <link href="https://devon.postach.io/field-notes-miami" />
+    <link href="https://devon.postach.io/post/field-notes-miami" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1368,10 +1372,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #4: Supersonic planes, levitating trains, &amp;amp; electric automobiles</title>
-    <id>https://devon.postach.io/owd-4-supersonic-planes-levitating-trains-electric-automobiles</id>
+    <id>https://devon.postach.io/post/owd-4-supersonic-planes-levitating-trains-electric-automobiles</id>
     <updated>2023-09-10T23:46:39.894000Z</updated>
     <published>2020-12-23T23:21:03Z</published>
-    <link href="https://devon.postach.io/owd-4-supersonic-planes-levitating-trains-electric-automobiles" />
+    <link href="https://devon.postach.io/post/owd-4-supersonic-planes-levitating-trains-electric-automobiles" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1761,10 +1765,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">On bounties</title>
-    <id>https://devon.postach.io/on-bounties</id>
+    <id>https://devon.postach.io/post/on-bounties</id>
     <updated>2023-09-10T23:46:31.726000Z</updated>
     <published>2020-10-12T04:43:41Z</published>
-    <link href="https://devon.postach.io/on-bounties" />
+    <link href="https://devon.postach.io/post/on-bounties" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1812,10 +1816,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Making is Show Business now – alexdanco.com</title>
-    <id>https://devon.postach.io/making-is-show-business-now-alexdanco-com</id>
+    <id>https://devon.postach.io/post/making-is-show-business-now-alexdanco-com</id>
     <updated>2023-09-10T23:46:30.752000Z</updated>
     <published>2020-10-12T04:07:18Z</published>
-    <link href="https://devon.postach.io/making-is-show-business-now-alexdanco-com" />
+    <link href="https://devon.postach.io/post/making-is-show-business-now-alexdanco-com" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1867,10 +1871,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Topographic theory of flaking</title>
-    <id>https://devon.postach.io/topographic-theory-of-flaking</id>
+    <id>https://devon.postach.io/post/topographic-theory-of-flaking</id>
     <updated>2023-09-10T23:46:32.270000Z</updated>
     <published>2020-08-16T18:59:05Z</published>
-    <link href="https://devon.postach.io/topographic-theory-of-flaking" />
+    <link href="https://devon.postach.io/post/topographic-theory-of-flaking" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -1878,19 +1882,19 @@
     <category term="urban-planning" />
     <category term="topography" />
     <category term="maps" />
-    <content type="html">&lt;div&gt;Natan Gesher sent me the following email after reading my post about &lt;a href=&quot;https://devonzuegel.com/why-is-flaking-so-widespread-in-san-francisco&quot;&gt;why flaking is so widespread in San Francisco&lt;/a&gt;, and I thought you all might find it interesting too:&lt;/div&gt;
+    <content type="html">&lt;div&gt;Natan Gesher sent me the following email after reading my post about &lt;a href=&quot;https://devonzuegel.com/post/why-is-flaking-so-widespread-in-san-francisco&quot;&gt;why flaking is so widespread in San Francisco&lt;/a&gt;, and I thought you all might find it interesting too:&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div style=&quot;&quot;&gt;&lt;blockquote&gt;I saw your blog posts about flaking and wanted to share something I've observed from moving around a bit (four years in Manhattan for university, then two years in Jerusalem, five years in Tel Aviv, two years in San Francisco, three and a half years in Manhattan, one year in Seattle and finally the past two+ years in Manhattan): &lt;span class=&quot;my-highlight&quot;&gt;topography seems to have an effect on how people meet each other, make friends and form friend groups.&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;Specifically, in cities with a lot of hills (in my experience Jerusalem, San Francisco and Seattle), &lt;span class=&quot;my-highlight&quot;&gt;neighborhood identities tend to be stronger, it's more difficult to meet new people who don't live in one's own neighborhood and therefore it becomes more important to move to the neighborhood that matches the identity one has (or wants), and friend networks within neighborhoods tend to be more stable&lt;/span&gt;. This could be considered &quot;cliquey.&quot;&lt;br/&gt;&lt;br/&gt;In flat cities (in my experience, Manhattan x3 and Tel Aviv), however, neighborhoods are more fluid, it's easier to meet new people from every neighborhood in any neighborhood and therefore it becomes less important to live in a specific neighborhood than to be within strategic commuting distance of everywhere / wherever interesting things are happening, and friend networks turn over more rapidly. This could be considered &quot;transient.&quot;&lt;br/&gt;&lt;br/&gt;I've hypothesized that hills within a city may impose a certain psychological barrier - despite the physical barriers that are so easy to overcome with modern forms of transportation - preventing people from wanting to transcend them, and that neighborhood cultures in hilly cities persist longer over decades and absorb new members more thoroughly.&lt;br/&gt;&lt;br/&gt;For me, living in the lower Haight was the only time in my life that I seriously considered buying an automobile of any kind, a Vespa scooter. In retrospect, though it would have helped my commute, I don't think it would have made any difference for me socially, because the barrier that the hills represent is cultural and psychological, not really geographical. &lt;/blockquote&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;Dan Wang and Brian Lui also had some interesting reflections on that same post, which you can find &lt;a href=&quot;https://devonzuegel.com/re-flaking&quot;&gt;here&lt;/a&gt;.&lt;/div&gt;
+&lt;div&gt;Dan Wang and Brian Lui also had some interesting reflections on that same post, which you can find &lt;a href=&quot;https://devonzuegel.com/post/re-flaking&quot;&gt;here&lt;/a&gt;.&lt;/div&gt;
 </content>
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #3: Disney World &amp;amp; other underworlds</title>
-    <id>https://devon.postach.io/owd-3-disney-world-other-underworlds</id>
+    <id>https://devon.postach.io/post/owd-3-disney-world-other-underworlds</id>
     <updated>2023-09-10T23:46:39.094000Z</updated>
     <published>2020-08-15T20:21:16Z</published>
-    <link href="https://devon.postach.io/owd-3-disney-world-other-underworlds" />
+    <link href="https://devon.postach.io/post/owd-3-disney-world-other-underworlds" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -2299,10 +2303,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Chautauqua: an idea embedded in a place</title>
-    <id>https://devon.postach.io/chautauqua-an-idea-embedded-in-a-place</id>
+    <id>https://devon.postach.io/post/chautauqua-an-idea-embedded-in-a-place</id>
     <updated>2023-09-10T23:46:26.850000Z</updated>
     <published>2020-07-22T03:05:13Z</published>
-    <link href="https://devon.postach.io/chautauqua-an-idea-embedded-in-a-place" />
+    <link href="https://devon.postach.io/post/chautauqua-an-idea-embedded-in-a-place" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -2348,10 +2352,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #2: Vanished in Guadalajara</title>
-    <id>https://devon.postach.io/owd-2-vanished-in-guadalajara</id>
+    <id>https://devon.postach.io/post/owd-2-vanished-in-guadalajara</id>
     <updated>2023-09-10T23:46:41.309000Z</updated>
     <published>2020-07-08T18:52:44Z</published>
-    <link href="https://devon.postach.io/owd-2-vanished-in-guadalajara" />
+    <link href="https://devon.postach.io/post/owd-2-vanished-in-guadalajara" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -2580,10 +2584,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">The silence is deafening</title>
-    <id>https://devon.postach.io/the-silence-is-deafening</id>
+    <id>https://devon.postach.io/post/the-silence-is-deafening</id>
     <updated>2023-09-10T23:46:33.081000Z</updated>
     <published>2020-07-02T19:26:59Z</published>
-    <link href="https://devon.postach.io/the-silence-is-deafening" />
+    <link href="https://devon.postach.io/post/the-silence-is-deafening" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -2626,10 +2630,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #1: Tea time in Yemen</title>
-    <id>https://devon.postach.io/owd-1-tea-time-in-yemen</id>
+    <id>https://devon.postach.io/post/owd-1-tea-time-in-yemen</id>
     <updated>2023-09-10T23:46:37.476000Z</updated>
     <published>2020-05-07T15:45:35Z</published>
-    <link href="https://devon.postach.io/owd-1-tea-time-in-yemen" />
+    <link href="https://devon.postach.io/post/owd-1-tea-time-in-yemen" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -2644,7 +2648,7 @@
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id=&quot;rss&quot; href=&quot;https://anchor.fm/s/1dc33210/podcast/rss&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;RSS&lt;/span&gt;&lt;/a&gt; · &lt;a id=&quot;rss&quot; href=&quot;https://podcasts.apple.com/us/podcast/order-without-design-how-markets-shape-cities/id1509606453?uo=4&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Apple Podcasts&lt;/span&gt;&lt;/a&gt; · &lt;a id=&quot;rss&quot; href=&quot;https://open.spotify.com/show/4YGgvqEYQteqrXoL2Mt21N&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Spotify&lt;/span&gt;&lt;/a&gt; · &lt;a id=&quot;rss&quot; href=&quot;https://overcast.fm/itunes1509606453/order-without-design-how-markets-shape-cities&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Overcast&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;As I mentioned in &lt;a href=&quot;https://devonzuegel.com/owd-0-welcome-to-order-without-design&quot;&gt;my recent post&lt;/a&gt;, I'm starting a podcast with my friends, Marie-Agnes and Alain Bertaud, who also happen to be the most interesting couple I know.&lt;/div&gt;
+&lt;div&gt;As I mentioned in &lt;a href=&quot;https://devonzuegel.com/post/owd-0-welcome-to-order-without-design&quot;&gt;my recent post&lt;/a&gt;, I'm starting a podcast with my friends, Marie-Agnes and Alain Bertaud, who also happen to be the most interesting couple I know.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;Over the course of this first conversation, we traveled all around the globe for a whirlwind tour of the adventurous life they've led together. Here are just a few spots that were on our itinerary:&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;ul&gt;&lt;li style=&quot;text-align:inherit;&quot;&gt;&lt;div&gt;We started in &lt;span style=&quot;font-weight: bold;&quot;&gt;Tunisia&lt;/span&gt; to hear about Marie-Agnes' childhood, then hopped over to neighboring &lt;span style=&quot;font-weight: bold;&quot;&gt;Algeria&lt;/span&gt;, where Marie-Agnes and Alain first met. This is also when Alain was first drafted to work as an urban planner in the midst of Algeria's independence from France.&lt;/div&gt;&lt;/li&gt;&lt;li style=&quot;text-align:inherit;&quot;&gt;&lt;div&gt;Then, we made our way to the US, visiting &lt;span style=&quot;font-weight: bold;&quot;&gt;NYC&lt;/span&gt; to hear about how Alain and Marie-Agnes started a family when they were penniless but optimistic immigrants to America.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div&gt;Our next stop was &lt;span style=&quot;font-weight: bold;&quot;&gt;Yemen&lt;/span&gt;, where Alain and Marie-Agnes worked for three years as urban planners and befriended Yemeni artisans, tribespeople, and farmers.&lt;/div&gt;&lt;/li&gt;&lt;li style=&quot;text-align:inherit;&quot;&gt;&lt;div&gt;Then we picked up speed, zipping around the globe to learn about their experiences working in &lt;span style=&quot;font-weight: bold;&quot;&gt;Bangkok&lt;/span&gt;, &lt;span style=&quot;font-weight: bold;&quot;&gt;Port-au-Prince&lt;/span&gt;, &lt;span style=&quot;font-weight: bold;&quot;&gt;San Salvador&lt;/span&gt;, and beyond and how their identity as foreigners played a role in what they were able to achieve.&lt;/div&gt;&lt;/li&gt;&lt;li style=&quot;text-align:inherit;&quot;&gt;&lt;div&gt;The conversation then moved on to the topic of &quot;city deflation&quot;, and how declining populations are a new challenge for cities this century. We made stops in &lt;span style=&quot;font-weight: bold;&quot;&gt;France&lt;/span&gt; and &lt;span style=&quot;font-weight: bold;&quot;&gt;Japan&lt;/span&gt;, and we visited cities in &lt;span style=&quot;font-weight: bold;&quot;&gt;Russia&lt;/span&gt; that lost so much population after the Soviet Union fell that they were formally closed. Then we went to &lt;span style=&quot;font-weight: bold;&quot;&gt;Detroit&lt;/span&gt;, where we discussed why the water was turned off and how it's a more nuanced story than is normally told when looked at through the lens of &quot;city deflation&quot;.&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -2988,10 +2992,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Digital vs analog error correction</title>
-    <id>https://devon.postach.io/digital-vs-analog-error-correction</id>
+    <id>https://devon.postach.io/post/digital-vs-analog-error-correction</id>
     <updated>2023-09-10T23:46:35.327000Z</updated>
     <published>2020-05-03T05:16:22Z</published>
-    <link href="https://devon.postach.io/digital-vs-analog-error-correction" />
+    <link href="https://devon.postach.io/post/digital-vs-analog-error-correction" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3017,10 +3021,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OWD #0: Welcome to Order Without Design</title>
-    <id>https://devon.postach.io/owd-0-welcome-to-order-without-design</id>
+    <id>https://devon.postach.io/post/owd-0-welcome-to-order-without-design</id>
     <updated>2023-09-10T23:46:33.785000Z</updated>
     <published>2020-04-30T15:44:59Z</published>
-    <link href="https://devon.postach.io/owd-0-welcome-to-order-without-design" />
+    <link href="https://devon.postach.io/post/owd-0-welcome-to-order-without-design" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3050,10 +3054,10 @@
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Situated Software</title>
-    <id>https://devon.postach.io/situated-software</id>
+    <id>https://devon.postach.io/post/situated-software</id>
     <updated>2023-09-10T23:46:38.291000Z</updated>
     <published>2020-03-14T19:13:33Z</published>
-    <link href="https://devon.postach.io/situated-software" />
+    <link href="https://devon.postach.io/post/situated-software" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3234,10 +3238,10 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Book review: Against the Grain, by James C. Scott</title>
-    <id>https://devon.postach.io/book-review-against-the-grain-by-james-c-scott</id>
+    <id>https://devon.postach.io/post/book-review-against-the-grain-by-james-c-scott</id>
     <updated>2023-09-10T23:46:36.081000Z</updated>
     <published>2020-01-01T16:19:42Z</published>
-    <link href="https://devon.postach.io/book-review-against-the-grain-by-james-c-scott" />
+    <link href="https://devon.postach.io/post/book-review-against-the-grain-by-james-c-scott" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3253,16 +3257,16 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
 &lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt;Overall the book did a fantastic job of helping me, a complete newcomer to archaeology, build mental models about the discipline. Most books I've read about early history are just a monotone timeline of facts of events, without much theory tying them together, let alone the meta work of explaining how they got to their conclusions so that the reader can judge the historian's intellectual path for themselves. For example, Scott writes, &lt;/span&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt;&quot;History records no cassava states, no sago, yam, taro, plantain, bread fruit, or sweet potato states...only grains are best suited to concentrated production, tax assessment, appropriation, cadastral surveys, storage, and rationing.&quot; I adore how he dives into the actual dynamics of the system whose history he's writing about, and explaining the &lt;a href=&quot;https://www.lesswrong.com/posts/B7P97C27rvHPz3s9B/gears-in-understanding&quot;&gt;&quot;gears&quot;&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt; of change. That's sadly rare in all writing, not just history.&lt;/span&gt;&lt;/div&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;I'm a bit embarrassed to admit this, but I've historically found it difficult to care about or appreciate history that goes sufficiently far back. The greater the distance grows between modern day and the time I'm reading about, the harder tends to be for me to continue paying attention. I'm excited to say that &lt;span style=&quot;font-style: italic;&quot;&gt;Against the Grain &lt;/span&gt;shattered this correlation. And not only is it a massive outlier, but I can't stop thinking about the topics explored in the book, and it's made me eager to read more books about the deep past—so long as they help me build mental models, rather than simply offering a monotone timeline of facts and events.&lt;/div&gt;
 &lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 18px; color: rgb(169, 169, 169);&quot;&gt;~ ~ ~&lt;/span&gt;&lt;/div&gt;
-&lt;div style=&quot;text-align: left;&quot;&gt;For more object-level detail, you can find my reading notes from the book &lt;a href=&quot;https://devonzuegel.com/book-notes-against-the-grain-by-james-c-scott&quot;&gt;here&lt;/a&gt;.&lt;/div&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;For more object-level detail, you can find my reading notes from the book &lt;a href=&quot;https://devonzuegel.com/post/book-notes-against-the-grain-by-james-c-scott&quot;&gt;here&lt;/a&gt;.&lt;/div&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;&lt;div style=&quot;display:none !important&quot;&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/8b482125-5a23-4916-a649-07674726f764/90c1162a-78d8-47f5-bdfa-86a8801c6e02.jpg&quot;  width=&quot;161&quot;/&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 </content>
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Book notes: Against the Grain, by James C. Scott</title>
-    <id>https://devon.postach.io/book-notes-against-the-grain-by-james-c-scott</id>
+    <id>https://devon.postach.io/post/book-notes-against-the-grain-by-james-c-scott</id>
     <updated>2023-09-10T23:46:43.817000Z</updated>
     <published>2020-01-01T16:18:33Z</published>
-    <link href="https://devon.postach.io/book-notes-against-the-grain-by-james-c-scott" />
+    <link href="https://devon.postach.io/post/book-notes-against-the-grain-by-james-c-scott" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3271,16 +3275,16 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
     <category term="archeology" />
     <content type="html">&lt;div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt;Here are some notes and quotes that particularly stood out to me from each chapter of &lt;span style=&quot;font-style: italic;&quot;&gt;&lt;a href=&quot;https://amzn.to/2u4MnIw&quot;&gt;Against the Grain&lt;/a&gt;&lt;/span&gt;. This isn't a summary of the book. It's mostly for my future self to refer back to (and thus probably missing a lot for someone who hasn't read it), but the tidbits are so interesting that I figured I'd share it nonetheless in case it's remotely helpful to someone else.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt;You can read my more coherent review of the book &lt;a href=&quot;https://devonzuegel.com/book-review-against-the-grain-by-james-c-scott&quot;&gt;here&lt;/a&gt;.&lt;/span&gt;&lt;/div&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;-en-paragraph:true;&quot;&gt;You can read my more coherent review of the book &lt;a href=&quot;https://devonzuegel.com/post/book-review-against-the-grain-by-james-c-scott&quot;&gt;here&lt;/a&gt;.&lt;/span&gt;&lt;/div&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Introduction&lt;/span&gt; &lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The narrative of the agrarian ecological complex &quot;has typically been told as one of progress, of civilization and public&quot; ... &quot;ascent of man story&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;fire was the first great hominid tool for niche construction &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;States appear 4 millennia after the first crop domestications and sedentism&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;States dominate the archaeological and cultural record&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Institutional bias&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Self-portraiture&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Nomadic life was generally biodegradable&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;... the state has dominated only the last 0.2% of our species' political life&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Strapped to the metronome of a major cereal grain&quot; (ch 1, p. 20)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;History records no cassava states, no sago, yam, taro, plantain, bread fruit, or sweet potato states...only grains are best suited to concentrated production, tax assessment, appropriation, cadastral surveys, storage, and rationing.&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Stateness&quot; is an institutional continuum (p. 23)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Bondage appears to have been a condition of the ancient state's survival &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;I want to question the use of the term 'collapse' to describe many of these events... 'Collapse' denote the civilizational tragedy of a great early kingdom being brought low, along with its cultural achievements.&quot; (31)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Barbarians are a political category, not a cultural one. In China, when they began to enter from the frontier and begin to enter the spectrum of Chinese rule, &quot;they were said to 'have entered the map'&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 1 – The Domestication of Fire, Plants, Animals... and Us&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Niche construction: &quot;Unlike optimal foraging theory that takes the disposition of the natural world as a given..., what we have here is a deliberate &lt;span style=&quot;font-weight: bold;&quot;&gt;disturbance ecology&lt;/span&gt; in which hominids create a mosaic of biodiversity and a distribution of desirable resources more to their liking.&quot; (40)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Fire externalizes the digestive process&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;S. Mesopotamia was not at all arid&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;The very breadth of a subsistence web ... poses insurmountable obstacles to the imposition of a single political authority&quot; (49)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;The first fixed villages were at the seam of several different ecological zones ... to buffer themselves from the risk of exclusive dependence on any one.&quot; (52)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Wetland societies were environmentally resistant to centralization and control from above. There was no single dominant resource that could be monopolized or controlled from the center, let alone easily taxed.&quot; (57)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;The populations avoiding full reliance on fixed-field crops for the bulk of their caloric needs might actually have known what they were doing.&quot; (58)&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Large portfolio of subsistence options&quot; 59&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Most discussion of plant domestication and settlement assume that early peoples could not wait to settle down in one spot.&quot; 62&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Subsistence insurance policy. 63&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 2 – Landscaping the World: The Domus Complex&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Homo sapiens have been domesticating whole environments, not just species. 70&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Full cultivation was taken up not as an opportunity but as a last resort when no other alternative was possible. 71 &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Demographic transition to drudgery &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Domus&quot; = household&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Less diversity in more predictable environments &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Fully domesticated&quot; = in effect, our creation; it can no longer thrive without our attentions. Like a housewife. Why it's fragile to be a 50s housewife. 75&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Superspecialized floraba 'basket case', and its future is entirely dependent on our own. If it ceases to please us, it will be banished.&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Emotional dampening as a condition for life in the crowded Domus, where instant reaction to predator and prey are no longer powerful pressures of natural selection. With physical protection and nutrition more secure, the domesticated animal can be less intently alert.&quot; 81&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Rates of fertility increase so dramatically as to offset the losses through mortality. 82&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The spread of sedentism transformed Homo sapiens into far more of a herd animal.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Only 240 human generations have elapsed since the first adoption of agriculture.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Hunting and foraging are, in terms of complexity, as different from cereal-grain farming as cereal-grain farming is to repetitive work on a modern assembly line. Each step represents a substantial narrowing of focus and simplification of tasks. 90&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Our species was already disciplined and subordinated to the metronome of our own crops. 91&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Deskilling. 92&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 3 – Zoonoses: A Perfect Epidemiological Storm &lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Pressing on the carrying capacity of their environment's resources, they were obliged to work harder for their subsistence. 95&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Planting and livestock rearing as &lt;span style=&quot;font-style: italic;&quot;&gt;dominant &lt;/span&gt;subsistence practices were avoided as long as posible because of the work they required. 96&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Fragile and vulnerable &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Ag revolution -&gt; increase disease&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Sudden and otherwise unexplained abandonment of previously well-populated sites... made posible by the crowding enabled by the Neolithic &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;They understood that long-distance travelers, traders, and soldiers were likely carriers of disease &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Virtually all the infectious diseases due to microorganisms specifically adapted to Homo sapiens came into existence only in the past 10k years... arose as a result of the beginnings of urbanism and agriculture &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Before extensive human travel, migratory birds that nested together combined long-distance travel with crowding to constitute, perhaps, the main vector for the spread of disease over distance. 101&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Sedentary agriculturists had unprecedented high rates of reproduction—enough to more than compensate for the also unprecedentedly high rates of mortality. 113&lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Larger spacing of children for hunter-gatherers due to logistics of moving camp &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Earlier puberty, more regular ovulation, later menopause &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Greater value of the children as a labor force &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Infants can be weaned earlier on soft foods&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Miracle of compound interest!&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 4 — Agro-ecology of the Early State&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;state arose by harnessing the grain and manpower module as a basis of control and appropriation. Grain easier to control than a diverse economy.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Elite niche construction &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Fattening and protecting the goose that lays the golden eggs &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;None of the early state centers in Mesopotamia was even remotely self-sufficient &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Non-state spaces&quot; generally had &quot;friction&quot;—arid deserts, mountainous zones virtually require dispersed subsistence strategies &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Only the cereal grains can serve as a basis for taxation: visible, divisible, assessable, storable, transportable, and rationable &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;One reason for the official distrust and stigmatization of the merchant class in china was the simple fact that its wealth, unlike the rice planter, was illegible, concealable, and fugitive &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Simultaneous ripening of cereal grains is important to a tax collector. One stop-shopping works best, least amount of work. 133&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The Great Wall of China was built as much to keep Chinese taxpaying cultivators inside as to keep the barbarians (nomads) outside. 138&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The first act of many peasant rebellions has been to burn down the local records office. They understand implicitly that behind the coercive machinery lies piles of paperwork. 139&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The entire exercise in early state formation is one of standardization and abstraction. 144&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Land, happily for the tax collector, does not move&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Breeding a tax base and troops&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Writing was resisted because of its association with the state and taxes, just as ploughing was long resisted because of its association with drudgery. 148&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 5 — Population Control: Bondage and War&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;the state remained as focused on the number and productivity of its &quot;domesticated&quot; subjects as a shepherd might husband his flock or a farmer tend his crops. 151&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The scribal summaries of laboring groups employ the identical age and sex categories as those used to describe &quot;herds of domestic animals&quot;. 160&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Relocate them frequently to minimize the danger of revolt or escape. Socially demobilized and atomized = easier to control and absorb. Few local social ties =&gt; unable to muster collective opposition. &quot;The principle of socially detached servants&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Captives of a working age, raised at the expense of another society, and get to exploit their most productive years. 167&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Common to find pervasive slavery alongside rapid cultural assimilation and social mobility &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;War was seen as a route to wealth and comfort. 172&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;If such states had to extract such labor (as slavery) exclusively from their own core subjects, they would have run a high risk of provoking flight or rebellion &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Domesticating women's prosecuting in general. 181&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 6 — Fragility of the Early State: Collapse as Disassembly&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt; The term &quot;civilizational collapse&quot; doesn't necessarily mean a decline in regional population, health, well-being, or nutrition, and sometimes it represented an improvement. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Heroic period of archaelogy&quot; 186&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Much that passé as collapse is, rather, a disassembly of larger but more fragile political units into smaller, more stable components &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt; Enlargement of the commercial sphere also enlarged the sphere of transmitted diseases &lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Trade, responsible for the monumental splendor of alluvium statelets, may ironically have played a large role in their disappearance&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Unique and unsuitable demands on the surrounding environment =&gt; gradual economic suffocation&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Deforestation =&gt; flooding/erosion/siltation, which over time would destroy the civilization doing the deforesting &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Malaria is a &quot;disease of civilization&quot; in the sense that it arose with land clearance for agriculture &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Agriculture =&gt; Salinization, soil exhaustion &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Lacked the fine-grained knowledge that would have made it easier to modify their appropriation in line with the capacity of their subjects to pay &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Unlikely that the central authority will cut costs in proportion to the reduction of revenue&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The fact that the Nile was hemmed in by deserts made it possible to press the population harder than if the peasantry had more running room. 208&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Why deplore &quot;collapse&quot; when the situation it depicts is often the disaggregation of a complex, fragile, and oppressive state? &lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;We should aim to normalize collapse &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The well-being of a population mustn't be confounded with the power of a state center &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Dark&quot; (as in Dark Age) should refer more to our knowledge than to a characteristic of the period itself &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;The self-documenting court center that offered a convenient one-stop shop for historians&quot; &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;Ch 7 – The Golden Age of the Barbarians&lt;/span&gt;&lt;/div&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;States were ecologically confined to the well-watered, rich soils that could support a concentration of labor/grain&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Many terms were invented in state centers to describe and stigmatize those who had not yet become state subjects &lt;/div&gt;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;In the Ming Dynasty, the term &quot;cooked&quot; referred to assimilating barbarians. They were said to have &quot;entered the map&quot;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Threat posted by barbarians was the single most important factor limiting the growth of the states &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;It was better to be a barbarian once there were states, so long as those states weren't too strong; pillaging was a lucrative form of hunting and foraging. &quot;The carrying capacity of barbarian ecology is enhanced by the existence of petty states.&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;States served as trading posts. Because states represented such narrow agro-ecologies, they relied on products from outside, and the barbarians grew rich providing those products.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Plunder of and trade with the state made economic life on the state's margins more viable and lucrative.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;'Barbarians' are not a 'stage' of historical/evolutionary progress in which the highest stage of life is the state as taxpayer.&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Barbarian&quot; is best understood as a position vis-a-vis a state.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Barbarian geography is all those geographies that are unsuitable for state making (mountains, steps, forest, swamps, deserts, moors, the sea). They are best defined as the negative space around state making zones.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Among the Romans, the contrast between their diet of grain compared to the Gallic diet of meat/dairy was a key marker of their claim to civilized status. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Barbarian societies can be quite hierarchical, but generally not based on inherited property.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The barbarian story is deeply subversive &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;States preceded tribes and, in fact, largely invented them as an instrument of rule&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Contemporary piracy suggests that even today, speed, mobility, and surprise can tactically prevail over quasi-sedentary container ships&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Raiding is self-liquidating. Raiders are most likely to adjust their strategy to a &quot;protection racket&quot;. In extracting a sustainable surplus from sedentary community i es and fending off external attacks to protect its base, a stable protection racket is hard to distinguish from the archaic state itself.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Barbarian-state relations can be seen as a contest for the right to appropriate the surplus from the sedentary grain-and-manpower module.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The larger and more navigable the river, the larger the potential polity, because these communities were dependent on trade and exchange with other ecological zones.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;As technology improved and population increased, trade became more valuable. Metcalfe's law.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;The peripheries of the agrarian states became valuable commercial landscapes, as sites of valuable commodities. &lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;You can conquer a kingdom on horseback, but to rule it you have to dismount.&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;Nomads require sedentary communities as depots of manpower, revenue, and trading outlets; they tend to disappear when their host collapses.&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Political enclosure movement&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&quot;Fiscally invisible&quot;&lt;/div&gt;&lt;/li&gt;&lt;li&gt;&lt;div style=&quot;text-align: left;&quot;&gt;There would've been periods when leaving behind the plough of a state subject to take up foraging, pastoralism, and marine collecting would've represented both a rational economic calculation as we as a bolt for freedom &lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;table style=&quot;border-collapse: collapse; min-width: 100%;&quot;&gt;&lt;colgroup&gt;&lt;col style=&quot;width: 130px;&quot; /&gt;&lt;col style=&quot;width: 130px;&quot; /&gt;&lt;/colgroup&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;width: 130px; padding: 8px; border: 1px solid;&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/96aa2936-e9e3-48d2-821b-d7bc8cd121de.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/bf89bb1b-bef2-4b57-9d05-d035faf0b8ae.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/6d2a4269-923c-4d8b-83a6-7f2a0dcfc903.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/221e06d3-25e5-4ca7-bc55-c52b3dae51f6.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/492db73b-1b90-4a01-8802-d440f8877270.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;br /&gt;&lt;/div&gt;&lt;/td&gt;&lt;td style=&quot;width: 130px; padding: 8px; border: 1px solid;&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/f6144b15-e9cd-458a-a3b6-e40065910b2c.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/72f1b7bc-7f8b-4351-bca5-d47eeff0f61e.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/b608d228-3482-4625-b205-fd38a9d3da60.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/66173495-b018-4674-9c84-0bf60dfd0a3b.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;img src=&quot;https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/09c3b653-8fff-4718-baa7-c806c605c182/207ea461-3462-47c5-89a4-c23222e870d0.png&quot;  title=&quot;Attachment&quot;/&gt;&lt;br /&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 </content>
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Unconventional strategies for practicing Spanish</title>
-    <id>https://devon.postach.io/unconventional-strategies-for-practicing-spanish</id>
+    <id>https://devon.postach.io/post/unconventional-strategies-for-practicing-spanish</id>
     <updated>2023-09-10T23:46:35.607000Z</updated>
     <published>2019-12-26T15:22:45Z</published>
-    <link href="https://devon.postach.io/unconventional-strategies-for-practicing-spanish" />
+    <link href="https://devon.postach.io/post/unconventional-strategies-for-practicing-spanish" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3292,7 +3296,7 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt; &lt;/div&gt;
 &lt;div&gt;&lt;span style=&quot;font-weight: bold;&quot;&gt;(1) Translate past writing you've already published in English &lt;/span&gt;&lt;/div&gt;
-&lt;div&gt;One fun exercise is to take something you wrote in English, translate it to Spanish, ask a friend to proofread for mistakes, and re-publish it. &lt;a href=&quot;https://devonzuegel.com/zonificacion-norteamericana-vs-japonesa&quot;&gt;Example&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;One fun exercise is to take something you wrote in English, translate it to Spanish, ask a friend to proofread for mistakes, and re-publish it. &lt;a href=&quot;https://devonzuegel.com/post/zonificacion-norteamericana-vs-japonesa&quot;&gt;Example&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;This is a good way to learn domain-specific vocabulary for topics you care about. For example, I think a lot about economics, transportation, and urban planning, but these aren't topics you'll find in top 1,000 word flash card sets or a Duolingo course or most other materials meant for Spanish-language learners. Those materials have to cater to the lowest common denominator of language, teaching vocabulary that's useful to everyone, not your niche interests. By contrast, I obviously have a special interest in learning to express those concepts since I already used them in a non-Spanish context. Translating a piece of writing you yourself wrote is a good forcing function to look up those words in a contextual way. Rather than synthetically building up a list of words that come to mind, this instead is a much more organic way to learn the words you actually use.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -3403,10 +3407,10 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Everything is Amazing, But Nothing is Ours</title>
-    <id>https://devon.postach.io/everything-is-amazing-but-nothing-is-ours</id>
+    <id>https://devon.postach.io/post/everything-is-amazing-but-nothing-is-ours</id>
     <updated>2023-09-10T23:46:39.454000Z</updated>
     <published>2019-10-29T23:41:59Z</published>
-    <link href="https://devon.postach.io/everything-is-amazing-but-nothing-is-ours" />
+    <link href="https://devon.postach.io/post/everything-is-amazing-but-nothing-is-ours" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3444,10 +3448,10 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Vacuum tube nostalgia</title>
-    <id>https://devon.postach.io/vacuum-tube-nostalgia</id>
+    <id>https://devon.postach.io/post/vacuum-tube-nostalgia</id>
     <updated>2023-09-10T23:46:47.089000Z</updated>
     <published>2019-10-21T15:59:54Z</published>
-    <link href="https://devon.postach.io/vacuum-tube-nostalgia" />
+    <link href="https://devon.postach.io/post/vacuum-tube-nostalgia" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3489,10 +3493,10 @@ to the mailing list.&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Creating Passionate Users: Attenuation and the suck threshold</title>
-    <id>https://devon.postach.io/creating-passionate-users-attenuation-and-the-suck-threshold</id>
+    <id>https://devon.postach.io/post/creating-passionate-users-attenuation-and-the-suck-threshold</id>
     <updated>2023-09-10T23:46:43.024000Z</updated>
     <published>2019-09-23T23:32:14Z</published>
-    <link href="https://devon.postach.io/creating-passionate-users-attenuation-and-the-suck-threshold" />
+    <link href="https://devon.postach.io/post/creating-passionate-users-attenuation-and-the-suck-threshold" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3633,10 +3637,10 @@ now let me go back and read it again&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">A Big Little Idea Called Legibility</title>
-    <id>https://devon.postach.io/a-big-little-idea-called-legibility</id>
+    <id>https://devon.postach.io/post/a-big-little-idea-called-legibility</id>
     <updated>2023-09-10T23:46:42.194000Z</updated>
     <published>2019-09-18T17:13:23Z</published>
-    <link href="https://devon.postach.io/a-big-little-idea-called-legibility" />
+    <link href="https://devon.postach.io/post/a-big-little-idea-called-legibility" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3687,10 +3691,10 @@ now let me go back and read it again&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Argentina On Two Steaks A Day (Idle Words)</title>
-    <id>https://devon.postach.io/argentina-on-two-steaks-a-day-idle-words</id>
+    <id>https://devon.postach.io/post/argentina-on-two-steaks-a-day-idle-words</id>
     <updated>2023-09-10T23:46:39.638000Z</updated>
     <published>2019-09-16T01:34:19Z</published>
-    <link href="https://devon.postach.io/argentina-on-two-steaks-a-day-idle-words" />
+    <link href="https://devon.postach.io/post/argentina-on-two-steaks-a-day-idle-words" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3774,10 +3778,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Greater Los Angeles</title>
-    <id>https://devon.postach.io/greater-los-angeles</id>
+    <id>https://devon.postach.io/post/greater-los-angeles</id>
     <updated>2023-09-10T23:46:35.301000Z</updated>
     <published>2019-09-16T00:00:50Z</published>
-    <link href="https://devon.postach.io/greater-los-angeles" />
+    <link href="https://devon.postach.io/post/greater-los-angeles" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3837,10 +3841,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">On [there being more than] liberty</title>
-    <id>https://devon.postach.io/on-there-being-more-than-liberty</id>
+    <id>https://devon.postach.io/post/on-there-being-more-than-liberty</id>
     <updated>2023-09-10T23:46:44.313000Z</updated>
     <published>2019-09-09T06:08:29Z</published>
-    <link href="https://devon.postach.io/on-there-being-more-than-liberty" />
+    <link href="https://devon.postach.io/post/on-there-being-more-than-liberty" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3925,10 +3929,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Markets in everything at the Duomo</title>
-    <id>https://devon.postach.io/markets-in-everything-at-the-duomo</id>
+    <id>https://devon.postach.io/post/markets-in-everything-at-the-duomo</id>
     <updated>2023-09-10T23:46:46.426000Z</updated>
     <published>2019-08-11T20:00:25Z</published>
-    <link href="https://devon.postach.io/markets-in-everything-at-the-duomo" />
+    <link href="https://devon.postach.io/post/markets-in-everything-at-the-duomo" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3954,10 +3958,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Contemplating calendars</title>
-    <id>https://devon.postach.io/contemplating-calendars</id>
+    <id>https://devon.postach.io/post/contemplating-calendars</id>
     <updated>2023-09-10T23:46:32.950000Z</updated>
     <published>2019-07-10T05:53:54Z</published>
-    <link href="https://devon.postach.io/contemplating-calendars" />
+    <link href="https://devon.postach.io/post/contemplating-calendars" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -3986,10 +3990,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization?</title>
-    <id>https://devon.postach.io/no-kings-how-do-you-make-good-decisions-efficiently-in-a-flat-organization</id>
+    <id>https://devon.postach.io/post/no-kings-how-do-you-make-good-decisions-efficiently-in-a-flat-organization</id>
     <updated>2023-09-10T23:46:43.521000Z</updated>
     <published>2019-06-29T04:19:32Z</published>
-    <link href="https://devon.postach.io/no-kings-how-do-you-make-good-decisions-efficiently-in-a-flat-organization" />
+    <link href="https://devon.postach.io/post/no-kings-how-do-you-make-good-decisions-efficiently-in-a-flat-organization" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4018,10 +4022,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Travel photos are underrated</title>
-    <id>https://devon.postach.io/travel-photos-are-underrated</id>
+    <id>https://devon.postach.io/post/travel-photos-are-underrated</id>
     <updated>2023-09-10T23:46:47.783000Z</updated>
     <published>2019-06-09T19:06:31Z</published>
-    <link href="https://devon.postach.io/travel-photos-are-underrated" />
+    <link href="https://devon.postach.io/post/travel-photos-are-underrated" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4056,10 +4060,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Google Docs' sheet-of-paper metaphor</title>
-    <id>https://devon.postach.io/google-docs-sheet-of-paper-metaphor</id>
+    <id>https://devon.postach.io/post/google-docs-sheet-of-paper-metaphor</id>
     <updated>2023-09-10T23:46:51.985000Z</updated>
     <published>2019-05-12T23:02:04Z</published>
-    <link href="https://devon.postach.io/google-docs-sheet-of-paper-metaphor" />
+    <link href="https://devon.postach.io/post/google-docs-sheet-of-paper-metaphor" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4087,10 +4091,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">OSS lazy-loads governance</title>
-    <id>https://devon.postach.io/oss-lazy-loads-governance</id>
+    <id>https://devon.postach.io/post/oss-lazy-loads-governance</id>
     <updated>2023-09-10T23:46:32.387000Z</updated>
     <published>2019-04-07T20:41:22Z</published>
-    <link href="https://devon.postach.io/oss-lazy-loads-governance" />
+    <link href="https://devon.postach.io/post/oss-lazy-loads-governance" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4123,10 +4127,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Independence for whom?</title>
-    <id>https://devon.postach.io/independence-for-whom</id>
+    <id>https://devon.postach.io/post/independence-for-whom</id>
     <updated>2023-09-10T23:46:36.358000Z</updated>
     <published>2019-03-23T14:41:14Z</published>
-    <link href="https://devon.postach.io/independence-for-whom" />
+    <link href="https://devon.postach.io/post/independence-for-whom" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4178,10 +4182,10 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
   </entry>
   <entry xml:base="http://devon.postach.io/feed.xml">
     <title type="text">Cities reading list</title>
-    <id>https://devon.postach.io/cities-reading-list</id>
+    <id>https://devon.postach.io/post/cities-reading-list</id>
     <updated>2023-09-10T23:46:43.882000Z</updated>
     <published>2019-02-09T20:54:39Z</published>
-    <link href="https://devon.postach.io/cities-reading-list" />
+    <link href="https://devon.postach.io/post/cities-reading-list" />
     <author>
       <name>Devon Zuegel</name>
     </author>
@@ -4256,7 +4260,7 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;This book is about how &quot;cities magnify humanity’s strengths&quot;. It's city propaganda at its finest, and I say that lovingly... I clearly fell hard for it! It's hard to not fall in love with cities after reading this.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;&lt;span style=&quot;font-style: italic;&quot;&gt;Triumph&lt;/span&gt; is what started me down the path of thinking about &lt;a href=&quot;https://devonzuegel.com/agglomeration-effects-might-change-the-yimby-calculus&quot;&gt;agglomeration economies&lt;/a&gt;, which has since been a key model for how I think about cities.&lt;/div&gt;
+&lt;div&gt;&lt;span style=&quot;font-style: italic;&quot;&gt;Triumph&lt;/span&gt; is what started me down the path of thinking about &lt;a href=&quot;https://devonzuegel.com/post/agglomeration-effects-might-change-the-yimby-calculus&quot;&gt;agglomeration economies&lt;/a&gt;, which has since been a key model for how I think about cities.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(191, 191, 191);&quot;&gt;~&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
@@ -4276,7 +4280,7 @@ Don Pedro (ice cream and nuts in a bowl of Old Smuggler)&lt;/span&gt;&lt;/div&gt
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div&gt;The core argument is that a walkable city is not just a nice, idealistic notion. Rather, it is a simple, practical-minded solution to a host of complex problems that we face as a society, problems that daily undermine our nation’s economic competitiveness, public welfare, and environmental sustainability.&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
-&lt;div&gt;More thorough notes here: &lt;a href=&quot;https://devonzuegel.com/book-notes-walkable-city&quot;&gt;devo.nz/book-notes-walkable-city&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;More thorough notes here: &lt;a href=&quot;https://devonzuegel.com/post/book-notes-walkable-city&quot;&gt;devo.nz/post/book-notes-walkable-city&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(191, 191, 191);&quot;&gt;~&lt;/span&gt;&lt;/div&gt;
 &lt;div&gt;&lt;br /&gt;&lt;/div&gt;
