@@ -54,6 +54,11 @@ Also delete `.html` from content of `index.html` page so that the URLs people se
 
 It will take a few minutes for the changes to propagate to the live site. You can follow along to see if the job is complete at https://github.com/devonzuegel/devonzuegel.github.io/actions.
 
+### Step 6: Check that the OpenGraph image is working
+
+If not, you can:
+1. Change the URL slug in the CMS
+2. Just paste a screenshot or image into the tweet
 
 # Things to improve
 
