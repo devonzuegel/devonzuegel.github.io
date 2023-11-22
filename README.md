@@ -19,7 +19,7 @@ wget \
     <li><code>--recursive:</code> This option tells wget to recursively download all files that are linked to on the website.</li>
     <li><code>--no-clobber:</code> This option tells wget not to overwrite any existing files with the same name. This is useful if you want to resume a previously interrupted download without re-downloading files that have already been downloaded.</li>
     <li><code>--page-requisites:</code> This option tells wget to download all files necessary to display the pages properly, such as images, CSS, and JavaScript files.</li>
-    <li><code>--html-extension:</code> This option tells wget to save files with an .html extension, even if the original file did not have one.</li>
+    <li><code>--html-extension:</code> This option tells wget to save files with an .html extension, even if the original file did not have one. Note that when published to devonzuegel.com (i.e. devonzuegel.github.io), the URL will work with AND without the .html extension (e.g. https://devonzuegel.com/inflation-propagates-unevenly and https://devonzuegel.com/inflation-propagates-unevenly.html both work)</li>
     <li><code>--convert-links:</code> This option tells wget to convert links in the downloaded files so that they will work when you view the files offline.</li>
     <li><code>--restrict-file-names=windows:</code> This option tells wget to modify filenames so that they will work with Windows file systems.</li>
   </ul>
