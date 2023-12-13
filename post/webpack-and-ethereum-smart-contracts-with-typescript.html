@@ -2,208 +2,136 @@
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
   <head>
     <meta charset="utf-8" />
-    <title> Webpack and Ethereum smart contracts with Typescript | devonzuegel.com </title>
+    <title>Webpack and Ethereum smart contracts with Typescript | devonzuegel.com</title>
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-<meta name="author" content="Devon Zuegel">
+    <meta name="author" content="Devon Zuegel" />
 
+    <meta
+      name="description"
+      content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only..."
+    />
 
-  
-  <meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
-  
+    <!-- OpenGraph tags -->
+    <meta property="og:site_name" content="devonzuegel.com" />
 
+    <meta property="article:published_time" content="2018-03-12 16:50:42" />
 
-<!-- OpenGraph tags -->
-<meta property="og:site_name" content="devonzuegel.com">
+    <meta property="article:author" content="Devon Zuegel" />
 
+    <meta property="article:tag" content="Programming" />
 
-  
-    <meta property="article:published_time" content="2018-03-12 16:50:42">
+    <meta
+      property="og:image"
+      content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png"
+    />
 
-    
-      <meta property="article:author" content="Devon Zuegel">
-    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript" />
+    <meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript" />
+    <meta
+      property="og:description"
+      content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only..."
+    />
 
-    
-      
-        <meta property="article:tag" content="Programming">
-      
-    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary" />
 
-    
-      
-        
-          <meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
+    <meta name="twitter:site" content="@devonzuegel" />
+    <meta name="twitter:creator" content="@devonzuegel" />
 
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
-    <meta property="og:url" content="https://devon.postach.io/post/webpack-and-ethereum-smart-contracts-with-typescript">
-    <meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+    <meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript" />
+    <meta
+      name="twitter:description"
+      content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......"
+    />
 
-  
+    <meta name="twitter:domain" content="https://devon.postach.io" />
 
+    <link rel="canonical" href="webpack-and-ethereum-smart-contracts-with-typescript.html" />
 
-<!-- Twitter Cards -->
-<meta name="twitter:card" content="summary">
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="../feed.xml" />
 
-<meta name="twitter:site" content="@devonzuegel">
-<meta name="twitter:creator" content="@devonzuegel">
+    <!-- For older browsers -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn-static.postach.io/libs/html5shiv/html5shiv.min.js"></script>
+    <![endif]-->
 
-
-
-<meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript">
-<meta name="twitter:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......">
-
-
-<meta name="twitter:domain" content="https://devon.postach.io">
-
-
-<link rel="canonical" href="webpack-and-ethereum-smart-contracts-with-typescript.html" />
-
-
-<!-- RSS feed -->
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../feed.xml">
-
-<!-- For older browsers -->
-<!--[if lt IE 9]>
-  <script src="https://cdn-static.postach.io/libs/html5shiv/html5shiv.min.js"></script>
-<![endif]-->
-
-<!-- jquery -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <!DOCTYPE html>
     <html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
       <head>
         <meta charset="utf-8" />
-        <title> Webpack and Ethereum smart contracts with Typescript | devonzuegel.com </title>
+        <title>Webpack and Ethereum smart contracts with Typescript | devonzuegel.com</title>
 
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-<meta name="author" content="Devon Zuegel">
+        <meta name="author" content="Devon Zuegel" />
 
+        <meta
+          name="description"
+          content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only..."
+        />
 
-  
-  <meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
-  
+        <!-- OpenGraph tags -->
+        <meta property="og:site_name" content="devonzuegel.com" />
 
+        <meta property="article:published_time" content="2018-03-12 16:50:42" />
 
-<!-- OpenGraph tags -->
-<meta property="og:site_name" content="devonzuegel.com">
+        <meta property="article:author" content="Devon Zuegel" />
 
+        <meta property="article:tag" content="Programming" />
 
-  
-    <meta property="article:published_time" content="2018-03-12 16:50:42">
+        <meta
+          property="og:image"
+          content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png"
+        />
 
-    
-      <meta property="article:author" content="Devon Zuegel">
-    
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript" />
+        <meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript" />
+        <meta
+          property="og:description"
+          content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only..."
+        />
 
-    
-      
-        <meta property="article:tag" content="Programming">
-      
-    
+        <!-- Twitter Cards -->
+        <meta name="twitter:card" content="summary" />
 
-    
-      
-        
-          <meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
+        <meta name="twitter:site" content="@devonzuegel" />
+        <meta name="twitter:creator" content="@devonzuegel" />
 
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
-    <meta property="og:url" content="https://devon.postach.io/post/webpack-and-ethereum-smart-contracts-with-typescript">
-    <meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+        <meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript" />
+        <meta
+          name="twitter:description"
+          content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......"
+        />
 
-  
+        <meta name="twitter:domain" content="https://devon.postach.io" />
 
+        <link rel="canonical" href="webpack-and-ethereum-smart-contracts-with-typescript.html" />
 
-<!-- Twitter Cards -->
-<meta name="twitter:card" content="summary">
+        <!-- RSS feed -->
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="../feed.xml" />
 
-<meta name="twitter:site" content="@devonzuegel">
-<meta name="twitter:creator" content="@devonzuegel">
+        <!-- For older browsers -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn-static.postach.io/libs/html5shiv/html5shiv.min.js"></script>
+        <![endif]-->
 
-
-
-<meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript">
-<meta name="twitter:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......">
-
-
-<meta name="twitter:domain" content="https://devon.postach.io">
-
-
-<link rel="canonical" href="webpack-and-ethereum-smart-contracts-with-typescript.html" />
-
-
-<!-- RSS feed -->
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../feed.xml">
-
-<!-- For older browsers -->
-<!--[if lt IE 9]>
-  <script src="https://cdn-static.postach.io/libs/html5shiv/html5shiv.min.js"></script>
-<![endif]-->
-
-<!-- jquery -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <!-- jquery -->
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
         <link href="https://cdn-static.postach.io/themes/public/default/assets/css/style.css" rel="stylesheet" />
         <link
@@ -228,7 +156,8 @@
             fill: currentcolor;
             line-height: 1.5;
             /* This will only use Inter if they have it on their system already. */
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
+              'Droid Sans', 'Helvetica Neue', sans-serif !important;
             font-weight: 400;
             overflow-x: hidden;
           }
@@ -1131,7 +1060,6 @@
           } */
         </style>
 
-        
         <script>
           var _gaq = _gaq || []
           _gaq.push(['_setAccount', 'UA-65875472-2'])
@@ -1145,12 +1073,9 @@
             s.parentNode.insertBefore(ga, s)
           })()
         </script>
-        
       </head>
 
       <body>
-        
-
         <div class="container">
           <div class="row">
             <div class="span2 sidebar">
@@ -1824,59 +1749,230 @@
               </ul>
             </div>
             <div class="span7 offset4">
-              
               <!-- Starting if: is_home or is_tag -->
 
               <div class="post">
                 <!-- Should only be true for clippings -->
-                
 
                 <h1>
                   Webpack and Ethereum smart contracts with Typescript
                   <!-- Mark clippings posts -->
-                      
                 </h1>
 
                 <p class="muted">March 12th, 2018</p>
 
-                <div class="post-content" data-type-cleanup="true"><div><span style="font-style: italic;">I originally gave this talk at </span><a href="http://tsconf.io/" style="font-style: italic;">Typescript Conference</a><span style="font-style: italic;"> 2018. You can find the slides </span><a href="https://www.icloud.com/keynote/0htb9OUcRGb7iE5aCEa3FXpEg#Reclaiming_your_sanity-_Webpack_and_Ethereum_smart_contracts_with_Typescript" style="font-style: italic;">here</a><span style="font-style: italic;">.</span></div>
-<div><br /></div>
-<div>TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only error message is VM Exception: revert, and bugs can cost millions of dollars. Meanwhile, most Webpack config files are incomprehensible, fragile, and cobbled together from a mess of Stack Overflow answers and legacy code.</div>
-<div><br /></div>
-<div>These problems are particularly frustrating for Typescript developers accustomed to a powerful type system. The good news is that there's nothing stopping us from applying this type system to notoriously complex, opaque tools like Webpack and Ethereum. Doing so will make your code more robust, testable, and comprehensible. TypeScript lets us encode and share developer knowledge, pin down easy-to-misuse interfaces, and generally add a layer of sanity between us and the tools we use.</div>
-<div><font style="font-size: 13px;"><br /></font></div>
-<div><span style="font-weight: bold;"><font style="font-size: 18px;">Context</font></span></div>
-<div>7 months ago, a cryptocurrency project called <a href="http://rexmls.com/">REXmls</a> lost $6 million worth of Ethereum. The root cause was a single line of code. </div><table style="border-collapse: collapse; min-width: 100%;"><colgroup><col style="width: 257px;" /><col style="width: 257px;" /></colgroup><tbody><tr><td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px;"><div><div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png" /><br /></div></div></td><td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px;"><div><div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/637dd0d9-acd9-47e8-9a38-889c45f39ebf.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/844b814e-fd9c-4902-930c-cd70ee738de0.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/7929bc73-e7cf-4d27-95e7-425a19a8acbe.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/19488497-a048-4e6f-b843-eb13f7cd5862.png" /><br /></div></div></td></tr></tbody></table><div><a href="https://webpack.js.org/">Webpack</a> is another tool that is notoriously complex.</div>
-<div><table style="border-collapse: collapse; min-width: 100%;"><colgroup><col style="width: 257px;" /><col style="width: 257px;" /></colgroup><tbody><tr><td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px;"><div><div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/ae58b7b1-b953-43b9-8067-fff964e6142c.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/6fa0a3b3-e6e9-4669-b9fb-481a73a21f2a.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/b1091843-3cb0-414c-bbee-8ee395043b65.png" /><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/30f08d18-e110-4171-bddd-e6708a86307b.png" /><br /></div></div></td><td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px;"><div><div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/728b07af-c8ba-4b61-8503-0460b56728b6.png" /><br /></div></div></td></tr></tbody></table></div><div><div><span style="font-weight: bold;"><font style="font-size: 10px;"><br /></font></span></div>
-<div><span style="font-size: 18px; font-weight: bold;">Webpack config with Typescript</span></div></div><div><div>For a deep dive into using Typescript with Webpack: <a href="http://medium.com/webpack/unambiguous-webpack-config-with-typescript-8519def2cac7">Unambiguous Webpack config with Typescript </a></div>
-<div><br /></div>
-<div>Challenges with Webpack</div><ul><li>May ways to represent the same thing</li><li>Opaque or non-existent error messages</li><li>Easy to accidentally use old syntax</li><li>Lack of sensible defaults</li></ul><div><br /></div>
-<div>These are the obvious things that go wrong when you don't have a type system!</div>
-<div><table style="border-collapse: collapse; min-width: 100%;"><colgroup><col style="width: 514px;" /></colgroup><tbody><tr><td style="border: 1px solid rgb(204, 204, 204); width: 514px; padding: 8px;"><div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/6dd51271-c354-4d43-8722-2512fd4939e1.png" />Webpack's greatest strength— and its greatest weakness— is its flexibility.</div></td></tr></tbody></table><div>What does Typescript buy you?</div></div><div><ul><li>Discovery with types</li><li>Documentation in your text editor</li><li>Constraining the interface to what you need</li></ul></div></div><div><font style="font-size: 12px;"><br /></font></div>
-<div><span style="font-weight: bold;"><font style="font-size: 18px;">Solidity smart contracts with Typescript</font></span></div>
-<div>For a deep dive into using Typescript to interact with Solidity smart contracts: <a href="http://blog.hellobloom.io/how-typescript-makes-smart-contracts-easier-to-test-and-more-robust-c612a2d99537">How TypeScript Makes Smart Contracts Easier to Test and More Robust</a></div>
-<div><br /></div>
-<div>To follow along with the code examples:  <a href="http://github.com/hellobloom/typescript-solidity-example">github.com/hellobloom/typescript-solidity-example</a></div>
-<div><br /></div>
-<div><i><font color="#797979">This is what negative six million dollars looks like:</font></i></div>
-<div><img src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/b15b2301-4203-4126-9e94-fad473927ce8.png" /></div>
-<div><div><br /></div></div><div><br /></div>
-</div>
+                <div class="post-content" data-type-cleanup="true">
+                  <div>
+                    <span style="font-style: italic">I originally gave this talk at </span
+                    ><a href="http://tsconf.io/" style="font-style: italic">Typescript Conference</a
+                    ><span style="font-style: italic"> 2018. You can find the slides </span
+                    ><a
+                      href="https://www.icloud.com/keynote/0htb9OUcRGb7iE5aCEa3FXpEg#Reclaiming_your_sanity-_Webpack_and_Ethereum_smart_contracts_with_Typescript"
+                      style="font-style: italic"
+                      >here</a
+                    ><span style="font-style: italic">.</span>
+                  </div>
+                  <div><br /></div>
+                  <div>
+                    TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts,
+                    developer-friendly tooling is almost non-existent, the only error message is VM Exception: revert, and bugs
+                    can cost millions of dollars. Meanwhile, most Webpack config files are incomprehensible, fragile, and cobbled
+                    together from a mess of Stack Overflow answers and legacy code.
+                  </div>
+                  <div><br /></div>
+                  <div>
+                    These problems are particularly frustrating for Typescript developers accustomed to a powerful type system.
+                    The good news is that there's nothing stopping us from applying this type system to notoriously complex,
+                    opaque tools like Webpack and Ethereum. Doing so will make your code more robust, testable, and
+                    comprehensible. TypeScript lets us encode and share developer knowledge, pin down easy-to-misuse interfaces,
+                    and generally add a layer of sanity between us and the tools we use.
+                  </div>
+                  <div>
+                    <font style="font-size: 13px"><br /></font>
+                  </div>
+                  <div>
+                    <span style="font-weight: bold"><font style="font-size: 18px">Context</font></span>
+                  </div>
+                  <div>
+                    7 months ago, a cryptocurrency project called <a href="http://rexmls.com/">REXmls</a> lost $6 million worth of
+                    Ethereum. The root cause was a single line of code.
+                  </div>
+                  <table style="border-collapse: collapse; min-width: 100%">
+                    <colgroup>
+                      <col style="width: 257px" />
+                      <col style="width: 257px" />
+                    </colgroup>
+                    <tbody>
+                      <tr>
+                        <td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px">
+                          <div>
+                            <div>
+                              <img
+                                src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png"
+                              /><br />
+                            </div>
+                          </div>
+                        </td>
+                        <td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px">
+                          <div>
+                            <div>
+                              <img
+                                src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/637dd0d9-acd9-47e8-9a38-889c45f39ebf.png"
+                              /><img
+                                src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/844b814e-fd9c-4902-930c-cd70ee738de0.png"
+                              /><img
+                                src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/7929bc73-e7cf-4d27-95e7-425a19a8acbe.png"
+                              /><img
+                                src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/19488497-a048-4e6f-b843-eb13f7cd5862.png"
+                              /><br />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div><a href="https://webpack.js.org/">Webpack</a> is another tool that is notoriously complex.</div>
+                  <div>
+                    <table style="border-collapse: collapse; min-width: 100%">
+                      <colgroup>
+                        <col style="width: 257px" />
+                        <col style="width: 257px" />
+                      </colgroup>
+                      <tbody>
+                        <tr>
+                          <td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px">
+                            <div>
+                              <div>
+                                <img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/ae58b7b1-b953-43b9-8067-fff964e6142c.png"
+                                /><img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/6fa0a3b3-e6e9-4669-b9fb-481a73a21f2a.png"
+                                /><img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/b1091843-3cb0-414c-bbee-8ee395043b65.png"
+                                /><img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/30f08d18-e110-4171-bddd-e6708a86307b.png"
+                                /><br />
+                              </div>
+                            </div>
+                          </td>
+                          <td style="border: 1px solid rgb(204, 204, 204); width: 257px; padding: 8px">
+                            <div>
+                              <div>
+                                <img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/728b07af-c8ba-4b61-8503-0460b56728b6.png"
+                                /><br />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div>
+                    <div>
+                      <span style="font-weight: bold"
+                        ><font style="font-size: 10px"><br /></font
+                      ></span>
+                    </div>
+                    <div><span style="font-size: 18px; font-weight: bold">Webpack config with Typescript</span></div>
+                  </div>
+                  <div>
+                    <div>
+                      For a deep dive into using Typescript with Webpack:
+                      <a href="http://medium.com/webpack/unambiguous-webpack-config-with-typescript-8519def2cac7"
+                        >Unambiguous Webpack config with Typescript </a
+                      >
+                    </div>
+                    <div><br /></div>
+                    <div>Challenges with Webpack</div>
+                    <ul>
+                      <li>May ways to represent the same thing</li>
+                      <li>Opaque or non-existent error messages</li>
+                      <li>Easy to accidentally use old syntax</li>
+                      <li>Lack of sensible defaults</li>
+                    </ul>
+                    <div><br /></div>
+                    <div>These are the obvious things that go wrong when you don't have a type system!</div>
+                    <div>
+                      <table style="border-collapse: collapse; min-width: 100%">
+                        <colgroup>
+                          <col style="width: 514px" />
+                        </colgroup>
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid rgb(204, 204, 204); width: 514px; padding: 8px">
+                              <div>
+                                <img
+                                  src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/6dd51271-c354-4d43-8722-2512fd4939e1.png"
+                                />Webpack's greatest strength— and its greatest weakness— is its flexibility.
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div>What does Typescript buy you?</div>
+                    </div>
+                    <div>
+                      <ul>
+                        <li>Discovery with types</li>
+                        <li>Documentation in your text editor</li>
+                        <li>Constraining the interface to what you need</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div>
+                    <font style="font-size: 12px"><br /></font>
+                  </div>
+                  <div>
+                    <span style="font-weight: bold"
+                      ><font style="font-size: 18px">Solidity smart contracts with Typescript</font></span
+                    >
+                  </div>
+                  <div>
+                    For a deep dive into using Typescript to interact with Solidity smart contracts:
+                    <a
+                      href="http://blog.hellobloom.io/how-typescript-makes-smart-contracts-easier-to-test-and-more-robust-c612a2d99537"
+                      >How TypeScript Makes Smart Contracts Easier to Test and More Robust</a
+                    >
+                  </div>
+                  <div><br /></div>
+                  <div>
+                    To follow along with the code examples: 
+                    <a href="http://github.com/hellobloom/typescript-solidity-example"
+                      >github.com/hellobloom/typescript-solidity-example</a
+                    >
+                  </div>
+                  <div><br /></div>
+                  <div>
+                    <i><font color="#797979">This is what negative six million dollars looks like:</font></i>
+                  </div>
+                  <div>
+                    <img
+                      src="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/b15b2301-4203-4126-9e94-fad473927ce8.png"
+                    />
+                  </div>
+                  <div>
+                    <div><br /></div>
+                  </div>
+                  <div><br /></div>
+                </div>
 
-                 
                 <ul class="tags">
-                  
                   <li>
                     <a href="../tag/programming.html">#programming</a>
                   </li>
-                  
                 </ul>
-                
 
                 <div class="keep-in-touch--wrapper">
                   <div class="keep-in-touch" onclick="window.open('https://twitter.com/devonzuegel')">
                     <span class="keep-in-touch--twitter">
-                      <svg viewBox="0 0 33 33" width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <svg
+                        viewBox="0 0 33 33"
+                        width="20"
+                        height="20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                      >
                         <g>
                           <path
                             d="M 32,6.076c-1.177,0.522-2.443,0.875-3.771,1.034c 1.355-0.813, 2.396-2.099, 2.887-3.632 c-1.269,0.752-2.674,1.299-4.169,1.593c-1.198-1.276-2.904-2.073-4.792-2.073c-3.626,0-6.565,2.939-6.565,6.565 c0,0.515, 0.058,1.016, 0.17,1.496c-5.456-0.274-10.294-2.888-13.532-6.86c-0.565,0.97-0.889,2.097-0.889,3.301 c0,2.278, 1.159,4.287, 2.921,5.465c-1.076-0.034-2.088-0.329-2.974-0.821c-0.001,0.027-0.001,0.055-0.001,0.083 c0,3.181, 2.263,5.834, 5.266,6.438c-0.551,0.15-1.131,0.23-1.73,0.23c-0.423,0-0.834-0.041-1.235-0.118 c 0.836,2.608, 3.26,4.506, 6.133,4.559c-2.247,1.761-5.078,2.81-8.154,2.81c-0.53,0-1.052-0.031-1.566-0.092 c 2.905,1.863, 6.356,2.95, 10.064,2.95c 12.076,0, 18.679-10.004, 18.679-18.68c0-0.285-0.006-0.568-0.019-0.849 C 30.007,8.548, 31.12,7.392, 32,6.076z"
@@ -1888,8 +1984,6 @@
                   </div>
                 </div>
               </div>
-
-               
             </div>
           </div>
 
@@ -1945,17 +2039,16 @@
           </ul>
         </div>
 
-         <!-- assets -->
-<script src="https://cdn-static.postach.io/libs/postachio/postachio.js"></script>
-<script>
-    var links_same_tab =  false ;
-</script>
+        <!-- assets -->
+        <script src="https://cdn-static.postach.io/libs/postachio/postachio.js"></script>
+        <script>
+          var links_same_tab = false
+        </script>
 
         <script src="https://cdn-static.postach.io/libs/bootstrap/js/bootstrap.min.js"></script>
       </body>
     </html>
 
-    
     <script>
       var _gaq = _gaq || []
       _gaq.push(['_setAccount', 'UA-65875472-2'])
@@ -1969,7 +2062,6 @@
         s.parentNode.insertBefore(ga, s)
       })()
     </script>
-    
 
     <script>
       // Evernote adds lots of unnecessary divs, so we want to remove those

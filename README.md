@@ -2,9 +2,10 @@
 
 ### Step 0. Publish a post from Evernote
 
-1. Move the post into the `📣 Postach.io` notebook
-2. Add the `published` tag
-3. Go to devon.postach.io to see if it updated to show the new post
+1. Make sure it has an OpenGraph image. You may not be able to add it later without serious pain.
+2. Move the post into the `📣 Postach.io` notebook
+3. Add the `published` tag
+4. Go to devon.postach.io to see if it updated to show the new post
 
 ### Step 1: Download the site from devon.postach.io
 
