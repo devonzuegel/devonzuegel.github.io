@@ -47,9 +47,11 @@ In Finder, `cmd + drag` all files from `post` into the top level of this repo. T
 
 ### Step 4: Rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page
 
-Use Find and Replace to replace `/post/` → `/` and `"post/` → `"./` in all files except this README. NOTE: This is only for REFERENCES within files, not the files themselves. For permalink reasons, we need to maintain the files in the `/post/` directory as well, even though we prefer for people to use the cleaner top-level URLs.
+Run the following command:
 
-Also delete `.html` from content of `index.html` page so that the URLs people see are prettier.
+```bash
+bin/clean-urls.sh
+```
 
 ### Step 5: Make sure the Twitter OpenGraph image is working
 
