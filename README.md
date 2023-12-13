@@ -51,11 +51,22 @@ Use Find and Replace to replace `/post/` → `/` and `"post/` → `"./` in all f
 
 Also delete `.html` from content of `index.html` page so that the URLs people see are prettier.
 
-### Step 5: Push `master` to GitHub
+### Step 5: Make sure the Twitter OpenGraph image is working
+
+Add a line that looks like this:
+
+```html
+<meta
+  name="twitter:image"
+  content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/07546fd7-8385-4660-a165-17a38189fe1f/74c68a92-cf6b-4511-bfa0-4e38bc793fe4.jpg"
+/>
+```
+
+### Step 6: Push `master` to GitHub
 
 It will take a few minutes for the changes to propagate to the live site. You can follow along to see if the job is complete at https://github.com/devonzuegel/devonzuegel.github.io/actions.
 
-### Step 6: Check that the OpenGraph image is working
+### Step 7: Check that the OpenGraph image is working
 
 If not, you can:
 1. Change the URL slug in the CMS
