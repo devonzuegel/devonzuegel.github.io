@@ -59,9 +59,8 @@ if [ ! -f "$index_file" ]; then
     exit 1
 fi
 
-# Use sed to remove '.html' from URLs in index.html
-# This targets '.html' preceded by 'href="' to avoid modifying other '.html' occurrences
-sed -i '' 's/href="\([^"]*\)\.html"/href="\1"/g' "$index_file"
+# Find all HTML files in the directory and apply the sed command to remove '.html' from URLs
+find "$directory" -type f -name "*.html" -exec sed -i '' 's/href="\([^"]*\)\.html"/href="\1"/g' {} +
 
 echo "Modifications complete!"
 

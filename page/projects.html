@@ -45,7 +45,7 @@
 <meta name="twitter:domain" content="https://devon.postach.io">
 
 
-<link rel="canonical" href="projects.html" />
+<link rel="canonical" href="projects" />
 
 
 <!-- RSS feed -->
@@ -105,7 +105,7 @@
 <meta name="twitter:domain" content="https://devon.postach.io">
 
 
-<link rel="canonical" href="projects.html" />
+<link rel="canonical" href="projects" />
 
 
 <!-- RSS feed -->
@@ -1073,22 +1073,22 @@
               </div>
               <ul class="sidebar--nav-links">
                 <div class="narrow-only">
-                  <a href="about-me.html">About me</a>
+                  <a href="about-me">About me</a>
                   &nbsp;·&nbsp;
-                  <a href="contact.html">Contact</a>
+                  <a href="contact">Contact</a>
                   &nbsp;·&nbsp;
-                  <a href="projects.html">Projects</a>
+                  <a href="projects">Projects</a>
                   &nbsp;·&nbsp;
-                  <a href="tapas.html">Tapas</a>
+                  <a href="tapas">Tapas</a>
                 </div>
 
                 <div class="wide-only">
-                  <li><a href="about-me.html">About me</a></li>
-                  <li><a href="contact.html">Contact</a></li>
+                  <li><a href="about-me">About me</a></li>
+                  <li><a href="contact">Contact</a></li>
                   <li>
-                    <a href="projects.html">Projects</a>
+                    <a href="projects">Projects</a>
                   </li>
-                  <li><a href="tapas.html">Tapas</a></li>
+                  <li><a href="tapas">Tapas</a></li>
                 </div>
               </ul>
 
@@ -1692,7 +1692,7 @@
                 <div class="CTAs wide-only">
                   <li>
                     <b
-                      ><a href="../tag/order-without-design.html"><i>Order Without Design</i></a></b
+                      ><a href="../tag/order-without-design"><i>Order Without Design</i></a></b
                     >, my podcast about cities
                   </li>
                   <li>
@@ -1716,23 +1716,23 @@
                   </li>
                   <li>
                     Trains &amp; trees &amp; human-scale streets:
-                    <b><a href="../tag/cities.html">#cities</a></b>
+                    <b><a href="../tag/cities">#cities</a></b>
                   </li>
                   <li>
                     How we relate to others &amp; ourselves:
-                    <b><a href="../tag/interpersonal.html"> #interpersonal </a></b>
+                    <b><a href="../tag/interpersonal"> #interpersonal </a></b>
                   </li>
                   <li>
                     Bicycles for the mind:
-                    <b><a href="../tag/tools-for-thought.html"> #tools-for-thought </a></b>
+                    <b><a href="../tag/tools-for-thought"> #tools-for-thought </a></b>
                   </li>
                   <li>
                     Developers! Developers! Developers!
-                    <b><a href="../tag/programming.html"> #programming </a></b>
+                    <b><a href="../tag/programming"> #programming </a></b>
                   </li>
                   <li>
                     Let's go on an adventure!
-                    <b><a href="../tag/travel.html"> #travel </a></b>
+                    <b><a href="../tag/travel"> #travel </a></b>
                   </li>
                 </div>
               </ul>
@@ -1788,11 +1788,11 @@
 <div>You can upload your own data and learn more about Isostamp at <a href="https://devonzuegel.github.io/pages/Isostamp.org">Isostamp.org</a>, and you can find the code for the web app at <a href="https://github.com/devonzuegel/Isostamp-web-v2">github.com/devonzuegel/Isostamp-web-v2</a>.</div>
 <div>We will be open-sourcing the C++ code for the algorithm soon.</div>
 <div><br /></div>
-<div><span style="font-weight: bold;"><div class="heading"></span><a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html" style="font-weight: bold;">Mr. Schelling's Neighborhood</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">July 2016</div></div><div>Ever since reading about Schelling's <a href="http://isites.harvard.edu/fs/docs/icb.topic185351.files/shelling1.pdf">"general theory of tipping"</a> in <a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Seeing Around Corners</a>, I've wanted to replicate some of his models and play around with agent-based modeling as a technique.</div>
+<div><span style="font-weight: bold;"><div class="heading"></span><a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood" style="font-weight: bold;">Mr. Schelling's Neighborhood</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">July 2016</div></div><div>Ever since reading about Schelling's <a href="http://isites.harvard.edu/fs/docs/icb.topic185351.files/shelling1.pdf">"general theory of tipping"</a> in <a href="http://www.theatlantic.com/magazine/archive/2002/04/seeing-around-corners/302471/">Seeing Around Corners</a>, I've wanted to replicate some of his models and play around with agent-based modeling as a technique.</div>
 <div>Schelling's model of segregation found that if individuals have even just a slight preference to be surrounded by people of their own group or race, the emergent effect across a population can be total segregation, even if that is not the intention of any specific agent. This effect can be seen with a simple ABM, which I've implemented below.</div>
 <div>You are looking at a birds-eye view of a simulated neighborhood containing two groups, blue and red with a handful of blank spaces. To start, the blues and reds are randomly distributed. Then, frame after frame, the agents are allowed to move. The agent is happy with its position if its nearest neighbors include at least a certain number of its own color; otherwise, they move to a random open space on the map.</div>
 <div>The default number of same-colored neighbors required to make an agent satisfied with its location is the threshold, and the percent of "empty lost" on the map is the percent open. You can adjust these with the controls in the top right corner of the model.</div>
-<div>You can find the ABM code on <a href="https://github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">GitHub</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.html">here</a>.</div>
+<div>You can find the ABM code on <a href="https://github.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood.coffee">GitHub</a>, and you can see a larger version of the model <a href="https://rawgit.com/devonzuegel/affitto/master/models/mr-schellings-neighborhood/mr-schellings-neighborhood">here</a>.</div>
 <div><br /></div>
 <div><span style="font-weight: bold;"><div class="heading"></span><a href="https://github.com/devonzuegel/tiddly-lisp" style="font-weight: bold;">TiddlyLisp</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">January 2016</div></div><div>To learn the fundamentals of Lisp, I built a little interpreter based on Michael Nielsen's fantastic blog post <a href="http://www.michaelnielsen.org/ddi/lisp-as-the-maxwells-equations-of-software/">Lisp as the Maxwell's Equations of Software</a>. I included extensions to resolve some of the challenge problems he mentioned at the end of the post, too.</div>
 <div>You can find the code for the interpreter on <a href="https://github.com/devonzuegel/tiddly-lisp">GitHub</a>.</div>
@@ -1807,7 +1807,7 @@
 <div><span style="font-weight: bold;"><div class="heading"></span><a href="https://github.com/devonzuegel/affitto" style="font-weight: bold;">Affitto</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">November 2015</div></div><div>San Francisco and the greater Bay Area have been struggling with housing shortages and decisions about how to best serve the community with policies to deal with this situation. At a micro level, we have a fairly good understanding of how individuals make economic decisions such as where tenants choose to live and how much rent landlords choose to charge. However, we lack tools to model the complex interactions of millions of individuals simultaneously making decisions and the emergent phenomena that result from these interactions.</div>
 <div>John Luttig and I built an Agent Based Model (ABM) to simulate emergent behavior within housing markets and explore the impact of policies such as rent control and zoning regulations. With this project, we aim to provide a tool for policymakers and stakeholders to better understand these interactions that in aggregate comprise the housing market. Understanding large-scale systems requires understanding how the results of individual actions can be more than the sum of its parts. We used ABM to simulate the actions and interactions of tenants and landlords.</div>
 <div>Here is a small version of one of our models. You may have to close the controls (by clicking the bottom of the control panel) in order to see the full simulation.</div>
-<div>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="https://github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model.html">here</a>.</div>
+<div>You can find the ABM code, housing data with which we initialized the model, and further information on the analysis we performed on the resulting network at <a href="https://github.com/devonzuegel/affitto">github.com/devonzuegel/affitto</a>. You can see a larger version of the model <a href="http://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/affitto/blob/master/models/model2/model">here</a>.</div>
 <div><br /></div>
 <div><span style="font-weight: bold;"><div class="heading"></span><a href="https://myevernote.herokuapp.com/" style="font-weight: bold;">My Evernote</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">July 2015</div></div><div>I love Evernote. On any given day I usually create about 15 notes, ranging from highlighted blog posts and articles to trip itineraries and to-do lists. The bulk of these notes are clippings from around the web that I've read and annotated with Evernote's <a href="https://evernote.com/clearly/">Clearly extension</a>.</div>
 <div>Evernote has lots of great sharing capabilities, including joint notebooks, public links, and social sharing. However, I've always wanted to publish a sort of feed that shares a select set from my annotated notes and displays what my friends have read. What I want is a bit like Medium, but where the posts aren't necessarily from that platform, simply clipped with Evernote into a notebook.</div>
@@ -1823,8 +1823,8 @@
 <div>You can find the open source code for the project on <a href="https://github.com/devonzuegel/zen-writer">GitHub</a> and the app at <a href="https://zenwriter.herokuapp.com/">zenwriter.herokuapp.com</a>.</div>
 <div>P.S. As a more robust solution to this problem, I now use the <a href="http://www.96problems.com/rough-draft/">First Draft</a> Mac app from <a href="http://www.96problems.com/">96 Problems</a>. It offers all the features I built, planned to build, or never even realized I needed in ZenWriter. Ben and the whole team are super responsive and helpful too, so in short I highly recommend the app if you're looking for a tool to solve this problem!</div>
 <div><br /></div>
-<div><span style="font-weight: bold;"><div class="heading"></span><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html" style="font-weight: bold;">OrigamiJS</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">March 2015</div></div><div>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <h*> and <p> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they're using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</div>
-<div>You can find the open source code for the project on <a href="https://github.com/devonzuegel/origamijs">GitHub</a> and example usage <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee.html">here</a>.</div>
+<div><span style="font-weight: bold;"><div class="heading"></span><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee" style="font-weight: bold;">OrigamiJS</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">March 2015</div></div><div>Over spring break I decided I wanted to play around with coffeescript, so I built a little script to hierarchically fold elements on a webpage. I originally built it so I could fold long blog posts and class notes I had written in Markdown. The idea was inspired by the great header folding in <a href="http://marked2app.com/">Marked2</a>, my favorite Markdown previewer, so by default Origamijs folds traditional <h*> and <p> elements as defined by Markdown. Origamijs also allows clients to define their own hierarchy, in the case that they're using unique tags or prefer to ignore certain levels of the traditional Markdown tag hierarchy.</div>
+<div>You can find the open source code for the project on <a href="https://github.com/devonzuegel/origamijs">GitHub</a> and example usage <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/devonzuegel/origamijs/master/example-coffee">here</a>.</div>
 <div><br /></div>
 <div><span style="font-weight: bold;"><div class="heading"></span><a href="https://github.com/devonzuegel/fiesta" style="font-weight: bold;">Fiesta: Machine Translator</a><span style="font-weight: bold;"></div></span></div><div><div class="muted">March 2015</div></div><div>Zoe Robert, John Luttig, and I built a Spanish to English machine translator, which we called Fiesta. It is based on the IBM Model 1 algorithm and also implements several Spanish-specific strategies for improving results.</div>
 <div>IBM Model 1 is an expectation-maximization statistical alignment algorithm. Given known pairings of Spanish and English sentences, it generates a matrix of probabilities whose rows correspond to the Spanish vocabulary and columns correspond to the English vocabulary. The value at any given cell in the matrix represents the probability that those two words have co-occurred within translations of each other. This table is then used to estimate a model for future translations.</div>
@@ -1850,7 +1850,7 @@
 <div><span style="font-weight: bold;"><div class="heading">Paper Trail</div></span></div><div><div class="muted">March 2014 - present</div></div><div>Some of the greatest impact individuals can have on politics is driven by daily purchasing decisions. Any time an individual patronizes a corporation, (s)he is fueling the company's lobbying and donorship capabilities and is indirectly supporting their political causes. Unfortunately, the impact of corporate political contributions is largely opaque to the general public, and the research about corporations' political activity is a tedious, complex task.</div>
 <div>In early 2014, I set out to solve this problem with a project called Paper Trail. The web app provides users access to political profiles of companies and manufacturers. Visualizations and statistics about companies political contributions and lobbying behavior help consumers make informed choices about where their money is going. In turn, consumers' more thoughtful choices empower those corporations that represent their values.</div>
 <div>Paper Trail was the first programming project that I pursued outside of class and has evolved significantly since I first implemented it in early 2014. It began as a simple HTML/Javascript app into which users could query the names of companies and learn about their political contributions.</div>
-<div>You can find this initial prototype <a href="https://stanford.edu/~devonz/paper_trail/about.html">here</a> and the open source code base on <a href="https://github.com/devonzuegel/WWW/tree/master/paper_trail">Github</a>.</div>
+<div>You can find this initial prototype <a href="https://stanford.edu/~devonz/paper_trail/about">here</a> and the open source code base on <a href="https://github.com/devonzuegel/WWW/tree/master/paper_trail">Github</a>.</div>
 <div>Last month, I decided to completely refactor and improve upon Paper Trail with the help of a few friends. We realized that it was unlikely that users would consistently use the app alongside real-life spending, because it would require the tedious process of pulling their phone out of their pocket, typing in the company name, and analyzing the results. We had to find a way to integrate Paper Trail more seamlessly into the users' existing workflow.</div>
 <div>We decided that a browser extension would be far more effective than the original idea of a standalone website. Our extension lies on top of Amazon and automatically alerts users of the political activities of the manufacturers of the items in the user's cart. Beyond solving the problem of relying on users to take action, our new strategy also narrowed our focus to a single site – Amazon – and its users. This had the benefit of leveraging our own experience as Amazon customers, using Amazon's fantastic API, and generally focusing our energy on specific goals rather than broad ones.</div>
 <div>The Paper Trail extension is currently under development. You can find an rough interactive prototype on <a href="https://invis.io/SZ1M1F6AJ">Invision</a> and the open source code for the actual extension on <a href="https://github.com/devonzuegel/papertrail-extension">Github</a>.</div>
@@ -1877,7 +1877,7 @@
             <div class="CTAs">
               <li>
                 <b
-                  ><a href="../tag/podcast.html"><i>Order Without Design</i></a></b
+                  ><a href="../tag/podcast"><i>Order Without Design</i></a></b
                 >, my podcast about cities
               </li>
               <li>
@@ -1901,23 +1901,23 @@
               </li>
               <li>
                 Trains &amp; trees &amp; human-scale streets:
-                <b><a href="../tag/cities.html">#cities</a></b>
+                <b><a href="../tag/cities">#cities</a></b>
               </li>
               <li>
                 How we relate to others &amp; ourselves:
-                <b><a href="../tag/interpersonal.html">#interpersonal</a></b>
+                <b><a href="../tag/interpersonal">#interpersonal</a></b>
               </li>
               <li>
                 Bicycles for the mind:
-                <b><a href="../tag/tools-for-thought.html">#tools-for-thought</a></b>
+                <b><a href="../tag/tools-for-thought">#tools-for-thought</a></b>
               </li>
               <li>
                 Developers! Developers! Developers!
-                <b><a href="../tag/programming.html">#programming</a></b>
+                <b><a href="../tag/programming">#programming</a></b>
               </li>
               <li>
                 Let's go on an adventure!
-                <b><a href="../tag/travel.html">#travel</a></b>
+                <b><a href="../tag/travel">#travel</a></b>
               </li>
             </div>
           </ul>
