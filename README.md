@@ -41,18 +41,22 @@ In Finder, `cmd + drag` the downloaded files into this repo. Finder will ask:
 
 Check "Apply to all" and then click "Replace".
 
-### Step 3: Copy all posts into top level
+### Step 3: Copy all posts AND pages into top level
 
-In Finder, `cmd + drag` all files from `post` into the top level of this repo. This means that there will be 2 copies of each article, one in the top level and one in `post/`. Practically, this will result in two URLs for each article, such as:
+In Finder, `cmd + drag` all files from `post/` & `page/` into the top level of this repo. This means that there will be 2 copies of each article & page, one in the top level and one in `post/`. Practically, this will result in two URLs for each article & page, such as:
 - https://devonzuegel.com/post/article-name
 - https://devonzuegel.com/article-name
+
+And:
+- https://devonzuegel.com/page/about-me
+- https://devonzuegel.com/about-me
 
 ### Step 4: Rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page
 
 Run the following command:
 
 ```bash
-bin/clean-urls.sh
+bin/clean-urls.sh .
 ```
 
 ### Step 5: Make sure the Twitter OpenGraph image is working
