@@ -9,7 +9,7 @@
 
 ### Step 1: Download the site from devon.postach.io
 
-```
+```sh
 cd ~/dev/devon.postach.io/
 
 wget \
@@ -36,6 +36,10 @@ wget \
 
 ### Step 2: Copy the resulting files into this repo
 
+```sh
+open ~/dev/devonzuegel.github.io  # For opening this repo in Finder
+```
+
 In Finder, `cmd + drag` the downloaded files into this repo. Finder will ask:
 > An item named “1.html” already exists in this location. Do you want to replace it with the one you’re copying?
 
@@ -56,6 +60,7 @@ And:
 Run the following command:
 
 ```bash
+cd ~/dev/devonzuegel.github.io
 bin/clean-urls.sh .
 ```
 
