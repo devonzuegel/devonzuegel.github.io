@@ -10,7 +10,7 @@
 ### Step 1: Download the site from devon.postach.io
 
 ```sh
-cd ~/dev/devon.postach.io/
+cd ~/dev/devonzuegel.github.io
 
 wget \
   --recursive \
@@ -21,6 +21,8 @@ wget \
   --restrict-file-names=windows \
   devon.postach.io
 ```
+
+This will put all the files in a directory inside of `devonzuegel.github.io` called `devon.postach.io`.
 
 <details>
   <summary>Flags explained:</summary>
@@ -40,7 +42,7 @@ wget \
 open ~/dev/devonzuegel.github.io  # For opening this repo in Finder
 ```
 
-In Finder, `cmd + drag` the downloaded files into this repo. Finder will ask:
+In Finder, `cmd + drag` the downloaded files out of `devonzuegel.github.io/devon.postach.io` into `devonzuegel.github.io/`. Finder will ask:
 > An item named “1.html” already exists in this location. Do you want to replace it with the one you’re copying?
 
 Check "Apply to all" and then click "Replace".
