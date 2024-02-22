@@ -1,44 +1,71 @@
-<!DOCTYPE html>
+<meta
+<meta<!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
   <head>
-    <meta charset="utf-8" />
+    
+
+<meta charset="utf-8" />
     <title> Webpack and Ethereum smart contracts with Typescript | devonzuegel.com </title>
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+
 <meta name="mobile-web-app-capable" content="yes">
+
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+
+
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+
 
 <meta name="author" content="Devon Zuegel">
 
 
   
-  <meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+  
+
+<meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
   
 
 
 <!-- OpenGraph tags -->
+
+
 <meta property="og:site_name" content="devonzuegel.com">
 
 
   
-    <meta property="article:published_time" content="2018-03-12 16:50:42">
-
-    
-      <meta property="article:author" content="Devon Zuegel">
     
 
-    
-      
-        <meta property="article:tag" content="Programming">
-      
-    
+<meta property="article:published_time" content="2018-03-12 16:50:42">
 
     
       
+
+<meta property="article:author" content="Devon Zuegel">
+    
+
+    
+      
         
-          <meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+
+<meta property="article:tag" content="Programming">
+      
+    
+
+    
+      
+        
+          
+
+<meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
         
       
         
@@ -65,24 +92,102 @@
       
     
 
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
-    <meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript">
-    <meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+    
+
+<meta property="twitter:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+
+<meta property="twitter:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+
+<meta property="og:type" content="article">
+    
+
+<meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
+    
+
+<meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript">
+    
+
+<meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
 
   
 
 
 <!-- Twitter Cards -->
+
+
 <meta name="twitter:card" content="summary">
 
+
+
 <meta name="twitter:site" content="@devonzuegel">
+
+
 <meta name="twitter:creator" content="@devonzuegel">
 
 
 
+
+
 <meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript">
+
+
 <meta name="twitter:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......">
+
+
 
 
 <meta name="twitter:domain" content="https://devon.postach.io">
@@ -104,44 +209,70 @@
     <!DOCTYPE html>
     <html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
       <head>
-        <meta charset="utf-8" />
+        
+
+<meta charset="utf-8" />
         <title> Webpack and Ethereum smart contracts with Typescript | devonzuegel.com </title>
 
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+
 <meta name="mobile-web-app-capable" content="yes">
+
+
 <meta name="apple-mobile-web-app-capable" content="yes">
+
+
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+
 
 <meta name="author" content="Devon Zuegel">
 
 
   
-  <meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+  
+
+<meta name="description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
   
 
 
 <!-- OpenGraph tags -->
+
+
 <meta property="og:site_name" content="devonzuegel.com">
 
 
   
-    <meta property="article:published_time" content="2018-03-12 16:50:42">
-
-    
-      <meta property="article:author" content="Devon Zuegel">
     
 
-    
-      
-        <meta property="article:tag" content="Programming">
-      
-    
+<meta property="article:published_time" content="2018-03-12 16:50:42">
 
     
       
+
+<meta property="article:author" content="Devon Zuegel">
+    
+
+    
+      
         
-          <meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+
+<meta property="article:tag" content="Programming">
+      
+    
+
+    
+      
+        
+          
+
+<meta property="og:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
         
       
         
@@ -168,24 +299,102 @@
       
     
 
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
-    <meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript">
-    <meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
+    
+
+<meta property="twitter:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+
+<meta property="twitter:image" content="https://cdn-images.postach.io/0bd25fcc-8ab1-40fe-8eef-bcafaae885c1/9cc23fa2-ec3c-424e-97e5-296cb636311f/4d977097-619b-460d-a34d-d4595db489ee.png">
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+
+    
+
+<meta property="og:type" content="article">
+    
+
+<meta property="og:title" content="Webpack and Ethereum smart contracts with Typescript">
+    
+
+<meta property="og:url" content="https://devon.postach.io/webpack-and-ethereum-smart-contracts-with-typescript">
+    
+
+<meta property="og:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only...">
 
   
 
 
 <!-- Twitter Cards -->
+
+
 <meta name="twitter:card" content="summary">
 
+
+
 <meta name="twitter:site" content="@devonzuegel">
+
+
 <meta name="twitter:creator" content="@devonzuegel">
 
 
 
+
+
 <meta name="twitter:title" content="Webpack and Ethereum smart contracts with Typescript">
+
+
 <meta name="twitter:description" content="I originally gave this talk at Typescript Conference 2018. You can find the slides here. TypeScript is a godsend for Webpack and Ethereum developers. In the nascent world of smart contracts, developer-friendly tooling is almost non-existent, the only......">
+
+
 
 
 <meta name="twitter:domain" content="https://devon.postach.io">
@@ -2032,4 +2241,3 @@
       }
     </script>
   </head>
-</html>
