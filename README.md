@@ -55,9 +55,10 @@ And:
 - https://devonzuegel.com/page/about-me
 - https://devonzuegel.com/about-me
 
-### Step 4: Rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page
+### Step 4: Clean URLs & add Twitter OpenGraph `<meta>` tags
 
-Run the following command:
+
+Run the following command to rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page:
 
 ```bash
 cd ~/dev/devonzuegel.github.io
