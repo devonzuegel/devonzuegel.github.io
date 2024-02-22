@@ -58,11 +58,12 @@ And:
 ### Step 4: Clean URLs & add Twitter OpenGraph `<meta>` tags
 
 
-Run the following command to rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page:
+Run the following command to:
+- rename references from `/post/article.html` to `/article.html` and remove the `.html` extension from index page
+- add Twitter OpenGraph `<meta>` tags to each page that has an `og:image` tag
 
 ```bash
-cd ~/dev/devonzuegel.github.io
-bin/clean-urls.sh .
+bin/process-html-files.sh .
 ```
 
 ### Step 5: Make sure the Twitter OpenGraph image is working
