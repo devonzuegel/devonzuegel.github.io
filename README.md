@@ -70,7 +70,7 @@ bin/process-html-files.sh .
 
 ### Step 5: Make sure the Twitter OpenGraph image is working
 
-Add a line that looks like this:
+Make sure that the previous step added a line that looks like this (with a different image of course):
 
 ```html
 <meta
