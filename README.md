@@ -1,5 +1,25 @@
 # How to update this site
 
+Here's the combined script for updating the site:
+
+```sh
+cd ~/dev/devonzuegel.github.io
+
+wget \
+  --recursive \
+  --no-clobber \
+  --page-requisites \
+  --html-extension \
+  --convert-links \
+  --restrict-file-names=windows \
+  devon.postach.io
+
+cp -r ./devon.postach.io/* ./devon.postach.io/post/* ./devon.postach.io/page/* ./
+trash ./devon.postach.io
+
+bin/process-html-files.sh .
+```
+
 ### Step 0. Publish a post from Evernote
 
 1. Make sure it has an OpenGraph image. You may not be able to add it later without serious pain.
@@ -90,7 +110,7 @@ Make sure that the previous step added a line that looks like this (with a diffe
 
 It will take a few minutes for the changes to propagate to the live site. You can follow along to see if the job is complete at https://github.com/devonzuegel/devonzuegel.github.io/actions.
 
-### Step 7: Check that the OpenGraph image is working
+### Step 6: Check that the OpenGraph image is working
 
 If not, you can:
 1. Change the URL slug in the CMS
