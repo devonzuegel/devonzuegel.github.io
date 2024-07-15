@@ -38,7 +38,14 @@ This will put all the files in a directory inside of `devonzuegel.github.io` cal
 
 ### Step 2: Copy the resulting files into this repo
 
+Copy the files into this repo, then delete the `devon.postach.io` directory:
+
 ```sh
+cp -r ./devon.postach.io/* ./devon.postach.io/post/* ./devon.postach.io/page/* ./
+trash ./devon.postach.io
+```
+
+<!-- ```sh
 open ~/dev/devonzuegel.github.io  # For opening this repo in Finder
 ```
 
@@ -55,9 +62,9 @@ In Finder, `cmd + drag` all files from `post/` & `page/` into the top level of t
 
 And:
 - https://devonzuegel.com/page/about-me
-- https://devonzuegel.com/about-me
+- https://devonzuegel.com/about-me -->
 
-### Step 4: Clean URLs & add Twitter OpenGraph `<meta>` tags
+### Step 3: Clean URLs & add Twitter OpenGraph `<meta>` tags
 
 
 Run the following command to:
@@ -68,7 +75,7 @@ Run the following command to:
 bin/process-html-files.sh .
 ```
 
-### Step 5: Make sure the Twitter OpenGraph image is working
+### Step 4: Make sure the Twitter OpenGraph image is working
 
 Make sure that the previous step added a line that looks like this (with a different image of course):
 
@@ -79,7 +86,7 @@ Make sure that the previous step added a line that looks like this (with a diffe
 />
 ```
 
-### Step 6: Push `master` to GitHub
+### Step 5: Push `master` to GitHub
 
 It will take a few minutes for the changes to propagate to the live site. You can follow along to see if the job is complete at https://github.com/devonzuegel/devonzuegel.github.io/actions.
 
