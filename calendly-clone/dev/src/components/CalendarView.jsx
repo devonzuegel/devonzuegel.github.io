@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProxySelector from './ProxySelector';
 import CalendarOutput from './CalendarOutput';
 import { loadCalendarData, MOCK_CALENDAR_DATA } from '../utils/calendarService';
@@ -10,6 +10,7 @@ function CalendarView() {
 
   const handleProxyChange = (proxy) => {
     setSelectedProxy(proxy);
+    handleLoadCalendar(); // Reload calendar when proxy changes
   };
 
   const handleLoadCalendar = async () => {
@@ -27,11 +28,16 @@ function CalendarView() {
     }
   };
 
+  // Load calendar data immediately when component mounts
+  useEffect(() => {
+    handleLoadCalendar();
+  }, []);
+
   return (
     <div>
       <div className="calendar-controls">
         <button onClick={handleLoadCalendar} disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Load Calendar'}
+          {isLoading ? 'Loading...' : 'Refresh Calendar'}
         </button>
         <ProxySelector selectedProxy={selectedProxy} onChange={handleProxyChange} />
       </div>
