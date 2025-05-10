@@ -27,17 +27,27 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     });
   };
 
-  // Format time as "8:00 AM"
+  // Format time as "8am"
   const formatTime = (hour, minute) => {
     const time = new Date();
     time.setHours(hour, minute);
-    
+
+    // Format without minutes if they're zero
+    if (minute === 0) {
+      return time.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        hour12: true,
+        timeZone: timezone || undefined
+      }).replace(':00', '').toLowerCase().replace(' ', '');
+    }
+
+    // Include minutes otherwise
     return time.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
       timeZone: timezone || undefined
-    });
+    }).toLowerCase().replace(' ', '');
   };
 
   // Convert a date from ISO string to a Date object preserving the exact same point in time
@@ -49,15 +59,22 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   // Format a date for display in the target timezone
   const formatTimeInTimezone = (date, options = {}) => {
     if (!date) return "";
-    
+
     const defaultOptions = {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
       timeZone: timezone || undefined
     };
-    
-    return date.toLocaleTimeString('en-US', { ...defaultOptions, ...options });
+
+    const formattedTime = date.toLocaleTimeString('en-US', { ...defaultOptions, ...options });
+
+    // Format as "11am" if no minutes, or "11:30am" if there are minutes
+    if (formattedTime.includes(':00')) {
+      return formattedTime.replace(':00', '').toLowerCase().replace(' ', '');
+    } else {
+      return formattedTime.toLowerCase().replace(' ', '');
+    }
   };
 
   // Generate a week's worth of days starting from a given date
@@ -201,11 +218,31 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const formattedStart = formatTimeInTimezone(eventStart);
     const formattedEnd = formatTimeInTimezone(eventEnd);
 
+    // Format as "11am - 12pm" or "10-11:30am" when both are am/pm
+    let displayTime;
+
+    // Check if both times are in the same am/pm period
+    const startAmPm = formattedStart.match(/[ap]m/)[0];
+    const endAmPm = formattedEnd.match(/[ap]m/)[0];
+
+    if (startAmPm === endAmPm) {
+      // Both times are AM or both are PM, use compact format
+      // Extract just the hour and minute parts
+      const startHour = formattedStart.replace(/[ap]m/, '');
+      const endHour = formattedEnd.replace(/[ap]m/, '');
+
+      // Use shared am/pm suffix
+      displayTime = `${startHour}-${endHour}${startAmPm}`;
+    } else {
+      // Different periods (one am, one pm), use standard format
+      displayTime = `${formattedStart} - ${formattedEnd}`;
+    }
+
     return {
       ...matchingEvent,
       isFirstSlot,
       durationSlots,
-      displayTime: `${formattedStart} - ${formattedEnd}`
+      displayTime
     };
   };
 
