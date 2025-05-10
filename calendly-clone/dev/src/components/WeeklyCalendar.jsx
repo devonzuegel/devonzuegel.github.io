@@ -14,37 +14,62 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     return new Date(isoString);
   };
 
-  // Calculate earliest available time
-  const findEarliestAvailableHour = useCallback(() => {
-    if (!events || !Array.isArray(events) || events.length === 0) return 8; // Default to 8 AM
+  // Calculate earliest start time and latest end time
+  const findAvailableTimeRange = useCallback(() => {
+    if (!events || !Array.isArray(events) || events.length === 0) {
+      return { startHour: 8, endHour: 18 }; // Default 8 AM to 6 PM
+    }
 
-    // Find the earliest event that contains "AVAILABLE" in the summary
-    let earliestHour = 24; // Initialize to end of day
-
+    // Find the earliest and latest events that contain "AVAILABLE" in the summary
+    let earliestStartHour = 24; // Initialize to end of day
+    let latestEndHour = 0;  // Initialize to start of day
+    
     events.forEach(event => {
       if (event.summary.includes("AVAILABLE")) {
+        // Check start time
         const eventStart = parseISODate(event.start);
-        const eventHour = eventStart.getHours();
-
+        const startHour = eventStart.getHours();
+        
         // Update if this event starts earlier than the current earliest
-        if (eventHour < earliestHour) {
-          earliestHour = eventHour;
+        if (startHour < earliestStartHour) {
+          earliestStartHour = startHour;
+        }
+        
+        // Check end time - we want the exact ending hour and minute
+        const eventEnd = parseISODate(event.end);
+        
+        // Get the hour and fractional part representing minutes (e.g., 6:30 PM would be 18.5)
+        const endHourExact = eventEnd.getHours() + (eventEnd.getMinutes() / 60);
+        
+        // Update if this event ends later than the current latest
+        if (endHourExact > latestEndHour) {
+          latestEndHour = endHourExact;
         }
       }
     });
 
-    // If no available events found, default to 8 AM
-    if (earliestHour === 24) {
-      return 8;
+    // If no available events found, default to 8 AM - 6 PM
+    if (earliestStartHour === 24 || latestEndHour === 0) {
+      return { startHour: 8, endHour: 18 };
     }
 
-    // Return 1 hour before the earliest available time (minimum 7 AM)
-    return Math.max(7, earliestHour - 1);
+    // Convert the exact end hour back to a whole hour for display
+    // Ceiling to the next hour if there are any minutes
+    const latestEndWholeHour = Math.ceil(latestEndHour);
+    
+    // Return 1 hour before earliest start and 1 hour after latest end (with reasonable limits)
+    return {
+      startHour: Math.max(7, earliestStartHour - 1),  // Minimum start at 7 AM
+      endHour: Math.min(22, latestEndWholeHour + 1)   // Maximum end at 10 PM, 1 hour after latest
+    };
   }, [events]);
 
+  // Get time range
+  const timeRange = findAvailableTimeRange();
+  
   // Time slot settings
-  const dayStartHour = findEarliestAvailableHour(); // Show 1 hour before earliest available time
-  const dayEndHour = 22; // 10 PM
+  const dayStartHour = timeRange.startHour; // Show 1 hour before earliest available time
+  const dayEndHour = timeRange.endHour; // Show 1 hour after latest available time
   const slotDuration = 30; // 30 minutes per slot
   const daysToShow = 7; // One week
   const initialWeeksToLoad = 4; // Load 4 weeks initially
