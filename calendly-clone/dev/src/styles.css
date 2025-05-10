@@ -602,7 +602,7 @@ th.time-column {
 /* Ensure perfect row alignment */
 .time-column-table tr,
 .calendar-table tr {
-  height: 24px; /* Fixed height for all rows */
+  height: 28px; /* Fixed height for all rows - slightly increased to accommodate fewer rows */
 }
 
 /* Force all cells to exact same rendering */
@@ -611,9 +611,9 @@ th.time-column {
   box-sizing: border-box;
   overflow: visible;
   line-height: 16px;
-  height: 24px !important; /* Force consistent height */
-  min-height: 24px !important;
-  max-height: 24px !important;
+  height: 28px !important; /* Force consistent height - slightly increased */
+  min-height: 28px !important;
+  max-height: 28px !important;
 }
 
 /* Add synchronized alternating row striping */

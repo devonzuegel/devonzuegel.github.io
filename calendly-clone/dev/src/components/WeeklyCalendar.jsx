@@ -8,8 +8,42 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   const [isLoading, setIsLoading] = useState(false);
   const todayColumnRef = useRef(null);
 
+  // Convert a date from ISO string to a Date object preserving the exact same point in time
+  // This function doesn't actually change the time, just ensures we have a proper Date object
+  const parseISODate = (isoString) => {
+    return new Date(isoString);
+  };
+
+  // Calculate earliest available time
+  const findEarliestAvailableHour = useCallback(() => {
+    if (!events || !Array.isArray(events) || events.length === 0) return 8; // Default to 8 AM
+
+    // Find the earliest event that contains "AVAILABLE" in the summary
+    let earliestHour = 24; // Initialize to end of day
+
+    events.forEach(event => {
+      if (event.summary.includes("AVAILABLE")) {
+        const eventStart = parseISODate(event.start);
+        const eventHour = eventStart.getHours();
+
+        // Update if this event starts earlier than the current earliest
+        if (eventHour < earliestHour) {
+          earliestHour = eventHour;
+        }
+      }
+    });
+
+    // If no available events found, default to 8 AM
+    if (earliestHour === 24) {
+      return 8;
+    }
+
+    // Return 1 hour before the earliest available time (minimum 7 AM)
+    return Math.max(7, earliestHour - 1);
+  }, [events]);
+
   // Time slot settings
-  const dayStartHour = 8; // 8 AM
+  const dayStartHour = findEarliestAvailableHour(); // Show 1 hour before earliest available time
   const dayEndHour = 22; // 10 PM
   const slotDuration = 30; // 30 minutes per slot
   const daysToShow = 7; // One week
@@ -59,12 +93,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     }).toLowerCase().replace(' ', '');
 
     return `${formattedTime} ${tzAbbr}`;
-  };
-
-  // Convert a date from ISO string to a Date object preserving the exact same point in time
-  // This function doesn't actually change the time, just ensures we have a proper Date object
-  const parseISODate = (isoString) => {
-    return new Date(isoString);
   };
 
   // Format a date for display in the target timezone
