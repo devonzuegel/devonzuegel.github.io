@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Public Google Calendar Viewer</title>
+  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+</head>
+<body>
+  <h1>Calendar Events</h1>
+  <button onclick="loadCalendar()">Load Calendar</button>
+  <div>
+    <label>CORS Proxy:</label>
+    <select id="proxySelector">
+      <option value="https://api.allorigins.win/raw?url=">allorigins</option>
+      <option value="https://corsproxy.io/?">corsproxy.io</option>
+      <option value="https://cors-anywhere.herokuapp.com/">cors-anywhere</option>
+      <option value="https://proxy.cors.sh/">cors.sh</option>
+      <option value="direct">Direct (no proxy)</option>
+    </select>
+  </div>
+  <pre id="output"></pre>
+
+  <script>
+    async function loadCalendar() {
+      const output = document.getElementById('output');
+      output.textContent = 'Loading...';
+      
+      try {
+        // Calendar ID from your URL
+        const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
+        
+        // Two different URL formats to try
+        const icalUrl1 = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+        const icalUrl2 = `https://calendar.google.com/calendar/renders/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+        
+        // Get selected proxy
+        const proxySelector = document.getElementById('proxySelector');
+        const proxyUrl = proxySelector.value;
+        
+        // Debug information
+        console.log("Trying URL:", icalUrl1);
+        console.log("With proxy:", proxyUrl);
+        
+        // Fetch with selected proxy
+        let response;
+        
+        if (proxyUrl === 'direct') {
+          response = await fetch(icalUrl1);
+        } else {
+          response = await fetch(proxyUrl + encodeURIComponent(icalUrl1));
+        }
+        
+        // If first URL fails, try the second format
+        if (!response.ok) {
+          console.log("First URL failed, trying alternative URL:", icalUrl2);
+          
+          if (proxyUrl === 'direct') {
+            response = await fetch(icalUrl2);
+          } else {
+            response = await fetch(proxyUrl + encodeURIComponent(icalUrl2));
+          }
+        }
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch calendar: ${response.status} ${response.statusText}`);
+        }
+        
+        const icalData = await response.text();
+        
+        // Debug: Check if we got valid iCal data
+        console.log("Response first 100 chars:", icalData.substring(0, 100));
+        
+        // Check if the response is actually an iCal file
+        if (!icalData.includes('BEGIN:VCALENDAR')) {
+          throw new Error('Response is not a valid iCal file');
+        }
+        
+        const jcalData = ICAL.parse(icalData);
+        const comp = new ICAL.Component(jcalData);
+        const events = comp.getAllSubcomponents('vevent');
+        
+        const jsonEvents = events.map(event => {
+          const icalEvent = new ICAL.Event(event);
+          return {
+            id: icalEvent.uid,
+            summary: icalEvent.summary,
+            description: icalEvent.description || '',
+            location: icalEvent.location || '',
+            start: icalEvent.startDate.toJSDate().toISOString(),
+            end: icalEvent.endDate.toJSDate().toISOString(),
+            status: icalEvent.status || 'confirmed'
+          };
+        });
+        
+        // Sort events by start date
+        jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
+        
+        output.textContent = JSON.stringify(jsonEvents, null, 2);
+      } catch (error) {
+        output.textContent = `Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`;
+        console.error('Full error:', error);
+      }
+    }
+    
+    // Alternative method using XML HTTP Request which sometimes works better with CORS
+    function loadCalendarXHR() {
+      const output = document.getElementById('output');
+      output.textContent = 'Loading with XHR...';
+      
+      // Calendar ID from your URL
+      const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
+      
+      // iCal URL format
+      const icalUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+      
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            try {
+              const icalData = xhr.responseText;
+              console.log("XHR Response first 100 chars:", icalData.substring(0, 100));
+              
+              if (!icalData.includes('BEGIN:VCALENDAR')) {
+                output.textContent = 'Response is not a valid iCal file';
+                return;
+              }
+              
+              const jcalData = ICAL.parse(icalData);
+              const comp = new ICAL.Component(jcalData);
+              const events = comp.getAllSubcomponents('vevent');
+              
+              const jsonEvents = events.map(event => {
+                const icalEvent = new ICAL.Event(event);
+                return {
+                  id: icalEvent.uid,
+                  summary: icalEvent.summary,
+                  description: icalEvent.description || '',
+                  location: icalEvent.location || '',
+                  start: icalEvent.startDate.toJSDate().toISOString(),
+                  end: icalEvent.endDate.toJSDate().toISOString(),
+                  status: icalEvent.status || 'confirmed'
+                };
+              });
+              
+              jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
+              output.textContent = JSON.stringify(jsonEvents, null, 2);
+            } catch (error) {
+              output.textContent = `Error processing data: ${error.message}`;
+              console.error(error);
+            }
+          } else {
+            output.textContent = `XHR Error: ${xhr.status} ${xhr.statusText}`;
+          }
+        }
+      };
+      
+      xhr.open('GET', icalUrl, true);
+      xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+      xhr.send();
+    }
+  </script>
+  
+  <!-- Add alternate loading method button -->
+  <button onclick="loadCalendarXHR()" style="margin-top: 10px;">Try Alternative Method</button>
+  
+  <!-- Add debug info -->
+  <div style="margin-top: 20px;">
+    <p><strong>Troubleshooting:</strong></p>
+    <ol>
+      <li>Try different CORS proxies from the dropdown menu</li>
+      <li>Check if the calendar is publicly accessible (sharing settings)</li>
+      <li>Try the alternative loading method button</li>
+      <li>Check browser console (F12) for additional error details</li>
+    </ol>
+  </div>
+</body>
+</html>
