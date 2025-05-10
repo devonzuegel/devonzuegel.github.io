@@ -647,6 +647,8 @@ th.time-column {
   line-height: 1.4;
   text-align: left;
   border-radius: var(--border-radius-md);
+  max-width: 400px;
+  text-wrap: balance;
 }
 
 .no-availability-message a {
@@ -661,7 +663,7 @@ th.time-column {
 
 .no-availability-message-cell {
   border: none !important;
-  background: transparent !important;
+  background: white !important;
 }
 
 /* Ensure exact matching of table structures */
