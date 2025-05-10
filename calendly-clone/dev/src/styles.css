@@ -153,6 +153,14 @@ label {
   margin: 0;
 }
 
+.green-highlight {
+  background-color: #81c784;
+  color: #1b5e20;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
 .calendar-navigation .today-button {
   padding:6px 12px;
   font-size: 0.9em;

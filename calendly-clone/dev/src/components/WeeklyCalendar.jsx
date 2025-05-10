@@ -222,7 +222,7 @@ function WeeklyCalendar({ events }) {
         </button>
 
         <div className="calendar-instructions">
-          <p><small>Scroll horizontally to see more dates. Green blocks indicate available time slots.</small></p>
+          <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
         </div>
       </div>
       <div
