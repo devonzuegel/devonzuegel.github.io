@@ -5,6 +5,7 @@ function App() {
   return (
     <div className="container">
       <div className="info-container">
+        <h1>Devon's Availability</h1>
         <p>If a time shows up on the calendar below, it means Devon is <i>probably</i> available for a call at that time.</p>
         <p>
           Send a calendar invite with context to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a>, and she'll confirm ASAP!
@@ -12,6 +13,9 @@ function App() {
       </div>
       <br />
       <CalendarView />
+      <div className="calendar-instructions">
+        <p><small>Scroll horizontally to see more dates. Green blocks indicate available time slots.</small></p>
+      </div>
     </div>
   );
 }

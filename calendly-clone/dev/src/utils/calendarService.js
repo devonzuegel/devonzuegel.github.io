@@ -1,116 +1,105 @@
 // Calendar service for handling iCal data fetching and processing
 
-// Mock data for development purposes
-export const MOCK_CALENDAR_DATA = [
-  {
+// Generate mock data for development purposes with current dates
+const generateMockData = () => {
+  // Get today's date
+  const today = new Date();
+
+  // Create an array to hold the mock events
+  const mockEvents = [];
+
+  // Generate events for the next 28 days (4 weeks)
+  for (let i = 0; i < 28; i++) {
+    const currentDate = new Date(today);
+    currentDate.setDate(today.getDate() + i);
+
+    // Skip weekends
+    const dayOfWeek = currentDate.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+    // Morning slot (10:00 - 11:30)
+    if (Math.random() > 0.4) { // 60% chance to have morning availability
+      const morningStart = new Date(currentDate);
+      morningStart.setHours(10, 0, 0, 0);
+
+      const morningEnd = new Date(currentDate);
+      morningEnd.setHours(11, 30, 0, 0);
+
+      mockEvents.push({
+        id: `morning-${i}`,
+        summary: 'DEVON AVAILABLE',
+        description: 'THIS IS MOCK DATA - MORNING AVAILABILITY',
+        location: '',
+        start: morningStart.toISOString(),
+        end: morningEnd.toISOString(),
+        status: 'confirmed',
+      });
+    }
+
+    // Afternoon slot (14:00 - 16:00)
+    if (Math.random() > 0.3) { // 70% chance to have afternoon availability
+      const afternoonStart = new Date(currentDate);
+      afternoonStart.setHours(14, 0, 0, 0);
+
+      const afternoonEnd = new Date(currentDate);
+      afternoonEnd.setHours(16, 0, 0, 0);
+
+      mockEvents.push({
+        id: `afternoon-${i}`,
+        summary: 'DEVON AVAILABLE',
+        description: 'THIS IS MOCK DATA - AFTERNOON AVAILABILITY',
+        location: '',
+        start: afternoonStart.toISOString(),
+        end: afternoonEnd.toISOString(),
+        status: 'confirmed',
+      });
+    }
+
+    // Evening slot (19:00 - 20:30)
+    if (Math.random() > 0.5) { // 50% chance to have evening availability
+      const eveningStart = new Date(currentDate);
+      eveningStart.setHours(19, 0, 0, 0);
+
+      const eveningEnd = new Date(currentDate);
+      eveningEnd.setHours(20, 30, 0, 0);
+
+      mockEvents.push({
+        id: `evening-${i}`,
+        summary: 'DEVON AVAILABLE',
+        description: 'THIS IS MOCK DATA - EVENING AVAILABILITY',
+        location: '',
+        start: eveningStart.toISOString(),
+        end: eveningEnd.toISOString(),
+        status: 'confirmed',
+      });
+    }
+  }
+
+  // Add a few non-availability events
+  mockEvents.push({
     id: '5b1g2ruq7ni4ber4f4iru0o1fo@google.com',
     summary: 'Jane McTest: Consultation  (Devon Zuegel)',
     description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
     location: 'Devon Zuegel',
-    start: '2023-02-18T14:30:00.000Z',
-    end: '2023-02-18T15:20:00.000Z',
+    start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 13, 0).toISOString(),
+    end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 14, 0).toISOString(),
     status: 'confirmed',
-  },
-  {
+  });
+
+  mockEvents.push({
     id: '71D667FA-18EF-48A2-9916-6A62B18E8AC2',
     summary: 'Turo rental of Fiat 500',
     description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
     location: '',
-    start: '2023-06-11T15:00:00.000Z',
-    end: '2023-06-11T20:25:00.000Z',
+    start: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5, 9, 0).toISOString(),
+    end: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5, 14, 0).toISOString(),
     status: 'confirmed',
-  },
-  {
-    id: 'C22210CA-D3D4-48F4-A00B-59C4CB16D92E',
-    summary: 'AVAILABLE FOR MEETINGS',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2024-05-12T08:30:00.000Z',
-    end: '2024-05-12T09:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '4E76A6DE-7C8F-4F9C-84DA-1418A2AAFF1E',
-    summary: 'AVAILABLE FOR MEETINGS',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2024-08-19T17:00:00.000Z',
-    end: '2024-08-19T19:15:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '32E4B11E-E7EB-420B-9D45-6DA6D26CAD8D',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-04-17T16:00:00.000Z',
-    end: '2025-04-17T18:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '6169106C-7AFC-4183-97FA-8B36C546E62E',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-12T15:00:00.000Z',
-    end: '2025-05-12T16:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '4FC7D0FC-ACE6-4448-A1CF-AE05C0A3324D',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-12T20:00:00.000Z',
-    end: '2025-05-12T21:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '6C1D2869-7144-479F-B24B-03E8B032F4C6',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-13T15:00:00.000Z',
-    end: '2025-05-13T17:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: '207FB273-9A66-4135-918E-F9CDF8DA2783',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-13T20:00:00.000Z',
-    end: '2025-05-13T23:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: 'F9CA4ABA-BA19-4BCB-A9C7-DC0B89656D02',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-14T15:00:00.000Z',
-    end: '2025-05-14T17:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: 'D3C69E3B-58AC-4870-B8B1-1B290E1C7465',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-15T15:00:00.000Z',
-    end: '2025-05-15T18:00:00.000Z',
-    status: 'confirmed',
-  },
-  {
-    id: 'D0969E0F-4F70-42B8-9C26-E4E74DD86024',
-    summary: 'DEVON AVAILABLE',
-    description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-    location: '',
-    start: '2025-05-15T20:00:00.000Z',
-    end: '2025-05-15T21:00:00.000Z',
-    status: 'confirmed',
-  },
-];
+  });
+
+  return mockEvents;
+};
+
+export const MOCK_CALENDAR_DATA = generateMockData();
 
 /**
  * Fetches and processes calendar data

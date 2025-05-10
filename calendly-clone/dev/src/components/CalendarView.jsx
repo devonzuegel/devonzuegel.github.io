@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ProxySelector from './ProxySelector';
-import CalendarOutput from './CalendarOutput';
+import WeeklyCalendar from './WeeklyCalendar';
 import { loadCalendarData, MOCK_CALENDAR_DATA } from '../utils/calendarService';
 
 function CalendarView() {
-  const [output, setOutput] = useState('');
+  const [events, setEvents] = useState([]);
   const [selectedProxy, setSelectedProxy] = useState('https://api.allorigins.win/raw?url=');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,27 +15,27 @@ function CalendarView() {
 
   const handleLoadCalendar = async () => {
     setIsLoading(true);
-    setOutput('Loading...');
 
     try {
-      const events = MOCK_CALENDAR_DATA; //await loadCalendarData(selectedProxy); // TODO: Put this back in to fetch real data
+      const allEvents = MOCK_CALENDAR_DATA; //await loadCalendarData(selectedProxy); // TODO: Put this back in to fetch real data
 
       // Filter out past events - only include events that end after current time
       const now = new Date();
-      const currentAndFutureEvents = events.filter(event => {
+      const currentAndFutureEvents = allEvents.filter(event => {
         const eventEndTime = new Date(event.end);
         return eventEndTime >= now; // Event ends in the future or is ongoing
       });
 
-      // Filter events where summary is exactly "DEVON AVAILABLE"
-      const devonAvailableEvents = currentAndFutureEvents.filter(event =>
-        event.summary === "DEVON AVAILABLE"
+      // Filter for availability events
+      const availabilityEvents = currentAndFutureEvents.filter(event =>
+        event.summary.includes("AVAILABLE")
       );
 
-      setOutput(JSON.stringify(devonAvailableEvents, null, 2));
+      setEvents(availabilityEvents);
     } catch (error) {
-      setOutput(`Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`);
-      console.error('Full error:', error);
+      console.error('Calendar loading error:', error);
+      // Still set events to an empty array on error to avoid UI breakage
+      setEvents([]);
     } finally {
       setIsLoading(false);
     }
@@ -48,13 +48,24 @@ function CalendarView() {
 
   return (
     <div>
-      <div className="calendar-controls" style={{display: "none"}}>
+      <div className="calendar-controls">
         <button onClick={handleLoadCalendar} disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Refresh Calendar'}
         </button>
         <ProxySelector selectedProxy={selectedProxy} onChange={handleProxyChange} />
       </div>
-      <CalendarOutput output={output} />
+
+      {isLoading ? (
+        <div className="loading-indicator">Loading calendar data...</div>
+      ) : (
+        events.length > 0 ? (
+          <WeeklyCalendar events={events} />
+        ) : (
+          <div className="no-events-message">
+            No availability found. Please try refreshing or changing the proxy.
+          </div>
+        )
+      )}
     </div>
   );
 }
