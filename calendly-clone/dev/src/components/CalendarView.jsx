@@ -48,13 +48,6 @@ function CalendarView() {
 
   return (
     <div>
-      <div className="calendar-controls">
-        <button onClick={handleLoadCalendar} disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Refresh Calendar'}
-        </button>
-        <ProxySelector selectedProxy={selectedProxy} onChange={handleProxyChange} />
-      </div>
-
       {isLoading ? (
         <div className="loading-indicator">Loading calendar data...</div>
       ) : (
