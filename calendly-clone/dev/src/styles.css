@@ -213,6 +213,34 @@ label {
   margin-bottom: 20px;
 }
 
+.calendar-container {
+  display: flex;
+  position: relative;
+}
+
+.time-column-container {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background-color: white;
+  box-shadow: 3px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.time-column-table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.time-column-header {
+  min-width: 80px;
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 8px;
+  font-weight: 500;
+  border: 1px solid #eaeaea;
+  border-right: none;
+}
+
 .calendar-navigation {
   padding: 0 12px;
   margin-bottom: 12px;
@@ -328,7 +356,7 @@ label {
   overflow-x: auto;
   white-space: nowrap;
   padding-bottom: 20px;
-  max-width: 100%;
+  flex: 1;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
@@ -337,6 +365,7 @@ label {
   width: max-content;
   min-width: 100%;
   font-size: 14px;
+  border-left: none;
 }
 
 .calendar-table th,
@@ -346,6 +375,7 @@ label {
   text-align: center;
 }
 
+/* Legacy time-column styles kept for backward compatibility */
 th.time-column {
   min-width: 80px;
   position: sticky;
@@ -353,6 +383,7 @@ th.time-column {
   background-color: #f9f9f9;
   z-index: 10;
   background-color: white !important;
+  display: none; /* Hide in new layout */
 }
 
 .day-column {
@@ -397,7 +428,21 @@ th.time-column {
   border: 1px solid #90caf9;
 }
 
-td.time-cell {
+.time-column-table .time-cell {
+  padding: 6px;
+  text-align: right;
+  color: #666;
+  font-size: 13px;
+  background-color: white;
+  vertical-align: top;
+  width: 80px;
+  height: 24px; /* Match the height of slot cells */
+  border: 1px solid #eaeaea;
+  border-right: none;
+}
+
+/* Legacy time-cell styles kept for backward compatibility */
+.calendar-table .time-cell {
   padding: 6px;
   text-align: right;
   color: #666;
@@ -407,6 +452,7 @@ td.time-cell {
   background-color: white !important;
   vertical-align: top;
   width: 80px;
+  display: none; /* Hide in new layout */
 }
 
 .slot-cell {
@@ -464,6 +510,12 @@ td.time-cell {
   margin-top: 20px;
 }
 
+/* Ensure row heights stay synchronized between tables */
+.time-column-table tr,
+.calendar-table tr {
+  height: 24px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .calendar-navigation {
@@ -501,8 +553,8 @@ td.time-cell {
     font-size: 1em;
   }
 
-  .time-column,
-  .time-cell {
+  .time-column-header,
+  .time-column-table .time-cell {
     min-width: 60px;
     width: 60px;
   }

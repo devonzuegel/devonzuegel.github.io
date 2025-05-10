@@ -295,11 +295,11 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const todayEl = todayColumnRef.current;
 
       // Get the time column width
-      const timeColumnWidth = document.querySelector('.time-column')?.offsetWidth || 80;
+      const timeColumnWidth = document.querySelector('.time-column-container')?.offsetWidth || 80;
       const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
 
       // Position today as the second column
-      const scrollLeft = todayEl.offsetLeft - timeColumnWidth - extraSpacerWidth;
+      const scrollLeft = todayEl.offsetLeft - extraSpacerWidth;
 
       container.scrollTo({
         left: scrollLeft,
@@ -318,12 +318,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const targetEl = firstAvailabilityRef.current;
 
       // Get the time column width
-      const timeColumnWidth = document.querySelector('.time-column')?.offsetWidth || 80;
+      const timeColumnWidth = document.querySelector('.time-column-container')?.offsetWidth || 80;
       const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
 
       // Set scroll position to show first availability as second column
-      // Subtract the time column width to position correctly
-      const scrollLeft = targetEl.offsetLeft - timeColumnWidth - extraSpacerWidth;
+      // We don't need to subtract the time column width anymore since it's outside the scroll container
+      const scrollLeft = targetEl.offsetLeft - extraSpacerWidth;
 
       container.scrollTo({
         left: scrollLeft,
@@ -433,73 +433,89 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
           <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
         </div> */}
       </div>
-      <div
-        ref={scrollContainerRef}
-        className="calendar-scroll-container"
-        onScroll={handleScroll}
-      >
-        <table className="calendar-table">
-          <thead>
-            <tr>
-              <th className="time-column">{getTimezoneDisplay()}</th>
-              {weeks.flatMap(week =>
-                week.dates.map(date => {
-                  const today = isToday(date);
-                  const isFirstAvailability = firstAvailabilityDate &&
-                    date.getFullYear() === firstAvailabilityDate.getFullYear() &&
-                    date.getMonth() === firstAvailabilityDate.getMonth() &&
-                    date.getDate() === firstAvailabilityDate.getDate();
+      <div className="calendar-container">
+        <div className="time-column-container">
+          <table className="time-column-table">
+            <thead>
+              <tr>
+                <th className="time-column-header">{getTimezoneDisplay()}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {timeSlots.map(({ hour, minute }) => (
+                <tr key={`time-${hour}-${minute}`} className="time-slot-row">
+                  <td className="time-cell">
+                    {minute === 0 && formatTime(hour, minute)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-                  return (
-                    <th
-                      key={date.toISOString()}
-                      className={`day-column ${today ? 'today' : ''} ${isFirstAvailability ? 'first-availability' : ''}`}
-                      ref={isFirstAvailability ? firstAvailabilityRef : today ? todayColumnRef : null}
-                    >
-                      {formatDate(date)}
-                      {today && <span className="today-indicator">Today</span>}
-                      {isFirstAvailability && <span className="first-availability-indicator">First Available</span>}
-                    </th>
-                  );
-                })
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {timeSlots.map(({ hour, minute }) => (
-              <tr key={`${hour}-${minute}`} className="time-slot-row">
-                <td className="time-cell">
-                  {minute === 0 && formatTime(hour, minute)}
-                </td>
-
+        <div
+          ref={scrollContainerRef}
+          className="calendar-scroll-container"
+          onScroll={handleScroll}
+        >
+          <table className="calendar-table">
+            <thead>
+              <tr>
                 {weeks.flatMap(week =>
                   week.dates.map(date => {
-                    const eventDetails = getEventForTimeSlot(date, hour, minute);
-                    const isAvailable = !!eventDetails;
+                    const today = isToday(date);
+                    const isFirstAvailability = firstAvailabilityDate &&
+                      date.getFullYear() === firstAvailabilityDate.getFullYear() &&
+                      date.getMonth() === firstAvailabilityDate.getMonth() &&
+                      date.getDate() === firstAvailabilityDate.getDate();
 
                     return (
-                      <td
-                        key={`${date.toISOString()}-${hour}-${minute}`}
-                        className={`slot-cell ${isAvailable ? 'available' : ''}`}
-                        title={isAvailable ? `${eventDetails.summary}: ${eventDetails.displayTime}` : ''}
+                      <th
+                        key={date.toISOString()}
+                        className={`day-column ${today ? 'today' : ''} ${isFirstAvailability ? 'first-availability' : ''}`}
+                        ref={isFirstAvailability ? firstAvailabilityRef : today ? todayColumnRef : null}
                       >
-                        {isAvailable && (
-                          <div className="event-indicator">
-                            {eventDetails.isFirstSlot && (
-                              <div className="event-time">
-                                {eventDetails.displayTime}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </td>
+                        {formatDate(date)}
+                        {today && <span className="today-indicator">Today</span>}
+                        {isFirstAvailability && <span className="first-availability-indicator">First Available</span>}
+                      </th>
                     );
                   })
                 )}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {timeSlots.map(({ hour, minute }) => (
+                <tr key={`${hour}-${minute}`} className="time-slot-row">
+                  {weeks.flatMap(week =>
+                    week.dates.map(date => {
+                      const eventDetails = getEventForTimeSlot(date, hour, minute);
+                      const isAvailable = !!eventDetails;
+
+                      return (
+                        <td
+                          key={`${date.toISOString()}-${hour}-${minute}`}
+                          className={`slot-cell ${isAvailable ? 'available' : ''}`}
+                          title={isAvailable ? `${eventDetails.summary}: ${eventDetails.displayTime}` : ''}
+                        >
+                          {isAvailable && (
+                            <div className="event-indicator">
+                              {eventDetails.isFirstSlot && (
+                                <div className="event-time">
+                                  {eventDetails.displayTime}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
