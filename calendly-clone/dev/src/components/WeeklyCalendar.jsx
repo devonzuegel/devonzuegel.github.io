@@ -27,27 +27,38 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     });
   };
 
-  // Format time as "8am"
+  // Format time as "8am EDT"
   const formatTime = (hour, minute) => {
     const time = new Date();
     time.setHours(hour, minute);
 
+    // Get timezone abbreviation
+    const tzAbbr = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || undefined,
+      timeZoneName: 'short'
+    }).formatToParts(time)
+      .find(part => part.type === 'timeZoneName')?.value || '';
+
     // Format without minutes if they're zero
     if (minute === 0) {
-      return time.toLocaleTimeString('en-US', {
+      const formattedTime = time.toLocaleTimeString('en-US', {
         hour: 'numeric',
         hour12: true,
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
+
+      return `${formattedTime} ${tzAbbr}`;
     }
 
     // Include minutes otherwise
-    return time.toLocaleTimeString('en-US', {
+    const formattedTime = time.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
       timeZone: timezone || undefined
     }).toLowerCase().replace(' ', '');
+
+    return `${formattedTime} ${tzAbbr}`;
   };
 
   // Convert a date from ISO string to a Date object preserving the exact same point in time
@@ -67,14 +78,24 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       timeZone: timezone || undefined
     };
 
+    // Get timezone abbreviation
+    const tzAbbr = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || undefined,
+      timeZoneName: 'short'
+    }).formatToParts(date)
+      .find(part => part.type === 'timeZoneName')?.value || '';
+
     const formattedTime = date.toLocaleTimeString('en-US', { ...defaultOptions, ...options });
 
-    // Format as "11am" if no minutes, or "11:30am" if there are minutes
+    // Format as "11am EDT" if no minutes, or "11:30am EDT" if there are minutes
+    let timeStr;
     if (formattedTime.includes(':00')) {
-      return formattedTime.replace(':00', '').toLowerCase().replace(' ', '');
+      timeStr = formattedTime.replace(':00', '').toLowerCase().replace(' ', '');
     } else {
-      return formattedTime.toLowerCase().replace(' ', '');
+      timeStr = formattedTime.toLowerCase().replace(' ', '');
     }
+
+    return `${timeStr} ${tzAbbr}`;
   };
 
   // Generate a week's worth of days starting from a given date
@@ -218,24 +239,38 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const formattedStart = formatTimeInTimezone(eventStart);
     const formattedEnd = formatTimeInTimezone(eventEnd);
 
-    // Format as "11am - 12pm" or "10-11:30am" when both are am/pm
+    // Format as "11am EDT - 12pm EDT" or "10-11:30am EDT" when both are am/pm
     let displayTime;
 
+    // Extract timezone abbreviation - should be the same for both times since they're in the same timezone
+    const tzAbbr = formattedStart.split(' ').pop();
+
     // Check if both times are in the same am/pm period
-    const startAmPm = formattedStart.match(/[ap]m/)[0];
-    const endAmPm = formattedEnd.match(/[ap]m/)[0];
+    const startAmPmMatch = formattedStart.match(/([ap]m)/);
+    const endAmPmMatch = formattedEnd.match(/([ap]m)/);
 
-    if (startAmPm === endAmPm) {
-      // Both times are AM or both are PM, use compact format
-      // Extract just the hour and minute parts
-      const startHour = formattedStart.replace(/[ap]m/, '');
-      const endHour = formattedEnd.replace(/[ap]m/, '');
-
-      // Use shared am/pm suffix
-      displayTime = `${startHour}-${endHour}${startAmPm}`;
-    } else {
-      // Different periods (one am, one pm), use standard format
+    if (!startAmPmMatch || !endAmPmMatch) {
+      // Fallback if regex doesn't match
       displayTime = `${formattedStart} - ${formattedEnd}`;
+    } else {
+      const startAmPm = startAmPmMatch[1];
+      const endAmPm = endAmPmMatch[1];
+
+      if (startAmPm === endAmPm) {
+        // Both times are AM or both are PM, use compact format
+        // Extract just the hour and minute parts
+        const startHour = formattedStart.replace(new RegExp(`${startAmPm}.*`), '');
+        const endHour = formattedEnd.replace(new RegExp(`${endAmPm}.*`), '');
+
+        // Use shared am/pm suffix with timezone
+        displayTime = `${startHour}-${endHour}${startAmPm} ${tzAbbr}`;
+      } else {
+        // Different periods (one am, one pm), use standard format
+        // Remove the timezone from the first time since it will be shown at the end
+        const startTime = formattedStart.replace(` ${tzAbbr}`, '');
+        const endTime = formattedEnd;
+        displayTime = `${startTime} - ${endTime}`;
+      }
     }
 
     return {
