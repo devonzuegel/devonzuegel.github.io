@@ -90,19 +90,38 @@ function WeeklyCalendar({ events, timezone }) {
     return result;
   };
 
-  // Initialize with the first few weeks when timezone changes
-  useEffect(() => {
-    // Set start date to the beginning of the current week (Monday)
-    const currentDate = new Date();
-    const day = currentDate.getDay(); // 0 is Sunday, 1 is Monday
-    const diff = currentDate.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+  // Find the first day with available events
+  const findFirstDayWithAvailability = useCallback(() => {
+    if (!events || !Array.isArray(events) || events.length === 0) return null;
 
-    const weekStart = new Date(currentDate);
+    // Sort events by start date
+    const sortedEvents = [...events].sort((a, b) =>
+      new Date(a.start) - new Date(b.start)
+    );
+
+    // Return the date of the first available event
+    const firstEvent = sortedEvents[0];
+    return firstEvent ? new Date(firstEvent.start) : null;
+  }, [events]);
+
+  // Initialize with the first few weeks when timezone changes or events update
+  useEffect(() => {
+    // Set default start date to the beginning of the current week (Monday)
+    let initialDate = new Date();
+    const day = initialDate.getDay(); // 0 is Sunday, 1 is Monday
+    const diff = initialDate.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+
+    // Calculate initial weeks starting point
+    const weekStart = new Date(initialDate);
     weekStart.setDate(diff);
     weekStart.setHours(0, 0, 0, 0);
 
-    setStartDate(weekStart);
-    setWeeks(generateWeeks(weekStart, initialWeeksToLoad));
+    // Start 2 weeks before current date to allow scrolling backwards
+    const twoWeeksBack = new Date(weekStart);
+    twoWeeksBack.setDate(weekStart.getDate() - 14);
+
+    setStartDate(twoWeeksBack);
+    setWeeks(generateWeeks(twoWeeksBack, initialWeeksToLoad + 2)); // Load extra weeks
   }, [timezone]);
 
   // Handle infinite scroll
@@ -273,7 +292,12 @@ function WeeklyCalendar({ events, timezone }) {
     if (todayColumnRef.current && scrollContainerRef.current) {
       const container = scrollContainerRef.current;
       const todayEl = todayColumnRef.current;
-      const scrollLeft = todayEl.offsetLeft - (container.clientWidth / 2) + (todayEl.offsetWidth / 2);
+
+      // Get the time column width
+      const timeColumnWidth = document.querySelector('.time-column')?.offsetWidth || 80;
+
+      // Position today as the second column
+      const scrollLeft = todayEl.offsetLeft - timeColumnWidth;
 
       container.scrollTo({
         left: scrollLeft,
@@ -282,12 +306,50 @@ function WeeklyCalendar({ events, timezone }) {
     }
   }, []);
 
-  // Scroll to today when initially loaded
-  useEffect(() => {
-    if (weeks.length > 0) {
+  // Reference to first availability column
+  const firstAvailabilityRef = useRef(null);
+
+  // Scroll to the first availability
+  const scrollToFirstAvailability = useCallback(() => {
+    if (firstAvailabilityRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const targetEl = firstAvailabilityRef.current;
+
+      // Get the time column width
+      const timeColumnWidth = document.querySelector('.time-column')?.offsetWidth || 80;
+      const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
+
+      // Set scroll position to show first availability as second column
+      // Subtract the time column width to position correctly
+      const scrollLeft = targetEl.offsetLeft - timeColumnWidth - extraSpacerWidth;
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+    } else {
+      // If no availability, scroll to today
       scrollToToday();
     }
-  }, [weeks, scrollToToday]);
+  }, [scrollToToday]);
+
+  // Track if we've found the first day with availability
+  const [firstAvailabilityDate, setFirstAvailabilityDate] = useState(null);
+
+  // Find first availability when events change
+  useEffect(() => {
+    const firstDay = findFirstDayWithAvailability();
+    setFirstAvailabilityDate(firstDay);
+  }, [events, findFirstDayWithAvailability]);
+
+  // Scroll to first availability (or today) when initially loaded
+  useEffect(() => {
+    if (weeks.length > 0 && events.length > 0) {
+      scrollToFirstAvailability();
+    } else if (weeks.length > 0) {
+      scrollToToday();
+    }
+  }, [weeks, events, scrollToFirstAvailability, scrollToToday]);
 
   // Format timezone for display
   const getTimezoneDisplay = () => {
@@ -334,6 +396,16 @@ function WeeklyCalendar({ events, timezone }) {
             Today
           </button>
 
+          {events.length > 0 && (
+            <button
+              className="first-availability-button"
+              onClick={scrollToFirstAvailability}
+              title="Scroll to first available day"
+            >
+              First Available
+            </button>
+          )}
+
           <div className="nav-button-container">
             <button
               className="nav-button"
@@ -362,14 +434,20 @@ function WeeklyCalendar({ events, timezone }) {
               {weeks.flatMap(week =>
                 week.dates.map(date => {
                   const today = isToday(date);
+                  const isFirstAvailability = firstAvailabilityDate &&
+                    date.getFullYear() === firstAvailabilityDate.getFullYear() &&
+                    date.getMonth() === firstAvailabilityDate.getMonth() &&
+                    date.getDate() === firstAvailabilityDate.getDate();
+
                   return (
                     <th
                       key={date.toISOString()}
-                      className={`day-column ${today ? 'today' : ''}`}
-                      ref={today ? todayColumnRef : null}
+                      className={`day-column ${today ? 'today' : ''} ${isFirstAvailability ? 'first-availability' : ''}`}
+                      ref={isFirstAvailability ? firstAvailabilityRef : today ? todayColumnRef : null}
                     >
                       {formatDate(date)}
                       {today && <span className="today-indicator">Today</span>}
+                      {isFirstAvailability && <span className="first-availability-indicator">First Available</span>}
                     </th>
                   );
                 })

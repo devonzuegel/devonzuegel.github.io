@@ -241,7 +241,8 @@ label {
   font-weight: 500;
 }
 
-.calendar-navigation .today-button {
+.calendar-navigation .today-button,
+.calendar-navigation .first-availability-button {
   padding: 6px 12px;
   font-size: 0.9em;
   background-color: #f0f0f0;
@@ -249,10 +250,22 @@ label {
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
+  margin: 0 4px;
 }
 
-.calendar-navigation .today-button:hover {
+.calendar-navigation .today-button:hover,
+.calendar-navigation .first-availability-button:hover {
   background-color: #e8e8e8;
+}
+
+.calendar-navigation .first-availability-button {
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+  color: #1976d2;
+}
+
+.calendar-navigation .first-availability-button:hover {
+  background-color: #bbdefb;
 }
 
 .nav-button {
@@ -322,12 +335,13 @@ label {
   text-align: center;
 }
 
-.time-column {
+th.time-column {
   min-width: 80px;
   position: sticky;
   left: 0;
   background-color: #f9f9f9;
   z-index: 10;
+  background-color: white !important;
 }
 
 .day-column {
@@ -356,14 +370,30 @@ label {
   font-weight: 600;
 }
 
-.time-cell {
+.first-availability-indicator {
+  display: inline-block;
+  font-size: 10px;
+  background-color: #2196f3;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.day-column.first-availability {
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+}
+
+td.time-cell {
   padding: 6px;
   text-align: right;
   color: #666;
   font-size: 13px;
   position: sticky;
   left: 0;
-  background-color: #f9f9f9;
+  background-color: white !important;
   vertical-align: top;
   width: 80px;
 }
