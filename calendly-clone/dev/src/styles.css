@@ -113,9 +113,12 @@ a:hover {
 }
 
 .info-container {
+  font-size: 12px;
   margin: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--color-background-alt);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border: 2px solid var(--color-background-alt);
+  width: fit-content;
+  border-radius: var(--border-radius-md);
 }
 
 /* Calendar UI */
@@ -198,7 +201,8 @@ a:hover {
 }
 
 .timezone-option.selected {
-  background-color: var(--color-success-lighter);
+  background-color: var(--color-primary-border);
+  color: black;
   font-weight: 500;
 }
 
