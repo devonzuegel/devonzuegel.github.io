@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// More comprehensive timezone data with abbreviations
+// More comprehensive timezone data with abbreviations and wider regions
 const TIMEZONE_REGIONS = [
   // North America
   {
@@ -8,8 +8,8 @@ const TIMEZONE_REGIONS = [
     name: 'Pacific Time',
     abbreviation: 'PT',
     timezones: ['America/Los_Angeles', 'America/Vancouver', 'America/Tijuana'],
-    path: 'M 51,54 L 55,54 L 55,68 L 51,68 Z',
-    labelX: 52,
+    path: 'M 40,54 L 50,54 L 50,68 L 40,68 Z',
+    labelX: 45,
     labelY: 61
   },
   {
@@ -17,8 +17,8 @@ const TIMEZONE_REGIONS = [
     name: 'Mountain Time',
     abbreviation: 'MT',
     timezones: ['America/Denver', 'America/Edmonton', 'America/Phoenix'],
-    path: 'M 55,54 L 59,54 L 59,68 L 55,68 Z',
-    labelX: 56,
+    path: 'M 50,54 L 60,54 L 60,68 L 50,68 Z',
+    labelX: 55,
     labelY: 61
   },
   {
@@ -26,8 +26,8 @@ const TIMEZONE_REGIONS = [
     name: 'Central Time',
     abbreviation: 'CT',
     timezones: ['America/Chicago', 'America/Mexico_City', 'America/Winnipeg'],
-    path: 'M 59,54 L 63,54 L 63,68 L 59,68 Z',
-    labelX: 60,
+    path: 'M 60,54 L 70,54 L 70,68 L 60,68 Z',
+    labelX: 65,
     labelY: 61
   },
   {
@@ -35,8 +35,8 @@ const TIMEZONE_REGIONS = [
     name: 'Eastern Time',
     abbreviation: 'ET',
     timezones: ['America/New_York', 'America/Toronto', 'America/Indiana/Indianapolis'],
-    path: 'M 63,54 L 67,54 L 67,68 L 63,68 Z',
-    labelX: 64,
+    path: 'M 70,54 L 80,54 L 80,68 L 70,68 Z',
+    labelX: 75,
     labelY: 61
   },
   {
@@ -44,8 +44,8 @@ const TIMEZONE_REGIONS = [
     name: 'Atlantic Time',
     abbreviation: 'AT',
     timezones: ['America/Halifax', 'America/Puerto_Rico', 'America/Caracas'],
-    path: 'M 67,54 L 71,54 L 71,68 L 67,68 Z',
-    labelX: 68,
+    path: 'M 80,54 L 90,54 L 90,68 L 80,68 Z',
+    labelX: 85,
     labelY: 61
   },
   {
@@ -53,18 +53,18 @@ const TIMEZONE_REGIONS = [
     name: 'Alaska',
     abbreviation: 'AKT',
     timezones: ['America/Anchorage'],
-    path: 'M 43,54 L 51,54 L 51,60 L 43,60 Z',
-    labelX: 47,
-    labelY: 57
+    path: 'M 30,54 L 40,54 L 40,62 L 30,62 Z',
+    labelX: 35,
+    labelY: 58
   },
   {
     id: 'hawaii',
     name: 'Hawaii',
     abbreviation: 'HST',
     timezones: ['Pacific/Honolulu'],
-    path: 'M 35,68 L 42,68 L 42,72 L 35,72 Z',
-    labelX: 38,
-    labelY: 70
+    path: 'M 20,68 L 30,68 L 30,74 L 20,74 Z',
+    labelX: 25,
+    labelY: 71
   },
   
   // Central and South America
@@ -73,8 +73,8 @@ const TIMEZONE_REGIONS = [
     name: 'Mexico',
     abbreviation: 'CST/MST',
     timezones: ['America/Mexico_City', 'America/Chihuahua', 'America/Cancun'],
-    path: 'M 55,70 L 62,70 L 62,77 L 55,77 Z',
-    labelX: 58,
+    path: 'M 50,70 L 62,70 L 62,78 L 50,78 Z',
+    labelX: 56,
     labelY: 74
   },
   {
@@ -82,17 +82,17 @@ const TIMEZONE_REGIONS = [
     name: 'Central America',
     abbreviation: 'CST',
     timezones: ['America/Guatemala', 'America/Panama', 'America/Costa_Rica'],
-    path: 'M 60,77 L 65,77 L 65,82 L 60,82 Z',
-    labelX: 62,
-    labelY: 79
+    path: 'M 60,78 L 70,78 L 70,85 L 60,85 Z',
+    labelX: 65,
+    labelY: 82
   },
   {
     id: 'caribbean',
     name: 'Caribbean',
     abbreviation: 'EST/AST',
     timezones: ['America/Havana', 'America/Santo_Domingo', 'America/Port_of_Spain'],
-    path: 'M 65,72 L 71,72 L 71,77 L 65,77 Z',
-    labelX: 68,
+    path: 'M 70,70 L 82,70 L 82,78 L 70,78 Z',
+    labelX: 76,
     labelY: 74
   },
   {
@@ -100,45 +100,45 @@ const TIMEZONE_REGIONS = [
     name: 'Brazil East',
     abbreviation: 'BRT',
     timezones: ['America/Sao_Paulo', 'America/Rio_de_Janeiro', 'America/Belem'],
-    path: 'M 75,82 L 82,82 L 82,95 L 75,95 Z',
-    labelX: 78,
-    labelY: 88
+    path: 'M 75,85 L 90,85 L 90,100 L 75,100 Z',
+    labelX: 82,
+    labelY: 92
   },
   {
     id: 'brazil_west',
     name: 'Brazil West',
     abbreviation: 'AMT',
     timezones: ['America/Manaus', 'America/Campo_Grande'],
-    path: 'M 68,82 L 75,82 L 75,95 L 68,95 Z',
-    labelX: 71,
-    labelY: 88
+    path: 'M 65,85 L 75,85 L 75,100 L 65,100 Z',
+    labelX: 70,
+    labelY: 92
   },
   {
     id: 'argentina',
     name: 'Argentina',
     abbreviation: 'ART',
     timezones: ['America/Argentina/Buenos_Aires', 'America/Argentina/Cordoba', 'America/Argentina/Mendoza'],
-    path: 'M 68,95 L 75,100 L 68,105 Z',
-    labelX: 71,
-    labelY: 100
+    path: 'M 70,100 L 80,105 L 70,110 Z',
+    labelX: 75,
+    labelY: 104
   },
   {
     id: 'chile',
     name: 'Chile',
     abbreviation: 'CLT',
     timezones: ['America/Santiago', 'America/Punta_Arenas'],
-    path: 'M 65,95 L 68,95 L 68,105 L 65,105 Z',
-    labelX: 66,
-    labelY: 100
+    path: 'M 65,100 L 70,100 L 70,110 L 65,110 Z',
+    labelX: 67,
+    labelY: 105
   },
   {
     id: 'andes',
     name: 'Andes',
     abbreviation: 'PET',
     timezones: ['America/Lima', 'America/Bogota', 'America/La_Paz'],
-    path: 'M 63,82 L 68,82 L 68,95 L 63,95 Z',
-    labelX: 65,
-    labelY: 88
+    path: 'M 55,85 L 65,85 L 65,100 L 55,100 Z',
+    labelX: 60,
+    labelY: 92
   },
 
   // Europe
@@ -147,35 +147,35 @@ const TIMEZONE_REGIONS = [
     name: 'Western Europe',
     abbreviation: 'GMT/BST',
     timezones: ['Europe/London', 'Europe/Lisbon', 'Europe/Dublin'],
-    path: 'M 82,54 L 87,54 L 87,64 L 82,64 Z',
-    labelX: 84,
-    labelY: 58
+    path: 'M 95,54 L 105,54 L 105,64 L 95,64 Z',
+    labelX: 100,
+    labelY: 59
   },
   {
     id: 'central_europe',
     name: 'Central Europe',
     abbreviation: 'CET/CEST',
     timezones: ['Europe/Paris', 'Europe/Berlin', 'Europe/Madrid', 'Europe/Rome'],
-    path: 'M 87,54 L 92,54 L 92,64 L 87,64 Z',
-    labelX: 89,
-    labelY: 58
+    path: 'M 105,54 L 115,54 L 115,64 L 105,64 Z',
+    labelX: 110,
+    labelY: 59
   },
   {
     id: 'eastern_europe',
     name: 'Eastern Europe',
     abbreviation: 'EET/EEST',
     timezones: ['Europe/Helsinki', 'Europe/Bucharest', 'Europe/Athens', 'Europe/Sofia'],
-    path: 'M 92,54 L 97,54 L 97,64 L 92,64 Z',
-    labelX: 94,
-    labelY: 58
+    path: 'M 115,54 L 125,54 L 125,64 L 115,64 Z',
+    labelX: 120,
+    labelY: 59
   },
   {
     id: 'russia_west',
     name: 'Russia West',
     abbreviation: 'MSK',
     timezones: ['Europe/Moscow', 'Europe/Kaliningrad'],
-    path: 'M 97,45 L 107,45 L 107,60 L 97,60 Z',
-    labelX: 102,
+    path: 'M 125,45 L 140,45 L 140,60 L 125,60 Z',
+    labelX: 132,
     labelY: 52
   },
   
@@ -185,8 +185,8 @@ const TIMEZONE_REGIONS = [
     name: 'North Africa',
     abbreviation: 'CET/EET',
     timezones: ['Africa/Cairo', 'Africa/Tunis', 'Africa/Algiers', 'Africa/Casablanca'],
-    path: 'M 84,64 L 92,64 L 92,74 L 84,74 Z',
-    labelX: 88,
+    path: 'M 100,64 L 115,64 L 115,74 L 100,74 Z',
+    labelX: 107,
     labelY: 69
   },
   {
@@ -194,35 +194,35 @@ const TIMEZONE_REGIONS = [
     name: 'West Africa',
     abbreviation: 'WAT',
     timezones: ['Africa/Lagos', 'Africa/Accra', 'Africa/Dakar'],
-    path: 'M 80,74 L 84,74 L 84,84 L 80,84 Z',
-    labelX: 81,
-    labelY: 78
+    path: 'M 90,74 L 100,74 L 100,84 L 90,84 Z',
+    labelX: 95,
+    labelY: 79
   },
   {
     id: 'central_africa',
     name: 'Central Africa',
     abbreviation: 'CAT',
     timezones: ['Africa/Kinshasa', 'Africa/Khartoum', 'Africa/Bangui'],
-    path: 'M 84,74 L 92,74 L 92,84 L 84,84 Z',
-    labelX: 88,
-    labelY: 78
+    path: 'M 100,74 L 110,74 L 110,84 L 100,84 Z',
+    labelX: 105,
+    labelY: 79
   },
   {
     id: 'east_africa',
     name: 'East Africa',
     abbreviation: 'EAT',
     timezones: ['Africa/Nairobi', 'Africa/Addis_Ababa', 'Africa/Kampala'],
-    path: 'M 92,74 L 97,74 L 97,84 L 92,84 Z',
-    labelX: 94,
-    labelY: 78
+    path: 'M 110,74 L 120,74 L 120,84 L 110,84 Z',
+    labelX: 115,
+    labelY: 79
   },
   {
     id: 'south_africa',
     name: 'South Africa',
     abbreviation: 'SAST',
     timezones: ['Africa/Johannesburg', 'Africa/Harare', 'Africa/Maputo'],
-    path: 'M 88,84 L 94,84 L 94,94 L 88,94 Z',
-    labelX: 90,
+    path: 'M 105,84 L 115,84 L 115,94 L 105,94 Z',
+    labelX: 110,
     labelY: 89
   },
   
@@ -232,8 +232,8 @@ const TIMEZONE_REGIONS = [
     name: 'Middle East',
     abbreviation: 'AST/GST',
     timezones: ['Asia/Dubai', 'Asia/Riyadh', 'Asia/Baghdad', 'Asia/Jerusalem', 'Asia/Tehran'],
-    path: 'M 97,60 L 107,60 L 107,74 L 97,74 Z',
-    labelX: 102,
+    path: 'M 125,60 L 140,60 L 140,74 L 125,74 Z',
+    labelX: 132,
     labelY: 67
   },
   {
@@ -241,8 +241,8 @@ const TIMEZONE_REGIONS = [
     name: 'Central Asia',
     abbreviation: 'ALMT',
     timezones: ['Asia/Tashkent', 'Asia/Almaty', 'Asia/Yekaterinburg'],
-    path: 'M 107,50 L 117,50 L 117,65 L 107,65 Z',
-    labelX: 112,
+    path: 'M 140,50 L 155,50 L 155,65 L 140,65 Z',
+    labelX: 147,
     labelY: 57
   },
   
@@ -252,8 +252,8 @@ const TIMEZONE_REGIONS = [
     name: 'India',
     abbreviation: 'IST',
     timezones: ['Asia/Kolkata', 'Asia/Colombo', 'Asia/Dhaka'],
-    path: 'M 110,65 L 120,65 L 120,77 L 110,77 Z',
-    labelX: 115,
+    path: 'M 145,65 L 160,65 L 160,77 L 145,77 Z',
+    labelX: 152,
     labelY: 71
   },
   
@@ -263,8 +263,8 @@ const TIMEZONE_REGIONS = [
     name: 'Southeast Asia',
     abbreviation: 'ICT/WIB',
     timezones: ['Asia/Bangkok', 'Asia/Jakarta', 'Asia/Singapore', 'Asia/Kuala_Lumpur'],
-    path: 'M 120,65 L 128,65 L 128,82 L 120,82 Z',
-    labelX: 124,
+    path: 'M 160,65 L 172,65 L 172,82 L 160,82 Z',
+    labelX: 166,
     labelY: 74
   },
   {
@@ -272,18 +272,18 @@ const TIMEZONE_REGIONS = [
     name: 'China',
     abbreviation: 'CST',
     timezones: ['Asia/Shanghai', 'Asia/Hong_Kong', 'Asia/Taipei'],
-    path: 'M 120,55 L 135,55 L 135,65 L 120,65 Z',
-    labelX: 127,
-    labelY: 60
+    path: 'M 160,50 L 180,50 L 180,65 L 160,65 Z',
+    labelX: 170,
+    labelY: 57
   },
   {
     id: 'japan_korea',
     name: 'Japan & Korea',
     abbreviation: 'JST/KST',
     timezones: ['Asia/Tokyo', 'Asia/Seoul'],
-    path: 'M 135,55 L 142,55 L 142,65 L 135,65 Z',
-    labelX: 138,
-    labelY: 60
+    path: 'M 180,50 L 190,50 L 190,65 L 180,65 Z',
+    labelX: 185,
+    labelY: 57
   },
   
   // Oceania
@@ -292,8 +292,8 @@ const TIMEZONE_REGIONS = [
     name: 'Australia West',
     abbreviation: 'AWST',
     timezones: ['Australia/Perth'],
-    path: 'M 120,82 L 128,82 L 128,95 L 120,95 Z',
-    labelX: 124,
+    path: 'M 160,82 L 170,82 L 170,95 L 160,95 Z',
+    labelX: 165,
     labelY: 88
   },
   {
@@ -301,8 +301,8 @@ const TIMEZONE_REGIONS = [
     name: 'Australia Central',
     abbreviation: 'ACST',
     timezones: ['Australia/Adelaide', 'Australia/Darwin'],
-    path: 'M 128,82 L 135,82 L 135,95 L 128,95 Z',
-    labelX: 131,
+    path: 'M 170,82 L 180,82 L 180,95 L 170,95 Z',
+    labelX: 175,
     labelY: 88
   },
   {
@@ -310,8 +310,8 @@ const TIMEZONE_REGIONS = [
     name: 'Australia East',
     abbreviation: 'AEST',
     timezones: ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Brisbane'],
-    path: 'M 135,82 L 142,82 L 142,95 L 135,95 Z',
-    labelX: 138,
+    path: 'M 180,82 L 190,82 L 190,95 L 180,95 Z',
+    labelX: 185,
     labelY: 88
   },
   {
@@ -319,8 +319,8 @@ const TIMEZONE_REGIONS = [
     name: 'New Zealand',
     abbreviation: 'NZST',
     timezones: ['Pacific/Auckland', 'Pacific/Chatham'],
-    path: 'M 145,90 L 150,90 L 150,98 L 145,98 Z',
-    labelX: 147,
+    path: 'M 195,90 L 205,90 L 205,98 L 195,98 Z',
+    labelX: 200,
     labelY: 94
   }
 ];
@@ -394,19 +394,19 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
   
   return (
     <div className="world-timezone-map">
-      <svg viewBox="0 0 180 120" width="100%" height="400">
+      <svg viewBox="0 0 220 120" width="100%" height="450">
         {/* World map background */}
-        <rect x="0" y="0" width="180" height="120" fill="#f9f9f9" />
+        <rect x="0" y="0" width="220" height="120" fill="#f9f9f9" />
         
         {/* Ocean background */}
-        <rect x="30" y="40" width="125" height="70" fill="#e6f2ff" rx="2" ry="2" />
+        <rect x="15" y="40" width="195" height="70" fill="#e6f2ff" rx="2" ry="2" />
         
         {/* Map outline for reference */}
-        <path 
-          d="M 35,40 L 150,40 L 150,95 L 35,95 Z" 
-          fill="none" 
-          stroke="#ccc" 
-          strokeWidth="0.2" 
+        <path
+          d="M 15,40 L 210,40 L 210,110 L 15,110 Z"
+          fill="none"
+          stroke="#ccc"
+          strokeWidth="0.2"
           strokeDasharray="1,1"
         />
         
@@ -431,10 +431,13 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
               x={region.labelX} 
               y={region.labelY} 
               className="map-label" 
-              fontSize="3.5" 
+              fontSize="4.5" 
               textAnchor="middle"
               fill={getSelectedRegion() === region.id ? '#1976d2' : '#666'}
               fontWeight={getSelectedRegion() === region.id ? 'bold' : 'normal'}
+              stroke="white"
+              strokeWidth="0.3"
+              paintOrder="stroke"
             >
               {getAbbreviationWithDaylight(region)}
             </text>
@@ -444,18 +447,18 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
         ))}
         
         {/* Add equator line */}
-        <line x1="30" y1="75" x2="155" y2="75" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,1" />
+        <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,1" />
         
         {/* Compass indicator */}
-        <g transform="translate(40, 50)" fontSize="3">
+        <g transform="translate(25, 50)" fontSize="3">
           <circle cx="0" cy="0" r="3" fill="white" stroke="#ccc" strokeWidth="0.2" />
           <text x="0" y="0" textAnchor="middle" dominantBaseline="middle">N</text>
         </g>
         
         {/* Hover info panel */}
         {hoveredRegion && (
-          <g transform="translate(90, 20)">
-            <rect x="-40" y="-12" width="80" height="24" rx="2" ry="2" fill="white" opacity="0.9" stroke="#ccc" strokeWidth="0.5" />
+          <g transform="translate(110, 20)">
+            <rect x="-45" y="-12" width="90" height="24" rx="2" ry="2" fill="white" opacity="0.9" stroke="#ccc" strokeWidth="0.5" />
             <text x="0" y="-5" textAnchor="middle" fontSize="4" fontWeight="bold">{hoveredRegion.name}</text>
             <text x="0" y="2" textAnchor="middle" fontSize="3.5">{hoveredRegion.abbreviation}</text>
             <text x="0" y="8" textAnchor="middle" fontSize="3">{hoveredRegion.timezones[0]}</text>
