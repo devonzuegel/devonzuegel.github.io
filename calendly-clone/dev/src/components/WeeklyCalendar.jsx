@@ -190,6 +190,59 @@ function WeeklyCalendar({ events }) {
            date.getFullYear() === today.getFullYear();
   };
 
+  // Navigation functions
+  const navigatePrevious = (unit) => {
+    if (!scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const currentScrollPosition = container.scrollLeft;
+    const columnWidth = 140; // Based on CSS min-width for day-column
+
+    let scrollAmount = 0;
+
+    switch(unit) {
+      case 'week':
+        scrollAmount = columnWidth * 7;
+        break;
+      case 'month':
+        scrollAmount = columnWidth * 30;
+        break;
+      default:
+        scrollAmount = columnWidth * 7;
+    }
+
+    container.scrollTo({
+      left: Math.max(0, currentScrollPosition - scrollAmount),
+      behavior: 'smooth'
+    });
+  };
+
+  const navigateNext = (unit) => {
+    if (!scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const currentScrollPosition = container.scrollLeft;
+    const columnWidth = 140; // Based on CSS min-width for day-column
+
+    let scrollAmount = 0;
+
+    switch(unit) {
+      case 'week':
+        scrollAmount = columnWidth * 7;
+        break;
+      case 'month':
+        scrollAmount = columnWidth * 30;
+        break;
+      default:
+        scrollAmount = columnWidth * 7;
+    }
+
+    container.scrollTo({
+      left: currentScrollPosition + scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
   // Scroll to today's column
   const scrollToToday = useCallback(() => {
     if (todayColumnRef.current && scrollContainerRef.current) {
@@ -214,12 +267,58 @@ function WeeklyCalendar({ events }) {
   return (
     <div className="weekly-calendar">
       <div className="calendar-navigation">
-        <button
-          className="today-button"
-          onClick={scrollToToday}
-        >
-          Today
-        </button>
+        <div className="navigation-buttons">
+          <div className="nav-button-container">
+            <button
+              className="nav-button"
+              onClick={() => navigatePrevious('month')}
+              aria-label="Previous Month"
+            >
+              &#171; {/* Double left arrow */}
+              <span className="nav-tooltip">Previous Month</span>
+            </button>
+          </div>
+
+          <div className="nav-button-container">
+            <button
+              className="nav-button"
+              onClick={() => navigatePrevious('week')}
+              aria-label="Previous Week"
+            >
+              &#8249; {/* Single left arrow */}
+              <span className="nav-tooltip">Previous Week</span>
+            </button>
+          </div>
+
+          <button
+            className="today-button"
+            onClick={scrollToToday}
+          >
+            Today
+          </button>
+
+          <div className="nav-button-container">
+            <button
+              className="nav-button"
+              onClick={() => navigateNext('week')}
+              aria-label="Next Week"
+            >
+              &#8250; {/* Single right arrow */}
+              <span className="nav-tooltip">Next Week</span>
+            </button>
+          </div>
+
+          <div className="nav-button-container">
+            <button
+              className="nav-button"
+              onClick={() => navigateNext('month')}
+              aria-label="Next Month"
+            >
+              &#187; {/* Double right arrow */}
+              <span className="nav-tooltip">Next Month</span>
+            </button>
+          </div>
+        </div>
 
         <div className="calendar-instructions">
           <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
