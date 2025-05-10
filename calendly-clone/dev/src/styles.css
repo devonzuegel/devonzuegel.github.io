@@ -164,8 +164,8 @@ a:hover {
   position: absolute;
   top: calc(100% + var(--spacing-xs));
   left: 0;
-  width: 350px; /* Increased width for the map */
-  max-height: 400px; /* Increased height for the map */
+  width: 550px; /* Much wider for a larger map */
+  max-height: 500px; /* Taller to accommodate the larger map */
   background-color: var(--color-background);
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-md);
@@ -229,6 +229,7 @@ a:hover {
 .world-timezone-map svg {
   max-width: 100%;
   height: auto;
+  min-height: 350px; /* Ensure minimum height for better visibility */
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-sm);
   background-color: white;
@@ -251,7 +252,8 @@ a:hover {
   pointer-events: none;
   fill: var(--color-text-secondary);
   font-weight: 500;
-  font-size: 3px !important;
+  font-size: 3.5px !important;
+  text-shadow: 0 0 1px white;
 }
 
 .timezone-region-legend {
