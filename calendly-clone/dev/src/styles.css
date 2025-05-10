@@ -114,6 +114,8 @@ a:hover {
 
 .info-container {
   margin: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-background-alt);
 }
 
 /* Calendar UI */
@@ -309,7 +311,6 @@ label {
 }
 
 .time-column-header {
-  min-width: 80px;
   text-align: center;
   background-color: var(--color-background-alt);
   background: white;
@@ -483,7 +484,14 @@ th.time-column {
 }
 
 .day-column.today {
-  background-color: var(--color-text-light);
+  padding: 0;
+}
+
+.day-column .today-pill {
+  background-color: #bbb;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 50px;
+  font-weight: 500;
 }
 
 .day-column.first-availability {
@@ -652,12 +660,6 @@ th.time-column {
 
   p {
     font-size: 1em;
-  }
-
-  .time-column-header,
-  .time-column-table .time-cell {
-    min-width: 60px;
-    width: 60px;
   }
 
   .day-column {

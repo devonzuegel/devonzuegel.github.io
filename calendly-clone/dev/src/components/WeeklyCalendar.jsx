@@ -575,7 +575,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
           <table className="time-column-table">
             <thead>
               <tr>
-                <th className="time-column-header">{getTimezoneDisplay()}</th>
+                <th className="time-column-header"></th>
               </tr>
             </thead>
             <tbody>
@@ -612,7 +612,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                         className={`day-column ${today ? 'today' : ''}`}
                         ref={isFirstAvailability ? firstAvailabilityRef : today ? todayColumnRef : null}
                       >
-                        {formatDate(date)}
+                        <div className={today ? 'today-pill' : ''}>{formatDate(date)}</div>
                       </th>
                     );
                   })
