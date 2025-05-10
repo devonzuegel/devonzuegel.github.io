@@ -58,46 +58,6 @@ a:hover {
   flex-wrap: wrap;
 }
 
-.calendar-container {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  margin-bottom: 40px;
-}
-
-/* Override react-big-calendar default styles */
-.rbc-calendar {
-  font-family: 'Inter', sans-serif;
-}
-
-.rbc-header {
-  padding: 12px 0;
-  font-weight: 600;
-  color: #555;
-}
-
-.rbc-event {
-  background-color: #367da2;
-  border-radius: 4px;
-}
-
-.rbc-event.rbc-selected {
-  background-color: #2c6a8c;
-}
-
-.rbc-today {
-  background-color: rgba(54, 125, 162, 0.06);
-}
-
-.rbc-toolbar button {
-  color: #444;
-}
-
-.rbc-toolbar button.rbc-active {
-  background-color: #367da2;
-  color: white;
-}
-
 pre {
   white-space: pre-wrap;
   overflow-x: auto;
