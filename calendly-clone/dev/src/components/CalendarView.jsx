@@ -65,8 +65,8 @@ function CalendarView() {
             onTimezoneChange={handleTimezoneChange}
           />
         ) : (
-          <div className="no-events-message">
-            No availability found. Please try refreshing or changing the proxy.
+          <div className="loading-indicator">
+            Loading calendar data...
           </div>
         )
       )}
