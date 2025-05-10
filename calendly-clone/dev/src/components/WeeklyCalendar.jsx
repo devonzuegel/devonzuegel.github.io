@@ -197,15 +197,61 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     return firstEvent ? new Date(firstEvent.start) : null;
   }, [events]);
 
-  // Initialize with the first few weeks when timezone changes or events update
+  // Find the last day with available events
+  const findLastDayWithAvailability = useCallback(() => {
+    if (!events || !Array.isArray(events) || events.length === 0) return null;
+
+    // Filter only events containing "AVAILABLE"
+    const availableEvents = events.filter(event => event.summary.includes("AVAILABLE"));
+
+    if (availableEvents.length === 0) return null;
+
+    // Sort events by end date
+    const sortedEvents = [...availableEvents].sort((a, b) =>
+      new Date(b.end) - new Date(a.end)
+    );
+
+    // Return the date of the last available event
+    const lastEvent = sortedEvents[0];
+    const lastDate = lastEvent ? new Date(lastEvent.end) : null;
+
+    // If we have a last date, add one day to it
+    if (lastDate) {
+      const dayAfterLast = new Date(lastDate);
+      dayAfterLast.setDate(lastDate.getDate() + 1);
+      // Set to midnight
+      dayAfterLast.setHours(0, 0, 0, 0);
+      return dayAfterLast;
+    }
+
+    return null;
+  }, [events]);
+
+  // Initialize with the appropriate weeks when timezone changes or events update
   useEffect(() => {
     // Set start date to today
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     setStartDate(today);
-    setWeeks(generateWeeks(today, initialWeeksToLoad)); // Load weeks starting from today
-  }, [timezone]);
+
+    // Find the last day with availability if events are loaded
+    const lastDay = findLastDayWithAvailability();
+
+    if (lastDay) {
+      // Calculate how many weeks we need to show up to the last availability date + 1 day
+      const diffTime = Math.abs(lastDay - today);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const weeksNeeded = Math.ceil(diffDays / 7);
+
+      // Load at least initialWeeksToLoad, but more if needed to show up to lastDay
+      const weeksToLoad = Math.max(initialWeeksToLoad, weeksNeeded);
+      setWeeks(generateWeeks(today, weeksToLoad));
+    } else {
+      // If no events or last day couldn't be determined, load default number of weeks
+      setWeeks(generateWeeks(today, initialWeeksToLoad));
+    }
+  }, [timezone, findLastDayWithAvailability, initialWeeksToLoad]);
 
   // Handle infinite scroll
   const handleScroll = () => {
@@ -225,14 +271,18 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const nextWeekStart = new Date(lastDate);
       nextWeekStart.setDate(lastDate.getDate() + 1);
 
-      // Add more weeks
-      setWeeks(prev => [
-        ...prev,
-        ...generateWeeks(nextWeekStart, 2) // Load 2 more weeks
-      ]);
+      // Only add more weeks if we haven't reached the last availability date + 1 day
+      if (!lastAvailabilityDatePlusOne ||
+          (nextWeekStart <= lastAvailabilityDatePlusOne)) {
+        // Add more weeks
+        setWeeks(prev => [
+          ...prev,
+          ...generateWeeks(nextWeekStart, 2) // Load 2 more weeks
+        ]);
 
-      // Re-sync row heights after loading new content
-      setTimeout(syncRowHeights, 50);
+        // Re-sync row heights after loading new content
+        setTimeout(syncRowHeights, 50);
+      }
 
       setIsLoading(false);
     }
@@ -501,12 +551,17 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
   // Track if we've found the first day with availability
   const [firstAvailabilityDate, setFirstAvailabilityDate] = useState(null);
+  // Track the last day with availability plus one
+  const [lastAvailabilityDatePlusOne, setLastAvailabilityDatePlusOne] = useState(null);
 
-  // Find first availability when events change
+  // Find first and last availability when events change
   useEffect(() => {
     const firstDay = findFirstDayWithAvailability();
     setFirstAvailabilityDate(firstDay);
-  }, [events, findFirstDayWithAvailability]);
+
+    const lastDayPlusOne = findLastDayWithAvailability();
+    setLastAvailabilityDatePlusOne(lastDayPlusOne);
+  }, [events, findFirstDayWithAvailability, findLastDayWithAvailability]);
 
   // Scroll to first availability (or today) when initially loaded
   useEffect(() => {
@@ -734,6 +789,15 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                       date.getMonth() === firstAvailabilityDate.getMonth() &&
                       date.getDate() === firstAvailabilityDate.getDate();
 
+                    // Check if this date is after the last availability cutoff
+                    const isAfterLastAvailability = lastAvailabilityDatePlusOne &&
+                      new Date(date) > new Date(lastAvailabilityDatePlusOne);
+
+                    // Only render if not after the cutoff
+                    if (isAfterLastAvailability) {
+                      return null;
+                    }
+
                     return (
                       <th
                         key={date.toISOString()}
@@ -743,7 +807,17 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                         <div className={today ? 'today-pill' : ''}>{formatDate(date)}</div>
                       </th>
                     );
-                  })
+                  }).filter(Boolean) // Filter out null values
+                )}
+
+                {/* Message column after the last day with availability */}
+                {lastAvailabilityDatePlusOne && (
+                  <th className="day-column no-availability-message-column">
+                    <div className="no-availability-message">
+                      There is currently no additional availability on Devon's calendar.
+                      Reach out to her at <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
+                    </div>
+                  </th>
                 )}
               </tr>
             </thead>
@@ -752,6 +826,15 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                 <tr key={`${hour}-${minute}`} className="time-slot-row">
                   {weeks.flatMap(week =>
                     week.dates.map(date => {
+                      // Check if this date is after the last availability cutoff
+                      const isAfterLastAvailability = lastAvailabilityDatePlusOne &&
+                        new Date(date) > new Date(lastAvailabilityDatePlusOne);
+
+                      // Skip dates after the cutoff
+                      if (isAfterLastAvailability) {
+                        return null;
+                      }
+
                       const eventDetails = getEventForTimeSlot(date, hour, minute);
                       const isAvailable = !!eventDetails;
 
@@ -793,7 +876,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                           )}
                         </td>
                       );
-                    })
+                    }).filter(Boolean) // Filter out null values
+                  )}
+
+                  {/* Empty cells for the message column */}
+                  {lastAvailabilityDatePlusOne && (
+                    <td className="no-availability-message-cell"></td>
                   )}
                 </tr>
               ))}

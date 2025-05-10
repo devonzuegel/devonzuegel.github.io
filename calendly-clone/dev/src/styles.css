@@ -632,6 +632,38 @@ th.time-column {
   margin-top: var(--spacing-xl);
 }
 
+/* No availability message styles */
+.no-availability-message-column {
+  min-width: 250px !important;
+  max-width: 300px;
+  background: white !important;
+  vertical-align: top;
+}
+
+.no-availability-message {
+  padding: var(--spacing-md);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  text-align: left;
+  border-radius: var(--border-radius-md);
+}
+
+.no-availability-message a {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.no-availability-message a:hover {
+  text-decoration: underline;
+}
+
+.no-availability-message-cell {
+  border: none !important;
+  background: transparent !important;
+}
+
 /* Ensure exact matching of table structures */
 .time-column-table,
 .calendar-table {
