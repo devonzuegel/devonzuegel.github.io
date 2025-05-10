@@ -85,6 +85,14 @@ function CalendarView() {
       }));
 
       setCalendarEvents(formattedEvents);
+
+      // Set initial date to the date of first upcoming event if events exist
+      if (formattedEvents.length > 0) {
+        // Sort events by start date
+        formattedEvents.sort((a, b) => a.start - b.start);
+        // Set the calendar date to the start date of the first event
+        setDate(startOfWeek(formattedEvents[0].start));
+      }
     } catch (error) {
       console.error('Error loading calendar data:', error);
     } finally {
