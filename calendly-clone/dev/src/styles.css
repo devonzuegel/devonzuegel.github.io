@@ -1,7 +1,7 @@
 /* Variables */
 :root {
   /* Layout */
-  --time-column-width: 140px;
+  --time-column-width: 0px;
   --border-radius-sm: 2px;
   --border-radius-md: 4px;
   --border-radius-lg: 10px;
@@ -32,7 +32,7 @@
   /* Success/Green Colors */
   --color-success: #4caf50;
   --color-success-light: #81c784;
-  --color-success-lighter: #98d29b;
+  --color-success-lighter: #94d098;
   --color-success-text: #1b5e20;
 
   /* Button/UI Surface Colors */
@@ -41,11 +41,11 @@
   --color-surface-light: #bbdefb;
 
   /* Neutral Colors */
-  --color-background: white;
-  --color-background-alt: #f9f9f9;
-  --color-background-hover: #f5f5f5;
-  --color-background-striped: #fafafa;
-  --color-border: #eaeaea;
+  --color-background: #f5f5f5;
+  --color-background-alt: #e3e3e3;
+  --color-background-hover: #e3e3e3;
+  --color-background-striped: #f5f5f5;
+  --color-border: white;
   --color-border-alt: #ddd;
   --color-disabled: #cccccc;
 
@@ -293,8 +293,11 @@ label {
   position: sticky;
   left: 0;
   z-index: 10;
-  background-color: var(--color-background);
+  background-color: white;
+  margin-left: 12px;
   border-right: 1px solid var(--color-border);
+  //border: 2px solid var(--color-background-hover);
+  //border-radius: var(--border-radius-md);
 }
 
 .time-column-table {
@@ -308,9 +311,10 @@ label {
   min-width: 80px;
   text-align: center;
   background-color: var(--color-background-alt);
+  background: white;
   padding: var(--spacing-sm);
   font-weight: 500;
-  border: 1px solid var(--color-border);
+  border: 5px solid var(--color-border);
   border-right: none;
   height: 37px; /* Match the height of day-column headers */
   box-sizing: border-box;
@@ -430,7 +434,6 @@ label {
 .calendar-scroll-container {
   overflow-x: auto;
   white-space: nowrap;
-  padding-bottom: var(--spacing-xl);
   flex: 1;
   border-left: none; /* Remove any border that might create misalignment */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -446,8 +449,12 @@ label {
 
 .calendar-table th,
 .calendar-table td {
-  border: 1px solid var(--color-border);
+  border: 5px solid var(--color-border);
   text-align: center;
+}
+.calendar-table td {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 /* Legacy time-column styles kept for backward compatibility */
@@ -464,6 +471,7 @@ th.time-column {
 .day-column {
   min-width: var(--time-column-width);
   background-color: var(--color-background-hover);
+  background: white;
   padding: var(--spacing-sm);
   font-weight: 500;
   position: sticky;
@@ -474,8 +482,7 @@ th.time-column {
 }
 
 .day-column.today {
-  background-color: var(--color-success-lighter);
-  border: 1px solid var(--color-success-light);
+  background-color: var(--color-text-light);
 }
 
 .day-column.first-availability {
@@ -487,30 +494,17 @@ th.time-column {
   padding: 3px var(--spacing-sm); /* Identical padding to other cells */
   text-align: right;
   color: var(--color-text-secondary);
-  font-size: 13px;
-  background-color: var(--color-background);
+  font-size: 10px;
+  background-color: var(--color-background-hover);
   vertical-align: middle; /* Match calendar cells */
   width: 80px;
-  border: 1px solid var(--color-border);
+  border: 1px solid white;
   border-right: none;
   box-sizing: border-box;
   position: relative; /* Enable positioning for content */
   /* Remove fixed height to let it match naturally */
-  background: var(--color-background) !important; /* Override any other background */
-}
-
-/* Legacy time-cell styles kept for backward compatibility */
-.calendar-table .time-cell {
-  padding: 6px;
-  text-align: right;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  position: sticky;
-  left: 0;
-  background-color: var(--color-background) !important;
-  vertical-align: top;
-  width: 80px;
-  display: none; /* Hide in new layout */
+  background: var(--color-background-hover);
+  background: white !important;
 }
 
 .slot-cell {
@@ -519,6 +513,7 @@ th.time-column {
   vertical-align: middle;
   position: relative;
   /* Remove explicit height to match naturally */
+  overflow: visible; /* Allow content to overflow for partial indicators */
 }
 
 .time-slot-row:nth-child(even) {
@@ -529,13 +524,34 @@ th.time-column {
   background-color: var(--color-success-lighter);
 }
 
+/* Style for cells that are partially filled */
+.slot-cell.partial-cell {
+  position: relative;
+  overflow: visible;
+  background-color: var(--color-background-striped);
+}
+
 .event-indicator {
   width: 100%;
   height: 100%;
   background-color: var(--color-success-light);
   border: 1px solid var(--color-success-lighter);
+  border: 1px solid var(--color-success-light);
+  margin-left: -1px;
   opacity: 1;
   position: relative;
+
+  /* Default style for standard events */
+}
+
+/* Partial event indicator style */
+.event-indicator.partial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 0;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .event-time {

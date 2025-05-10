@@ -47,7 +47,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
 
-      return `${formattedTime} ${tzAbbr}`;
+      return `${formattedTime}`;
     }
 
     // Include minutes otherwise
@@ -235,6 +235,30 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const durationMs = eventEnd - eventStart;
     const durationSlots = Math.ceil(durationMs / (slotDuration * 60 * 1000));
 
+    // Calculate the fill percentage for this specific time slot
+    // This handles cases where an event doesn't align with 30-minute slots
+    // For vertical splitting, we show the percentage from top to bottom of the cell
+    let fillPercentage = 100; // Default to full cell
+
+    // Check if we're in the last slot of an event and the event doesn't end exactly on a slot boundary
+    if (
+      eventEnd.getHours() === hour &&
+      Math.floor(eventEnd.getMinutes() / slotDuration) * slotDuration === minute &&
+      eventEnd.getMinutes() % slotDuration !== 0
+    ) {
+      // Calculate what percentage of this slot the event fills (from top down)
+      fillPercentage = (eventEnd.getMinutes() % slotDuration) / slotDuration * 100;
+    }
+    // Check if we're in the first slot of an event and the event doesn't start exactly on a slot boundary
+    else if (
+      eventStart.getHours() === hour &&
+      eventStart.getMinutes() > minute &&
+      eventStart.getMinutes() < minute + slotDuration
+    ) {
+      // Calculate what percentage of this slot the event fills (from top down)
+      fillPercentage = (minute + slotDuration - eventStart.getMinutes()) / slotDuration * 100;
+    }
+
     // Format time range for display using the target timezone
     const formattedStart = formatTimeInTimezone(eventStart);
     const formattedEnd = formatTimeInTimezone(eventEnd);
@@ -277,7 +301,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       ...matchingEvent,
       isFirstSlot,
       durationSlots,
-      displayTime
+      displayTime,
+      fillPercentage
     };
   };
 
@@ -602,14 +627,22 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                       const eventDetails = getEventForTimeSlot(date, hour, minute);
                       const isAvailable = !!eventDetails;
 
+                      // Determine if this is a partially filled cell
+                      const isPartialCell = isAvailable && eventDetails.fillPercentage < 100;
+
                       return (
                         <td
                           key={`${date.toISOString()}-${hour}-${minute}`}
-                          className={`slot-cell ${isAvailable ? 'available' : ''}`}
+                          className={`slot-cell ${isAvailable ? 'available' : ''} ${isPartialCell ? 'partial-cell' : ''}`}
                           title={isAvailable ? `${eventDetails.summary}: ${eventDetails.displayTime}` : ''}
                         >
                           {isAvailable && (
-                            <div className="event-indicator">
+                            <div
+                              className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''}`}
+                              style={{
+                                height: `${eventDetails.fillPercentage}%`
+                              }}
+                            >
                               {eventDetails.isFirstSlot && (
                                 <div className="event-time">
                                   {eventDetails.displayTime}
