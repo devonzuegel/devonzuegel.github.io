@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import WorldTimezoneMap from './WorldTimezoneMap';
 
 function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
   const [timezones, setTimezones] = useState([]);
   const [search, setSearch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
+  const dropdownRef = useRef(null);
 
   // Detect local timezone on initial load
   useEffect(() => {
@@ -13,6 +16,20 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
       onTimezoneChange(localTimezoneName);
     }
   }, [selectedTimezone, onTimezoneChange]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const getCommonTimezones = () => {
     return [
@@ -35,6 +52,12 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    setViewMode('list'); // Switch to list view when searching
+  };
+
+  const handleMapSelection = (timezone) => {
+    onTimezoneChange(timezone);
+    setIsOpen(false);
   };
 
   const filteredTimezones = timezones.filter(tz => 
@@ -64,7 +87,7 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
   };
 
   return (
-    <div className="timezone-selector">
+    <div className="timezone-selector" ref={dropdownRef}>
       <div
         className="timezone-dropdown-header"
         onClick={() => setIsOpen(!isOpen)}
@@ -72,9 +95,30 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
         <span>Timezone: {formatTimezone(selectedTimezone)}</span>
         <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
       </div>
-      
+
       {isOpen && (
         <div className="timezone-dropdown-menu">
+          <div className="timezone-view-toggle">
+            <button
+              className={`view-toggle-btn ${viewMode === 'map' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setViewMode('map');
+              }}
+            >
+              Map View
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setViewMode('list');
+              }}
+            >
+              List View
+            </button>
+          </div>
+
           <input
             type="text"
             placeholder="Search timezones..."
@@ -83,21 +127,30 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
             onClick={(e) => e.stopPropagation()}
             className="timezone-search"
           />
-          
-          <div className="timezone-list">
-            {filteredTimezones.map((timezone) => (
-              <div
-                key={timezone}
-                className={`timezone-option ${selectedTimezone === timezone ? 'selected' : ''}`}
-                onClick={() => {
-                  onTimezoneChange(timezone);
-                  setIsOpen(false);
-                }}
-              >
-                {formatTimezone(timezone)}
-              </div>
-            ))}
-          </div>
+
+          {viewMode === 'map' && search === '' ? (
+            <div className="timezone-map-container" onClick={(e) => e.stopPropagation()}>
+              <WorldTimezoneMap
+                selectedTimezone={selectedTimezone}
+                onRegionSelect={handleMapSelection}
+              />
+            </div>
+          ) : (
+            <div className="timezone-list">
+              {filteredTimezones.map((timezone) => (
+                <div
+                  key={timezone}
+                  className={`timezone-option ${selectedTimezone === timezone ? 'selected' : ''}`}
+                  onClick={() => {
+                    onTimezoneChange(timezone);
+                    setIsOpen(false);
+                  }}
+                >
+                  {formatTimezone(timezone)}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
