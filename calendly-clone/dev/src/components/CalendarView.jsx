@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ProxySelector from './ProxySelector';
 import CalendarOutput from './CalendarOutput';
-import { loadCalendarData } from '../utils/calendarService';
+import { loadCalendarData, MOCK_CALENDAR_DATA } from '../utils/calendarService';
 
 function CalendarView() {
   const [output, setOutput] = useState('');
@@ -17,7 +17,7 @@ function CalendarView() {
     setOutput('Loading...');
 
     try {
-      const events = await loadCalendarData(selectedProxy);
+      const events = MOCK_CALENDAR_DATA; //await loadCalendarData(selectedProxy); // TODO: Put this back in to fetch real data
       setOutput(JSON.stringify(events, null, 2));
     } catch (error) {
       setOutput(`Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`);

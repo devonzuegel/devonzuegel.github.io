@@ -1,7 +1,7 @@
 // Calendar service for handling iCal data fetching and processing
 
 // Mock data for development purposes
-const MOCK_DATA = [
+export const MOCK_CALENDAR_DATA = [
   {
     id: '5b1g2ruq7ni4ber4f4iru0o1fo@google.com',
     summary: 'Jane McTest: Consultation  (Devon Zuegel)',
@@ -119,7 +119,8 @@ const MOCK_DATA = [
  */
 export async function loadCalendarData(proxyUrl) {
   try {
-    // Calendar ID from the original URL
+    // Calendar ID for Devon's Availability calendar
+    // This ID is public and can be used to access the calendar data
     const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
 
     // Two different URL formats to try
@@ -170,8 +171,7 @@ export async function loadCalendarData(proxyUrl) {
 
     // For now, using mock data as in the original code
     // In a production environment, uncomment the code below to use real data
-    const jsonEvents = MOCK_DATA;
-    /* const jsonEvents = events.map((event) => {
+    const jsonEvents = events.map((event) => {
       const icalEvent = new ICAL.Event(event);
       return {
         id: icalEvent.uid,
@@ -182,7 +182,7 @@ export async function loadCalendarData(proxyUrl) {
         end: icalEvent.endDate.toJSDate().toISOString(),
         status: icalEvent.status || 'confirmed',
       };
-    }); */
+    });
 
     // Sort events by start date
     jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
