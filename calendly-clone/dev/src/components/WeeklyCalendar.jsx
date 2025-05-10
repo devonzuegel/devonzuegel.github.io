@@ -810,13 +810,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                   }).filter(Boolean) // Filter out null values
                 )}
 
-                {/* Message column after the last day with availability */}
+                {/* Message column header after the last day with availability */}
                 {lastAvailabilityDatePlusOne && (
                   <th className="day-column no-availability-message-column">
-                    <div className="no-availability-message">
-                      There is currently no additional availability on Devon's calendar.
-                      Reach out to her at <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
-                    </div>
+                    <div className="no-availability-header">No Additional Availability</div>
                   </th>
                 )}
               </tr>
@@ -879,20 +876,22 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                     }).filter(Boolean) // Filter out null values
                   )}
 
-                  {/* Empty cells for the message column */}
+                  {/* Empty cell for the message column */}
                   {lastAvailabilityDatePlusOne && (
-                    <td className="no-availability-message-cell">
-                      
-                {/* Message column after the last day with availability */}
-                {lastAvailabilityDatePlusOne && (
-                  <th className="day-column no-availability-message-column">
-                    <div className="no-availability-message">
-                      There is currently no additional availability on Devon's calendar.
-                      Reach out to her at <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
-                    </div>
-                  </th>
-                )}
-                    </td>
+                    <>
+                      {/* Only create a special cell for the first row, otherwise leave it empty */}
+                      {/* This is effectively a rowspan without having to modify the entire table structure */}
+                      {hour === dayStartHour && minute === 0 ? (
+                        <td className="no-availability-message-cell-container" rowSpan={timeSlots.length}>
+                          <div className="no-availability-message">
+                            There is currently no additional availability on Devon's calendar.
+                            Reach out to her at <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
+                          </div>
+                        </td>
+                      ) : (
+                        <td className="no-availability-message-cell empty-cell"></td>
+                      )}
+                    </>
                   )}
                 </tr>
               ))}

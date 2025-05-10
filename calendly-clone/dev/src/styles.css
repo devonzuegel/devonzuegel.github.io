@@ -640,15 +640,32 @@ th.time-column {
   vertical-align: top;
 }
 
+.no-availability-header {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm);
+}
+
 .no-availability-message {
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   font-size: 14px;
   color: var(--color-text-secondary);
-  line-height: 1.4;
-  text-align: left;
+  line-height: 1.5;
+  text-align: center;
   border-radius: var(--border-radius-md);
-  max-width: 400px;
+  max-width: 250px;
   text-wrap: balance;
+  background: white;
+  /* Position for vertical centering */
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  border: 1px solid var(--color-border-alt);
+  box-shadow: var(--shadow-sm);
+  display: inline-block;
+  margin: 0 auto;
 }
 
 .no-availability-message a {
@@ -661,9 +678,30 @@ th.time-column {
   text-decoration: underline;
 }
 
-.no-availability-message-cell {
+.no-availability-message-cell-container {
   border: none !important;
   background: white !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+  position: relative;
+  /* Let this cell span vertically */
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  width: 250px;
+  /* Center the message */
+  display: table-cell;
+}
+
+.no-availability-message-cell.empty-cell {
+  display: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
 }
 
 /* Ensure exact matching of table structures */
