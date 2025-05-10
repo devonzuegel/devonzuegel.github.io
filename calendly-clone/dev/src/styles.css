@@ -436,7 +436,7 @@ th.time-column {
 }
 
 .time-column-table .time-cell {
-  padding: 4px 8px; /* Identical padding to other cells */
+  padding: 3px 8px; /* Identical padding to other cells */
   text-align: right;
   color: #666;
   font-size: 13px;
@@ -448,6 +448,7 @@ th.time-column {
   box-sizing: border-box;
   position: relative; /* Enable positioning for content */
   /* Remove fixed height to let it match naturally */
+  background: white !important; /* Override any other background */
 }
 
 /* Legacy time-cell styles kept for backward compatibility */
