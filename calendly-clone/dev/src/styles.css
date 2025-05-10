@@ -306,9 +306,9 @@ label {
   left: 0;
   z-index: 10;
   background-color: white;
-  border-right: 1px solid var(--color-border);
   //border: 2px solid var(--color-background-hover);
   //border-radius: var(--border-radius-md);
+  border-right: 1px solid #eee;
 }
 
 .time-column-table {
