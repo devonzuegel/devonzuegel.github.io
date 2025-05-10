@@ -427,16 +427,16 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
             />
             
             {/* Add abbreviations to all regions */}
-            <text 
-              x={region.labelX} 
-              y={region.labelY} 
-              className="map-label" 
-              fontSize="4.5" 
+            <text
+              x={region.labelX}
+              y={region.labelY}
+              className="map-label"
+              fontSize="3.8"
               textAnchor="middle"
               fill={getSelectedRegion() === region.id ? '#1976d2' : '#666'}
               fontWeight={getSelectedRegion() === region.id ? 'bold' : 'normal'}
               stroke="white"
-              strokeWidth="0.3"
+              strokeWidth="0.2"
               paintOrder="stroke"
             >
               {getAbbreviationWithDaylight(region)}

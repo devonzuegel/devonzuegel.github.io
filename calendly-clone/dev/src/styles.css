@@ -252,9 +252,9 @@ a:hover {
   pointer-events: none;
   fill: var(--color-text-secondary);
   font-weight: 500;
-  font-size: 4.5px !important;
+  font-size: 3.8px !important;
   text-shadow: 0 0 1px white;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.05px;
 }
 
 .timezone-region-legend {
