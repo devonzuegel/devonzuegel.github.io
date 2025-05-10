@@ -46,6 +46,9 @@ a:hover {
 .info-container {
   max-width: 600px;
   margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 16px 32px; 
+  border-radius: 8px;
 }
 
 /* Calendar UI */
