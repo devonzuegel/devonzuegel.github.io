@@ -3,15 +3,40 @@ import WorldTimezoneMap from './WorldTimezoneMap';
 
 function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
   const [timezones, setTimezones] = useState([]);
+  const [timezoneAbbreviations, setTimezoneAbbreviations] = useState({});
   const [search, setSearch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
   const dropdownRef = useRef(null);
 
-  // Detect local timezone on initial load
+  // Detect local timezone on initial load and cache timezone abbreviations
   useEffect(() => {
     const localTimezoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    setTimezones(getCommonTimezones());
+    const tzList = getCommonTimezones();
+    setTimezones(tzList);
+
+    // Cache timezone abbreviations for more efficient searching
+    const abbreviations = {};
+    const now = new Date();
+
+    tzList.forEach(tz => {
+      try {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          timeZoneName: 'short',
+        });
+
+        const tzAbbreviation = formatter.formatToParts(now)
+          .find(part => part.type === 'timeZoneName')?.value || '';
+
+        abbreviations[tz] = tzAbbreviation;
+      } catch (error) {
+        abbreviations[tz] = '';
+      }
+    });
+
+    setTimezoneAbbreviations(abbreviations);
+
     if (!selectedTimezone) {
       onTimezoneChange(localTimezoneName);
     }
@@ -60,26 +85,35 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
     setIsOpen(false);
   };
 
-  const filteredTimezones = timezones.filter(tz => 
-    tz.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTimezones = timezones.filter(tz => {
+    const searchText = search.toLowerCase();
+
+    // Check if the timezone identifier includes the search text
+    if (tz.toLowerCase().includes(searchText)) {
+      return true;
+    }
+
+    // Check if the timezone name (city) includes the search text
+    const cityName = tz.split('/').pop().replace(/_/g, ' ').toLowerCase();
+    if (cityName.includes(searchText)) {
+      return true;
+    }
+
+    // Check if the timezone abbreviation (PDT, EDT, etc.) includes the search text
+    const tzAbbreviation = timezoneAbbreviations[tz] || '';
+    return tzAbbreviation.toLowerCase().includes(searchText);
+  });
 
   const formatTimezone = (timezone) => {
-    // Format the timezone for display (e.g., "America/Los_Angeles" => "Los Angeles (GMT-7)")
+    // Format the timezone for display (e.g., "America/Los_Angeles" => "Los Angeles (PDT)")
     try {
-      const now = new Date();
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        timeZoneName: 'short',
-      });
+      // Reuse cached timezone abbreviation if available
+      const tzAbbreviation = timezoneAbbreviations[timezone] || '';
 
-      // Get GMT offset
-      const gmtOffset = formatter.formatToParts(now).find(part => part.type === 'timeZoneName')?.value || '';
-      
       // Format city name
       const city = timezone.split('/').pop().replace(/_/g, ' ');
-      
-      return `${city} (${gmtOffset})`;
+
+      return `${city} (${tzAbbreviation})`;
     } catch (error) {
       console.error('Error formatting timezone:', error);
       return timezone;
@@ -121,7 +155,7 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
 
           <input
             type="text"
-            placeholder="Search timezones..."
+            placeholder="Search by timezone or city"
             value={search}
             onChange={handleSearchChange}
             onClick={(e) => e.stopPropagation()}
