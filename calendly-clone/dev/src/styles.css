@@ -115,12 +115,10 @@ a:hover {
 
 .info-container {
   font-size: 12px;
-  margin: var(--spacing-lg);
-  padding: var(--spacing-xs) var(--spacing-lg);
-  border: 1px solid var(--color-background-alt);
+  margin: var(--spacing-lg); 
+  padding: 1px 0;
   width: fit-content;
   border-radius: var(--border-radius-md);
-  background-color: white;
 }
 
 /* Calendar UI */
