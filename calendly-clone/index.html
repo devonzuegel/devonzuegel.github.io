@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Devon's Availability</title>
-  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+  <head>
+    <title>Devon's Availability</title>
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
 
-  <meta property="og:title" content="Devon's availability ☀️" />
-  <meta property="og:description" content="If a time shows up on this calendar, it means Devon is *probably* available for a call at that time" />
-  <meta property="og:url" content="https://devonzuegel.com/calendar" />
-  <meta property="og:type" content="website" />
+    <meta property="og:title" content="Devon's availability ☀️" />
+    <meta
+      property="og:description"
+      content="If a time shows up on this calendar, it means Devon is *probably* available for a call at that time"
+    />
+    <meta property="og:url" content="https://devonzuegel.com/calendar" />
+    <meta property="og:type" content="website" />
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    @supports (font-variation-settings: normal) {
-      html {
-        font-family: 'Inter var', sans-serif;
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
       }
-    }
-   /*  .container {
+      @supports (font-variation-settings: normal) {
+        html {
+          font-family: 'Inter var', sans-serif;
+        }
+      }
+      /*  .container {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -29,189 +32,300 @@
       max-width: 900px;
       margin: 0 auto;
     } */
-    h1 {
-      font-size: 3em;
-      color: #444;
-      margin: 0;
-    }
-    p {
-      font-size: 1.2em;
-      color: #888;
-      text-wrap: balance;
-      line-height: 1.45;
-    }
-    a {
-      color: #367da2;
-      text-decoration: none;
-      font-weight: 500;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div style="max-width: 600px; margin-bottom: 12px">
-      <p>If a time shows up on the calendar below, it means Devon is <i>probably</i> available for a call at that time.</p>
-      <p>
-        Send a calendar invite with context to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a>, and she'll confirm
-        ASAP!
-      </p>
+      h1 {
+        font-size: 3em;
+        color: #444;
+        margin: 0;
+      }
+      p {
+        font-size: 1.2em;
+        color: #888;
+        text-wrap: balance;
+        line-height: 1.45;
+      }
+      a {
+        color: #367da2;
+        text-decoration: none;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div style="max-width: 600px; margin-bottom: 12px">
+        <p>If a time shows up on the calendar below, it means Devon is <i>probably</i> available for a call at that time.</p>
+        <p>
+          Send a calendar invite with context to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a>, and she'll confirm
+          ASAP!
+        </p>
+      </div>
+      <br />
+
+      <button onclick="loadCalendar()">Load Calendar</button>
+      <div>
+        <label>CORS Proxy:</label>
+        <select id="proxySelector">
+          <option value="https://api.allorigins.win/raw?url=">allorigins</option>
+          <option value="https://corsproxy.io/?">corsproxy.io</option>
+          <option value="https://cors-anywhere.herokuapp.com/">cors-anywhere</option>
+          <option value="https://proxy.cors.sh/">cors.sh</option>
+          <option value="direct">Direct (no proxy)</option>
+        </select>
+      </div>
+      <pre id="output"></pre>
     </div>
-    <br />
 
-    <button onclick="loadCalendar()">Load Calendar</button>
-    <div>
-      <label>CORS Proxy:</label>
-      <select id="proxySelector">
-        <option value="https://api.allorigins.win/raw?url=">allorigins</option>
-        <option value="https://corsproxy.io/?">corsproxy.io</option>
-        <option value="https://cors-anywhere.herokuapp.com/">cors-anywhere</option>
-        <option value="https://proxy.cors.sh/">cors.sh</option>
-        <option value="direct">Direct (no proxy)</option>
-      </select>
-    </div>
-    <pre id="output"></pre>
+    <script>
+      async function loadCalendar() {
+        const output = document.getElementById('output')
+        output.textContent = 'Loading...'
 
-  </div>
+        try {
+          // Calendar ID from your URL
+          const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com'
 
-  <script>
-    async function loadCalendar() {
-      const output = document.getElementById('output');
-      output.textContent = 'Loading...';
+          // Two different URL formats to try
+          const icalUrl1 = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`
+          const icalUrl2 = `https://calendar.google.com/calendar/renders/ical/${encodeURIComponent(calendarId)}/public/basic.ics`
 
-      try {
-        // Calendar ID from your URL
-        const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
+          // Get selected proxy
+          const proxySelector = document.getElementById('proxySelector')
+          const proxyUrl = proxySelector.value
 
-        // Two different URL formats to try
-        const icalUrl1 = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
-        const icalUrl2 = `https://calendar.google.com/calendar/renders/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+          // Debug information
+          console.log('Trying URL:', icalUrl1)
+          console.log('With proxy:', proxyUrl)
 
-        // Get selected proxy
-        const proxySelector = document.getElementById('proxySelector');
-        const proxyUrl = proxySelector.value;
-
-        // Debug information
-        console.log("Trying URL:", icalUrl1);
-        console.log("With proxy:", proxyUrl);
-
-        // Fetch with selected proxy
-        let response;
-
-        if (proxyUrl === 'direct') {
-          response = await fetch(icalUrl1);
-        } else {
-          response = await fetch(proxyUrl + encodeURIComponent(icalUrl1));
-        }
-
-        // If first URL fails, try the second format
-        if (!response.ok) {
-          console.log("First URL failed, trying alternative URL:", icalUrl2);
+          // Fetch with selected proxy
+          let response
 
           if (proxyUrl === 'direct') {
-            response = await fetch(icalUrl2);
+            response = await fetch(icalUrl1)
           } else {
-            response = await fetch(proxyUrl + encodeURIComponent(icalUrl2));
+            response = await fetch(proxyUrl + encodeURIComponent(icalUrl1))
           }
-        }
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch calendar: ${response.status} ${response.statusText}`);
-        }
+          // If first URL fails, try the second format
+          if (!response.ok) {
+            console.log('First URL failed, trying alternative URL:', icalUrl2)
 
-        const icalData = await response.text();
-
-        // Debug: Check if we got valid iCal data
-        console.log("Response first 100 chars:", icalData.substring(0, 100));
-
-        // Check if the response is actually an iCal file
-        if (!icalData.includes('BEGIN:VCALENDAR')) {
-          throw new Error('Response is not a valid iCal file');
-        }
-
-        const jcalData = ICAL.parse(icalData);
-        const comp = new ICAL.Component(jcalData);
-        const events = comp.getAllSubcomponents('vevent');
-
-        const jsonEvents = events.map(event => {
-          const icalEvent = new ICAL.Event(event);
-          return {
-            id: icalEvent.uid,
-            summary: icalEvent.summary,
-            description: icalEvent.description || '',
-            location: icalEvent.location || '',
-            start: icalEvent.startDate.toJSDate().toISOString(),
-            end: icalEvent.endDate.toJSDate().toISOString(),
-            status: icalEvent.status || 'confirmed'
-          };
-        });
-
-        // Sort events by start date
-        jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-        output.textContent = JSON.stringify(jsonEvents, null, 2);
-      } catch (error) {
-        output.textContent = `Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`;
-        console.error('Full error:', error);
-      }
-    }
-
-    // Alternative method using XML HTTP Request which sometimes works better with CORS
-    function loadCalendarXHR() {
-      const output = document.getElementById('output');
-      output.textContent = 'Loading with XHR...';
-
-      // Calendar ID from your URL
-      const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
-
-      // iCal URL format
-      const icalUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
-
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            try {
-              const icalData = xhr.responseText;
-              console.log("XHR Response first 100 chars:", icalData.substring(0, 100));
-
-              if (!icalData.includes('BEGIN:VCALENDAR')) {
-                output.textContent = 'Response is not a valid iCal file';
-                return;
-              }
-
-              const jcalData = ICAL.parse(icalData);
-              const comp = new ICAL.Component(jcalData);
-              const events = comp.getAllSubcomponents('vevent');
-
-              const jsonEvents = events.map(event => {
-                const icalEvent = new ICAL.Event(event);
-                return {
-                  id: icalEvent.uid,
-                  summary: icalEvent.summary,
-                  description: icalEvent.description || '',
-                  location: icalEvent.location || '',
-                  start: icalEvent.startDate.toJSDate().toISOString(),
-                  end: icalEvent.endDate.toJSDate().toISOString(),
-                  status: icalEvent.status || 'confirmed'
-                };
-              });
-
-              jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
-              output.textContent = JSON.stringify(jsonEvents, null, 2);
-            } catch (error) {
-              output.textContent = `Error processing data: ${error.message}`;
-              console.error(error);
+            if (proxyUrl === 'direct') {
+              response = await fetch(icalUrl2)
+            } else {
+              response = await fetch(proxyUrl + encodeURIComponent(icalUrl2))
             }
-          } else {
-            output.textContent = `XHR Error: ${xhr.status} ${xhr.statusText}`;
+          }
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch calendar: ${response.status} ${response.statusText}`)
+          }
+
+          const icalData = await response.text()
+
+          // Debug: Check if we got valid iCal data
+          console.log('Response first 100 chars:', icalData.substring(0, 100))
+
+          // Check if the response is actually an iCal file
+          if (!icalData.includes('BEGIN:VCALENDAR')) {
+            throw new Error('Response is not a valid iCal file')
+          }
+
+          const jcalData = ICAL.parse(icalData)
+          const comp = new ICAL.Component(jcalData)
+          const events = comp.getAllSubcomponents('vevent')
+
+          const MOCK_DATA = [
+            {
+              id: '5b1g2ruq7ni4ber4f4iru0o1fo@google.com',
+              summary: 'Jane McTest: Consultation  (Devon Zuegel)',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: 'Devon Zuegel',
+              start: '2023-02-18T14:30:00.000Z',
+              end: '2023-02-18T15:20:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '71D667FA-18EF-48A2-9916-6A62B18E8AC2',
+              summary: 'Turo rental of Fiat 500',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2023-06-11T15:00:00.000Z',
+              end: '2023-06-11T20:25:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: 'C22210CA-D3D4-48F4-A00B-59C4CB16D92E',
+              summary: 'AVAILABLE FOR MEETINGS',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2024-05-12T08:30:00.000Z',
+              end: '2024-05-12T09:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '4E76A6DE-7C8F-4F9C-84DA-1418A2AAFF1E',
+              summary: 'AVAILABLE FOR MEETINGS',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2024-08-19T17:00:00.000Z',
+              end: '2024-08-19T19:15:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '32E4B11E-E7EB-420B-9D45-6DA6D26CAD8D',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-04-17T16:00:00.000Z',
+              end: '2025-04-17T18:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '6169106C-7AFC-4183-97FA-8B36C546E62E',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-12T15:00:00.000Z',
+              end: '2025-05-12T16:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '4FC7D0FC-ACE6-4448-A1CF-AE05C0A3324D',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-12T20:00:00.000Z',
+              end: '2025-05-12T21:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '6C1D2869-7144-479F-B24B-03E8B032F4C6',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-13T15:00:00.000Z',
+              end: '2025-05-13T17:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: '207FB273-9A66-4135-918E-F9CDF8DA2783',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-13T20:00:00.000Z',
+              end: '2025-05-13T23:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: 'F9CA4ABA-BA19-4BCB-A9C7-DC0B89656D02',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-14T15:00:00.000Z',
+              end: '2025-05-14T17:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: 'D3C69E3B-58AC-4870-B8B1-1B290E1C7465',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-15T15:00:00.000Z',
+              end: '2025-05-15T18:00:00.000Z',
+              status: 'confirmed',
+            },
+            {
+              id: 'D0969E0F-4F70-42B8-9C26-E4E74DD86024',
+              summary: 'DEVON AVAILABLE',
+              description: 'THIS IS MOCK DATA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+              location: '',
+              start: '2025-05-15T20:00:00.000Z',
+              end: '2025-05-15T21:00:00.000Z',
+              status: 'confirmed',
+            },
+          ]
+
+          const jsonEvents = MOCK_DATA
+          /* events.map((event) => {
+            const icalEvent = new ICAL.Event(event)
+            return {
+              id: icalEvent.uid,
+              summary: icalEvent.summary,
+              description: icalEvent.description || '',
+              location: icalEvent.location || '',
+              start: icalEvent.startDate.toJSDate().toISOString(),
+              end: icalEvent.endDate.toJSDate().toISOString(),
+              status: icalEvent.status || 'confirmed',
+            }
+          }) */
+
+          // Sort events by start date
+          jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start))
+
+          output.textContent = JSON.stringify(jsonEvents, null, 2)
+        } catch (error) {
+          output.textContent = `Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`
+          console.error('Full error:', error)
+        }
+      }
+
+      // Alternative method using XML HTTP Request which sometimes works better with CORS
+      function loadCalendarXHR() {
+        const output = document.getElementById('output')
+        output.textContent = 'Loading with XHR...'
+
+        // Calendar ID from your URL
+        const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com'
+
+        // iCal URL format
+        const icalUrl = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`
+
+        const xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              try {
+                const icalData = xhr.responseText
+                console.log('XHR Response first 100 chars:', icalData.substring(0, 100))
+
+                if (!icalData.includes('BEGIN:VCALENDAR')) {
+                  output.textContent = 'Response is not a valid iCal file'
+                  return
+                }
+
+                const jcalData = ICAL.parse(icalData)
+                const comp = new ICAL.Component(jcalData)
+                const events = comp.getAllSubcomponents('vevent')
+
+                const jsonEvents = events.map((event) => {
+                  const icalEvent = new ICAL.Event(event)
+                  return {
+                    id: icalEvent.uid,
+                    summary: icalEvent.summary,
+                    description: icalEvent.description || '',
+                    location: icalEvent.location || '',
+                    start: icalEvent.startDate.toJSDate().toISOString(),
+                    end: icalEvent.endDate.toJSDate().toISOString(),
+                    status: icalEvent.status || 'confirmed',
+                  }
+                })
+
+                jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start))
+                output.textContent = JSON.stringify(jsonEvents, null, 2)
+              } catch (error) {
+                output.textContent = `Error processing data: ${error.message}`
+                console.error(error)
+              }
+            } else {
+              output.textContent = `XHR Error: ${xhr.status} ${xhr.statusText}`
+            }
           }
         }
-      };
 
-      xhr.open('GET', icalUrl, true);
-      xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-      xhr.send();
-    }
-  </script>
-</body>
+        xhr.open('GET', icalUrl, true)
+        xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+        xhr.send()
+      }
+    </script>
+  </body>
 </html>
