@@ -319,7 +319,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
       // Get the time column width
       const timeColumnWidth = document.querySelector('.time-column-container')?.offsetWidth || 80;
-      const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
+      const extraSpacerWidth = timeColumnWidth * 1.5; // Just to make it visually a little nicer
 
       // Position today as the second column
       const scrollLeft = todayEl.offsetLeft - extraSpacerWidth;
@@ -342,7 +342,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
       // Get the time column width
       const timeColumnWidth = document.querySelector('.time-column-container')?.offsetWidth || 80;
-      const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
+      const extraSpacerWidth = timeColumnWidth * 1.5; // Just to make it visually a little nicer
 
       // Set scroll position to show first availability as second column
       // We don't need to subtract the time column width anymore since it's outside the scroll container
@@ -510,12 +510,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                     return (
                       <th
                         key={date.toISOString()}
-                        className={`day-column ${today ? 'today' : ''} ${isFirstAvailability ? 'first-availability' : ''}`}
+                        className={`day-column ${today ? 'today' : ''}`}
                         ref={isFirstAvailability ? firstAvailabilityRef : today ? todayColumnRef : null}
                       >
                         {formatDate(date)}
-                        {today && <span className="today-indicator">Today</span>}
-                        {isFirstAvailability && <span className="first-availability-indicator">First Available</span>}
                       </th>
                     );
                   })

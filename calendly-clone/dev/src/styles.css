@@ -479,28 +479,6 @@ th.time-column {
   border: 1px solid var(--color-success-light);
 }
 
-.today-indicator {
-  display: inline-block;
-  font-size: var(--font-size-xs);
-  background-color: var(--color-success);
-  color: var(--color-background);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-lg);
-  margin-left: var(--spacing-sm);
-  font-weight: 600;
-}
-
-.first-availability-indicator {
-  display: inline-block;
-  font-size: var(--font-size-xs);
-  background-color: var(--color-primary-text);
-  color: var(--color-background);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-lg);
-  margin-left: var(--spacing-sm);
-  font-weight: 600;
-}
-
 .day-column.first-availability {
   background-color: var(--color-primary-light);
   border: 1px solid var(--color-primary-border);
