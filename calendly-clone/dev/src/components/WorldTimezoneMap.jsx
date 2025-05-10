@@ -394,21 +394,12 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
   
   return (
     <div className="world-timezone-map">
-      <svg viewBox="0 0 220 120" width="100%" height="450">
+      <svg viewBox="15 35 195 80" width="100%" height="450">
         {/* World map background */}
-        <rect x="0" y="0" width="220" height="120" fill="#f9f9f9" />
-        
+        <rect x="15" y="35" width="195" height="80" fill="#e6f2ff" />
+
         {/* Ocean background */}
-        <rect x="15" y="40" width="195" height="70" fill="#e6f2ff" rx="2" ry="2" />
-        
-        {/* Map outline for reference */}
-        <path
-          d="M 15,40 L 210,40 L 210,110 L 15,110 Z"
-          fill="none"
-          stroke="#ccc"
-          strokeWidth="0.2"
-          strokeDasharray="1,1"
-        />
+        <rect x="15" y="35" width="195" height="80" fill="#e6f2ff" rx="2" ry="2" />
         
         {/* Draw all regions */}
         {TIMEZONE_REGIONS.map(region => (
@@ -447,7 +438,7 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
         ))}
         
         {/* Add equator line */}
-        <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,1" />
+        <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.4" strokeDasharray="1,1" />
         
         {/* Compass indicator */}
         <g transform="translate(25, 50)" fontSize="3">
@@ -457,8 +448,8 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
         
         {/* Hover info panel */}
         {hoveredRegion && (
-          <g transform="translate(110, 20)">
-            <rect x="-45" y="-12" width="90" height="24" rx="2" ry="2" fill="white" opacity="0.9" stroke="#ccc" strokeWidth="0.5" />
+          <g transform="translate(110, 45)">
+            <rect x="-45" y="-12" width="90" height="24" rx="2" ry="2" fill="white" opacity="0.95" stroke="#ccc" strokeWidth="0.5" />
             <text x="0" y="-5" textAnchor="middle" fontSize="4" fontWeight="bold">{hoveredRegion.name}</text>
             <text x="0" y="2" textAnchor="middle" fontSize="3.5">{hoveredRegion.abbreviation}</text>
             <text x="0" y="8" textAnchor="middle" fontSize="3">{hoveredRegion.timezones[0]}</text>
