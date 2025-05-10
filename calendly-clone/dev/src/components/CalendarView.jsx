@@ -27,7 +27,12 @@ function CalendarView() {
         return eventEndTime >= now; // Event ends in the future or is ongoing
       });
 
-      setOutput(JSON.stringify(currentAndFutureEvents, null, 2));
+      // Filter events where summary is exactly "DEVON AVAILABLE"
+      const devonAvailableEvents = currentAndFutureEvents.filter(event =>
+        event.summary === "DEVON AVAILABLE"
+      );
+
+      setOutput(JSON.stringify(devonAvailableEvents, null, 2));
     } catch (error) {
       setOutput(`Error: ${error.message}\n\nTry a different proxy from the dropdown menu.\n\nDebug information has been logged to the console.`);
       console.error('Full error:', error);
