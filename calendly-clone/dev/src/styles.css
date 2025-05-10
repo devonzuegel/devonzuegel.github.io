@@ -229,6 +229,7 @@ label {
 .time-column-table {
   border-collapse: collapse;
   font-size: 14px;
+  width: 140px;
 }
 
 .time-column-header {
@@ -357,6 +358,7 @@ label {
   white-space: nowrap;
   padding-bottom: 20px;
   flex: 1;
+  margin-left: 10px; /* Adjust for time column width */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
