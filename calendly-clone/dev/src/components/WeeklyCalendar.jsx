@@ -271,17 +271,6 @@ function WeeklyCalendar({ events }) {
           <div className="nav-button-container">
             <button
               className="nav-button"
-              onClick={() => navigatePrevious('month')}
-              aria-label="Previous Month"
-            >
-              &#171; {/* Double left arrow */}
-              <span className="nav-tooltip">Previous Month</span>
-            </button>
-          </div>
-
-          <div className="nav-button-container">
-            <button
-              className="nav-button"
               onClick={() => navigatePrevious('week')}
               aria-label="Previous Week"
             >
@@ -305,17 +294,6 @@ function WeeklyCalendar({ events }) {
             >
               &#8250; {/* Single right arrow */}
               <span className="nav-tooltip">Next Week</span>
-            </button>
-          </div>
-
-          <div className="nav-button-container">
-            <button
-              className="nav-button"
-              onClick={() => navigateNext('month')}
-              aria-label="Next Month"
-            >
-              &#187; {/* Double right arrow */}
-              <span className="nav-tooltip">Next Month</span>
             </button>
           </div>
         </div>
