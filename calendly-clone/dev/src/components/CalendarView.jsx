@@ -55,13 +55,6 @@ function CalendarView() {
 
   return (
     <div>
-      <div className="calendar-controls">
-        <TimezoneSelector
-          selectedTimezone={selectedTimezone}
-          onTimezoneChange={handleTimezoneChange}
-        />
-      </div>
-
       {isLoading ? (
         <div className="loading-indicator">Loading calendar data...</div>
       ) : (
@@ -69,6 +62,7 @@ function CalendarView() {
           <WeeklyCalendar
             events={events}
             timezone={selectedTimezone}
+            onTimezoneChange={handleTimezoneChange}
           />
         ) : (
           <div className="no-events-message">

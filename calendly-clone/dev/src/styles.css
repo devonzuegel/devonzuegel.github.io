@@ -220,6 +220,17 @@ label {
   justify-content: space-between;
 }
 
+.navigation-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.timezone-container {
+  margin-right: 8px;
+}
+
 .navigation-buttons {
   display: flex;
   align-items: center;
@@ -455,18 +466,31 @@ td.time-cell {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .calendar-controls {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .calendar-navigation {
     flex-direction: column;
     gap: 10px;
   }
 
+  .navigation-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .timezone-container {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .timezone-selector {
+    width: 100%;
+  }
+
   .navigation-buttons {
     margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
   }
 
   pre {

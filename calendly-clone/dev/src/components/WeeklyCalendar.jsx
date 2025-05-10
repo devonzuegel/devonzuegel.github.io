@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import TimezoneSelector from './TimezoneSelector';
 
-function WeeklyCalendar({ events, timezone }) {
+function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   const [weeks, setWeeks] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const scrollContainerRef = useRef(null);
@@ -295,9 +296,10 @@ function WeeklyCalendar({ events, timezone }) {
 
       // Get the time column width
       const timeColumnWidth = document.querySelector('.time-column')?.offsetWidth || 80;
+      const extraSpacerWidth = timeColumnWidth/4; // Just to make it visually a little nicer
 
       // Position today as the second column
-      const scrollLeft = todayEl.offsetLeft - timeColumnWidth;
+      const scrollLeft = todayEl.offsetLeft - timeColumnWidth - extraSpacerWidth;
 
       container.scrollTo({
         left: scrollLeft,
@@ -377,50 +379,59 @@ function WeeklyCalendar({ events, timezone }) {
   return (
     <div className="weekly-calendar">
       <div className="calendar-navigation">
-        <div className="navigation-buttons">
-          <div className="nav-button-container">
-            <button
-              className="nav-button"
-              onClick={() => navigatePrevious('week')}
-              aria-label="Previous Week"
-            >
-              &#8249; {/* Single left arrow */}
-              <span className="nav-tooltip">Previous Week</span>
-            </button>
+        <div className="navigation-container">
+          <div className="timezone-container">
+            <TimezoneSelector
+              selectedTimezone={timezone}
+              onTimezoneChange={onTimezoneChange}
+            />
+          </div>
           </div>
 
-          <button
-            className="today-button"
-            onClick={scrollToToday}
-          >
-            Today
-          </button>
+          <div className="navigation-buttons">
+            <div className="nav-button-container">
+              <button
+                className="nav-button"
+                onClick={() => navigatePrevious('week')}
+                aria-label="Previous Week"
+              >
+                &#8249; {/* Single left arrow */}
+                <span className="nav-tooltip">Previous Week</span>
+              </button>
+            </div>
 
-          {events.length > 0 && (
             <button
-              className="first-availability-button"
-              onClick={scrollToFirstAvailability}
-              title="Scroll to first available day"
+              className="today-button"
+              onClick={scrollToToday}
             >
-              First Available
+              Today
             </button>
-          )}
 
-          <div className="nav-button-container">
-            <button
-              className="nav-button"
-              onClick={() => navigateNext('week')}
-              aria-label="Next Week"
-            >
-              &#8250; {/* Single right arrow */}
-              <span className="nav-tooltip">Next Week</span>
-            </button>
+            {/* {events.length > 0 && (
+              <button
+                className="first-availability-button"
+                onClick={scrollToFirstAvailability}
+                title="Scroll to first available day"
+              >
+                First Available
+              </button>
+            )} */}
+
+            <div className="nav-button-container">
+              <button
+                className="nav-button"
+                onClick={() => navigateNext('week')}
+                aria-label="Next Week"
+              >
+                &#8250; {/* Single right arrow */}
+                <span className="nav-tooltip">Next Week</span>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div className="calendar-instructions">
+       {/*  <div className="calendar-instructions">
           <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
-        </div>
+        </div> */}
       </div>
       <div
         ref={scrollContainerRef}
@@ -430,7 +441,7 @@ function WeeklyCalendar({ events, timezone }) {
         <table className="calendar-table">
           <thead>
             <tr>
-              <th className="time-column">Time ({getTimezoneDisplay()})</th>
+              <th className="time-column">{getTimezoneDisplay()}</th>
               {weeks.flatMap(week =>
                 week.dates.map(date => {
                   const today = isToday(date);
