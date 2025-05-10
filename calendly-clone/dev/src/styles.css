@@ -447,7 +447,6 @@ label {
 .calendar-table th,
 .calendar-table td {
   border: 1px solid var(--color-border);
-  padding: var(--spacing-xs);
   text-align: center;
 }
 
@@ -543,8 +542,7 @@ th.time-column {
   top: 0;
   left: 0;
   font-size: var(--font-size-xs);
-  color: var(--color-success-text);
-  background-color: rgba(255, 255, 255, 0.9);
+  color: white;
   padding: var(--spacing-xs) var(--spacing-xs);
   border-radius: var(--border-radius-sm);
   white-space: nowrap;
