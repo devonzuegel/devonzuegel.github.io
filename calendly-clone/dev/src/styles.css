@@ -298,7 +298,7 @@ label {
   position: relative;
   border: 1px solid var(--color-background-alt);
   background: white;
-  padding: 32px 32px 64px 16px;
+  padding: 32px 32px 64px 2px;
 }
 
 .time-column-container {
