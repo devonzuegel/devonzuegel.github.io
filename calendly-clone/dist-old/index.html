@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devon's Availability</title>
+    
+    <!-- Required external dependency -->
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+    
+    <!-- Meta tags for sharing -->
+    <meta property="og:title" content="Devon's availability ☀️" />
+    <meta
+      property="og:description"
+      content="If a time shows up on this calendar, it means Devon is *probably* available for a call at that time"
+    />
+    <meta property="og:url" content="https://devonzuegel.com/calendar" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Include your React built CSS -->
+    <link rel="stylesheet" href="../dist/assets/index.css">
+    
+    <style>
+      /* You can add any additional styles here if needed */
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="info-container">
+        <p>If a time shows up on the calendar below, it means Devon is <i>probably</i> available for a call at that time.</p>
+        <p>
+          Send a calendar invite with context to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a>, and she'll confirm ASAP!
+        </p>
+      </div>
+      <br />
+      
+      <!-- This is the container where React will mount -->
+      <div id="root"></div>
+    </div>
+    
+    <!-- Include your React built JS -->
+    <script type="module" src="../dist/assets/index.js"></script>
+  </body>
+</html>
