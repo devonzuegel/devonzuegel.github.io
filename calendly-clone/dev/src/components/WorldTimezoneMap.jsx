@@ -1,97 +1,293 @@
 import React from 'react';
 
-// Map regions roughly corresponding to common timezone areas
+// More comprehensive timezone data
 const TIMEZONE_REGIONS = [
-  { 
-    id: 'pacific', 
-    name: 'Pacific',
-    timezones: ['Pacific/Honolulu', 'Pacific/Auckland', 'Pacific/Fiji', 'Pacific/Midway'],
-    path: 'M10,80 L60,80 L60,130 L10,130 Z', 
-    transform: 'translate(0, 0)' 
-  },
-  { 
-    id: 'us_west', 
-    name: 'US West Coast', 
+  // North America
+  {
+    id: 'pacific',
+    name: 'Pacific Time',
     timezones: ['America/Los_Angeles', 'America/Vancouver', 'America/Tijuana'],
-    path: 'M60,70 L90,70 L90,110 L60,110 Z', 
-    transform: 'translate(0, 0)' 
+    path: 'M 51,54 L 55,54 L 55,68 L 51,68 Z',
+    labelX: 52,
+    labelY: 61
   },
-  { 
-    id: 'us_mountain', 
-    name: 'US Mountain', 
+  {
+    id: 'mountain',
+    name: 'Mountain Time',
     timezones: ['America/Denver', 'America/Edmonton', 'America/Phoenix'],
-    path: 'M90,70 L110,70 L110,110 L90,110 Z', 
-    transform: 'translate(0, 0)' 
+    path: 'M 55,54 L 59,54 L 59,68 L 55,68 Z',
+    labelX: 56,
+    labelY: 61
   },
-  { 
-    id: 'us_central', 
-    name: 'US Central', 
+  {
+    id: 'central',
+    name: 'Central Time',
     timezones: ['America/Chicago', 'America/Mexico_City', 'America/Winnipeg'],
-    path: 'M110,70 L125,70 L125,110 L110,110 Z', 
-    transform: 'translate(0, 0)' 
+    path: 'M 59,54 L 63,54 L 63,68 L 59,68 Z',
+    labelX: 60,
+    labelY: 61
   },
-  { 
-    id: 'us_east', 
-    name: 'US East Coast', 
+  {
+    id: 'eastern',
+    name: 'Eastern Time',
     timezones: ['America/New_York', 'America/Toronto', 'America/Indiana/Indianapolis'],
-    path: 'M125,70 L145,70 L145,110 L125,110 Z', 
-    transform: 'translate(0, 0)' 
+    path: 'M 63,54 L 67,54 L 67,68 L 63,68 Z',
+    labelX: 64,
+    labelY: 61
   },
-  { 
-    id: 'south_america', 
-    name: 'South America', 
-    timezones: ['America/Sao_Paulo', 'America/Argentina/Buenos_Aires', 'America/Santiago'],
-    path: 'M125,115 L145,115 L145,160 L105,160 L105,130 L125,130 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'atlantic',
+    name: 'Atlantic Time',
+    timezones: ['America/Halifax', 'America/Puerto_Rico', 'America/Caracas'],
+    path: 'M 67,54 L 71,54 L 71,68 L 67,68 Z',
+    labelX: 68,
+    labelY: 61
   },
-  { 
-    id: 'western_europe', 
-    name: 'Western Europe', 
-    timezones: ['Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Madrid'],
-    path: 'M150,60 L170,60 L170,100 L150,100 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'alaska',
+    name: 'Alaska',
+    timezones: ['America/Anchorage'],
+    path: 'M 43,54 L 51,54 L 51,60 L 43,60 Z',
+    labelX: 47,
+    labelY: 57
   },
-  { 
-    id: 'eastern_europe', 
-    name: 'Eastern Europe', 
-    timezones: ['Europe/Moscow', 'Europe/Helsinki', 'Europe/Athens', 'Europe/Istanbul'],
-    path: 'M170,60 L190,60 L190,100 L170,100 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'hawaii',
+    name: 'Hawaii',
+    timezones: ['Pacific/Honolulu'],
+    path: 'M 35,68 L 42,68 L 42,72 L 35,72 Z',
+    labelX: 38,
+    labelY: 70
   },
-  { 
-    id: 'middle_east', 
-    name: 'Middle East', 
-    timezones: ['Asia/Dubai', 'Asia/Riyadh', 'Asia/Tehran', 'Asia/Jerusalem'],
-    path: 'M190,60 L210,60 L210,100 L190,100 Z', 
-    transform: 'translate(0, 0)' 
+  
+  // Central and South America
+  {
+    id: 'mexico',
+    name: 'Mexico',
+    timezones: ['America/Mexico_City', 'America/Chihuahua', 'America/Cancun'],
+    path: 'M 55,70 L 62,70 L 62,77 L 55,77 Z',
+    labelX: 58,
+    labelY: 74
   },
-  { 
-    id: 'india', 
-    name: 'India', 
-    timezones: ['Asia/Kolkata', 'Asia/Colombo', 'Asia/Karachi', 'Asia/Dhaka'],
-    path: 'M210,60 L230,60 L230,100 L210,100 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'central_america',
+    name: 'Central America',
+    timezones: ['America/Guatemala', 'America/Panama', 'America/Costa_Rica'],
+    path: 'M 60,77 L 65,77 L 65,82 L 60,82 Z',
+    labelX: 62,
+    labelY: 79
   },
-  { 
-    id: 'asia', 
-    name: 'Asia', 
-    timezones: ['Asia/Shanghai', 'Asia/Hong_Kong', 'Asia/Singapore', 'Asia/Seoul'],
-    path: 'M230,40 L260,40 L260,100 L230,100 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'caribbean',
+    name: 'Caribbean',
+    timezones: ['America/Havana', 'America/Santo_Domingo', 'America/Port_of_Spain'],
+    path: 'M 65,72 L 71,72 L 71,77 L 65,77 Z',
+    labelX: 68,
+    labelY: 74
   },
-  { 
-    id: 'japan', 
-    name: 'Japan', 
-    timezones: ['Asia/Tokyo'],
-    path: 'M260,50 L275,50 L275,80 L260,80 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'brazil_east',
+    name: 'Brazil East',
+    timezones: ['America/Sao_Paulo', 'America/Rio_de_Janeiro', 'America/Belem'],
+    path: 'M 75,82 L 82,82 L 82,95 L 75,95 Z',
+    labelX: 78,
+    labelY: 88
   },
-  { 
-    id: 'australia', 
-    name: 'Australia', 
-    timezones: ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Perth', 'Australia/Brisbane'],
-    path: 'M240,110 L270,110 L270,150 L240,150 Z', 
-    transform: 'translate(0, 0)' 
+  {
+    id: 'brazil_west',
+    name: 'Brazil West',
+    timezones: ['America/Manaus', 'America/Campo_Grande'],
+    path: 'M 68,82 L 75,82 L 75,95 L 68,95 Z',
+    labelX: 71,
+    labelY: 88
+  },
+  {
+    id: 'argentina',
+    name: 'Argentina',
+    timezones: ['America/Argentina/Buenos_Aires', 'America/Argentina/Cordoba', 'America/Argentina/Mendoza'],
+    path: 'M 68,95 L 75,100 L 68,105 Z',
+    labelX: 71,
+    labelY: 100
+  },
+  {
+    id: 'chile',
+    name: 'Chile',
+    timezones: ['America/Santiago', 'America/Punta_Arenas'],
+    path: 'M 65,95 L 68,95 L 68,105 L 65,105 Z',
+    labelX: 66,
+    labelY: 100
+  },
+  {
+    id: 'andes',
+    name: 'Andes',
+    timezones: ['America/Lima', 'America/Bogota', 'America/La_Paz'],
+    path: 'M 63,82 L 68,82 L 68,95 L 63,95 Z',
+    labelX: 65,
+    labelY: 88
+  },
+
+  // Europe
+  {
+    id: 'western_europe',
+    name: 'Western Europe',
+    timezones: ['Europe/London', 'Europe/Lisbon', 'Europe/Dublin'],
+    path: 'M 82,54 L 87,54 L 87,64 L 82,64 Z',
+    labelX: 84,
+    labelY: 58
+  },
+  {
+    id: 'central_europe',
+    name: 'Central Europe',
+    timezones: ['Europe/Paris', 'Europe/Berlin', 'Europe/Madrid', 'Europe/Rome'],
+    path: 'M 87,54 L 92,54 L 92,64 L 87,64 Z',
+    labelX: 89,
+    labelY: 58
+  },
+  {
+    id: 'eastern_europe',
+    name: 'Eastern Europe',
+    timezones: ['Europe/Helsinki', 'Europe/Bucharest', 'Europe/Athens', 'Europe/Sofia'],
+    path: 'M 92,54 L 97,54 L 97,64 L 92,64 Z',
+    labelX: 94,
+    labelY: 58
+  },
+  {
+    id: 'russia_west',
+    name: 'Russia West',
+    timezones: ['Europe/Moscow', 'Europe/Kaliningrad'],
+    path: 'M 97,45 L 107,45 L 107,60 L 97,60 Z',
+    labelX: 102,
+    labelY: 52
+  },
+  
+  // Africa
+  {
+    id: 'north_africa',
+    name: 'North Africa',
+    timezones: ['Africa/Cairo', 'Africa/Tunis', 'Africa/Algiers', 'Africa/Casablanca'],
+    path: 'M 84,64 L 92,64 L 92,74 L 84,74 Z',
+    labelX: 88,
+    labelY: 69
+  },
+  {
+    id: 'west_africa',
+    name: 'West Africa',
+    timezones: ['Africa/Lagos', 'Africa/Accra', 'Africa/Dakar'],
+    path: 'M 80,74 L 84,74 L 84,84 L 80,84 Z',
+    labelX: 81,
+    labelY: 78
+  },
+  {
+    id: 'central_africa',
+    name: 'Central Africa',
+    timezones: ['Africa/Kinshasa', 'Africa/Khartoum', 'Africa/Bangui'],
+    path: 'M 84,74 L 92,74 L 92,84 L 84,84 Z',
+    labelX: 88,
+    labelY: 78
+  },
+  {
+    id: 'east_africa',
+    name: 'East Africa',
+    timezones: ['Africa/Nairobi', 'Africa/Addis_Ababa', 'Africa/Kampala'],
+    path: 'M 92,74 L 97,74 L 97,84 L 92,84 Z',
+    labelX: 94,
+    labelY: 78
+  },
+  {
+    id: 'south_africa',
+    name: 'South Africa',
+    timezones: ['Africa/Johannesburg', 'Africa/Harare', 'Africa/Maputo'],
+    path: 'M 88,84 L 94,84 L 94,94 L 88,94 Z',
+    labelX: 90,
+    labelY: 89
+  },
+  
+  // Middle East & Central Asia
+  {
+    id: 'middle_east',
+    name: 'Middle East',
+    timezones: ['Asia/Dubai', 'Asia/Riyadh', 'Asia/Baghdad', 'Asia/Jerusalem', 'Asia/Tehran'],
+    path: 'M 97,60 L 107,60 L 107,74 L 97,74 Z',
+    labelX: 102,
+    labelY: 67
+  },
+  {
+    id: 'central_asia',
+    name: 'Central Asia',
+    timezones: ['Asia/Tashkent', 'Asia/Almaty', 'Asia/Yekaterinburg'],
+    path: 'M 107,50 L 117,50 L 117,65 L 107,65 Z',
+    labelX: 112,
+    labelY: 57
+  },
+  
+  // South Asia
+  {
+    id: 'india',
+    name: 'India',
+    timezones: ['Asia/Kolkata', 'Asia/Colombo', 'Asia/Dhaka'],
+    path: 'M 110,65 L 120,65 L 120,77 L 110,77 Z',
+    labelX: 115,
+    labelY: 71
+  },
+  
+  // East Asia
+  {
+    id: 'se_asia',
+    name: 'Southeast Asia',
+    timezones: ['Asia/Bangkok', 'Asia/Jakarta', 'Asia/Singapore', 'Asia/Kuala_Lumpur'],
+    path: 'M 120,65 L 128,65 L 128,82 L 120,82 Z',
+    labelX: 124,
+    labelY: 74
+  },
+  {
+    id: 'china',
+    name: 'China',
+    timezones: ['Asia/Shanghai', 'Asia/Hong_Kong', 'Asia/Taipei'],
+    path: 'M 120,55 L 135,55 L 135,65 L 120,65 Z',
+    labelX: 127,
+    labelY: 60
+  },
+  {
+    id: 'japan_korea',
+    name: 'Japan & Korea',
+    timezones: ['Asia/Tokyo', 'Asia/Seoul'],
+    path: 'M 135,55 L 142,55 L 142,65 L 135,65 Z',
+    labelX: 138,
+    labelY: 60
+  },
+  
+  // Oceania
+  {
+    id: 'australia_west',
+    name: 'Australia West',
+    timezones: ['Australia/Perth'],
+    path: 'M 120,82 L 128,82 L 128,95 L 120,95 Z',
+    labelX: 124,
+    labelY: 88
+  },
+  {
+    id: 'australia_central',
+    name: 'Australia Central',
+    timezones: ['Australia/Adelaide', 'Australia/Darwin'],
+    path: 'M 128,82 L 135,82 L 135,95 L 128,95 Z',
+    labelX: 131,
+    labelY: 88
+  },
+  {
+    id: 'australia_east',
+    name: 'Australia East',
+    timezones: ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Brisbane'],
+    path: 'M 135,82 L 142,82 L 142,95 L 135,95 Z',
+    labelX: 138,
+    labelY: 88
+  },
+  {
+    id: 'new_zealand',
+    name: 'New Zealand',
+    timezones: ['Pacific/Auckland', 'Pacific/Chatham'],
+    path: 'M 145,90 L 150,90 L 150,98 L 145,98 Z',
+    labelX: 147,
+    labelY: 94
   }
 ];
 
@@ -112,38 +308,58 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
 
   return (
     <div className="world-timezone-map">
-      <svg width="300" height="170" viewBox="0 0 300 170">
-        <rect x="0" y="0" width="300" height="170" fill="#f0f0f0" />
+      <svg viewBox="0 0 180 120" width="100%" height="280">
+        {/* World map background */}
+        <rect x="0" y="0" width="180" height="120" fill="#f9f9f9" />
         
-        {/* World map regions */}
+        {/* Ocean background */}
+        <rect x="30" y="40" width="125" height="70" fill="#e6f2ff" rx="2" ry="2" />
+        
+        {/* Map outline for reference */}
+        <path 
+          d="M 35,40 L 150,40 L 150,95 L 35,95 Z" 
+          fill="none" 
+          stroke="#ccc" 
+          strokeWidth="0.2" 
+          strokeDasharray="1,1"
+        />
+        
+        {/* Draw all regions */}
         {TIMEZONE_REGIONS.map(region => (
           <g key={region.id} onClick={() => handleRegionClick(region)}>
             <path
               d={region.path}
-              transform={region.transform}
-              fill={getSelectedRegion() === region.id ? '#90caf9' : '#e0e0e0'}
-              stroke="#fff"
-              strokeWidth="1"
+              fill={getSelectedRegion() === region.id ? '#90caf9' : '#d0e8ff'}
+              stroke="#ffffff"
+              strokeWidth="0.5"
               className="timezone-region"
             />
-            <title>{region.name}</title>
+            <title>{region.name}: {region.timezones.join(', ')}</title>
           </g>
         ))}
         
-        {/* Region labels */}
-        <text x="35" y="105" className="map-label" fontSize="6">Pacific</text>
-        <text x="75" y="90" className="map-label" fontSize="6">West</text>
-        <text x="100" y="90" className="map-label" fontSize="6">MTN</text>
-        <text x="117" y="90" className="map-label" fontSize="6">CTL</text>
-        <text x="135" y="90" className="map-label" fontSize="6">East</text>
-        <text x="125" y="140" className="map-label" fontSize="6">S. America</text>
-        <text x="160" y="80" className="map-label" fontSize="6">W. Europe</text>
-        <text x="180" y="80" className="map-label" fontSize="6">E. Europe</text>
-        <text x="200" y="80" className="map-label" fontSize="6">Middle East</text>
-        <text x="220" y="80" className="map-label" fontSize="6">India</text>
-        <text x="245" y="70" className="map-label" fontSize="6">Asia</text>
-        <text x="267" y="65" className="map-label" fontSize="6">JP</text>
-        <text x="255" y="130" className="map-label" fontSize="6">Australia</text>
+        {/* Add equator line */}
+        <line x1="30" y1="75" x2="155" y2="75" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,1" />
+        
+        {/* Region labels - only show some for readability */}
+        <g className="map-labels" fontSize="2" textAnchor="middle">
+          <text x="52" y="61" className="map-label">Pacific</text>
+          <text x="64" y="61" className="map-label">Eastern</text>
+          <text x="78" y="88" className="map-label">Brazil</text>
+          <text x="71" y="100" className="map-label">Argentina</text>
+          <text x="84" y="58" className="map-label">W. Europe</text>
+          <text x="102" y="67" className="map-label">Middle East</text>
+          <text x="115" y="71" className="map-label">India</text>
+          <text x="127" y="60" className="map-label">China</text>
+          <text x="138" y="60" className="map-label">Japan</text>
+          <text x="131" y="88" className="map-label">Australia</text>
+        </g>
+        
+        {/* Compass indicator */}
+        <g transform="translate(40, 50)" fontSize="3">
+          <circle cx="0" cy="0" r="3" fill="white" stroke="#ccc" strokeWidth="0.2" />
+          <text x="0" y="0" textAnchor="middle" dominantBaseline="middle">N</text>
+        </g>
       </svg>
       
       <div className="timezone-region-legend">
