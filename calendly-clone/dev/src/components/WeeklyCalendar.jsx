@@ -220,6 +220,10 @@ function WeeklyCalendar({ events }) {
         >
           Today
         </button>
+
+        <div className="calendar-instructions">
+          <p><small>Scroll horizontally to see more dates. Green blocks indicate available time slots.</small></p>
+        </div>
       </div>
       <div
         ref={scrollContainerRef}

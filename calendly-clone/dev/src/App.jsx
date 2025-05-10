@@ -11,11 +11,7 @@ function App() {
           Send a calendar invite with context to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a>, and she'll confirm ASAP!
         </p>
       </div>
-      <br />
       <CalendarView />
-      <div className="calendar-instructions">
-        <p><small>Scroll horizontally to see more dates. Green blocks indicate available time slots.</small></p>
-      </div>
     </div>
   );
 }

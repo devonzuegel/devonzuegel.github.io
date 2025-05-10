@@ -22,7 +22,6 @@ h1 {
 p {
   font-size: 1.2em;
   color: #888;
-  text-wrap: balance;
   line-height: 1.45;
 }
 
@@ -38,14 +37,11 @@ a:hover {
 
 /* Layout */
 .container {
-  padding: 24px;
   margin: 0 auto;
-  max-width: 900px;
 }
 
 .info-container {
-  max-width: 600px;
-  margin-bottom: 12px;
+  margin: 12px;
 }
 
 /* Calendar UI */
@@ -101,12 +97,6 @@ pre {
   text-decoration: underline;
 }
 
-.calendar-instructions {
-  margin-top: 12px;
-  text-align: center;
-  color: #666;
-}
-
 /* Controls */
 button {
   padding: 8px 16px;
@@ -150,13 +140,21 @@ label {
 }
 
 .calendar-navigation {
+  padding: 0 12px;
   margin-bottom: 12px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
-.today-button {
-  padding: 6px 12px;
+.calendar-navigation .calendar-instructions p {
+  color: #999;
+  font-size: 0.9em;
+  padding: 0;
+  margin: 0;
+}
+
+.calendar-navigation .today-button {
+  padding:6px 12px;
   font-size: 0.9em;
   background-color: #f0f0f0;
   color: #444;
@@ -165,7 +163,7 @@ label {
   cursor: pointer;
 }
 
-.today-button:hover {
+.calendar-navigation .today-button:hover {
   background-color: #e8e8e8;
 }
 
