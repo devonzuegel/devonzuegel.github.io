@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-function WeeklyCalendar({ events }) {
+function WeeklyCalendar({ events, timezone }) {
   const [weeks, setWeeks] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const scrollContainerRef = useRef(null);
@@ -16,10 +16,13 @@ function WeeklyCalendar({ events }) {
 
   // Format date as "Mon, May 10"
   const formatDate = (date) => {
+    if (!date) return "";
+    
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: timezone || undefined
     });
   };
 
@@ -27,11 +30,33 @@ function WeeklyCalendar({ events }) {
   const formatTime = (hour, minute) => {
     const time = new Date();
     time.setHours(hour, minute);
+    
     return time.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true
+      hour12: true,
+      timeZone: timezone || undefined
     });
+  };
+
+  // Convert a date from ISO string to a Date object preserving the exact same point in time
+  // This function doesn't actually change the time, just ensures we have a proper Date object
+  const parseISODate = (isoString) => {
+    return new Date(isoString);
+  };
+
+  // Format a date for display in the target timezone
+  const formatTimeInTimezone = (date, options = {}) => {
+    if (!date) return "";
+    
+    const defaultOptions = {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone || undefined
+    };
+    
+    return date.toLocaleTimeString('en-US', { ...defaultOptions, ...options });
   };
 
   // Generate a week's worth of days starting from a given date
@@ -65,7 +90,7 @@ function WeeklyCalendar({ events }) {
     return result;
   };
 
-  // Initialize with the first few weeks
+  // Initialize with the first few weeks when timezone changes
   useEffect(() => {
     // Set start date to the beginning of the current week (Monday)
     const currentDate = new Date();
@@ -78,7 +103,7 @@ function WeeklyCalendar({ events }) {
 
     setStartDate(weekStart);
     setWeeks(generateWeeks(weekStart, initialWeeksToLoad));
-  }, []);
+  }, [timezone]);
 
   // Handle infinite scroll
   const handleScroll = () => {
@@ -112,17 +137,21 @@ function WeeklyCalendar({ events }) {
   const getEventForTimeSlot = (date, hour, minute) => {
     if (!events || !Array.isArray(events)) return null;
 
+    // Create the slot start and end times for the current day/hour/minute
     const slotStart = new Date(date);
     slotStart.setHours(hour, minute, 0, 0);
 
     const slotEnd = new Date(slotStart);
     slotEnd.setMinutes(slotStart.getMinutes() + slotDuration);
 
+    // Find event that overlaps with this time slot
     const matchingEvent = events.find(event => {
-      const eventStart = new Date(event.start);
-      const eventEnd = new Date(event.end);
+      // Parse event times
+      const eventStart = parseISODate(event.start);
+      const eventEnd = parseISODate(event.end);
 
       // Check if the event overlaps with this time slot
+      // This works because all times are in UTC internally
       return (
         (eventStart < slotEnd && eventEnd > slotStart) &&
         event.summary.includes("AVAILABLE")
@@ -131,30 +160,23 @@ function WeeklyCalendar({ events }) {
 
     if (!matchingEvent) return null;
 
+    // Parse event times
+    const eventStart = parseISODate(matchingEvent.start);
+    const eventEnd = parseISODate(matchingEvent.end);
+
     // Calculate if this is the first slot of the event
-    const eventStart = new Date(matchingEvent.start);
     const isFirstSlot = (
       eventStart.getHours() === hour &&
       Math.abs(eventStart.getMinutes() - minute) < slotDuration
     );
 
     // Calculate event duration in slots
-    const eventEnd = new Date(matchingEvent.end);
     const durationMs = eventEnd - eventStart;
     const durationSlots = Math.ceil(durationMs / (slotDuration * 60 * 1000));
 
-    // Format time range for display
-    const formattedStart = eventStart.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-
-    const formattedEnd = eventEnd.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    // Format time range for display using the target timezone
+    const formattedStart = formatTimeInTimezone(eventStart);
+    const formattedEnd = formatTimeInTimezone(eventEnd);
 
     return {
       ...matchingEvent,
@@ -184,7 +206,10 @@ function WeeklyCalendar({ events }) {
 
   // Check if a date is today
   const isToday = (date) => {
+    if (!date) return false;
+    
     const today = new Date();
+    
     return date.getDate() === today.getDate() &&
            date.getMonth() === today.getMonth() &&
            date.getFullYear() === today.getFullYear();
@@ -264,6 +289,29 @@ function WeeklyCalendar({ events }) {
     }
   }, [weeks, scrollToToday]);
 
+  // Format timezone for display
+  const getTimezoneDisplay = () => {
+    if (!timezone) return "Local Timezone";
+    
+    try {
+      // Get a sample date in this timezone
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        timeZoneName: 'short'
+      });
+      
+      // Extract the timezone abbreviation (like EST, PST)
+      const tzAbbr = formatter.formatToParts(now)
+        .find(part => part.type === 'timeZoneName')?.value || timezone;
+      
+      return `${timezone.split('/').pop().replace(/_/g, ' ')} (${tzAbbr})`;
+    } catch (error) {
+      console.error('Error formatting timezone display:', error);
+      return timezone;
+    }
+  };
+
   return (
     <div className="weekly-calendar">
       <div className="calendar-navigation">
@@ -310,7 +358,7 @@ function WeeklyCalendar({ events }) {
         <table className="calendar-table">
           <thead>
             <tr>
-              <th className="time-column">Time</th>
+              <th className="time-column">Time ({getTimezoneDisplay()})</th>
               {weeks.flatMap(week =>
                 week.dates.map(date => {
                   const today = isToday(date);
