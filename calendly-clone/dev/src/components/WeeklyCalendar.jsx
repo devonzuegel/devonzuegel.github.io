@@ -472,6 +472,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const now = new Date();
       const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone: timezone,
+        // show just the 3-letter timezone abbreviation, such as PDT, EDT, etc.
         timeZoneName: 'short'
       });
       
@@ -479,7 +480,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const tzAbbr = formatter.formatToParts(now)
         .find(part => part.type === 'timeZoneName')?.value || timezone;
       
-      return `${timezone.split('/').pop().replace(/_/g, ' ')} (${tzAbbr})`;
+      return tzAbbr;
+      //return `${timezone.split('/').pop().replace(/_/g, ' ')} (${tzAbbr})`;
     } catch (error) {
       console.error('Error formatting timezone display:', error);
       return timezone;
