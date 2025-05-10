@@ -199,22 +199,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
   // Initialize with the first few weeks when timezone changes or events update
   useEffect(() => {
-    // Set default start date to the beginning of the current week (Monday)
-    let initialDate = new Date();
-    const day = initialDate.getDay(); // 0 is Sunday, 1 is Monday
-    const diff = initialDate.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+    // Set start date to today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    // Calculate initial weeks starting point
-    const weekStart = new Date(initialDate);
-    weekStart.setDate(diff);
-    weekStart.setHours(0, 0, 0, 0);
-
-    // Start 2 weeks before current date to allow scrolling backwards
-    const twoWeeksBack = new Date(weekStart);
-    twoWeeksBack.setDate(weekStart.getDate() - 14);
-
-    setStartDate(twoWeeksBack);
-    setWeeks(generateWeeks(twoWeeksBack, initialWeeksToLoad + 2)); // Load extra weeks
+    setStartDate(today);
+    setWeeks(generateWeeks(today, initialWeeksToLoad)); // Load weeks starting from today
   }, [timezone]);
 
   // Handle infinite scroll

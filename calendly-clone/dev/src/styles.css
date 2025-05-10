@@ -463,15 +463,18 @@ label {
   position: absolute;
   left: 0;
   right: 0;
+  margin-left: -2px;
+  margin-right: -2px;
   height: 2px;
   background-color: var(--color-primary); /* Bright red line */
   z-index: 60;
   pointer-events: none;
+  border-radius: 200px;
 }
 
 .today-time-text {
   position: absolute;
-  left: 33px;
+  left: 35px;
   top: -9px;
   background-color: var(--color-background);
   color: var(--color-primary);
@@ -492,7 +495,7 @@ label {
 
 .calendar-table th,
 .calendar-table td {
-  border: 5px solid var(--color-border);
+  border: 8px solid var(--color-border);
   text-align: center;
 }
 .calendar-table td {
