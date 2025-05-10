@@ -449,11 +449,37 @@ label {
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  position: relative; /* Required for absolute positioning of time indicator */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .calendar-scroll-container::-webkit-scrollbar {
   display: none;
+}
+
+
+/* Today column current time indicator */
+.today-time-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary); /* Bright red line */
+  z-index: 60;
+  pointer-events: none;
+}
+
+.today-time-text {
+  position: absolute;
+  left: 33px;
+  top: -9px;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: bold;
+  padding: 2px 2px;
+  border-radius: 2px;
+  white-space: nowrap;
 }
 
 .calendar-table {
@@ -503,7 +529,7 @@ th.time-column {
 }
 
 .day-column .today-pill {
-  background-color: #bbb;
+  background-color: #ccc;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 50px;
   font-weight: 500;

@@ -7,6 +7,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   const scrollContainerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const todayColumnRef = useRef(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Convert a date from ISO string to a Date object preserving the exact same point in time
   // This function doesn't actually change the time, just ensures we have a proper Date object
@@ -541,10 +542,94 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     };
   }, []);
 
+  // Update current time indicator every minute
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      setCurrentTime(new Date());
+    };
+
+    // Update immediately once
+    updateCurrentTime();
+
+    // Then update every minute
+    const intervalId = setInterval(updateCurrentTime, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  // Format current time for display in the today column
+  const formatCurrentTimeForDisplay = () => {
+    const now = new Date();
+    // Get timezone abbreviation
+    const tzAbbr = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || undefined,
+      timeZoneName: 'short'
+    }).formatToParts(now)
+      .find(part => part.type === 'timeZoneName')?.value || '';
+
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone || undefined
+    }).toLowerCase().replace(' ', '');
+
+    return `${timeStr} ${tzAbbr}`;
+  };
+
+  // Calculate the position for the current time indicator
+  const calculateCurrentTimePosition = () => {
+    // Get hours and minutes from current time
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // Calculate total minutes since the start of the day
+    const dayStartMinutes = dayStartHour * 60;
+    const currentTimeMinutes = (currentHour * 60) + currentMinute;
+
+    // Calculate position as percentage of the day's displayed time
+    const dayTotalMinutes = (dayEndHour - dayStartHour) * 60;
+    const position = ((currentTimeMinutes - dayStartMinutes) / dayTotalMinutes) * 100;
+
+    // Return a value between 0 and 100, or null if outside the displayed hours
+    if (position < 0 || position > 100) {
+      return null;
+    }
+
+    return position;
+  };
+
+  // Calculate position for today column time indicator
+  const getTodayTimePosition = (hour, minute) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // If not in this hour block, return null
+    if (currentHour !== hour) return null;
+
+    // Calculate fraction within this time slot
+    const slotStart = minute;
+    const slotEnd = minute + slotDuration;
+
+    // If current minute is not in this time slot, return null
+    if (currentMinute < slotStart || currentMinute >= slotEnd) return null;
+
+    // Calculate percentage through this slot
+    const percentThroughSlot = ((currentMinute - slotStart) / slotDuration) * 100;
+    return percentThroughSlot;
+  };
+
+  // Calculate current time position
+  const currentTimePosition = calculateCurrentTimePosition();
+
   // Format timezone for display
   const getTimezoneDisplay = () => {
     if (!timezone) return "Local Timezone";
-    
+
     try {
       // Get a sample date in this timezone
       const now = new Date();
@@ -553,11 +638,11 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         // show just the 3-letter timezone abbreviation, such as PDT, EDT, etc.
         timeZoneName: 'short'
       });
-      
+
       // Extract the timezone abbreviation (like EST, PST)
       const tzAbbr = formatter.formatToParts(now)
         .find(part => part.type === 'timeZoneName')?.value || timezone;
-      
+
       return tzAbbr;
       //return `${timezone.split('/').pop().replace(/_/g, ' ')} (${tzAbbr})`;
     } catch (error) {
@@ -689,6 +774,19 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                           className={`slot-cell ${isAvailable ? 'available' : ''} ${isPartialCell ? 'partial-cell' : ''}`}
                           title={isAvailable ? `${eventDetails.summary}: ${eventDetails.displayTime}` : ''}
                         >
+                          {/* Show current time indicator only in today's column */}
+                          {isToday(date) && (() => {
+                            const position = getTodayTimePosition(hour, minute);
+                            return position !== null ? (
+                              <div
+                                className="today-time-indicator"
+                                style={{ top: `${position}%` }}
+                              >
+                                <div className="today-time-text">NOW</div>
+                              </div>
+                            ) : null;
+                          })()}
+
                           {isAvailable && (
                             <div
                               className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''}`}
