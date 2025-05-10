@@ -48,7 +48,7 @@ function CalendarView() {
 
   return (
     <div>
-      <div className="calendar-controls">
+      <div className="calendar-controls" style={{display: "none"}}>
         <button onClick={handleLoadCalendar} disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Refresh Calendar'}
         </button>
