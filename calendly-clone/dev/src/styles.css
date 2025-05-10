@@ -230,6 +230,7 @@ label {
   border-collapse: collapse;
   font-size: 14px;
   width: 140px;
+  flex-shrink: 0; /* Prevent time column from shrinking */
 }
 
 .time-column-header {
@@ -240,6 +241,8 @@ label {
   font-weight: 500;
   border: 1px solid #eaeaea;
   border-right: none;
+  height: 37px; /* Match the height of day-column headers */
+  box-sizing: border-box;
 }
 
 .calendar-navigation {
@@ -358,7 +361,7 @@ label {
   white-space: nowrap;
   padding-bottom: 20px;
   flex: 1;
-  margin-left: 10px; /* Adjust for time-column width */
+  border-left: none; /* Remove any border that might create misalignment */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
@@ -396,6 +399,8 @@ th.time-column {
   position: sticky;
   top: 0;
   z-index: 5;
+  height: 37px;
+  box-sizing: border-box;
 }
 
 .day-column.today {
@@ -431,16 +436,18 @@ th.time-column {
 }
 
 .time-column-table .time-cell {
-  padding: 6px;
+  padding: 4px 8px; /* Identical padding to other cells */
   text-align: right;
   color: #666;
   font-size: 13px;
   background-color: white;
-  vertical-align: top;
+  vertical-align: middle; /* Match calendar cells */
   width: 80px;
-  height: 24px; /* Match the height of slot cells */
   border: 1px solid #eaeaea;
   border-right: none;
+  box-sizing: border-box;
+  position: relative; /* Enable positioning for content */
+  /* Remove fixed height to let it match naturally */
 }
 
 /* Legacy time-cell styles kept for backward compatibility */
@@ -458,8 +465,11 @@ th.time-column {
 }
 
 .slot-cell {
-  height: 24px;
   padding: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+  position: relative;
+  /* Remove explicit height to match naturally */
 }
 
 .time-slot-row:nth-child(even) {
@@ -512,11 +522,42 @@ th.time-column {
   margin-top: 20px;
 }
 
-/* Ensure row heights stay synchronized between tables */
+/* Ensure exact matching of table structures */
+.time-column-table,
+.calendar-table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+/* Ensure perfect row alignment */
 .time-column-table tr,
 .calendar-table tr {
-  height: 24px;
+  height: 24px; /* Fixed height for all rows */
 }
+
+/* Force all cells to exact same rendering */
+.time-column-table td,
+.calendar-table td {
+  box-sizing: border-box;
+  overflow: visible;
+  line-height: 16px;
+  height: 24px !important; /* Force consistent height */
+  min-height: 24px !important;
+  max-height: 24px !important;
+}
+
+/* Add synchronized alternating row striping */
+.time-column-table tr:nth-child(odd) td,
+.calendar-table tr:nth-child(odd) td {
+  background-color: white;
+}
+
+.time-column-table tr:nth-child(even) td,
+.calendar-table tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+/* Remove duplicate rule */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

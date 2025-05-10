@@ -149,6 +149,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         ...generateWeeks(nextWeekStart, 2) // Load 2 more weeks
       ]);
 
+      // Re-sync row heights after loading new content
+      setTimeout(syncRowHeights, 50);
+
       setIsLoading(false);
     }
   };
@@ -219,6 +222,26 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     }
 
     return slots;
+  };
+
+  // Function to sync table row heights
+  const syncRowHeights = () => {
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        // This forces a pixel-perfect alignment between tables
+        const timeRows = document.querySelectorAll('.time-column-table tr');
+        const calendarRows = document.querySelectorAll('.calendar-table tr');
+
+        if (timeRows.length === calendarRows.length) {
+          for (let i = 0; i < timeRows.length; i++) {
+            const timeRowHeight = calendarRows[i].offsetHeight;
+            if (timeRowHeight > 0) {
+              timeRows[i].style.height = `${timeRowHeight}px`;
+            }
+          }
+        }
+      }, 100); // Small delay to ensure DOM is ready
+    }
   };
 
   // Get all time slots we need to display
@@ -351,7 +374,22 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     } else if (weeks.length > 0) {
       scrollToToday();
     }
+
+    // Force alignment of row heights
+    syncRowHeights();
   }, [weeks, events, scrollToFirstAvailability, scrollToToday]);
+
+  // Re-sync row heights on resize
+  useEffect(() => {
+    const handleResize = () => {
+      syncRowHeights();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Format timezone for display
   const getTimezoneDisplay = () => {
