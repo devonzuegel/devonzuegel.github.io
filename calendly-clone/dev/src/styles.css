@@ -634,10 +634,11 @@ th.time-column {
 
 /* No availability message styles */
 .no-availability-message-column {
-  min-width: 250px !important;
-  max-width: 300px;
+  min-width: 320px !important;
+  max-width: 800px;
   background: white !important;
   vertical-align: top;
+  text-wrap: balance;
 }
 
 .no-availability-header {
@@ -653,14 +654,14 @@ th.time-column {
   line-height: 1.5;
   text-align: center;
   border-radius: var(--border-radius-md);
-  max-width: 250px;
+  max-width: 800px;
   text-wrap: balance;
   background: white;
   /* Position for vertical centering */
   position: relative;
-  top: 50%;
+  top: 20%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
   z-index: 5;
   border: 1px solid var(--color-border-alt);
   box-shadow: var(--shadow-sm);
@@ -689,6 +690,7 @@ th.time-column {
   min-height: auto !important;
   max-height: none !important;
   width: 250px;
+  padding: 20px;
   /* Center the message */
   display: table-cell;
 }

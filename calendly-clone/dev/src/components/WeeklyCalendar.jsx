@@ -813,7 +813,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                 {/* Message column header after the last day with availability */}
                 {lastAvailabilityDatePlusOne && (
                   <th className="day-column no-availability-message-column">
-                    <div className="no-availability-header">No Additional Availability</div>
+                    <div className="no-availability-header"></div>
                   </th>
                 )}
               </tr>
@@ -885,7 +885,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                         <td className="no-availability-message-cell-container" rowSpan={timeSlots.length}>
                           <div className="no-availability-message">
                             There is currently no additional availability on Devon's calendar.
-                            Reach out to her at <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
+                            <br/>
+                            <br/>
+                            Reach out to <a href="mailto:devon@esmeralda.org">devon@esmeralda.org</a> to add more time slots.
                           </div>
                         </td>
                       ) : (
