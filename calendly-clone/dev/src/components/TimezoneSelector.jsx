@@ -135,7 +135,8 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
       // Format city name
       const city = timezone.split('/').pop().replace(/_/g, ' ');
 
-      return `${city} (${tzAbbreviation})`;
+      // Return city name with abbreviation in parentheses, only if the abbreviation exists
+      return tzAbbreviation ? `${city} (${tzAbbreviation})` : city;
     } catch (error) {
       console.error('Error formatting timezone:', error);
       return timezone;

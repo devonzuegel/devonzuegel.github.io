@@ -107,7 +107,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
 
-      return `${formattedTime}`;
+      // Include timezone abbreviation only if it exists
+      return tzAbbr ? `${formattedTime} ${tzAbbr}` : formattedTime;
     }
 
     // Include minutes otherwise
@@ -118,7 +119,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       timeZone: timezone || undefined
     }).toLowerCase().replace(' ', '');
 
-    return `${formattedTime} ${tzAbbr}`;
+    // Include timezone abbreviation only if it exists
+    return tzAbbr ? `${formattedTime} ${tzAbbr}` : formattedTime;
   };
 
   // Format a date for display in the target timezone
@@ -149,7 +151,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       timeStr = formattedTime.toLowerCase().replace(' ', '');
     }
 
-    return `${timeStr} ${tzAbbr}`;
+    // Include timezone abbreviation only if it exists
+    return tzAbbr ? `${timeStr} ${tzAbbr}` : timeStr;
   };
 
   // Generate a week's worth of days starting from a given date
@@ -686,10 +689,14 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
       // Extract the timezone abbreviation (like EST, PST)
       const tzAbbr = formatter.formatToParts(now)
-        .find(part => part.type === 'timeZoneName')?.value || timezone;
+        .find(part => part.type === 'timeZoneName')?.value || '';
 
-      return tzAbbr;
-      //return `${timezone.split('/').pop().replace(/_/g, ' ')} (${tzAbbr})`;
+      // If we have an abbreviation, return it, otherwise return the city name
+      if (tzAbbr) {
+        return tzAbbr;
+      } else {
+        return timezone.split('/').pop().replace(/_/g, ' ');
+      }
     } catch (error) {
       console.error('Error formatting timezone display:', error);
       return timezone;
