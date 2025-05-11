@@ -253,10 +253,10 @@ a:hover {
 }
 
 .timezone-region:hover {
-  fill: var(--color-primary-light) !important;
-  stroke: var(--color-primary) !important;
+  fill: var(--color-success-light) !important;
+  stroke: var(--color-success-text) !important;
   stroke-width: 0.8 !important;
-  filter: drop-shadow(0 0 2px rgba(25, 118, 210, 0.4));
+  filter: drop-shadow(0 0 2px rgba(27, 94, 32, 0.4));
 }
 
 .map-label {
