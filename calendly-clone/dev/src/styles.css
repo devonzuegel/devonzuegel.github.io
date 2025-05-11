@@ -237,7 +237,7 @@ a:hover {
   min-height: 350px; /* Ensure minimum height for better visibility */
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-md);
-  background-color: white;
+  background-color: #f7fbff; /* Slightly more colorful ocean background */
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.3s ease;
 }
@@ -249,13 +249,14 @@ a:hover {
 .timezone-region {
   cursor: pointer;
   transition: all 0.2s ease;
+  stroke-linejoin: round; /* Smoother corners */
 }
 
 .timezone-region:hover {
   fill: var(--color-primary-light) !important;
   stroke: var(--color-primary) !important;
   stroke-width: 0.8 !important;
-  filter: drop-shadow(0 0 1px rgba(25, 118, 210, 0.3));
+  filter: drop-shadow(0 0 2px rgba(25, 118, 210, 0.4));
 }
 
 .map-label {
@@ -264,8 +265,8 @@ a:hover {
   fill: var(--color-text-secondary);
   font-weight: 500;
   font-size: 3.8px !important;
-  text-shadow: 0 0 1px white;
-  letter-spacing: 0.05px;
+  text-shadow: 0 0 1px white, 0 0 3px white;
+  letter-spacing: 0.1px;
 }
 
 .timezone-region-legend {
