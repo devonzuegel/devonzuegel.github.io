@@ -721,6 +721,10 @@ th.time-column {
   background: white !important;
 }
 
+.time-text {
+  transform: translateY(-50%); 
+}
+
 .slot-cell {
   padding: 0;
   box-sizing: border-box;

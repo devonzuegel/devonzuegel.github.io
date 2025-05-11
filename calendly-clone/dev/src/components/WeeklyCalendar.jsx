@@ -107,6 +107,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
 
+      return formattedTime;
       // Include timezone abbreviation only if it exists
       return tzAbbr ? `${formattedTime} ${tzAbbr}` : formattedTime;
     }
@@ -773,7 +774,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               {timeSlots.map(({ hour, minute }) => (
                 <tr key={`time-${hour}-${minute}`} className="time-slot-row">
                   <td className="time-cell">
-                    {minute === 0 && formatTime(hour, minute)}
+                    <div className="time-text">
+                      {minute === 0 && formatTime(hour, minute)}
+                    </div>
                   </td>
                 </tr>
               ))}
