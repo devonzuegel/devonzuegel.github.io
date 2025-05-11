@@ -408,6 +408,15 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
           {/* Ocean background */}
           <rect x="15" y="35" width="195" height="80" fill="url(#oceanGradient)" rx="2" ry="2" />
 
+          {/* Ensure proper element stacking */}
+          <style>
+            {`
+              .timezone-region:hover {
+                z-index: 10;
+              }
+            `}
+          </style>
+
           {/* Continental outlines for geographic context */}
           <path
             d="M 40,45 L 60,42 L 80,45 L 90,50 L 105,45 L 125,40 L 140,38 L 155,40 L 170,42 L 180,45 L 190,45 L 185,55 L 180,65 L 170,70 L 160,68 L 155,70 L 155,75 L 150,80 L 155,85 L 165,90 L 170,95 L 175,97 L 182,95
@@ -420,8 +429,8 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
             strokeDasharray="1,1"
           />
 
-          {/* Draw all regions */}
-          {TIMEZONE_REGIONS.map(region => (
+          {/* Draw non-hovered regions first */}
+          {TIMEZONE_REGIONS.filter(region => region.id !== hoveredRegion?.id).map(region => (
             <g
               key={region.id}
               onClick={() => handleRegionClick(region)}
@@ -430,13 +439,12 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
             >
               <path
                 d={region.path}
-                fill={getSelectedRegion() === region.id ? '#a5d6a7' : hoveredRegion?.id === region.id ? '#c8e6c9' : '#e8f5e9'}
+                fill={getSelectedRegion() === region.id ? '#a5d6a7' : '#e8f5e9'}
                 stroke="#ffffff"
-                strokeWidth={hoveredRegion?.id === region.id ? '1' : '0.5'}
+                strokeWidth="0.5"
                 className="timezone-region"
               />
 
-              {/* Add abbreviations to all regions */}
               <text
                 x={region.labelX}
                 y={region.labelY}
@@ -455,6 +463,40 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
               <title>{region.name}: {region.abbreviation} - {region.timezones.join(', ')}</title>
             </g>
           ))}
+
+          {/* Draw hovered region on top (if any) */}
+          {hoveredRegion && (
+            <g
+              key={`hovered-${hoveredRegion.id}`}
+              onClick={() => handleRegionClick(hoveredRegion)}
+              onMouseLeave={() => setHoveredRegion(null)}
+            >
+              <path
+                d={hoveredRegion.path}
+                fill="#c8e6c9"
+                stroke="#2e7d32"
+                strokeWidth="1"
+                className="timezone-region"
+              />
+
+              <text
+                x={hoveredRegion.labelX}
+                y={hoveredRegion.labelY}
+                className="map-label"
+                fontSize="3.8"
+                textAnchor="middle"
+                fill="#2e7d32"
+                fontWeight="bold"
+                stroke="white"
+                strokeWidth="0.2"
+                paintOrder="stroke"
+              >
+                {getAbbreviationWithDaylight(hoveredRegion)}
+              </text>
+
+              <title>{hoveredRegion.name}: {hoveredRegion.abbreviation} - {hoveredRegion.timezones.join(', ')}</title>
+            </g>
+          )}
 
           {/* Add equator line */}
           <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.4" strokeDasharray="1,1" />
