@@ -137,6 +137,7 @@ a:hover {
   position: relative;
   width: 280px;
   z-index: 101; /* Higher than overlay */
+  max-width: 100%;
 }
 
 /* Blur overlay for when timezone picker is open */
@@ -488,6 +489,8 @@ label {
   margin-bottom: var(--spacing-md);
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
 }
 
 .navigation-container {
@@ -505,6 +508,7 @@ label {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  justify-content: center;
 }
 
 .calendar-navigation .calendar-instructions p {
@@ -531,7 +535,9 @@ label {
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  margin: 0 var(--spacing-xs);
+  margin: 0;
+  min-width: 80px;
+  text-align: center;
 }
 
 .calendar-navigation .today-button:hover,
@@ -897,6 +903,19 @@ th.time-column {
 /* Remove duplicate rule */
 
 /* Responsive adjustments */
+@media (max-width: 600px) {
+  /* New intermediate breakpoint for slightly narrow screens */
+  .navigation-container {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .today-button {
+    margin-top: var(--spacing-sm);
+  }
+}
+
 @media (max-width: var(--breakpoint-md)) {
   .calendar-navigation {
     flex-direction: column;
@@ -904,8 +923,7 @@ th.time-column {
   }
 
   .navigation-container {
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--spacing-sm);
     width: 100%;
   }
@@ -913,6 +931,7 @@ th.time-column {
   .timezone-container {
     width: 100%;
     margin-bottom: var(--spacing-sm);
+    margin-right: 0;
   }
 
   .timezone-selector {
@@ -969,6 +988,19 @@ th.time-column {
     width: var(--btn-size-sm);
     height: var(--btn-size-sm);
     font-size: var(--font-size-md);
+  }
+
+  /* Stacked layout for timezone and today button on smallest screens */
+  .navigation-container {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .today-button {
+    margin-top: var(--spacing-sm);
+    width: 100%;
+    max-width: 280px;
   }
 
   /* Further constrain timezone dropdown on small screens */

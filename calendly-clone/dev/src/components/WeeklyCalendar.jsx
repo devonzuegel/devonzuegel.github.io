@@ -706,48 +706,49 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               onTimezoneChange={onTimezoneChange}
             />
           </div>
-          </div>
 
-          <div className="navigation-buttons">
-            <div className="nav-button-container">
-              <button
-                className="nav-button"
-                onClick={() => navigatePrevious('week')}
-                aria-label="Previous Week"
-              >
-                &#8249; {/* Single left arrow */}
-                <span className="nav-tooltip">Previous Week</span>
-              </button>
-            </div>
+        </div>
 
+        <div className="navigation-buttons">
+          <div className="nav-button-container">
             <button
-              className="today-button"
-              onClick={scrollToToday}
+              className="nav-button"
+              onClick={() => navigatePrevious('week')}
+              aria-label="Previous Week"
             >
-              Today
+              &#8249; {/* Single left arrow */}
+              <span className="nav-tooltip">Previous Week</span>
             </button>
-
-            {/* {events.length > 0 && (
-              <button
-                className="first-availability-button"
-                onClick={scrollToFirstAvailability}
-                title="Scroll to first available day"
-              >
-                First Available
-              </button>
-            )} */}
-
-            <div className="nav-button-container">
-              <button
-                className="nav-button"
-                onClick={() => navigateNext('week')}
-                aria-label="Next Week"
-              >
-                &#8250; {/* Single right arrow */}
-                <span className="nav-tooltip">Next Week</span>
-              </button>
-            </div>
           </div>
+          
+          <button
+            className="today-button"
+            onClick={scrollToToday}
+          >
+            Today
+          </button>
+
+          {/* {events.length > 0 && (
+            <button
+              className="first-availability-button"
+              onClick={scrollToFirstAvailability}
+              title="Scroll to first available day"
+            >
+              First Available
+            </button>
+          )} */}
+
+          <div className="nav-button-container">
+            <button
+              className="nav-button"
+              onClick={() => navigateNext('week')}
+              aria-label="Next Week"
+            >
+              &#8250; {/* Single right arrow */}
+              <span className="nav-tooltip">Next Week</span>
+            </button>
+          </div>
+        </div>
 
        {/*  <div className="calendar-instructions">
           <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
