@@ -274,10 +274,6 @@ a:hover {
   color: var(--color-text-secondary);
   text-align: center;
   margin-top: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-background-alt);
-  border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-sm);
   width: fit-content;
   font-weight: 500;
 }
