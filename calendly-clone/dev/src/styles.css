@@ -164,14 +164,14 @@ a:hover {
   position: absolute;
   top: calc(100% + var(--spacing-xs));
   left: 0;
-  width: 750px; /* Significantly wider for better label spacing */
+  width: min(750px, 95vw); /* Use min to ensure it's not wider than viewport */
   max-height: 550px; /* Taller to accommodate the larger map */
   background-color: var(--color-background);
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-md);
   z-index: 200;
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to auto to enable scrolling */
   display: flex;
   flex-direction: column;
 }
@@ -218,9 +218,10 @@ a:hover {
 .timezone-map-container {
   width: 100%;
   padding: var(--spacing-md);
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to auto to enable scrolling */
   position: relative;
   background-color: white;
+  max-width: 100%; /* Ensure it doesn't exceed parent width */
 }
 
 .world-timezone-map {
@@ -857,6 +858,12 @@ th.time-column {
     width: 100%;
   }
 
+  .timezone-dropdown-menu {
+    width: 95vw;
+    max-width: 100%;
+    right: 0; /* Ensure it doesn't go off-screen */
+  }
+
   .navigation-buttons {
     margin-bottom: var(--spacing-sm);
     width: 100%;
@@ -901,5 +908,19 @@ th.time-column {
     width: var(--btn-size-sm);
     height: var(--btn-size-sm);
     font-size: var(--font-size-md);
+  }
+
+  /* Further constrain timezone dropdown on small screens */
+  .timezone-dropdown-menu {
+    width: 95vw;
+    max-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-height: 80vh; /* Limit height on small screens */
+  }
+
+  /* Ensure the timezone list is scrollable */
+  .timezone-list {
+    max-height: 200px;
   }
 }
