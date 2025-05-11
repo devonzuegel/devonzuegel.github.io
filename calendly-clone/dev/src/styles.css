@@ -488,7 +488,6 @@ label {
   padding: 0 var(--spacing-xl);
   margin-bottom: var(--spacing-md);
   display: flex;
-  justify-content: space-between; /* Timezone left, buttons right */
   flex-wrap: wrap;
   gap: var(--spacing-md);
   width: calc(100% - 2 * var(--spacing-xl)); /* Full width minus padding */
@@ -520,12 +519,13 @@ label {
   margin: 0;
 }
 
-.green-highlight {
-  background-color: var(--color-success-light);
-  color: var(--color-success-text);
-  padding: var(--spacing-xs) var(--spacing-xs);
+.highlight {
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--spacing-xs) calc(1.5 * var(--spacing-xs));
   border-radius: var(--border-radius-sm);
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 0.93em;
 }
 
 .calendar-navigation .today-button,
