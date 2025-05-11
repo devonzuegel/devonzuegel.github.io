@@ -8,7 +8,7 @@ function cacheBusterPlugin() {
   return {
     name: 'cache-buster',
     writeBundle(options, bundle) {
-      const outDir = options.dir || '../dist'
+      const outDir = options.dir || '../../calendar'
       const indexPath = path.resolve(outDir, 'index.html')
 
       if (fs.existsSync(indexPath)) {
@@ -35,7 +35,7 @@ export default defineConfig({
   ],
   base: './', // Use relative paths instead of absolute
   build: {
-    outDir: '../dist',
+    outDir: '../../calendar',
     emptyOutDir: true,
     rollupOptions: {
       output: {
