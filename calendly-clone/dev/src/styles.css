@@ -753,6 +753,26 @@ th.time-column {
 
 .event-indicator:hover {
   background-color: var(--color-primary-dark);
+  cursor: pointer;
+}
+
+/* Default state: always show time for normal events */
+.event-indicator .event-time {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+/* Short event behavior: hide time by default, show on hover */
+.event-indicator.short-event .event-time {
+  opacity: 0;
+}
+
+.event-indicator.short-event:hover .event-time {
+  opacity: 1;
+}
+
+.event-indicator.short-event:hover .event-availability-label {
+  display: none;
 }
 
 /* Partial event indicator style */
@@ -779,12 +799,11 @@ th.time-column {
   font-weight: 700;
   letter-spacing: 0.5px;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-
 }
 
 .event-time {
   position: absolute;
-  top: 16px; /* Position below the AVAILABLE label */
+  top: 16px; /* Position below the AVAILABLE label for most events */
   left: 0;
   width: 100%;
   text-align: center;
@@ -793,9 +812,14 @@ th.time-column {
   padding: var(--spacing-xs) 0;
   border-radius: var(--border-radius-sm);
   white-space: nowrap;
-  z-index: 2;
+  z-index: 3; /* Higher z-index to appear above the AVAILABLE label */
   font-weight: 500;
   color: var(--color-primary-light);
+}
+
+/* Position time at the top for short events on hover */
+.event-indicator.short-event .event-time {
+  top: 0;
 }
 
 .loading-indicator {

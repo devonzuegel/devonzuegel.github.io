@@ -339,6 +339,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const durationMs = eventEnd - eventStart;
     const durationSlots = Math.ceil(durationMs / (slotDuration * 60 * 1000));
 
+    // Determine if this is a short event that may be too small to show both AVAILABLE and time
+    // Time required is in milliseconds - 45 minutes = 45 * 60 * 1000ms
+    const isShortEvent = durationMs < 45 * 60 * 1000; // shorter than 45 minutes (30min slot + 15min buffer)
+
     // Calculate the fill percentage for this specific time slot
     // This handles cases where an event doesn't align with 30-minute slots
     // For vertical splitting, we show the percentage from top to bottom of the cell
@@ -404,6 +408,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     // Calculate if this is a middle slot (neither first nor last)
     const isMiddleSlot = !isFirstSlot && !isLastSlot;
 
+    // Debug log for development - uncomment to validate event durations
+    // console.log(`Event: ${isFirstSlot ? 'FIRST' : ''} ${isLastSlot ? 'LAST' : ''} DurationMs: ${durationMs} ms, Duration: ${durationMs/(60*1000)} min, isShort: ${isShortEvent}`);
+
     // Determine vertical line properties
     const verticalLinePosition = {
       top: isFirstSlot ? 16 : 0, // Start below "AVAILABLE" label for first slot, from top for others
@@ -418,7 +425,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       durationSlots,
       displayTime,
       fillPercentage,
-      verticalLinePosition
+      verticalLinePosition,
+      isShortEvent
     };
   };
 
@@ -888,10 +896,11 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
                           {isAvailable && (
                             <div
-                              className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''}`}
+                              className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''} ${eventDetails.isFirstSlot && eventDetails.isShortEvent ? 'short-event' : ''}`}
                               style={{
                                 height: `${eventDetails.fillPercentage}%`
                               }}
+                              title={`${eventDetails.displayTime}`}
                             >
                               {eventDetails.isFirstSlot && (
                                 <>
