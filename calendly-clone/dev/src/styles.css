@@ -666,7 +666,6 @@ label {
 
 /* Legacy time-column styles kept for backward compatibility */
 th.time-column {
-  min-width: 80px;
   position: sticky;
   left: 0;
   background-color: var(--color-background-alt);
@@ -711,7 +710,6 @@ th.time-column {
   font-size: 10px;
   background-color: var(--color-background-hover);
   vertical-align: middle; /* Match calendar cells */
-  width: 80px;
   border: 1px solid white;
   border-right: none;
   box-sizing: border-box;
