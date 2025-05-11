@@ -824,13 +824,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               <span className="nav-tooltip">Previous Week</span>
             </button>
           </div>
-          
-          <button
-            className="today-button"
-            onClick={scrollToToday}
-          >
-            Today
-          </button>
 
           {/* {events.length > 0 && (
             <button
