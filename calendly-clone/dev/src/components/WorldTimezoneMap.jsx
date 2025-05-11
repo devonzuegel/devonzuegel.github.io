@@ -468,11 +468,10 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
 
       <div className="timezone-region-legend">
         {hoveredRegion ? (
-          <div className="region-info">
-            <p className="region-name">{hoveredRegion.name} ({getAbbreviationWithDaylight(hoveredRegion)})</p>
-            <p className="region-timezone">{hoveredRegion.timezones[0]}</p>
-            <p className="region-hint">Click to select this timezone</p>
-          </div>
+          <span className="region-info">
+            <span className="region-name">{hoveredRegion.name} ({getAbbreviationWithDaylight(hoveredRegion)})</span>
+            <span className="region-timezone">{hoveredRegion.timezones[0]}</span>
+          </span>
         ) : (
           <p className="legend-title">Hover over a region to see details</p>
         )}

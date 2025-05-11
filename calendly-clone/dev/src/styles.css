@@ -274,19 +274,17 @@ a:hover {
   color: var(--color-text-secondary);
   text-align: center;
   margin-top: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   width: 100%;
   font-weight: 500;
   padding: var(--spacing-sm);
-  background-color: #f5f9f5;
   border-radius: var(--border-radius-md);
   min-height: 45px;
 }
 
 .legend-title {
-  margin: 0;
-  padding: 0;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light)
 }
 
 .region-info {
@@ -299,7 +297,7 @@ a:hover {
 .region-name {
   margin: 0;
   padding: 0;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--color-success-text);
 }
@@ -307,7 +305,7 @@ a:hover {
 .region-timezone {
   margin: var(--spacing-xs) 0;
   padding: 0;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
 }
 
 .region-hint {
