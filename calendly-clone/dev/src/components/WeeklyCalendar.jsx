@@ -104,6 +104,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
 
+      return formattedTime;
       // Include timezone abbreviation only if it exists
       return tzAbbr ? `${formattedTime} ${tzAbbr}` : formattedTime;
     }
