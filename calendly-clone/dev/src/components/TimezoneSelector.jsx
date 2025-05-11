@@ -57,14 +57,25 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
     };
   }, []);
 
-  // Focus the search input when dropdown is opened
+  // Focus the search input when dropdown is opened and manage body scroll
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
       // Small timeout to ensure the dropdown is rendered
       setTimeout(() => {
         searchInputRef.current.focus();
       }, 50);
+
+      // Prevent scrolling on the body when overlay is active
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore scrolling when dropdown is closed
+      document.body.style.overflow = '';
     }
+
+    // Cleanup function to ensure scrolling is restored if component unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const getCommonTimezones = () => {
@@ -132,16 +143,21 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
   };
 
   return (
-    <div className="timezone-selector" ref={dropdownRef}>
-      <div
-        className="timezone-dropdown-header"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span>Timezone: {formatTimezone(selectedTimezone)}</span>
-        <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
-      </div>
+    <>
+      {isOpen && <div className="timezone-overlay" onClick={(e) => {
+        e.stopPropagation();
+        setIsOpen(false);
+      }}></div>}
+      <div className="timezone-selector" ref={dropdownRef}>
+        <div
+          className="timezone-dropdown-header"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>Timezone: {formatTimezone(selectedTimezone)}</span>
+          <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
+        </div>
 
-      {isOpen && (
+        {isOpen && (
         <div className="timezone-dropdown-menu">
           <div className="timezone-view-toggle">
             <button
@@ -199,7 +215,8 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
