@@ -8,6 +8,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   const [isLoading, setIsLoading] = useState(false);
   const todayColumnRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [highlightedEventId, setHighlightedEventId] = useState(null);
 
   // Convert a date from ISO string to a Date object preserving the exact same point in time
   // This function doesn't actually change the time, just ensures we have a proper Date object
@@ -417,7 +418,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       displayTime,
       fillPercentage,
       verticalLinePosition,
-      isShortEvent
+      isShortEvent,
+      eventId: matchingEvent.id || `${matchingEvent.start}-${matchingEvent.end}` // Use ID or create one from start/end time
     };
   };
 
@@ -945,8 +947,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                       return (
                         <td
                           key={`${date.toISOString()}-${hour}-${minute}`}
-                          className={`slot-cell ${isAvailable ? 'available' : ''} ${isPartialCell ? 'partial-cell' : ''}`}
+                          className={`slot-cell ${isAvailable ? 'available' : ''} ${isPartialCell ? 'partial-cell' : ''} ${isAvailable && highlightedEventId === eventDetails.eventId ? 'highlight-contiguous' : ''}`}
                           title={isAvailable ? `${eventDetails.summary}: ${eventDetails.displayTime}` : ''}
+                          onMouseEnter={isAvailable ? () => setHighlightedEventId(eventDetails.eventId) : undefined}
+                          onMouseLeave={isAvailable ? () => setHighlightedEventId(null) : undefined}
                         >
                           {/* Show current time indicator only in today's column */}
                           {isToday(date) && (() => {
@@ -963,11 +967,13 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
                           {isAvailable && (
                             <div
-                              className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''} ${eventDetails.isFirstSlot && eventDetails.isShortEvent ? 'short-event' : ''}`}
+                              className={`event-indicator ${eventDetails.fillPercentage < 100 ? 'partial' : ''} ${eventDetails.isFirstSlot && eventDetails.isShortEvent ? 'short-event' : ''} ${highlightedEventId === eventDetails.eventId ? 'highlight-contiguous' : ''}`}
                               style={{
                                 height: `${eventDetails.fillPercentage}%`
                               }}
                               title={`${eventDetails.displayTime}`}
+                              onMouseEnter={() => setHighlightedEventId(eventDetails.eventId)}
+                              onMouseLeave={() => setHighlightedEventId(null)}
                             >
                               {eventDetails.isFirstSlot && (
                                 <>
