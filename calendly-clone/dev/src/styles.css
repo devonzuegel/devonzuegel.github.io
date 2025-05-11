@@ -738,6 +738,11 @@ th.time-column {
   background-color: var(--color-success-lighter);
 }
 
+.calendar-table .slot-cell.available {
+  border-top: 0px solid var(--color-primary);
+  border-bottom: 0px solid var(--color-primary);
+}
+
 /* New class for highlighting contiguous cells */
 .slot-cell.highlight-contiguous {
   background-color: var(--color-success-light);
