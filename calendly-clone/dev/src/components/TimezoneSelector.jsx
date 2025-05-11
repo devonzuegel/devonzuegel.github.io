@@ -8,6 +8,7 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
   const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   // Detect local timezone on initial load and cache timezone abbreviations
   useEffect(() => {
@@ -55,6 +56,16 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Focus the search input when dropdown is opened
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      // Small timeout to ensure the dropdown is rendered
+      setTimeout(() => {
+        searchInputRef.current.focus();
+      }, 50);
+    }
+  }, [isOpen]);
 
   const getCommonTimezones = () => {
     return [
@@ -160,6 +171,7 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
             onChange={handleSearchChange}
             onClick={(e) => e.stopPropagation()}
             className="timezone-search"
+            ref={searchInputRef}
           />
 
           {viewMode === 'map' && search === '' ? (
