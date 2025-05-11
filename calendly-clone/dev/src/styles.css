@@ -262,9 +262,9 @@ a:hover {
 .map-label {
   font-family: 'Inter', sans-serif;
   pointer-events: none;
-  fill: var(--color-text-secondary);
+  fill: var(--color-success);
   font-weight: 500;
-  font-size: 3.8px !important;
+  font-size: 2.8px !important;
   text-shadow: 0 0 1px white, 0 0 3px white;
   letter-spacing: 0.1px;
 }
