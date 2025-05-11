@@ -10,11 +10,10 @@ A React-based clone of the original Calendly-like availability display page.
 4. Once you're done, run `npm run build` to create a production build in the `calendly-clone/dist` directory.
 5. Merge your changes to the `master` branch and push to GitHub, which will trigger the CI/CD pipeline to deploy the changes to the live site.
 
-## Features
-
-- Shows availability calendar for scheduling calls
-- Uses CORS proxies to fetch calendar data
-- Responsive design with clean UI
+## Features & changes I plan to make in the future
+- add a list view in addition to the Month/Week view
+- make the timezone map look more realistic
+- overlay the timezone regions over a real map of the world to make it a little less ugly
 
 ## Setup
 
