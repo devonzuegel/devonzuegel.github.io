@@ -329,6 +329,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       Math.abs(eventStart.getMinutes() - minute) < slotDuration
     );
 
+    // Calculate if this is the last slot of the event
+    const isLastSlot = (
+      eventEnd.getHours() === hour &&
+      Math.abs(eventEnd.getMinutes() - (minute + slotDuration)) <= slotDuration
+    );
+
     // Calculate event duration in slots
     const durationMs = eventEnd - eventStart;
     const durationSlots = Math.ceil(durationMs / (slotDuration * 60 * 1000));
@@ -395,12 +401,24 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       }
     }
 
+    // Calculate if this is a middle slot (neither first nor last)
+    const isMiddleSlot = !isFirstSlot && !isLastSlot;
+
+    // Determine vertical line properties
+    const verticalLinePosition = {
+      top: isFirstSlot ? 16 : 0, // Start below "AVAILABLE" label for first slot, from top for others
+      height: isLastSlot ? '100%' : 'calc(100% + 2px)' // Extend to bottom of cell for last slot, beyond for others
+    };
+
     return {
       ...matchingEvent,
       isFirstSlot,
+      isLastSlot,
+      isMiddleSlot,
       durationSlots,
       displayTime,
-      fillPercentage
+      fillPercentage,
+      verticalLinePosition
     };
   };
 
@@ -876,9 +894,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                               }}
                             >
                               {eventDetails.isFirstSlot && (
-                                <div className="event-time">
-                                  {eventDetails.displayTime}
-                                </div>
+                                <>
+                                  <div className="event-availability-label">AVAILABLE</div>
+                                  <div className="event-time">
+                                    {eventDetails.displayTime}
+                                  </div>
+                                </>
                               )}
                             </div>
                           )}
