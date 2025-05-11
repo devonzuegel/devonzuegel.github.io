@@ -116,7 +116,7 @@ a:hover {
 
 .info-container {
   font-size: 12px;
-  margin: var(--spacing-xl); 
+  margin: var(--spacing-lg) var(--spacing-xl); 
   padding: 1px 0;
   width: fit-content;
   border-radius: var(--border-radius-md);
@@ -491,7 +491,7 @@ label {
   justify-content: space-between; /* Timezone left, buttons right */
   flex-wrap: wrap;
   gap: var(--spacing-md);
-  width: 100%;
+  width: calc(100% - 2 * var(--spacing-xl)); /* Full width minus padding */
 }
 
 .navigation-container {
