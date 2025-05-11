@@ -394,7 +394,7 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
   
   return (
     <div className="world-timezone-map">
-      <svg viewBox="15 35 195 80" width="100%" height="450">
+      <svg viewBox="15 74 195 1" width="100%" height="410">
         {/* World map background with gradient for oceans */}
         <defs>
           <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
