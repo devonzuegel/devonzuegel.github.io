@@ -216,9 +216,7 @@ a:hover {
 }
 
 .timezone-map-container {
-  width: 100%;
-  padding: var(--spacing-md);
-  overflow: auto; /* Changed from hidden to auto to enable scrolling */
+  overflow: hidden; /* Changed from hidden to auto to enable scrolling */
   position: relative;
   background-color: white;
   max-width: 100%; /* Ensure it doesn't exceed parent width */
@@ -231,19 +229,21 @@ a:hover {
   align-items: center;
 }
 
+.world-timezone-map .scroller {
+  overflow: auto;
+  width: 100%;
+  padding: 0;
+}
 .world-timezone-map svg {
-  max-width: 100%;
+  max-width: 99%;
+  margin: auto;
   height: auto;
   min-height: 300px; /* Ensure minimum height for better visibility */
+  min-width: 740px;
   border: 1px solid var(--color-border-alt);
   border-radius: var(--border-radius-md);
   background-color: #f7fbff; /* Slightly more colorful ocean background */
-  box-shadow: var(--shadow-sm);
   transition: box-shadow 0.3s ease;
-}
-
-.world-timezone-map svg:hover {
-  box-shadow: var(--shadow-md);
 }
 
 .timezone-region {
@@ -273,7 +273,8 @@ a:hover {
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   text-align: center;
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
   width: fit-content;
   font-weight: 500;
 }

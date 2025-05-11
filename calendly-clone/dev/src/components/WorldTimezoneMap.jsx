@@ -394,94 +394,90 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
   
   return (
     <div className="world-timezone-map">
-      <svg viewBox="15 74 195 1" width="100%" height="410">
-        {/* World map background with gradient for oceans */}
-        <defs>
-          <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#e1f0ff" />
-            <stop offset="50%" stopColor="#e6f2ff" />
-            <stop offset="100%" stopColor="#daeeff" />
-          </linearGradient>
-        </defs>
+      <div className="scroller">
+        <svg viewBox="15 74 195 1" width="100%" height="410">
+          {/* World map background with gradient for oceans */}
+          <defs>
+            <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#e1f0ff" />
+              <stop offset="50%" stopColor="#e6f2ff" />
+              <stop offset="100%" stopColor="#daeeff" />
+            </linearGradient>
+          </defs>
 
-        {/* Ocean background */}
-        <rect x="15" y="35" width="195" height="80" fill="url(#oceanGradient)" rx="2" ry="2" />
+          {/* Ocean background */}
+          <rect x="15" y="35" width="195" height="80" fill="url(#oceanGradient)" rx="2" ry="2" />
 
-        {/* Continental outlines for geographic context */}
-        <path
-          d="M 40,45 L 60,42 L 80,45 L 90,50 L 105,45 L 125,40 L 140,38 L 155,40 L 170,42 L 180,45 L 190,45 L 185,55 L 180,65 L 170,70 L 160,68 L 155,70 L 155,75 L 150,80 L 155,85 L 165,90 L 170,95 L 175,97 L 182,95
-          M 93,50 L 92,57 L 90,65 L 88,70 L 85,75 L 88,78 L 92,82 L 100,88 L 110,93 L 115,95
-          M 123,56 L 128,58 L 135,55 L 142,57 L 148,61 L 150,65 L 150,70 L 150,75
-          M 48,45 L 50,55 L 50,65 L 55,75 L 60,85 L 65,95 L 70,102 L 70,110"
-          fill="none"
-          stroke="#ddd"
-          strokeWidth="0.4"
-          strokeDasharray="1,1"
-        />
+          {/* Continental outlines for geographic context */}
+          <path
+            d="M 40,45 L 60,42 L 80,45 L 90,50 L 105,45 L 125,40 L 140,38 L 155,40 L 170,42 L 180,45 L 190,45 L 185,55 L 180,65 L 170,70 L 160,68 L 155,70 L 155,75 L 150,80 L 155,85 L 165,90 L 170,95 L 175,97 L 182,95
+            M 93,50 L 92,57 L 90,65 L 88,70 L 85,75 L 88,78 L 92,82 L 100,88 L 110,93 L 115,95
+            M 123,56 L 128,58 L 135,55 L 142,57 L 148,61 L 150,65 L 150,70 L 150,75
+            M 48,45 L 50,55 L 50,65 L 55,75 L 60,85 L 65,95 L 70,102 L 70,110"
+            fill="none"
+            stroke="#ddd"
+            strokeWidth="0.4"
+            strokeDasharray="1,1"
+          />
 
-        {/* Draw all regions */}
-        {TIMEZONE_REGIONS.map(region => (
-          <g
-            key={region.id}
-            onClick={() => handleRegionClick(region)}
-            onMouseEnter={() => setHoveredRegion(region)}
-            onMouseLeave={() => setHoveredRegion(null)}
-          >
-            <path
-              d={region.path}
-              fill={getSelectedRegion() === region.id ? '#90caf9' : hoveredRegion?.id === region.id ? '#b3d9ff' : '#d0e8ff'}
-              stroke="#ffffff"
-              strokeWidth={hoveredRegion?.id === region.id ? '1' : '0.5'}
-              className="timezone-region"
-            />
-
-            {/* Add abbreviations to all regions */}
-            <text
-              x={region.labelX}
-              y={region.labelY}
-              className="map-label"
-              fontSize="3.8"
-              textAnchor="middle"
-              fill={getSelectedRegion() === region.id ? '#1976d2' : '#666'}
-              fontWeight={getSelectedRegion() === region.id ? 'bold' : 'normal'}
-              stroke="white"
-              strokeWidth="0.2"
-              paintOrder="stroke"
+          {/* Draw all regions */}
+          {TIMEZONE_REGIONS.map(region => (
+            <g
+              key={region.id}
+              onClick={() => handleRegionClick(region)}
+              onMouseEnter={() => setHoveredRegion(region)}
+              onMouseLeave={() => setHoveredRegion(null)}
             >
-              {getAbbreviationWithDaylight(region)}
-            </text>
+              <path
+                d={region.path}
+                fill={getSelectedRegion() === region.id ? '#90caf9' : hoveredRegion?.id === region.id ? '#b3d9ff' : '#d0e8ff'}
+                stroke="#ffffff"
+                strokeWidth={hoveredRegion?.id === region.id ? '1' : '0.5'}
+                className="timezone-region"
+              />
 
-            <title>{region.name}: {region.abbreviation} - {region.timezones.join(', ')}</title>
-          </g>
-        ))}
+              {/* Add abbreviations to all regions */}
+              <text
+                x={region.labelX}
+                y={region.labelY}
+                className="map-label"
+                fontSize="3.8"
+                textAnchor="middle"
+                fill={getSelectedRegion() === region.id ? '#1976d2' : '#666'}
+                fontWeight={getSelectedRegion() === region.id ? 'bold' : 'normal'}
+                stroke="white"
+                strokeWidth="0.2"
+                paintOrder="stroke"
+              >
+                {getAbbreviationWithDaylight(region)}
+              </text>
 
-        {/* Add equator line */}
-        <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.4" strokeDasharray="1,1" />
+              <title>{region.name}: {region.abbreviation} - {region.timezones.join(', ')}</title>
+            </g>
+          ))}
 
-        {/* Prime meridian (0° longitude) line */}
-        <line x1="100" y1="35" x2="100" y2="115" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,2" />
+          {/* Add equator line */}
+          <line x1="15" y1="75" x2="210" y2="75" stroke="#ccc" strokeWidth="0.4" strokeDasharray="1,1" />
 
-        {/* Compass indicator */}
-        <g transform="translate(25, 50)" fontSize="3">
-          <circle cx="0" cy="0" r="3" fill="white" stroke="#ccc" strokeWidth="0.2" />
-          <text x="0" y="0" textAnchor="middle" dominantBaseline="middle">N</text>
-        </g>
-        
-        {/* Hover info panel with enhanced styling */}
-        {hoveredRegion && (
-          <g transform="translate(110, 45)">
-            <rect x="-50" y="-12" width="100" height="28" rx="4" ry="4" fill="white" opacity="0.97" stroke="#ccc" strokeWidth="0.7" />
-            <rect x="-50" y="-12" width="100" height="8" rx="4" ry="4" fill="#f0f7ff" opacity="0.9" />
-            <text x="0" y="-5" textAnchor="middle" fontSize="4.2" fontWeight="bold" fill="#2e5b80">{hoveredRegion.name}</text>
-            <text x="0" y="2" textAnchor="middle" fontSize="3.8" fontWeight="500">{hoveredRegion.abbreviation}</text>
-            <text x="0" y="8" textAnchor="middle" fontSize="3.2">{hoveredRegion.timezones[0]}</text>
-            <text x="0" y="13" textAnchor="middle" fontSize="2.7" fill="#367da2" fontWeight="500">Click to select this timezone</text>
-          </g>
-        )}
-      </svg>
-      
+          {/* Prime meridian (0° longitude) line */}
+          <line x1="100" y1="35" x2="100" y2="115" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,2" />
+
+          {/* Hover info panel with enhanced styling */}
+          {hoveredRegion && (
+            <g transform="translate(110, 45)">
+              <rect x="-50" y="-12" width="100" height="28" rx="4" ry="4" fill="white" opacity="0.97" stroke="#ccc" strokeWidth="0.7" />
+              <rect x="-50" y="-12" width="100" height="8" rx="4" ry="4" fill="#f0f7ff" opacity="0.9" />
+              <text x="0" y="-5" textAnchor="middle" fontSize="4.2" fontWeight="bold" fill="#2e5b80">{hoveredRegion.name}</text>
+              <text x="0" y="2" textAnchor="middle" fontSize="3.8" fontWeight="500">{hoveredRegion.abbreviation}</text>
+              <text x="0" y="8" textAnchor="middle" fontSize="3.2">{hoveredRegion.timezones[0]}</text>
+              <text x="0" y="13" textAnchor="middle" fontSize="2.7" fill="#367da2" fontWeight="500">Click to select this timezone</text>
+            </g>
+          )}
+        </svg>
+      </div>
+
       <div className="timezone-region-legend">
-        <p className="legend-title">Hover over a region to see details • Click to select timezone</p>
+        <p className="legend-title">Click on a region to select that timezone</p>
       </div>
     </div>
   );
