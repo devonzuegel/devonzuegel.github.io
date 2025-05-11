@@ -430,7 +430,7 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
             >
               <path
                 d={region.path}
-                fill={getSelectedRegion() === region.id ? '#90caf9' : hoveredRegion?.id === region.id ? '#b3d9ff' : '#d0e8ff'}
+                fill={getSelectedRegion() === region.id ? '#a5d6a7' : hoveredRegion?.id === region.id ? '#c8e6c9' : '#e8f5e9'}
                 stroke="#ffffff"
                 strokeWidth={hoveredRegion?.id === region.id ? '1' : '0.5'}
                 className="timezone-region"
@@ -443,7 +443,7 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
                 className="map-label"
                 fontSize="3.8"
                 textAnchor="middle"
-                fill={getSelectedRegion() === region.id ? '#1976d2' : '#666'}
+                fill={getSelectedRegion() === region.id ? '#2e7d32' : '#666'}
                 fontWeight={getSelectedRegion() === region.id ? 'bold' : 'normal'}
                 stroke="white"
                 strokeWidth="0.2"
@@ -466,11 +466,11 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
           {hoveredRegion && (
             <g transform="translate(110, 45)">
               <rect x="-50" y="-12" width="100" height="28" rx="4" ry="4" fill="white" opacity="0.97" stroke="#ccc" strokeWidth="0.7" />
-              <rect x="-50" y="-12" width="100" height="8" rx="4" ry="4" fill="#f0f7ff" opacity="0.9" />
-              <text x="0" y="-5" textAnchor="middle" fontSize="4.2" fontWeight="bold" fill="#2e5b80">{hoveredRegion.name}</text>
+              <rect x="-50" y="-12" width="100" height="8" rx="4" ry="4" fill="#e8f5e9" opacity="0.9" />
+              <text x="0" y="-5" textAnchor="middle" fontSize="4.2" fontWeight="bold" fill="#2e7d32">{hoveredRegion.name}</text>
               <text x="0" y="2" textAnchor="middle" fontSize="3.8" fontWeight="500">{hoveredRegion.abbreviation}</text>
               <text x="0" y="8" textAnchor="middle" fontSize="3.2">{hoveredRegion.timezones[0]}</text>
-              <text x="0" y="13" textAnchor="middle" fontSize="2.7" fill="#367da2" fontWeight="500">Click to select this timezone</text>
+              <text x="0" y="13" textAnchor="middle" fontSize="2.7" fill="#388e3c" fontWeight="500">Click to select this timezone</text>
             </g>
           )}
         </svg>
