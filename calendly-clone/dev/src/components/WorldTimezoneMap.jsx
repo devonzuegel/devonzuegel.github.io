@@ -462,22 +462,20 @@ function WorldTimezoneMap({ onRegionSelect, selectedTimezone }) {
           {/* Prime meridian (0° longitude) line */}
           <line x1="100" y1="35" x2="100" y2="115" stroke="#ccc" strokeWidth="0.3" strokeDasharray="1,2" />
 
-          {/* Hover info panel with enhanced styling */}
-          {hoveredRegion && (
-            <g transform="translate(110, 45)">
-              <rect x="-50" y="-12" width="100" height="28" rx="4" ry="4" fill="white" opacity="0.97" stroke="#ccc" strokeWidth="0.7" />
-              <rect x="-50" y="-12" width="100" height="8" rx="4" ry="4" fill="#e8f5e9" opacity="0.9" />
-              <text x="0" y="-5" textAnchor="middle" fontSize="4.2" fontWeight="bold" fill="#2e7d32">{hoveredRegion.name}</text>
-              <text x="0" y="2" textAnchor="middle" fontSize="3.8" fontWeight="500">{hoveredRegion.abbreviation}</text>
-              <text x="0" y="8" textAnchor="middle" fontSize="3.2">{hoveredRegion.timezones[0]}</text>
-              <text x="0" y="13" textAnchor="middle" fontSize="2.7" fill="#388e3c" fontWeight="500">Click to select this timezone</text>
-            </g>
-          )}
+          {/* Removed hover info panel */}
         </svg>
       </div>
 
       <div className="timezone-region-legend">
-        <p className="legend-title">Click on a region to select that timezone</p>
+        {hoveredRegion ? (
+          <div className="region-info">
+            <p className="region-name">{hoveredRegion.name} ({getAbbreviationWithDaylight(hoveredRegion)})</p>
+            <p className="region-timezone">{hoveredRegion.timezones[0]}</p>
+            <p className="region-hint">Click to select this timezone</p>
+          </div>
+        ) : (
+          <p className="legend-title">Hover over a region to see details</p>
+        )}
       </div>
     </div>
   );
