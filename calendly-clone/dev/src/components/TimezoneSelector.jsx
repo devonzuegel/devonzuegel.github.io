@@ -522,7 +522,7 @@ function TimezoneSelector({ selectedTimezone, onTimezoneChange }) {
           className="timezone-dropdown-header"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span>Timezone: {formatTimezone(selectedTimezone)}</span>
+          <span>{formatTimezone(selectedTimezone)}</span>
           <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
         </div>
 

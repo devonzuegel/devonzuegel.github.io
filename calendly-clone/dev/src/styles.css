@@ -135,7 +135,7 @@ a:hover {
 /* Timezone Selector */
 .timezone-selector {
   position: relative;
-  width: 280px;
+  width: 220px;
   z-index: 101; /* Higher than overlay */
   max-width: 100%;
 }
@@ -489,13 +489,12 @@ label {
   margin-bottom: var(--spacing-md);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
   width: calc(100% - 2 * var(--spacing-xl)); /* Full width minus padding */
+  column-gap: var(--spacing-lg);
 }
 
 .navigation-container {
   display: flex;
-  align-items: center;
   gap: var(--spacing-xl);
   flex-wrap: wrap;
   justify-content: flex-start; /* Align to the left */
@@ -507,7 +506,6 @@ label {
 
 .navigation-buttons {
   display: flex;
-  align-items: center;
   gap: var(--spacing-sm);
   justify-content: flex-end; /* Align to the right */
 }
@@ -958,29 +956,6 @@ th.time-column {
 .time-column-table tr:nth-child(even) td,
 .calendar-table tr:nth-child(even) td {
   background-color: var(--color-background-striped);
-}
-
-/* Remove duplicate rule */
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  /* Breakpoint for screens where controls need to stack */
-  .calendar-navigation {
-    flex-direction: column;
-    align-items: center; /* Center everything when stacked */
-    justify-content: center;
-  }
-
-  .navigation-container {
-    width: 100%;
-    justify-content: center; /* Center timezone dropdown when stacked */
-    margin-bottom: var(--spacing-md);
-  }
-
-  .navigation-buttons {
-    width: 100%;
-    justify-content: center; /* Center navigation buttons when stacked */
-  }
 }
 
 @media (max-width: var(--breakpoint-md)) {
