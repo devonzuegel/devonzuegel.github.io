@@ -116,7 +116,7 @@ a:hover {
 
 .info-container {
   font-size: 12px;
-  margin: var(--spacing-lg); 
+  margin: var(--spacing-xl); 
   padding: 1px 0;
   width: fit-content;
   border-radius: var(--border-radius-md);
@@ -485,12 +485,13 @@ label {
 }
 
 .calendar-navigation {
-  padding: 0 var(--spacing-lg);
+  padding: 0 var(--spacing-xl);
   margin-bottom: var(--spacing-md);
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Timezone left, buttons right */
   flex-wrap: wrap;
   gap: var(--spacing-md);
+  width: 100%;
 }
 
 .navigation-container {
@@ -498,6 +499,7 @@ label {
   align-items: center;
   gap: var(--spacing-xl);
   flex-wrap: wrap;
+  justify-content: flex-start; /* Align to the left */
 }
 
 .timezone-container {
@@ -508,7 +510,7 @@ label {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  justify-content: center;
+  justify-content: flex-end; /* Align to the right */
 }
 
 .calendar-navigation .calendar-instructions p {
@@ -904,29 +906,27 @@ th.time-column {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  /* New intermediate breakpoint for slightly narrow screens */
-  .navigation-container {
+  /* Breakpoint for screens where controls need to stack */
+  .calendar-navigation {
     flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
+    align-items: center; /* Center everything when stacked */
+    justify-content: center;
   }
 
-  .today-button {
-    margin-top: var(--spacing-sm);
+  .navigation-container {
+    width: 100%;
+    justify-content: center; /* Center timezone dropdown when stacked */
+    margin-bottom: var(--spacing-md);
+  }
+
+  .navigation-buttons {
+    width: 100%;
+    justify-content: center; /* Center navigation buttons when stacked */
   }
 }
 
 @media (max-width: var(--breakpoint-md)) {
-  .calendar-navigation {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  .navigation-container {
-    align-items: center;
-    gap: var(--spacing-sm);
-    width: 100%;
-  }
+  /* We already handled the stacking layout in the previous media query */
 
   .timezone-container {
     width: 100%;
@@ -947,7 +947,6 @@ th.time-column {
   .navigation-buttons {
     margin-bottom: var(--spacing-sm);
     width: 100%;
-    justify-content: space-between;
   }
 
   pre {
@@ -981,7 +980,7 @@ th.time-column {
 @media (max-width: var(--breakpoint-sm)) {
   .navigation-buttons {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center; /* Keep buttons centered on smallest screens */
   }
 
   .nav-button {
@@ -990,13 +989,7 @@ th.time-column {
     font-size: var(--font-size-md);
   }
 
-  /* Stacked layout for timezone and today button on smallest screens */
-  .navigation-container {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-
+  /* Additional styling for today button on smallest screens */
   .today-button {
     margin-top: var(--spacing-sm);
     width: 100%;
