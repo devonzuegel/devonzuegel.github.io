@@ -92,12 +92,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const time = new Date();
     time.setHours(hour, minute);
 
-    // Get timezone abbreviation
-    const tzAbbr = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone || undefined,
-      timeZoneName: 'short'
-    }).formatToParts(time)
-      .find(part => part.type === 'timeZoneName')?.value || '';
+    // Get the timezone abbreviation using our mapping function
+    const tzAbbr = timezone ? getTimezoneAbbreviation(timezone) : '';
 
     // Format without minutes if they're zero
     if (minute === 0) {
@@ -107,7 +103,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
         timeZone: timezone || undefined
       }).replace(':00', '').toLowerCase().replace(' ', '');
 
-      return formattedTime;
       // Include timezone abbreviation only if it exists
       return tzAbbr ? `${formattedTime} ${tzAbbr}` : formattedTime;
     }
@@ -135,12 +130,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       timeZone: timezone || undefined
     };
 
-    // Get timezone abbreviation
-    const tzAbbr = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone || undefined,
-      timeZoneName: 'short'
-    }).formatToParts(date)
-      .find(part => part.type === 'timeZoneName')?.value || '';
+    // Get the timezone abbreviation using our mapping function
+    const tzAbbr = timezone ? getTimezoneAbbreviation(timezone) : '';
 
     const formattedTime = date.toLocaleTimeString('en-US', { ...defaultOptions, ...options });
 
@@ -637,12 +628,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   // Format current time for display in the today column
   const formatCurrentTimeForDisplay = () => {
     const now = new Date();
-    // Get timezone abbreviation
-    const tzAbbr = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone || undefined,
-      timeZoneName: 'short'
-    }).formatToParts(now)
-      .find(part => part.type === 'timeZoneName')?.value || '';
+    // Get the timezone abbreviation using our mapping function
+    const tzAbbr = timezone ? getTimezoneAbbreviation(timezone) : '';
 
     const timeStr = now.toLocaleTimeString('en-US', {
       hour: 'numeric',
@@ -701,33 +688,113 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   // Calculate current time position
   const currentTimePosition = calculateCurrentTimePosition();
 
-  // Format timezone for display
-  const getTimezoneDisplay = () => {
-    if (!timezone) return "Local Timezone";
+  // Map of IANA timezone IDs to standard abbreviations
+  const getTimezoneAbbreviation = (timezoneId) => {
+    // Common timezone abbreviations mapping
+    const timezoneMap = {
+      // North America
+      'America/New_York': 'EST',
+      'America/Chicago': 'CST',
+      'America/Denver': 'MST',
+      'America/Los_Angeles': 'PST',
+      'America/Phoenix': 'MST',
+      'America/Anchorage': 'AKST',
+      'America/Adak': 'HST',
+      'America/Honolulu': 'HST',
+
+      // South America
+      'America/Argentina/Buenos_Aires': 'ART',
+      'America/Sao_Paulo': 'BRT',
+      'America/Santiago': 'CLT',
+      'America/Bogota': 'COT',
+      'America/Caracas': 'VET',
+
+      // Europe
+      'Europe/London': 'GMT',
+      'Europe/Dublin': 'IST',
+      'Europe/Paris': 'CET',
+      'Europe/Berlin': 'CET',
+      'Europe/Rome': 'CET',
+      'Europe/Madrid': 'CET',
+      'Europe/Amsterdam': 'CET',
+      'Europe/Zurich': 'CET',
+      'Europe/Brussels': 'CET',
+      'Europe/Vienna': 'CET',
+      'Europe/Stockholm': 'CET',
+      'Europe/Copenhagen': 'CET',
+      'Europe/Oslo': 'CET',
+      'Europe/Athens': 'EET',
+      'Europe/Helsinki': 'EET',
+      'Europe/Bucharest': 'EET',
+      'Europe/Istanbul': 'TRT',
+      'Europe/Moscow': 'MSK',
+
+      // Asia
+      'Asia/Tokyo': 'JST',
+      'Asia/Seoul': 'KST',
+      'Asia/Shanghai': 'CST',
+      'Asia/Hong_Kong': 'HKT',
+      'Asia/Singapore': 'SGT',
+      'Asia/Kolkata': 'IST',
+      'Asia/Bangkok': 'ICT',
+      'Asia/Manila': 'PHT',
+      'Asia/Jakarta': 'WIB',
+      'Asia/Dubai': 'GST',
+      'Asia/Riyadh': 'AST',
+      'Asia/Tehran': 'IRST',
+      'Asia/Jerusalem': 'IST',
+
+      // Australia/Pacific
+      'Australia/Sydney': 'AEST',
+      'Australia/Melbourne': 'AEST',
+      'Australia/Brisbane': 'AEST',
+      'Australia/Adelaide': 'ACST',
+      'Australia/Darwin': 'ACST',
+      'Australia/Perth': 'AWST',
+      'Pacific/Auckland': 'NZST',
+      'Pacific/Fiji': 'FJT',
+
+      // Africa
+      'Africa/Johannesburg': 'SAST',
+      'Africa/Cairo': 'EET',
+      'Africa/Lagos': 'WAT',
+      'Africa/Nairobi': 'EAT',
+      'Africa/Casablanca': 'WET'
+    };
+
+    // Return the mapped abbreviation if it exists
+    if (timezoneMap[timezoneId]) {
+      return timezoneMap[timezoneId];
+    }
 
     try {
-      // Get a sample date in this timezone
+      // Fallback 1: Try to get the abbreviation from DateTimeFormat
       const now = new Date();
       const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        // show just the 3-letter timezone abbreviation, such as PDT, EDT, etc.
+        timeZone: timezoneId,
         timeZoneName: 'short'
       });
 
-      // Extract the timezone abbreviation (like EST, PST)
       const tzAbbr = formatter.formatToParts(now)
         .find(part => part.type === 'timeZoneName')?.value || '';
 
-      // If we have an abbreviation, return it, otherwise return the city name
-      if (tzAbbr) {
+      // If it's not in GMT format, return it
+      if (!tzAbbr.startsWith('GMT')) {
         return tzAbbr;
-      } else {
-        return timezone.split('/').pop().replace(/_/g, ' ');
       }
+
+      // Fallback 2: Return the city name from the IANA timezone
+      return timezoneId.split('/').pop().replace(/_/g, ' ');
     } catch (error) {
       console.error('Error formatting timezone display:', error);
-      return timezone;
+      return timezoneId;
     }
+  };
+
+  // Format timezone for display
+  const getTimezoneDisplay = () => {
+    if (!timezone) return "Local Timezone";
+    return getTimezoneAbbreviation(timezone);
   };
 
   return (
