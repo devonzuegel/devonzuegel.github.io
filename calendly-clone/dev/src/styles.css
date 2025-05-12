@@ -685,7 +685,7 @@ th.time-column {
   min-width: var(--time-column-width);
   background-color: var(--color-background-hover);
   background: white;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-weight: 500;
   position: sticky;
   top: 0;

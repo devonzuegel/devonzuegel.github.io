@@ -32,7 +32,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const dayOfWeek = offsetDay.getDay(); // 0 = Sunday, 6 = Saturday
     firstDayOfWeek.setDate(offsetDay.getDate() - dayOfWeek);
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 21; i++) {
       const date = new Date(firstDayOfWeek);
       date.setDate(firstDayOfWeek.getDate() + i);
 
@@ -193,13 +193,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               onTimezoneChange={onTimezoneChange}
             />
           </div>
-
-          <button className="today-button" onClick={navigateToday}>
-            Today
-          </button>
         </div>
 
-        <div className="navigation-buttons">
+        <div className="navigation-buttons" style={{display: "none"}}>
           <div className="nav-button-container">
             <button
               className="nav-button"
