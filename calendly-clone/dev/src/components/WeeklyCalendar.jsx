@@ -90,7 +90,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     const dayEndUTC = dayEnd.getTime();
 
     // Find events that overlap with this time slot
-    return events.find(event => {
+    const matchingEvent = events.find(event => {
       // Convert event times to the selected timezone
       const eventStartUTC = new Date(event.start).getTime();
       const eventEndUTC = new Date(event.end).getTime();
@@ -111,6 +111,42 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       // Check if the event overlaps with this time slot
       return (eventStart < dayEnd && eventEnd > dayStart);
     });
+
+    if (matchingEvent) {
+      // Calculate how much of this 30-minute slot the event fills
+      let eventStart, eventEnd;
+
+      if (timezone) {
+        eventStart = new Date(new Date(matchingEvent.start).toLocaleString('en-US', { timeZone: timezone }));
+        eventEnd = new Date(new Date(matchingEvent.end).toLocaleString('en-US', { timeZone: timezone }));
+      } else {
+        eventStart = new Date(matchingEvent.start);
+        eventEnd = new Date(matchingEvent.end);
+      }
+
+      // Calculate the overlap percentage with this time slot
+      const slotStartTime = dayStart.getTime();
+      const slotEndTime = dayEnd.getTime();
+      const eventStartTime = eventStart.getTime();
+      const eventEndTime = eventEnd.getTime();
+
+      // Calculate start and end times for the overlap period
+      const overlapStart = Math.max(slotStartTime, eventStartTime);
+      const overlapEnd = Math.min(slotEndTime, eventEndTime);
+
+      // Calculate percentage of the slot that's filled (0 to 1)
+      const slotDuration = slotEndTime - slotStartTime;
+      const overlapDuration = overlapEnd - overlapStart;
+      const fillPercentage = overlapDuration / slotDuration;
+
+      // Attach the fill percentage to the event object
+      return {
+        ...matchingEvent,
+        fillPercentage
+      };
+    }
+
+    return null;
   };
 
   // Helper function to check if this is the start of a contiguous block
@@ -321,16 +357,27 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                       >
                         {isAvailable && (
                           <div
-                            className={`event-indicator ${isHovered ? 'highlight-contiguous' : ''}`}
+                            className={`event-indicator ${isHovered ? 'highlight-contiguous' : ''} ${event.fillPercentage < 0.4 ? 'short-event' : ''}`}
                             onMouseEnter={() => setHoveredEvent(event)}
                             onMouseLeave={() => setHoveredEvent(null)}
+                            style={{
+                              height: `${event.fillPercentage * 100}%`,
+                              position: 'absolute',
+                              top: '0',
+                              width: '100%'
+                            }}
+                            title={`${formatEventTime(event.start)} - ${formatEventTime(event.end)}`}
                           >
                             {isStartOfContiguousBlock(day.date, increment, dayIndex) && (
                               <>
-                                <div className="event-availability-label">AVAILABLE</div>
-                                <div className="event-time">
-                                  {formatEventTime(event.start)} - {formatEventTime(event.end)}
-                                </div>
+                                {event.fillPercentage >= 0.2 && (
+                                  <div className="event-availability-label">AVAILABLE</div>
+                                )}
+                                {(event.fillPercentage >= 0.5 || isHovered) && (
+                                  <div className="event-time">
+                                    {formatEventTime(event.start)} - {formatEventTime(event.end)}
+                                  </div>
+                                )}
                               </>
                             )}
                           </div>

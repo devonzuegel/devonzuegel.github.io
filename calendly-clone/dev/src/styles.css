@@ -623,6 +623,7 @@ label {
 
 /* Today column current time indicator */
 .today-time-indicator {
+  display: none; /* hide this temporarily while we debug */
   position: absolute;
   margin-left: -2px;
   margin-right: -2px;
@@ -635,7 +636,7 @@ label {
 
 .today-time-text {
   position: absolute;
-  left: 35px;
+  left: 5px;
   top: -9px;
   background-color: var(--color-background);
   color: var(--color-primary);
@@ -742,6 +743,7 @@ th.time-column {
   position: relative;
   /* Remove explicit height to match naturally */
   overflow: visible; /* Allow content to overflow for partial indicators */
+  position: relative; /* Required for absolute positioning of event indicators */
 }
 
 .time-slot-row:nth-child(even) {
@@ -749,7 +751,7 @@ th.time-column {
 }
 
 .slot-cell.available {
-  background-color: var(--color-success-lighter);
+  background-color: transparent; /* Change to transparent to only show the event indicator */
 }
 
 .calendar-table .slot-cell.available {
@@ -764,18 +766,35 @@ th.time-column {
 
 .event-indicator {
   width: 100%;
-  height: 100%;
+  height: 100%; /* Default is 100%, will be overridden by inline style for partial events */
   background-color: var(--color-primary);
   border: 1px solid var(--color-primary-faded);
   margin-left: -1px;
   opacity: 1;
-  position: relative;
+  position: absolute; /* Changed from relative to absolute for percentage height */
   text-align: center;
+  top: 0;
+  left: 0;
+  border-radius: 0;
+  overflow: hidden;
+  /* Add subtle gradient to top and bottom */
+  background: linear-gradient(to bottom,
+    rgba(54, 125, 162, 1) 0%,
+    var(--color-primary) 15%,
+    var(--color-primary) 85%,
+    rgba(54, 125, 162, 1) 100%
+  );
 }
 
 .event-indicator:hover {
-  background-color: var(--color-primary-dark);
   cursor: pointer;
+  /* Darker gradient on hover */
+  background: linear-gradient(to bottom,
+    rgba(45, 115, 153, 1) 0%,
+    var(--color-primary-dark) 15%,
+    var(--color-primary-dark) 85%,
+    rgba(45, 115, 153, 1) 100%
+  );
 }
 
 /* Style for highlighted event indicators */
@@ -826,6 +845,8 @@ th.time-column {
   font-weight: 700;
   letter-spacing: 0.5px;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9); /* Scale down for better fit in small events */
+  transform-origin: top center;
 }
 
 .event-time {
@@ -842,6 +863,8 @@ th.time-column {
   z-index: 3; /* Higher z-index to appear above the AVAILABLE label */
   font-weight: 500;
   color: var(--color-primary-light);
+  transform: scale(0.9); /* Scale down for better fit in small events */
+  transform-origin: top center;
 }
 
 /* Position time at the top for short events on hover */
