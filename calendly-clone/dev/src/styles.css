@@ -623,10 +623,7 @@ label {
 
 /* Today column current time indicator */
 .today-time-indicator {
-  display: none; /* Temporarily hide because of layout issues */
   position: absolute;
-  left: 0;
-  right: 0;
   margin-left: -2px;
   margin-right: -2px;
   height: 2px;
