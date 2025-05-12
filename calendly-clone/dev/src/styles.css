@@ -699,7 +699,7 @@ th.time-column {
 }
 
 .day-column .today-pill {
-  background-color: #ccc;
+  /* // background-color: #ccc; // temporarily removing this because we're not calculating "today" correctly in the header */
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 50px;
   font-weight: 500;
