@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CalendarView from './components/CalendarView';
 
 function App() {
+  useEffect(() => {
+    // Set CSS variable for time column width
+    document.documentElement.style.setProperty('--time-column-width', '65px');
+  }, []);
+
   return (
     <div className="container">
       <div className="info-container">
