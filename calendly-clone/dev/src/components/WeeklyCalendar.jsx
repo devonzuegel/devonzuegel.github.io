@@ -833,16 +833,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
             </button>
           </div>
 
-          {/* {events.length > 0 && (
-            <button
-              className="first-availability-button"
-              onClick={scrollToFirstAvailability}
-              title="Scroll to first available day"
-            >
-              First Available
-            </button>
-          )} */}
-
           <div className="nav-button-container">
             <button
               className="nav-button"
@@ -855,9 +845,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
           </div>
         </div>
 
-       {/*  <div className="calendar-instructions">
-          <p><small>Scroll horizontally to see more dates. <span className="green-highlight">Green blocks</span> indicate available time slots.</small></p>
-        </div> */}
       </div>
       <div className="calendar-container">
         <div className="time-column-container">
