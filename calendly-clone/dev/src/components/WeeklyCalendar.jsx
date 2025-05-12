@@ -340,7 +340,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       </div>
 
       {/* DEBUG: Display events data */}
-      <div className="calendar-data-summary">
+      <div className="calendar-data-summary" style={{display: 'none'}}>
         <details>
           <summary>Events Data (Debug)</summary>
           <pre>{JSON.stringify(events, null, 2)}</pre>
