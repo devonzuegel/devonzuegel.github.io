@@ -262,14 +262,15 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
         {/* Main calendar grid */}
         <div className="calendar-scroll-container">
-          {/* Current time indicator - only shown if current week includes today */}
-          {weekDays.some(day => day.isToday) && (
+          {/* Current time indicator - only shown on today's column */}
+          {weekDays.findIndex(day => day.isToday) !== -1 && (
             <div
               className="today-time-indicator"
               style={{
-                top: `calc(50px + ${getCurrentTimePosition()})`, /* 37px is the header height */
-                left: 0,
-                right: 0,
+                top: `calc(50px + ${getCurrentTimePosition()})`, /* 50px is the header height */
+                left: `calc(var(--time-column-width) + ${weekDays.findIndex(day => day.isToday)} * (100% - var(--time-column-width)) / ${weekDays.length})`,
+                width: `calc((100% - var(--time-column-width)) / ${weekDays.length})`,
+                right: 'auto',
                 zIndex: 60
               }}
             >
