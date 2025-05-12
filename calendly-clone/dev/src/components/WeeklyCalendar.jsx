@@ -267,7 +267,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
             <div
               className="today-time-indicator"
               style={{
-                top: getCurrentTimePosition(),
+                top: `calc(50px + ${getCurrentTimePosition()})`, /* 37px is the header height */
                 left: 0,
                 right: 0,
                 zIndex: 60
