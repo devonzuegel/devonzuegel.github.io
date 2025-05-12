@@ -736,16 +736,6 @@ th.time-column {
   line-height: 1;
 }
 
-.time-text.half-hour {
-  font-size: 8px;
-  color: var(--color-text-light);
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  line-height: 1;
-}
-
 .slot-cell {
   padding: 0;
   box-sizing: border-box;

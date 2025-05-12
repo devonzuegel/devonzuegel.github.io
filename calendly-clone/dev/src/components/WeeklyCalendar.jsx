@@ -247,10 +247,6 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                           {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
                         </span>
                       )}
-                      {/* Show the half-hour marker */}
-                      {minute === 30 && (
-                        <span className="time-text half-hour">30</span>
-                      )}
                     </td>
                   </tr>
                 );
