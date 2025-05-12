@@ -467,9 +467,12 @@ label {
 
 .time-column-table {
   border-collapse: collapse;
+  border-spacing: 0;
   font-size: var(--font-size-md);
   width: var(--time-column-width);
   flex-shrink: 0; /* Prevent time column from shrinking */
+  margin: 0;
+  padding: 0;
 }
 
 .time-column-header {
@@ -646,20 +649,26 @@ label {
 
 .calendar-table {
   border-collapse: collapse;
+  border-spacing: 0;
   width: max-content;
   min-width: 100%;
   font-size: 14px;
   border-left: none;
+  margin: 0;
+  padding: 0;
 }
 
 .calendar-table th,
 .calendar-table td {
   border: 8px solid var(--color-border);
   text-align: center;
+  box-sizing: border-box;
 }
 .calendar-table td {
   border-top: 1px solid white;
   border-bottom: 1px solid white;
+  padding: 0; /* Ensure no padding affects alignment */
+  height: 20px !important; /* Consistent height */
 }
 
 /* Legacy time-column styles kept for backward compatibility */
@@ -702,23 +711,29 @@ th.time-column {
 }
 
 .time-column-table .time-cell {
-  padding: 3px var(--spacing-sm); /* Identical padding to other cells */
+  padding: 0; /* Match calendar cells padding */
   text-align: right;
   color: var(--color-text-secondary);
   font-size: 10px;
-  background-color: var(--color-background-hover);
   vertical-align: middle; /* Match calendar cells */
   border: 1px solid white;
   border-right: none;
   box-sizing: border-box;
   position: relative; /* Enable positioning for content */
-  /* Remove fixed height to let it match naturally */
-  background: var(--color-background-hover);
+  height: 20px !important; /* Match exactly with calendar cells */
+  min-height: 20px !important;
+  max-height: 20px !important;
   background: white !important;
 }
 
 .time-text {
+  position: absolute;
+  right: 8px;
+  top: 50%;
   transform: translateY(-50%);
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
 }
 
 .time-text.half-hour {
@@ -727,6 +742,8 @@ th.time-column {
   position: absolute;
   right: 8px;
   top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
 }
 
 .slot-cell {
@@ -947,6 +964,9 @@ th.time-column {
 .time-column-table tr,
 .calendar-table tr {
   height: 20px; /* Reduced height for 30-min rows */
+  line-height: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 /* Force all cells to exact same rendering */
@@ -954,10 +974,12 @@ th.time-column {
 .calendar-table td {
   box-sizing: border-box;
   overflow: visible;
-  line-height: 16px;
   height: 20px !important; /* Reduced height for 30-min rows */
   min-height: 20px !important;
   max-height: 20px !important;
+  padding: 0;
+  line-height: 20px;
+  margin: 0;
 }
 
 /* Add synchronized alternating row striping */
