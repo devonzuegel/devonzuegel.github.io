@@ -64,42 +64,96 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   const getEventForTimeSlot = (date, hour) => {
     if (!events || events.length === 0) return null;
 
+    // Create the date in the provided timezone
     const dayStart = new Date(date);
     dayStart.setHours(hour, 0, 0, 0);
 
     const dayEnd = new Date(dayStart);
     dayEnd.setHours(hour + 1, 0, 0, 0);
 
+    // Convert dayStart and dayEnd to UTC timestamps (to compare with the ISO strings)
+    const dayStartUTC = dayStart.getTime();
+    const dayEndUTC = dayEnd.getTime();
+
     // Find events that overlap with this time slot
     return events.find(event => {
-      const eventStart = new Date(event.start);
-      const eventEnd = new Date(event.end);
+      // Convert event times to the selected timezone
+      const eventStartUTC = new Date(event.start).getTime();
+      const eventEndUTC = new Date(event.end).getTime();
+
+      // Get adjusted time according to selected timezone
+      let eventStart, eventEnd;
+
+      if (timezone) {
+        // Use the selected timezone to create proper timezone-aware dates
+        eventStart = new Date(new Date(event.start).toLocaleString('en-US', { timeZone: timezone }));
+        eventEnd = new Date(new Date(event.end).toLocaleString('en-US', { timeZone: timezone }));
+      } else {
+        // Fall back to local timezone
+        eventStart = new Date(event.start);
+        eventEnd = new Date(event.end);
+      }
 
       // Check if the event overlaps with this time slot
       return (eventStart < dayEnd && eventEnd > dayStart);
     });
   };
 
-  // Format event time
+  // Format event time according to selected timezone
   const formatEventTime = (dateString) => {
-    const date = new Date(dateString);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    let date;
 
-    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    if (timezone) {
+      // Format the time in the selected timezone
+      const options = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: timezone };
+      return new Date(dateString).toLocaleTimeString('en-US', options);
+    } else {
+      // Fall back to local timezone
+      date = new Date(dateString);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+      return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    }
   };
 
-  // Calculate current time indicator position
+  // Calculate current time indicator position respecting the selected timezone
   const getCurrentTimePosition = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    // Calculate position as percentage of day (24 hours)
-    const percentage = ((hours + minutes / 60) / 24) * 100;
-    return `${percentage}%`;
+    let now;
+
+    if (timezone) {
+      // Get current time in the selected timezone
+      const localTime = new Date();
+      const options = {
+        timeZone: timezone,
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+      };
+
+      // Parse the time in the specified timezone
+      const timeString = localTime.toLocaleString('en-US', options);
+      const [hourStr, minuteStr] = timeString.split(':');
+
+      const hours = parseInt(hourStr, 10);
+      const minutes = parseInt(minuteStr, 10);
+
+      // Calculate position as percentage of day (24 hours)
+      const percentage = ((hours + minutes / 60) / 24) * 100;
+      return `${percentage}%`;
+    } else {
+      // Fall back to local timezone
+      now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      // Calculate position as percentage of day (24 hours)
+      const percentage = ((hours + minutes / 60) / 24) * 100;
+      return `${percentage}%`;
+    }
   };
 
   return (
@@ -180,7 +234,17 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               }}
             >
               <div className="today-time-text">
-                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {timezone
+                  ? new Date().toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      timeZone: timezone
+                    })
+                  : new Date().toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                }
               </div>
             </div>
           )}
