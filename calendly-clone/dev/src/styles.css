@@ -605,6 +605,7 @@ label {
 
 .calendar-scroll-container {
   overflow-x: auto;
+  overflow-y: hidden;
   white-space: nowrap;
   flex: 1;
   border-left: none; /* Remove any border that might create misalignment */
