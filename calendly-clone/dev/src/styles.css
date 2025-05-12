@@ -718,7 +718,15 @@ th.time-column {
 }
 
 .time-text {
-  transform: translateY(-50%); 
+  transform: translateY(-50%);
+}
+
+.time-text.half-hour {
+  font-size: 8px;
+  color: var(--color-text-light);
+  position: absolute;
+  right: 8px;
+  top: 50%;
 }
 
 .slot-cell {
@@ -938,7 +946,7 @@ th.time-column {
 /* Ensure perfect row alignment */
 .time-column-table tr,
 .calendar-table tr {
-  height: 28px; /* Fixed height for all rows - slightly increased to accommodate fewer rows */
+  height: 20px; /* Reduced height for 30-min rows */
 }
 
 /* Force all cells to exact same rendering */
@@ -947,9 +955,9 @@ th.time-column {
   box-sizing: border-box;
   overflow: visible;
   line-height: 16px;
-  height: 28px !important; /* Force consistent height - slightly increased */
-  min-height: 28px !important;
-  max-height: 28px !important;
+  height: 20px !important; /* Reduced height for 30-min rows */
+  min-height: 20px !important;
+  max-height: 20px !important;
 }
 
 /* Add synchronized alternating row striping */

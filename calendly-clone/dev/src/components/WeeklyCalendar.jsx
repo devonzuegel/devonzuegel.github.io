@@ -60,16 +60,21 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
   const weekDays = generateWeekDays();
 
-  // Function to check if an event belongs to a specific day and hour
-  const getEventForTimeSlot = (date, hour) => {
+  // Function to check if an event belongs to a specific day and hour/half-hour
+  const getEventForTimeSlot = (date, hourIncrement) => {
     if (!events || events.length === 0) return null;
+
+    // Calculate the actual hour and minute (for 30-min increments)
+    const hour = Math.floor(hourIncrement / 2);
+    const minute = (hourIncrement % 2) * 30;
 
     // Create the date in the provided timezone
     const dayStart = new Date(date);
-    dayStart.setHours(hour, 0, 0, 0);
+    dayStart.setHours(hour, minute, 0, 0);
 
     const dayEnd = new Date(dayStart);
-    dayEnd.setHours(hour + 1, 0, 0, 0);
+    // Set end time 30 minutes later
+    dayEnd.setHours(hour, minute + 30, 0, 0);
 
     // Convert dayStart and dayEnd to UTC timestamps (to compare with the ISO strings)
     const dayStartUTC = dayStart.getTime();
@@ -100,19 +105,17 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
   };
 
   // Helper function to check if this is the start of a contiguous block
-  const isStartOfContiguousBlock = (date, hour, dayIndex) => {
+  const isStartOfContiguousBlock = (date, hourIncrement, dayIndex) => {
     if (!events || events.length === 0) return false;
 
     // Get the current event
-    const currentEvent = getEventForTimeSlot(date, hour);
+    const currentEvent = getEventForTimeSlot(date, hourIncrement);
     if (!currentEvent) return false;
 
-    // Check if the hour above has the same event
-    const prevHour = hour - 1;
-    if (prevHour >= 0) {
-      const prevDayStart = new Date(date);
-      prevDayStart.setHours(prevHour, 0, 0, 0);
-      const prevEvent = getEventForTimeSlot(date, prevHour);
+    // Check if the slot above has the same event
+    const prevIncrement = hourIncrement - 1;
+    if (prevIncrement >= 0) {
+      const prevEvent = getEventForTimeSlot(date, prevIncrement);
 
       // If previous slot has the same event, this is not the start
       if (prevEvent && prevEvent.start === currentEvent.start && prevEvent.end === currentEvent.end) {
@@ -166,7 +169,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const hours = parseInt(hourStr, 10);
       const minutes = parseInt(minuteStr, 10);
 
-      // Calculate position as percentage of day (24 hours)
+      // Calculate position as percentage of day (24 hours, but with 48 slots)
       const percentage = ((hours + minutes / 60) / 24) * 100;
       return `${percentage}%`;
     } else {
@@ -174,7 +177,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      // Calculate position as percentage of day (24 hours)
+      // Calculate position as percentage of day (24 hours, but with 48 slots)
       const percentage = ((hours + minutes / 60) / 24) * 100;
       return `${percentage}%`;
     }
@@ -231,15 +234,27 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 24 }, (_, hour) => (
-                <tr key={hour} className="time-slot-row">
-                  <td className="time-cell">
-                    <span className="time-text">
-                      {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {Array.from({ length: 48 }, (_, increment) => {
+                const hour = Math.floor(increment / 2);
+                const minute = (increment % 2) * 30;
+                const showHour = minute === 0; // Only show hour text at the hour mark
+
+                return (
+                  <tr key={increment} className="time-slot-row">
+                    <td className="time-cell">
+                      {showHour && (
+                        <span className="time-text">
+                          {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
+                        </span>
+                      )}
+                      {/* Show the half-hour marker */}
+                      {minute === 30 && (
+                        <span className="time-text half-hour">30</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -288,10 +303,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 24 }, (_, hour) => (
-                <tr key={hour} className="time-slot-row">
+              {Array.from({ length: 48 }, (_, increment) => (
+                <tr key={increment} className="time-slot-row">
                   {weekDays.map((day, dayIndex) => {
-                    const event = getEventForTimeSlot(day.date, hour);
+                    const event = getEventForTimeSlot(day.date, increment);
                     const isAvailable = !!event;
                     const isHovered = hoveredEvent &&
                                      hoveredEvent.start === (event?.start || null) &&
@@ -308,7 +323,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                             onMouseEnter={() => setHoveredEvent(event)}
                             onMouseLeave={() => setHoveredEvent(null)}
                           >
-                            {isStartOfContiguousBlock(day.date, hour, dayIndex) && (
+                            {isStartOfContiguousBlock(day.date, increment, dayIndex) && (
                               <>
                                 <div className="event-availability-label">AVAILABLE</div>
                                 <div className="event-time">
