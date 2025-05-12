@@ -19,18 +19,27 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     setWeekOffset(0);
   };
 
-  // Generate week days for the calendar with offset
+  // Generate week days for the calendar with offset, starting from today
   const generateWeekDays = () => {
-    const today = new Date();
+    // Get today's date in the user's selected timezone
+    let today;
+
+    if (timezone) {
+      // Get current date in the selected timezone
+      const options = { timeZone: timezone };
+      const localTime = new Date().toLocaleString('en-US', options);
+      today = new Date(localTime);
+    } else {
+      today = new Date();
+    }
+
     const offsetDay = new Date(today);
     offsetDay.setDate(today.getDate() + (weekOffset * 7));
 
     const days = [];
 
-    // Start from Sunday of the current week with offset
+    // Start from today instead of Sunday
     const firstDayOfWeek = new Date(offsetDay);
-    const dayOfWeek = offsetDay.getDay(); // 0 = Sunday, 6 = Saturday
-    firstDayOfWeek.setDate(offsetDay.getDate() - dayOfWeek);
 
     for (let i = 0; i < 21; i++) {
       const date = new Date(firstDayOfWeek);
