@@ -99,6 +99,30 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     });
   };
 
+  // Helper function to check if this is the start of a contiguous block
+  const isStartOfContiguousBlock = (date, hour, dayIndex) => {
+    if (!events || events.length === 0) return false;
+
+    // Get the current event
+    const currentEvent = getEventForTimeSlot(date, hour);
+    if (!currentEvent) return false;
+
+    // Check if the hour above has the same event
+    const prevHour = hour - 1;
+    if (prevHour >= 0) {
+      const prevDayStart = new Date(date);
+      prevDayStart.setHours(prevHour, 0, 0, 0);
+      const prevEvent = getEventForTimeSlot(date, prevHour);
+
+      // If previous slot has the same event, this is not the start
+      if (prevEvent && prevEvent.start === currentEvent.start && prevEvent.end === currentEvent.end) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   // Format event time according to selected timezone
   const formatEventTime = (dateString) => {
     let date;
@@ -284,10 +308,14 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                             onMouseEnter={() => setHoveredEvent(event)}
                             onMouseLeave={() => setHoveredEvent(null)}
                           >
-                            <div className="event-availability-label">AVAILABLE</div>
-                            <div className="event-time">
-                              {formatEventTime(event.start)} - {formatEventTime(event.end)}
-                            </div>
+                            {isStartOfContiguousBlock(day.date, hour, dayIndex) && (
+                              <>
+                                <div className="event-availability-label">AVAILABLE</div>
+                                <div className="event-time">
+                                  {formatEventTime(event.start)} - {formatEventTime(event.end)}
+                                </div>
+                              </>
+                            )}
                           </div>
                         )}
                       </td>
