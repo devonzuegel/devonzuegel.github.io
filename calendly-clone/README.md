@@ -5,7 +5,7 @@ A React-based clone of the original Calendly-like availability display page.
 ## How to make changes
 
 1. Run `npm install` to install dependencies.
-2. Run `npm start` to start the development server and view the app in your browser.
+2. Run `npm start` the `calendly-clone/dev` directory to start the development server and view the app in your browser.
 3. Make your changes in the `calendly-clone/dev` directory.
 4. Once you're done, run `npm run build` to create a production build in the `calendly-clone/dist` directory.
 5. Merge your changes to the `master` branch and push to GitHub, which will trigger the CI/CD pipeline to deploy the changes to the live site.
