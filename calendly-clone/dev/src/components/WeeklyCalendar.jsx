@@ -266,28 +266,28 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       </div>
 
       <div className="calendar-container">
-        {/* Sticky header table */}
-        <div className="calendar-header">
-          <table className="header-table">
-            <thead>
-              <tr>
-                <th className="time-column-header-sticky"></th>
-                {weekDays.map((day, index) => (
-                  <th key={index} className={`day-column ${day.isToday ? 'today' : ''}`}>
-                    {day.isToday ? (
-                      <span className="today-pill">{day.display}</span>
-                    ) : (
-                      day.display
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-          </table>
-        </div>
-
         {/* Main calendar grid */}
         <div className="calendar-scroll-container">
+          {/* Sticky header table - inside scroll container */}
+          <div className="calendar-header">
+            <table className="header-table">
+              <thead>
+                <tr>
+                  <th className="time-column-header-sticky"></th>
+                  {weekDays.map((day, index) => (
+                    <th key={index} className={`day-column ${day.isToday ? 'today' : ''}`}>
+                      {day.isToday ? (
+                        <span className="today-pill">{day.display}</span>
+                      ) : (
+                        day.display
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            </table>
+          </div>
+          
           <div style={{display: 'flex'}}>
             {/* Time column (left side) */}
             <div className="time-column-container">

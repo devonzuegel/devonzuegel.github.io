@@ -747,7 +747,7 @@ th.time-column {
   overflow: visible; /* Allow content to overflow for partial indicators */
   position: relative; /* Required for absolute positioning of event indicators */
   min-width: 100px; /* Match day-column header width */
-  width: 100px; /* Fixed width to match header columns */
+  width: calc(var(--time-column-width) * 2); /* Fixed width to match header columns */
 }
 
 .time-slot-row:nth-child(even) {
@@ -1102,6 +1102,8 @@ th.time-column {
   z-index: 50;
   background: white;
   border-bottom: 1px solid var(--color-border-alt);
+  width: max-content; /* Allow horizontal scrolling */
+  min-width: 100%;
 }
 
 .header-table {
@@ -1133,5 +1135,5 @@ th.time-column {
   border-right: none;
   height: 37px;
   box-sizing: border-box;
-  width: var(--time-column-width);
+  width: calc(var(--time-column-width) + 4px)
 }
