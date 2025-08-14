@@ -12,13 +12,13 @@ A React-based clone of the original Calendly-like availability display page.
 
 ## Features & changes I plan to make in the future
 - collapse the cells at the top and bottom of the calendar that are empty, but make them un-collapsible too
+- make the loading view a nice spinner or something
 - format dates as 11-11:30am and 11am-1pm, etc
 - scroll the available times into view and hide the times that don't have availability, though still show them, just under scroll
 - put back the < > buttons to scroll through the days
 - add a list view in addition to the Month/Week view
 - make the timezone map look more realistic
 - overlay the timezone regions over a real map of the world to make it a little less ugly
-- make the loading view a nice spinner or something
 
 Things I think I did, but want to double check:
 - highlight "today" in the calendar, according to the user's selected timezone
