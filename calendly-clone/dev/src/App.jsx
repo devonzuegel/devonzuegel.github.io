@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import CalendarView from './components/CalendarView';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   useEffect(() => {
@@ -9,6 +10,7 @@ function App() {
 
   return (
     <div className="container">
+      <ThemeToggle />
       <div className="info-container">
         <p>If a time is <span className="highlight">highlighted</span> below, it means Devon is <i>probably</i> available for a call at that time.</p>
         <p>

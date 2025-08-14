@@ -71,6 +71,124 @@
   --transition-fast: 0.2s;
 }
 
+/* Dark mode colors */
+:root[data-theme="dark"] {
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-text-light: #52525b;
+
+  /* UI Colors - adjusted for dark mode */
+  --color-primary: #60a5fa;
+  --color-primary-faded: #7dd3fc;
+  --color-primary-dark: #3b82f6;
+  --color-primary-light: #1e293b;
+  --color-primary-border: #334155;
+  --color-primary-text: #60a5fa;
+
+  /* Success/Green Colors - adjusted for dark mode */
+  --color-success: #22c55e;
+  --color-success-light: #16a34a;
+  --color-success-lighter: #15803d;
+  --color-success-text: #22c55e;
+
+  /* Button/UI Surface Colors */
+  --color-surface: #374151;
+  --color-surface-hover: #4b5563;
+  --color-surface-light: #1f2937;
+
+  /* Neutral Colors */
+  --color-background: #111827;
+  --color-background-alt: #1f2937;
+  --color-background-hover: #374151;
+  --color-background-striped: #1a1f2e;
+  --color-border: #374151;
+  --color-border-alt: #4b5563;
+  --color-disabled: #6b7280;
+
+  /* Shadows - adjusted for dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-inset: inset 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode specific component overrides */
+:root[data-theme="dark"] .day-column .today-pill {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+:root[data-theme="dark"] .timezone-dropdown-menu {
+  border: 3px solid var(--color-border);
+}
+
+:root[data-theme="dark"] .timezone-map-container {
+  background-color: var(--color-background);
+}
+
+:root[data-theme="dark"] .map-label {
+  text-shadow: 0 0 1px var(--color-background), 0 0 3px var(--color-background);
+}
+
+:root[data-theme="dark"] .calendar-container {
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .time-column-container {
+  background-color: var(--color-background);
+  border-right: 1px solid var(--color-border-alt);
+}
+
+:root[data-theme="dark"] .time-column-header {
+  background-color: var(--color-background);
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .day-column {
+  background-color: var(--color-background);
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .calendar-table td {
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+:root[data-theme="dark"] .time-column-table .time-cell {
+  border: 1px solid var(--color-border);
+  background: var(--color-background) !important;
+}
+
+:root[data-theme="dark"] .no-availability-message {
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .no-availability-message-cell-container {
+  background: var(--color-background) !important;
+}
+
+:root[data-theme="dark"] .no-availability-message-column {
+  background: var(--color-background) !important;
+}
+
+:root[data-theme="dark"] .calendar-header {
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .header-table {
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .time-column-header-sticky {
+  background-color: var(--color-background);
+  background: var(--color-background);
+}
+
+:root[data-theme="dark"] .world-timezone-map svg {
+  background-color: var(--color-background-alt);
+}
+
 /* Base Styles */
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
@@ -403,6 +521,39 @@ pre {
 
 .calendar-data-summary summary:hover {
   text-decoration: underline;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-alt);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-surface-hover);
+  transform: scale(1.05);
+}
+
+.theme-toggle svg {
+  transition: transform var(--transition-fast) ease;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
 }
 
 /* Controls */
