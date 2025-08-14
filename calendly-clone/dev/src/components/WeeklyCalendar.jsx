@@ -149,6 +149,60 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     return null;
   };
 
+  // Calculate visible time range based on events
+  const calculateVisibleTimeRange = () => {
+    if (!events || events.length === 0) {
+      // Default range: 8 AM to 6 PM (16 hours = 20 slots)
+      return { startSlot: 16, endSlot: 35, totalSlots: 20 };
+    }
+
+    let earliestSlot = 48; // Start at end of day
+    let latestSlot = 0;    // Start at beginning of day
+
+    // Find the earliest and latest event times across all days
+    weekDays.forEach(day => {
+      for (let increment = 0; increment < 48; increment++) {
+        const event = getEventForTimeSlot(day.date, increment);
+        if (event) {
+          earliestSlot = Math.min(earliestSlot, increment);
+          latestSlot = Math.max(latestSlot, increment);
+        }
+      }
+    });
+
+    // If no events found, use default range
+    if (earliestSlot === 48 && latestSlot === 0) {
+      return { startSlot: 16, endSlot: 35, totalSlots: 20 };
+    }
+
+    // Add 1 hour (2 slots) buffer before and after
+    let startSlot = Math.max(0, earliestSlot - 2);
+    let endSlot = Math.min(47, latestSlot + 2);
+
+    // Ensure minimum 6 hours (12 slots) are visible
+    const currentRange = endSlot - startSlot + 1;
+    if (currentRange < 12) {
+      const slotsToAdd = 12 - currentRange;
+      const addBefore = Math.floor(slotsToAdd / 2);
+      const addAfter = slotsToAdd - addBefore;
+      
+      startSlot = Math.max(0, startSlot - addBefore);
+      endSlot = Math.min(47, endSlot + addAfter);
+      
+      // If we hit the boundaries, adjust the other side
+      if (startSlot === 0 && endSlot - startSlot + 1 < 12) {
+        endSlot = Math.min(47, startSlot + 11);
+      } else if (endSlot === 47 && endSlot - startSlot + 1 < 12) {
+        startSlot = Math.max(0, endSlot - 11);
+      }
+    }
+
+    const totalSlots = endSlot - startSlot + 1;
+    return { startSlot, endSlot, totalSlots };
+  };
+
+  const { startSlot, endSlot, totalSlots } = calculateVisibleTimeRange();
+
   // Helper function to check if this is the start of a contiguous block
   const isStartOfContiguousBlock = (date, hourIncrement, dayIndex) => {
     if (!events || events.length === 0) return false;
@@ -192,9 +246,9 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
     }
   };
 
-  // Calculate current time indicator position respecting the selected timezone
+  // Calculate current time indicator position respecting the selected timezone and visible range
   const getCurrentTimePosition = () => {
-    let now;
+    let hours, minutes;
 
     if (timezone) {
       // Get current time in the selected timezone
@@ -211,21 +265,27 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       const timeString = localTime.toLocaleString('en-US', options);
       const [hourStr, minuteStr] = timeString.split(':');
 
-      const hours = parseInt(hourStr, 10);
-      const minutes = parseInt(minuteStr, 10);
-
-      // Calculate position as percentage of day (24 hours, but with 48 slots)
-      const percentage = ((hours + minutes / 60) / 24) * 100;
-      return `${percentage}%`;
+      hours = parseInt(hourStr, 10);
+      minutes = parseInt(minuteStr, 10);
     } else {
       // Fall back to local timezone
-      now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      // Calculate position as percentage of day (24 hours, but with 48 slots)
-      const percentage = ((hours + minutes / 60) / 24) * 100;
-      return `${percentage}%`;
+      const now = new Date();
+      hours = now.getHours();
+      minutes = now.getMinutes();
     }
+
+    // Convert current time to slot index
+    const currentSlot = hours * 2 + (minutes >= 30 ? 1 : 0) + (minutes % 30) / 30;
+    
+    // Check if current time is within the visible range
+    if (currentSlot < startSlot || currentSlot > endSlot) {
+      return null; // Hide indicator if current time is outside visible range
+    }
+
+    // Calculate position as percentage of the visible range
+    const relativeSlot = currentSlot - startSlot;
+    const percentage = (relativeSlot / totalSlots) * 100;
+    return `${percentage}%`;
   };
 
   return (
@@ -293,7 +353,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
             <div className="time-column-container">
               <table className="time-column-table">
                 <tbody>
-                  {Array.from({ length: 48 }, (_, increment) => {
+                  {Array.from({ length: totalSlots }, (_, index) => {
+                    const increment = startSlot + index;
                     const hour = Math.floor(increment / 2);
                     const minute = (increment % 2) * 30;
                     const showHour = minute === 0; // Only show hour text at the hour mark
@@ -316,8 +377,8 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
             {/* Calendar content */}
             <div style={{flex: 1, position: 'relative'}}>
-              {/* Current time indicator - only shown on today's column */}
-              {weekDays.findIndex(day => day.isToday) !== -1 && (
+              {/* Current time indicator - only shown on today's column and within visible range */}
+              {weekDays.findIndex(day => day.isToday) !== -1 && getCurrentTimePosition() !== null && (
                 <div
                   className="today-time-indicator"
                   style={{
@@ -346,52 +407,55 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
 
               <table className="calendar-table">
                 <tbody>
-              {Array.from({ length: 48 }, (_, increment) => (
-                <tr key={increment} className="time-slot-row">
-                  {weekDays.map((day, dayIndex) => {
-                    const event = getEventForTimeSlot(day.date, increment);
-                    const isAvailable = !!event;
-                    const isHovered = hoveredEvent &&
-                                     hoveredEvent.start === (event?.start || null) &&
-                                     hoveredEvent.end === (event?.end || null);
+              {Array.from({ length: totalSlots }, (_, index) => {
+                const increment = startSlot + index;
+                return (
+                  <tr key={increment} className="time-slot-row">
+                    {weekDays.map((day, dayIndex) => {
+                      const event = getEventForTimeSlot(day.date, increment);
+                      const isAvailable = !!event;
+                      const isHovered = hoveredEvent &&
+                                       hoveredEvent.start === (event?.start || null) &&
+                                       hoveredEvent.end === (event?.end || null);
 
-                    return (
-                      <td
-                        key={dayIndex}
-                        className={`slot-cell ${isAvailable ? 'available' : ''} ${isHovered ? 'highlight-contiguous' : ''}`}
-                      >
-                        {isAvailable && (
-                          <div
-                            className={`event-indicator ${isHovered ? 'highlight-contiguous' : ''} ${event.fillPercentage < 0.4 ? 'short-event' : ''}`}
-                            onMouseEnter={() => setHoveredEvent(event)}
-                            onMouseLeave={() => setHoveredEvent(null)}
-                            style={{
-                              height: `${event.fillPercentage * 100}%`,
-                              position: 'absolute',
-                              top: '0',
-                              width: '100%'
-                            }}
-                            title={`${formatEventTime(event.start)} - ${formatEventTime(event.end)}`}
-                          >
-                            {isStartOfContiguousBlock(day.date, increment, dayIndex) && (
-                              <>
-                                {event.fillPercentage >= 0.2 && (
-                                  <div className="event-availability-label">AVAILABLE</div>
-                                )}
-                                {(event.fillPercentage >= 0.5 || isHovered) && (
-                                  <div className="event-time">
-                                    {formatEventTime(event.start)} - {formatEventTime(event.end)}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+                      return (
+                        <td
+                          key={dayIndex}
+                          className={`slot-cell ${isAvailable ? 'available' : ''} ${isHovered ? 'highlight-contiguous' : ''}`}
+                        >
+                          {isAvailable && (
+                            <div
+                              className={`event-indicator ${isHovered ? 'highlight-contiguous' : ''} ${event.fillPercentage < 0.4 ? 'short-event' : ''}`}
+                              onMouseEnter={() => setHoveredEvent(event)}
+                              onMouseLeave={() => setHoveredEvent(null)}
+                              style={{
+                                height: `${event.fillPercentage * 100}%`,
+                                position: 'absolute',
+                                top: '0',
+                                width: '100%'
+                              }}
+                              title={`${formatEventTime(event.start)} - ${formatEventTime(event.end)}`}
+                            >
+                              {isStartOfContiguousBlock(day.date, increment, dayIndex) && (
+                                <>
+                                  {event.fillPercentage >= 0.2 && (
+                                    <div className="event-availability-label">AVAILABLE</div>
+                                  )}
+                                  {(event.fillPercentage >= 0.5 || isHovered) && (
+                                    <div className="event-time">
+                                      {formatEventTime(event.start)} - {formatEventTime(event.end)}
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
                 </tbody>
               </table>
             </div>
