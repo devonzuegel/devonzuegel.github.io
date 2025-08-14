@@ -525,17 +525,13 @@ pre {
 
 /* Theme Toggle */
 .theme-toggle-container {
-  position: fixed;
-  top: var(--spacing-lg);
-  right: var(--spacing-lg);
-  display: flex;
+  display: inline-flex;
   gap: var(--spacing-xs);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border-alt);
-  border-radius: var(--border-radius-lg);
+  background: transparent;
   padding: var(--spacing-xs);
-  box-shadow: var(--shadow-md);
-  z-index: 1000;
+  border-radius: var(--border-radius-lg);
+  margin-top: var(--spacing-lg);
+  margin-left: var(--spacing-lg);
 }
 
 .theme-toggle-option {
@@ -551,16 +547,20 @@ pre {
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all var(--transition-fast) ease;
+  opacity: 0.4;
 }
 
 .theme-toggle-option:hover {
   background-color: var(--color-surface-hover);
   transform: scale(1.05);
+  opacity: 1;
 }
 
 .theme-toggle-option.active {
-  background-color: var(--color-primary-light);
+  //background-color: var(--color-primary-light);
+  background-color: var(--color-surface-hover);
   color: var(--color-primary);
+  opacity: 1;
 }
 
 .theme-toggle-option svg {

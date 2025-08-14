@@ -10,7 +10,6 @@ function App() {
 
   return (
     <div className="container">
-      <ThemeToggle />
       <div className="info-container">
         <p>If a time is <span className="highlight">highlighted</span> below, it means Devon is <i>probably</i> available for a call at that time.</p>
         <p>
@@ -18,6 +17,7 @@ function App() {
         </p>
       </div>
       <CalendarView />
+      <ThemeToggle />
     </div>
   );
 }
