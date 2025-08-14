@@ -185,6 +185,11 @@
   background: var(--color-background);
 }
 
+:root[data-theme="dark"] .times-column-overlay {
+  background: var(--color-background);
+  border-right: 1px solid var(--color-border-alt);
+}
+
 :root[data-theme="dark"] .world-timezone-map svg {
   background-color: var(--color-background-alt);
 }
@@ -1290,6 +1295,7 @@ th.time-column {
 /* Sticky header styles */
 .calendar-header {
   //position: sticky;
+  position: relative; /* Required for absolute positioning of overlay */
   top: 0;
   z-index: 50;
   background: white;
@@ -1334,4 +1340,18 @@ th.time-column {
   height: 37px;
   box-sizing: border-box;
   width: calc(var(--time-column-width) + 4px)
+}
+
+/* Sticky overlay that covers the date header when scrolling horizontally */
+.times-column-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--time-column-width));
+  height: 37px; /* Match header height */
+  padding: var(--spacing-sm) 0; /* Match header spacing */
+  background: white;
+  border-right: 1px solid #eee;
+  z-index: 100;
+  pointer-events: none; /* Allow clicks to pass through */
 }

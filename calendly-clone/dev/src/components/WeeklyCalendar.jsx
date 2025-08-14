@@ -326,8 +326,11 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       </div>
 
       <div className="calendar-container">
+        {/* Sticky overlay that stays fixed while header scrolls underneath */}
+        <div className="times-column-overlay"></div>
         {/* Main calendar grid */}
         <div className="calendar-scroll-container">
+          
           {/* Sticky header table - inside scroll container */}
           <div className="calendar-header">
             <table className="header-table">
