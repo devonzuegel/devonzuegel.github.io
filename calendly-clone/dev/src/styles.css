@@ -834,8 +834,8 @@ th.time-column {
 }
 
 .day-column {
-  min-width: 100px;
-  width: 100px; /* Fixed width */
+  min-width: calc(var(--time-column-width) * 2);
+  width: calc(var(--time-column-width) * 2); /* Fixed width to match slot cells */
   background-color: var(--color-background-hover);
   background: white;
   padding: var(--spacing-sm) var(--spacing-lg);
@@ -845,6 +845,7 @@ th.time-column {
   z-index: 5;
   height: 37px;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .day-column.today {
@@ -897,7 +898,7 @@ th.time-column {
   /* Remove explicit height to match naturally */
   overflow: visible; /* Allow content to overflow for partial indicators */
   position: relative; /* Required for absolute positioning of event indicators */
-  min-width: 100px; /* Match day-column header width */
+  min-width: calc(var(--time-column-width) * 2); /* Match day-column header width */
   width: calc(var(--time-column-width) * 2); /* Fixed width to match header columns */
 }
 
@@ -1248,7 +1249,7 @@ th.time-column {
 
 /* Sticky header styles */
 .calendar-header {
-  position: sticky;
+  //position: sticky;
   top: 0;
   z-index: 50;
   background: white;
@@ -1267,13 +1268,20 @@ th.time-column {
 
 .header-table th {
   border: 8px solid var(--color-border);
+  //border-top: 8px solid var(--color-border);
+  //border-bottom: 8px solid var(--color-border);
+  //border-left: 11px solid var(--color-border);
+  //border-right: 11px solid var(--color-border);
   text-align: center;
   box-sizing: border-box;
 }
 
 .header-table th.day-column {
-  min-width: 100px;
-  width: 100px; /* Fixed width to match slot cells */
+  min-width: calc(var(--time-column-width) * 2);
+  max-width: calc(var(--time-column-width) * 2); /* Fixed width to match slot cells */
+  font-size: var(--font-size-md);
+  text-align: center;
+  overflow: hidden;
 }
 
 .time-column-header-sticky {
@@ -1282,8 +1290,7 @@ th.time-column {
   background: white;
   padding: var(--spacing-sm);
   font-weight: 500;
-  border: 5px solid var(--color-border);
-  border-right: none;
+  border: none;
   height: 37px;
   box-sizing: border-box;
   width: calc(var(--time-column-width) + 4px)
