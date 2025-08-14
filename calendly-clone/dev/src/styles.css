@@ -524,37 +524,53 @@ pre {
 }
 
 /* Theme Toggle */
-.theme-toggle {
+.theme-toggle-container {
   position: fixed;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
-  width: 44px;
-  height: 44px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: var(--spacing-xs);
   background-color: var(--color-surface);
-  color: var(--color-text-primary);
   border: 1px solid var(--color-border-alt);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all var(--transition-fast) ease;
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xs);
   box-shadow: var(--shadow-md);
   z-index: 1000;
 }
 
-.theme-toggle:hover {
+.theme-toggle-option {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+}
+
+.theme-toggle-option:hover {
   background-color: var(--color-surface-hover);
   transform: scale(1.05);
 }
 
-.theme-toggle svg {
+.theme-toggle-option.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.theme-toggle-option svg {
   transition: transform var(--transition-fast) ease;
 }
 
-.theme-toggle:hover svg {
+.theme-toggle-option:hover svg {
   transform: rotate(15deg);
 }
+
 
 /* Controls */
 button {

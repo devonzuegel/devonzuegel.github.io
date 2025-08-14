@@ -53,14 +53,19 @@ const ThemeToggle = () => {
   const currentTheme = themes.find(t => t.key === theme);
 
   return (
-    <button
-      onClick={handleThemeChange}
-      className="theme-toggle"
-      title={`Current: ${currentTheme?.label} - Click to change`}
-      aria-label={`Switch theme. Current: ${currentTheme?.label}`}
-    >
-      {currentTheme?.icon}
-    </button>
+    <div className="theme-toggle-container">
+      {themes.map((themeOption) => (
+        <button
+          key={themeOption.key}
+          onClick={() => setTheme(themeOption.key)}
+          className={`theme-toggle-option ${theme === themeOption.key ? 'active' : ''}`}
+          title={`Switch to ${themeOption.label} theme`}
+          aria-label={`Switch to ${themeOption.label} theme`}
+        >
+          {themeOption.icon}
+        </button>
+      ))}
+    </div>
   );
 };
 
