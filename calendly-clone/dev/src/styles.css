@@ -530,8 +530,7 @@ pre {
   background: transparent;
   padding: var(--spacing-xs);
   border-radius: var(--border-radius-lg);
-  margin-top: var(--spacing-lg);
-  margin-left: var(--spacing-lg);
+  margin: var(--spacing-lg);
 }
 
 .theme-toggle-option {
