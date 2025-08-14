@@ -14,6 +14,10 @@ A React-based clone of the original Calendly-like availability display page.
 - PARTIALLY DONE: the header cells showing the date (e.g. "Fri, Aug 15") aren't centered horizontally with the columns. Fix that please!
 - PARTIALLY DONE: make the loading view an elegant minimalistic spinner, instead of "Loading calendar data..."
 - PARTIALLY DONE: make dark mode prettier
+- PARTIALLY DONE: make the theme toggle prettier
+  - use nicer icons
+  - animate between the selection
+  - use a different icon to show the system theme
 - format dates as 11-11:30am and 11am-1pm, etc
 - scroll the available times into view and hide the times that don't have availability, though still show them, just under scroll
 - put back the < > buttons to scroll through the days
