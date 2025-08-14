@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProxySelector from './ProxySelector';
 import TimezoneSelector from './TimezoneSelector';
 import WeeklyCalendar from './WeeklyCalendar';
+import Spinner from './Spinner';
 import { loadCalendarData, MOCK_CALENDAR_DATA } from '../utils/calendarService';
 
 function CalendarView() {
@@ -56,7 +57,10 @@ function CalendarView() {
   return (
     <div>
       {isLoading ? (
-        <div className="loading-indicator">Loading calendar data...</div>
+        <div className="loading-indicator">
+          <Spinner />
+          <div className="loading-text">Loading calendar data...</div>
+        </div>
       ) : (
         events.length > 0 ? (
           <WeeklyCalendar
@@ -66,7 +70,8 @@ function CalendarView() {
           />
         ) : (
           <div className="loading-indicator">
-            Loading calendar data...
+            <Spinner />
+            <div className="loading-text">Loading calendar data...</div>
           </div>
         )
       )}

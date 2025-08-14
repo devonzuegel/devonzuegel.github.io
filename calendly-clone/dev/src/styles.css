@@ -1048,10 +1048,36 @@ th.time-column {
   padding: var(--spacing-xl);
   text-align: center;
   color: var(--color-text-secondary);
-  font-style: italic;
   background-color: var(--color-background-alt);
   border-radius: var(--border-radius-md);
   margin-top: var(--spacing-xl);
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.loading-text {
+  margin-top: var(--spacing-sm);
+  opacity: 0.8;
+}
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-border-alt);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .no-events-message {
