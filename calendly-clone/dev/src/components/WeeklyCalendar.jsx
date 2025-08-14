@@ -315,7 +315,7 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
             </div>
 
             {/* Calendar content */}
-            <div style={{flex: 1, position: 'relative', width: 'calc(100% - var(--time-column-width))'}}>
+            <div style={{flex: 1, position: 'relative'}}>
               {/* Current time indicator - only shown on today's column */}
               {weekDays.findIndex(day => day.isToday) !== -1 && (
                 <div
