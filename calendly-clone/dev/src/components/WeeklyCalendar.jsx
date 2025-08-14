@@ -266,69 +266,12 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
       </div>
 
       <div className="calendar-container">
-        {/* Time column (left side) */}
-        <div className="time-column-container">
-          <table className="time-column-table">
+        {/* Sticky header table */}
+        <div className="calendar-header">
+          <table className="header-table">
             <thead>
               <tr>
-                <th className="time-column-header"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 48 }, (_, increment) => {
-                const hour = Math.floor(increment / 2);
-                const minute = (increment % 2) * 30;
-                const showHour = minute === 0; // Only show hour text at the hour mark
-
-                return (
-                  <tr key={increment} className="time-slot-row">
-                    <td className="time-cell">
-                      {showHour && (
-                        <span className="time-text">
-                          {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Main calendar grid */}
-        <div className="calendar-scroll-container">
-          {/* Current time indicator - only shown on today's column */}
-          {weekDays.findIndex(day => day.isToday) !== -1 && (
-            <div
-              className="today-time-indicator"
-              style={{
-                top: `calc(50px + ${getCurrentTimePosition()})`, /* 50px is the header height */
-                left: `calc(var(--time-column-width) + ${weekDays.findIndex(day => day.isToday)} * (100% - var(--time-column-width)) / ${weekDays.length})`,
-                width: `calc((100% - var(--time-column-width)) / ${weekDays.length})`,
-                right: 'auto',
-                zIndex: 60
-              }}
-            >
-              <div className="today-time-text">
-                {timezone
-                  ? new Date().toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      timeZone: timezone
-                    })
-                  : new Date().toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
-                }
-              </div>
-            </div>
-          )}
-
-          <table className="calendar-table">
-            <thead>
-              <tr>
+                <th className="time-column-header-sticky"></th>
                 {weekDays.map((day, index) => (
                   <th key={index} className={`day-column ${day.isToday ? 'today' : ''}`}>
                     {day.isToday ? (
@@ -340,7 +283,69 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                 ))}
               </tr>
             </thead>
-            <tbody>
+          </table>
+        </div>
+
+        {/* Main calendar grid */}
+        <div className="calendar-scroll-container">
+          <div style={{display: 'flex'}}>
+            {/* Time column (left side) */}
+            <div className="time-column-container">
+              <table className="time-column-table">
+                <tbody>
+                  {Array.from({ length: 48 }, (_, increment) => {
+                    const hour = Math.floor(increment / 2);
+                    const minute = (increment % 2) * 30;
+                    const showHour = minute === 0; // Only show hour text at the hour mark
+
+                    return (
+                      <tr key={increment} className="time-slot-row">
+                        <td className="time-cell">
+                          {showHour && (
+                            <span className="time-text">
+                              {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Calendar content */}
+            <div style={{flex: 1, position: 'relative', width: 'calc(100% - var(--time-column-width))'}}>
+              {/* Current time indicator - only shown on today's column */}
+              {weekDays.findIndex(day => day.isToday) !== -1 && (
+                <div
+                  className="today-time-indicator"
+                  style={{
+                    top: `calc(${getCurrentTimePosition()})`,
+                    left: `calc(${weekDays.findIndex(day => day.isToday)} * (100% / ${weekDays.length}))`,
+                    width: `calc(100% / ${weekDays.length})`,
+                    right: 'auto',
+                    zIndex: 60
+                  }}
+                >
+                  <div className="today-time-text">
+                    {timezone
+                      ? new Date().toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          timeZone: timezone
+                        })
+                      : new Date().toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                    }
+                  </div>
+                </div>
+              )}
+
+              <table className="calendar-table">
+                <tbody>
               {Array.from({ length: 48 }, (_, increment) => (
                 <tr key={increment} className="time-slot-row">
                   {weekDays.map((day, dayIndex) => {
@@ -387,8 +392,10 @@ function WeeklyCalendar({ events, timezone, onTimezoneChange }) {
                   })}
                 </tr>
               ))}
-            </tbody>
-          </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 

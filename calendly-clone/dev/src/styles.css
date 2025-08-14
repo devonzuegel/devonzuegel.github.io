@@ -1,7 +1,7 @@
 /* Variables */
 :root {
   /* Layout */
-  --time-column-width: 0px;
+  --time-column-width: 60px;
   --border-radius-sm: 2px;
   --border-radius-md: 4px;
   --border-radius-lg: 10px;
@@ -449,6 +449,7 @@ label {
 
 .calendar-container {
   display: flex;
+  flex-direction: column;
   position: relative;
   border: 1px solid var(--color-background-alt);
   background: white;
@@ -463,6 +464,10 @@ label {
   //border: 2px solid var(--color-background-hover);
   //border-radius: var(--border-radius-md);
   border-right: 1px solid #eee;
+  width: var(--time-column-width);
+  min-width: var(--time-column-width);
+  max-width: var(--time-column-width);
+  flex-shrink: 0;
 }
 
 .time-column-table {
@@ -470,9 +475,12 @@ label {
   border-spacing: 0;
   font-size: var(--font-size-md);
   width: var(--time-column-width);
+  min-width: var(--time-column-width);
+  max-width: var(--time-column-width);
   flex-shrink: 0; /* Prevent time column from shrinking */
   margin: 0;
   padding: 0;
+  table-layout: fixed;
 }
 
 .time-column-header {
@@ -605,14 +613,14 @@ label {
 
 .calendar-scroll-container {
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   white-space: nowrap;
   flex: 1;
   border-left: none; /* Remove any border that might create misalignment */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
   position: relative; /* Required for absolute positioning of time indicator */
+  max-height: 80vh; /* Limit height to enable scrolling */
+  width: 100%;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -650,12 +658,13 @@ label {
 .calendar-table {
   border-collapse: collapse;
   border-spacing: 0;
-  width: max-content;
+  width: 100%;
   min-width: 100%;
   font-size: 14px;
   border-left: none;
   margin: 0;
   padding: 0;
+  table-layout: fixed;
 }
 
 .calendar-table th,
@@ -663,6 +672,12 @@ label {
   border: 8px solid var(--color-border);
   text-align: center;
   box-sizing: border-box;
+}
+
+.calendar-table td.slot-cell {
+  width: calc((100% - var(--time-column-width)) / 21);
+  min-width: calc((100% - var(--time-column-width)) / 21);
+  max-width: calc((100% - var(--time-column-width)) / 21);
 }
 .calendar-table td {
   border-top: 1px solid white;
@@ -1089,4 +1104,48 @@ th.time-column {
   .timezone-list {
     max-height: 200px;
   }
+}
+
+/* Sticky header styles */
+.calendar-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: white;
+  border-bottom: 1px solid var(--color-border-alt);
+}
+
+.header-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  background: white;
+  table-layout: fixed;
+}
+
+.header-table th {
+  border: 8px solid var(--color-border);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.header-table th.day-column {
+  width: calc((100% - var(--time-column-width)) / 21);
+  min-width: calc((100% - var(--time-column-width)) / 21);
+  max-width: calc((100% - var(--time-column-width)) / 21);
+}
+
+.time-column-header-sticky {
+  text-align: center;
+  background-color: var(--color-background-alt);
+  background: white;
+  padding: var(--spacing-sm);
+  font-weight: 500;
+  border: 5px solid var(--color-border);
+  border-right: none;
+  height: 37px;
+  box-sizing: border-box;
+  width: var(--time-column-width);
+  min-width: var(--time-column-width);
+  max-width: var(--time-column-width);
 }
