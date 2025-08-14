@@ -552,7 +552,7 @@ pre {
 
 .theme-toggle-option:hover {
   background-color: var(--color-surface-hover);
-  transform: scale(1.05);
+  transform: scale(1.03);
   opacity: 1;
 }
 
@@ -566,11 +566,6 @@ pre {
 .theme-toggle-option svg {
   transition: transform var(--transition-fast) ease;
 }
-
-.theme-toggle-option:hover svg {
-  transform: rotate(15deg);
-}
-
 
 /* Controls */
 button {
@@ -1068,7 +1063,7 @@ th.time-column {
   display: inline-block;
   width: 24px;
   height: 24px;
-  border: 2px solid var(--color-border-alt);
+  border: 2px solid var(--color-border);
   border-radius: 50%;
   border-top-color: var(--color-primary);
   animation: spin 1s linear infinite;

@@ -11,8 +11,6 @@ A React-based clone of the original Calendly-like availability display page.
 5. Merge your changes to the `master` branch and push to GitHub, which will trigger the CI/CD pipeline to deploy the changes to the live site.
 
 ## Features & changes I plan to make in the future
-- PARTIALLY DONE: the header cells showing the date (e.g. "Fri, Aug 15") aren't centered horizontally with the columns. Fix that please!
-- PARTIALLY DONE: make the loading view an elegant minimalistic spinner, instead of "Loading calendar data..."
 - PARTIALLY DONE: make dark mode prettier
 - PARTIALLY DONE: make the theme toggle prettier
   - use nicer icons
