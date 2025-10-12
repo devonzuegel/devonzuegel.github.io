@@ -1301,12 +1301,11 @@
                     the opposite problem most mixed-use developments have!
                   </div>
 
-                  <!-- TODO: Figure out how to make these have the same height -->
-                  <div class="gallery--wrap-on-mobile wide-img-wrapper">
-                    <div class="column" style="flex: 1">
+                  <div class="gallery--wrap-on-mobile wide-img-wrapper equal-height-gallery">
+                    <div class="column">
                       <img src="./images/2025.10.12 - Culdesac field notes/Culdesac retail outdoor.jpg" />
                     </div>
-                    <div class="column" style="flex: 1">
+                    <div class="column">
                       <img src="./images/2025.10.12 - Culdesac field notes/Culdesac Little-Cholla-Jeff-Berens.jpg" />
                     </div>
                   </div>
@@ -1374,6 +1373,52 @@
             div.addEventListener('click', closeFullScreenImage)
             img.addEventListener('click', closeFullScreenImage)
           }
+
+          // Equal height gallery: adjust flex values based on aspect ratios
+          function adjustEqualHeightGalleries() {
+            var galleries = document.querySelectorAll('.equal-height-gallery')
+
+            galleries.forEach(function(gallery) {
+              var columns = gallery.querySelectorAll('.column')
+              var images = gallery.querySelectorAll('.column img')
+
+              if (images.length === 0) return
+
+              // Wait for all images to load
+              var loadedCount = 0
+              var aspectRatios = []
+
+              images.forEach(function(img, index) {
+                var onLoad = function() {
+                  loadedCount++
+                  aspectRatios[index] = img.naturalWidth / img.naturalHeight
+
+                  if (loadedCount === images.length) {
+                    // All images loaded, set flex values
+                    columns.forEach(function(column, i) {
+                      column.style.flex = aspectRatios[i].toString()
+                    })
+                  }
+                }
+
+                if (img.complete) {
+                  onLoad()
+                } else {
+                  img.addEventListener('load', onLoad)
+                }
+              })
+            })
+          }
+
+          // Run on page load
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', adjustEqualHeightGalleries)
+          } else {
+            adjustEqualHeightGalleries()
+          }
+
+          // Also run on window resize to recalculate if needed
+          window.addEventListener('resize', adjustEqualHeightGalleries)
         </script>
       </body>
     </html>
