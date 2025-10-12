@@ -1253,7 +1253,7 @@
                     It was so cool to see the neighborhood now with ~350 residents, way more buildings, and mature landscaping!
                   </div>
 
-                  <div class="gallery--wrap-on-mobile" style="max-width: 550px; margin: auto">
+                  <div class="gallery--wrap-on-mobile wide-img-wrapper">
                     <div class="column" style="flex: 1">
                       <img src="./images/2025.10.12 - Culdesac field notes/Culdesac paseo - 2023.05.jpg" />
                       <div class="caption" style="text-align: center">May 2023</div>
@@ -1261,6 +1261,14 @@
                     <div class="column" style="flex: 1">
                       <img src="./images/2025.10.12 - Culdesac field notes/Culdesac paseo - 2025.10.jpg" />
                       <div class="caption" style="text-align: center">Oct 2025</div>
+                    </div>
+
+                    <div class="column" style="flex: 1">
+                      <img
+                        src="./images/2025.10.12 - Culdesac field notes/Culdesac plaza landscaping.jpg"
+                        style="margin-bottom: 22px"
+                      />
+                      <img src="./images/2025.10.12 - Culdesac field notes/Culdesac Little Cholla.png" />
                     </div>
                   </div>
 
@@ -1321,9 +1329,18 @@
                     evolve and mature!
                   </div>
 
-                  <div class="wide-img-wrapper">
-                    <img src="./images/2025.10.12 - Culdesac field notes/Culdesac Little Cholla.png" />
+                  <div class="gallery--wrap-on-mobile wide-img-wrapper equal-height-gallery">
+                    <div class="column">
+                      <img src="./images/2025.10.12 - Culdesac field notes/Culdesac Lectric Avenue.jpg" />
+                    </div>
+                    <div class="column">
+                      <img src="./images/2025.10.12 - Culdesac field notes/Culdesac Cocina Chiwas.jpg" />
+                    </div>
                   </div>
+                </div>
+
+                <div class="wide-img-wrapper">
+                  <img src="./images/2025.10.12 - Culdesac field notes/Culdesac outdoor music.jpg" />
                 </div>
 
                 <ul class="tags">
@@ -1378,7 +1395,7 @@
           function adjustEqualHeightGalleries() {
             var galleries = document.querySelectorAll('.equal-height-gallery')
 
-            galleries.forEach(function(gallery) {
+            galleries.forEach(function (gallery) {
               var columns = gallery.querySelectorAll('.column')
               var images = gallery.querySelectorAll('.column img')
 
@@ -1388,14 +1405,14 @@
               var loadedCount = 0
               var aspectRatios = []
 
-              images.forEach(function(img, index) {
-                var onLoad = function() {
+              images.forEach(function (img, index) {
+                var onLoad = function () {
                   loadedCount++
                   aspectRatios[index] = img.naturalWidth / img.naturalHeight
 
                   if (loadedCount === images.length) {
                     // All images loaded, set flex values
-                    columns.forEach(function(column, i) {
+                    columns.forEach(function (column, i) {
                       column.style.flex = aspectRatios[i].toString()
                     })
                   }
