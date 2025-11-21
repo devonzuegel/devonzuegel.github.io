@@ -629,7 +629,7 @@
           ul.categories {
             list-style-type: none;
             margin: 0;
-            margin-top: 16px;
+            margin-top: 0;
           }
 
           ul.categories li {
@@ -664,7 +664,7 @@
           }
 
           .themes {
-            margin-top: 16px;
+            margin-top: 0;
           }
 
           .CTAs {
@@ -759,7 +759,7 @@
 
             .sidebar {
               /* width: 140px; */
-              margin-top: 16px;
+              margin-top: 0;
               margin-left: 16px;
             }
           }
@@ -1030,6 +1030,17 @@
 
           tbody tr[style*="background-color: #ebf5fa"]:hover {
             background-color: #d5ecf3 !important;
+          }
+
+          /* Rounded corners for table rows */
+          tbody tr td:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+          }
+
+          tbody tr td:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
           }
 
           /* To override Highly's highlighter pointer cursor */
@@ -1841,7 +1852,7 @@
 
                 <div class="post-content" data-type-cleanup="true">
                   <div>I haven't done a great job of tracking these, so this list is non-comprehensive:</div>
-                  <table style="width: 100%; border-collapse: separate; border-spacing: 0 4px; margin-top: 16px; display: table; table-layout: fixed;">
+                  <table style="width: 100%; border-collapse: separate; border-spacing: 0 4px; margin-top: 0; display: table; table-layout: fixed;">
                     <colgroup>
                       <col style="width: auto;">
                       <col style="width: 90px;">
