@@ -133,5 +133,6 @@ Press `Ctrl+C` to stop the server.
 # Things to improve
 
 - [ ] On the "Podcasts & Conferences I've Spoken At" page, turn it into a table with columns instead of a list, to make it easier to read
+- [ ] for all the html files in directories (i.e. not in root), make sure that the postachio-style.css path is correct! lmk which ones were broken
 - [ ] `wget` downloads everything such that the `.html` extension is preserved in the path. It's good that the extension is in the filenames, but I don't want the contents of the html files themselves to point to e.g. `.../about-me.html`, because it makes the urls ugly. I want them to point to `.../about-me`. In theory this should be easy to fix, but I haven't found the right flags for `wget` to fix this.
 - [ ] I should also have it download the postach.io CSS, JS, etc. I thought `wget` would've already done that given the flags I gave it, but apparently not.
