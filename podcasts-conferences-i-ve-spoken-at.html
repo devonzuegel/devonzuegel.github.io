@@ -893,7 +893,7 @@
           .post .post-content div .twitter-tweet-rendered {
             width: fit-content !important;
             display: inline-block !important;
-            vertical-align: top;
+            vertical-align: middle;
             margin-bottom: 0 !important;
           }
 
@@ -1007,7 +1007,7 @@
           /********************************************************************/
 
           .post .post-content tr div {
-            padding: 6px 0;
+            padding: 3px 0;
             display: block;
           }
 
@@ -1828,158 +1828,163 @@
 
                 <div class="post-content" data-type-cleanup="true">
                   <div>I haven't done a great job of tracking these, so this list is non-comprehensive:</div>
-                  <table style="width: 100%; border-collapse: collapse; margin-top: 16px; display: table;">
+                  <table style="width: 100%; border-collapse: separate; border-spacing: 0 4px; margin-top: 16px; display: table; table-layout: fixed;">
+                    <colgroup>
+                      <col style="width: auto;">
+                      <col style="width: 90px;">
+                      <col style="width: auto;">
+                    </colgroup>
                     <thead style="display: table-header-group;">
-                      <tr style="display: table-row;">
-                        <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd; display: table-cell;">Title</th>
-                        <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd; display: table-cell;">Date</th>
-                        <th style="text-align: left; padding: 8px; border-bottom: 2px solid #ddd; display: table-cell;">Podcast/Conference</th>
+                      <tr style="display: table-row; height: 50px;">
+                        <th style="text-align: left; padding: 3px 0 3px 12px !important; border-bottom: 2px solid #ddd; display: table-cell; vertical-align: middle;">Title</th>
+                        <th style="text-align: center; padding: 3px 0; border-bottom: 2px solid #ddd; display: table-cell; vertical-align: middle; width: 90px;">Date</th>
+                        <th style="text-align: right; padding: 3px 12px 3px 0 !important; border-bottom: 2px solid #ddd; display: table-cell; vertical-align: middle; text-wrap: balance;">Podcast/Conference</th>
                       </tr>
                     </thead>
                     <tbody style="display: table-row-group;">
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=tBamqzsDvqw">From Silicon Valley to Building a New Village in CA Wine Country</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Nov 2025</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">National Town Builders Association Podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Nov 2025</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">National Town Builders Association Podcast with Levi Wintz</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://podcasts.apple.com/us/podcast/designing-the-future-of-neighborhoods-devon-zuegel/id1592954369?i=1000730615753">Designing the Future of Neighborhoods</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">October 2025</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Coral Capital Podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Oct 2025</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Coral Capital Podcast</td>
                       </tr>
-                      <tr style="background-color: #fff5c2; display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="background-color: #ebf5fa; display: table-row; height: 60px;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://podcasts.apple.com/us/podcast/devon-zuegel-how-to-create-a-new-town/id1154105909?i=1000697598816">How to Create A New Town</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">March 2025</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Invest Like The Best with Patrick O'Shaughnessy</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Mar 2025</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Invest Like The Best with Patrick O'Shaughnessy</td>
                       </tr>
-                      <tr style="background-color: #fff5c2; display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="background-color: #ebf5fa; display: table-row; height: 60px;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://open.spotify.com/episode/11XFs8zOQtnGwklKjyr4Q0">The future of cities & community</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">June 2024</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Possible podcast with Reid Hoffman</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">June 2024</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Possible podcast with Reid Hoffman</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
-                          <a href="https://open.spotify.com/episode/0KmvyauDMyXQ89dQes9q03">Building a People-First Town From Scratch with Esmeralda & Rethinking How We Live</a>
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
+                          <a href="https://open.spotify.com/episode/0KmvyauDMyXQ89dQes9q03">Building a People-First Village From Scratch with Esmeralda</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">April 2024</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">The Building Culture Podcast with Austin Tunnell</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Apr 2024</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">The Building Culture Podcast with Austin Tunnell</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://open.spotify.com/episode/3VSwVvrkXwaDG7SgRp4Qqe">How to Build a City</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">March 2024</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Pirate Wires with Mike Solana</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Mar 2024</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Pirate Wires with Mike Solana</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://willjarvis.substack.com/p/131-devon-zuegel-urbanism-and-the" rev="en_rl_none">Urbanism and the Future of Cities</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Jan 2023</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Narratives podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Jan 2023</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Narratives podcast</td>
                       </tr>
-                      <tr style="background-color: #fff5c2; display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="background-color: #ebf5fa; display: table-row; height: 60px;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://twitter.com/devonzuegel/status/1582031775962103808" rev="en_rl_none">Inflation, Argentina, and Crypto</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Oct 2022</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">EconTalk podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Oct 2022</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">EconTalk podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://henryfaarup.com/2022/01/22/devon/" rev="en_rl_none">Devon Zuegel on Startup Cities</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">June 2022</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;"></td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">June 2022</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;"></td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://about.sourcegraph.com/podcast/devon-zuegel/" rev="en_rl_none">Devon Zuegel, creator of GitHub Sponsors</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Aug 2021</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Sourcegraph podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Aug 2021</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Sourcegraph podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://museapp.com/podcast/33-cities/" rev="en_rl_none">Cities with Devon Zuegel</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">June 2021</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Metamuse podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">June 2021</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Metamuse podcast</td>
                       </tr>
-                      <tr style="background-color: #fff5c2; display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="background-color: #ebf5fa; display: table-row; height: 60px;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=80KTVu6GGSE" rev="en_rl_none">The City Guide to Open Source</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Feb 2020</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">a talk for Config, Figma's conference</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Feb 2020</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">a talk for Config, Figma's conference</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://changelog.com/podcast/370" rev="en_rl_none">The making of GitHub Sponsors</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Nov 2019</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Changelog podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Nov 2019</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Changelog podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=n47rCa9dxf8&t=133s" rev="en_rl_none">There and back again: Through the realms of open source software</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">May 2019</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">a talk for GitHub Satellite</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">May 2019</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">a talk for GitHub Satellite</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=6v7XJuFdL_I" rev="en_rl_none">GitHub Sponsors and Open Source</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">July 2019</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Grey Mirror podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Jul 2019</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Grey Mirror podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=FYkBA9epUEk" rev="en_rl_none">GitHub Sponsors: A new way to contribute to open source</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">May 2019</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">the keynote where I announced GitHub Sponsors, the product I founded</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">May 2019</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">the keynote where I announced GitHub Sponsors, the product I founded</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://a16z.com/2018/08/20/crypto-evolution-open-source-libraries-services" rev="en_rl_none">Crypto and the Evolution of Open Source</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Aug 2018</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">a16z video series</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Aug 2018</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">a16z video series</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://a16z.com/2018/07/31/cryptonetworks-decentralization-web-scale-building-blocks/" rev="en_rl_none">Cryptonetworks and Decentralization—Building Blocks</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">July 2018</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">a16z podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">Jul 2018</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">a16z podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://perell.com/podcast/devon-zuegel/" rev="en_rl_none">Cities as a Superpower</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">June 2018</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">baby's first podcast</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">June 2018</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">baby's first podcast</td>
                       </tr>
-                      <tr style="display: table-row;">
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">
+                      <tr style="display: table-row; height: 60px; background-color: #fafafa;">
+                        <td style="padding: 3px 0 3px 12px !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle;">
                           <a href="https://www.youtube.com/watch?v=ePfD8FC2Nks&t=76s" rev="en_rl_none">Reclaiming your sanity: Webpack and Ethereum smart contracts with Typescript</a>
                         </td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">May 2018</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; display: table-cell;">Typescript conf, baby's first conference talk</td>
+                        <td style="padding: 3px 0; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: center;">May 2018</td>
+                        <td style="padding: 3px 12px 3px 0 !important; border-bottom: 1px solid #eee; display: table-cell; vertical-align: middle; text-align: right; text-wrap: balance;">Typescript conf, baby's first conference talk</td>
                       </tr>
                     </tbody>
                   </table>
-                  <div><br /></div>
+                  <div><br /><br/></div>
                   <div>Also I host two podcasts of my own, too:</div>
                   <ul>
                     <li style="margin-bottom: 4px">
