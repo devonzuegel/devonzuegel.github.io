@@ -116,7 +116,22 @@ If not, you can:
 1. Change the URL slug in the CMS
 2. Just paste a screenshot or image into the tweet
 
+# Testing redirects locally
+
+The site uses a 404-based redirect system to redirect `/post/*` URLs to root-level URLs (e.g., `/post/article.html` → `/article.html`).
+
+To test this locally:
+
+```bash
+python3 test_server.py
+```
+
+Then visit http://localhost:8000/post/[any-article].html in your browser and verify it redirects to http://localhost:8000/[any-article].html.
+
+Press `Ctrl+C` to stop the server.
+
 # Things to improve
 
+- [ ] On the "Podcasts & Conferences I've Spoken At" page, turn it into a table with columns instead of a list, to make it easier to read
 - [ ] `wget` downloads everything such that the `.html` extension is preserved in the path. It's good that the extension is in the filenames, but I don't want the contents of the html files themselves to point to e.g. `.../about-me.html`, because it makes the urls ugly. I want them to point to `.../about-me`. In theory this should be easy to fix, but I haven't found the right flags for `wget` to fix this.
 - [ ] I should also have it download the postach.io CSS, JS, etc. I thought `wget` would've already done that given the flags I gave it, but apparently not.

@@ -47,6 +47,16 @@
         text-decoration: none;
       }
     </style>
+    <script>
+      // Redirect /post/* URLs to root-level equivalents
+      (function() {
+        var path = window.location.pathname;
+        if (path.startsWith('/post/')) {
+          var newPath = path.replace('/post/', '/');
+          window.location.replace(newPath);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div class="container">
