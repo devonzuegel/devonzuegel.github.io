@@ -30,27 +30,81 @@ Things I think I did, but want to double check:
 
 1. Install dependencies:
    ```
+   cd calendly-clone/dev
    npm install
    ```
 
-2. Start the development server:
+2. Set up Google Calendar API:
+   - Follow the instructions in [SETUP_CALENDAR_API.md](./SETUP_CALENDAR_API.md)
+   - Copy `src/config.example.js` to `src/config.js`
+   - Add your Google Calendar API key to `config.js`
+
+3. Start the development server:
    ```
    npm start
    ```
 
-3. Build for production:
+4. Build for production:
    ```
    npm run build
    ```
 
 ## Implementation Details
 
-This application fetches calendar data from a Google Calendar and displays available time slots. It supports multiple CORS proxies to handle potential cross-origin issues.
+This application fetches calendar data directly from Google Calendar using the **Google Calendar API v3**. It displays available time slots from a public calendar.
 
-The current implementation uses mock data for demonstration purposes, but can be easily modified to use real calendar data by uncommenting the relevant sections in the `calendarService.js` file.
+### Why Google Calendar API Instead of iCal?
+
+Previously, this app used iCal URLs with CORS proxies, but public CORS proxy services are unreliable (they go down frequently). The Google Calendar API provides:
+
+- ✅ **No CORS issues** - Works directly from the browser
+- ✅ **No dependencies on third-party proxies** - Direct Google API access
+- ✅ **Better reliability** - Official Google-supported endpoint
+- ✅ **No deployment required** - Just needs an API key
+
+## Security: Is the API Key Safe in Client-Side JavaScript?
+
+**Yes, when properly configured.** Here's why:
+
+### What Protects Your API Key:
+
+1. **HTTP Referrer Restrictions** - The API key only works from domains you explicitly allow (e.g., `localhost:*`, `yourdomain.com/*`)
+2. **API Restrictions** - The key is limited to only the Google Calendar API (can't access Gmail, Drive, etc.)
+3. **Public Calendar Access Only** - The key can ONLY read calendars that are already set to public
+
+### What Your API Key CAN'T Do:
+
+- ❌ Access your private calendars
+- ❌ Access other people's calendars (unless they're public)
+- ❌ Modify, create, or delete events (read-only)
+- ❌ Be used from unauthorized domains/referrers
+- ❌ Access any other Google APIs
+
+### What Your API Key CAN Do:
+
+- ✅ Read events from the specific public calendar (your availability calendar)
+- ✅ Only from your allowed domains (configured in Google Cloud Console)
+- ✅ Only via the Google Calendar API
+
+### Best Practices:
+
+1. **Only make the calendar you want public actually public** - Don't share more than you intend
+2. **Set up HTTP referrer restrictions** - Lock the API key to your specific domains
+3. **Use API restrictions** - Limit to only Google Calendar API
+4. **This calendar should only contain availability blocks** - Not sensitive personal information
+
+### When You Would Need More Security:
+
+If you needed to access **private calendars**, you would need:
+- OAuth 2.0 authentication (requires user login)
+- A backend server to keep credentials secure
+
+But for a **public availability calendar**, the API key approach is secure and standard practice.
+
+For more details, see [SETUP_CALENDAR_API.md](./SETUP_CALENDAR_API.md).
 
 ## Tech Stack
 
 - React.js
-- ical.js for calendar processing
+- Google Calendar API v3
 - Vite for build tooling
