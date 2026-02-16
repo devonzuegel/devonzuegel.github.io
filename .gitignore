@@ -3,3 +3,5 @@ node_modules/
 **/.claude/settings.local.json
 .clj-kondo/
 .lsp/
+# Don't commit API keys
+calendly-clone/dev/src/config.js

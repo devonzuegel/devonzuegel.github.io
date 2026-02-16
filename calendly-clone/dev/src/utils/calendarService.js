@@ -102,79 +102,55 @@ const generateMockData = () => {
 export const MOCK_CALENDAR_DATA = generateMockData();
 
 /**
- * Fetches and processes calendar data
- * @param {string} proxyUrl - The CORS proxy URL to use for fetching
+ * Fetches and processes calendar data using Google Calendar API
+ * @param {string} apiKey - Google Calendar API key
  * @returns {Promise<Array>} - A promise that resolves to an array of calendar events
  */
-export async function loadCalendarData(proxyUrl) {
+export async function loadCalendarData(apiKey) {
   try {
     // Calendar ID for Devon's Availability calendar
-    // This ID is public and can be used to access the calendar data
     const calendarId = '84493a3e42d31bd0bda75f6708cdf8d5c5162ee2981362f786cc04b56d282cd3@group.calendar.google.com';
 
-    // Two different URL formats to try
-    const icalUrl1 = `https://calendar.google.com/calendar/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
-    const icalUrl2 = `https://calendar.google.com/calendar/renders/ical/${encodeURIComponent(calendarId)}/public/basic.ics`;
+    // Get current time and time range (next 60 days)
+    const now = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(now.getDate() + 60);
 
-    // Debug information
-    console.log('Trying URL:', icalUrl1);
-    console.log('With proxy:', proxyUrl);
+    // Google Calendar API URL - no CORS issues!
+    const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?` +
+      `key=${apiKey}` +
+      `&timeMin=${now.toISOString()}` +
+      `&timeMax=${futureDate.toISOString()}` +
+      `&singleEvents=true` +
+      `&orderBy=startTime` +
+      `&maxResults=2500`;
 
-    // Fetch with selected proxy
-    let response;
+    console.log('Fetching from Google Calendar API...');
 
-    if (proxyUrl === 'direct') {
-      response = await fetch(icalUrl1);
-    } else {
-      response = await fetch(proxyUrl + encodeURIComponent(icalUrl1));
-    }
-
-    // If first URL fails, try the second format
-    if (!response.ok) {
-      console.log('First URL failed, trying alternative URL:', icalUrl2);
-
-      if (proxyUrl === 'direct') {
-        response = await fetch(icalUrl2);
-      } else {
-        response = await fetch(proxyUrl + encodeURIComponent(icalUrl2));
-      }
-    }
+    const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch calendar: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      throw new Error(`Google Calendar API error: ${response.status} - ${errorText}`);
     }
 
-    const icalData = await response.text();
+    const data = await response.json();
 
-    // Debug: Check if we got valid iCal data
-    console.log('Response first 100 chars:', icalData.substring(0, 100));
-
-    // Check if the response is actually an iCal file
-    if (!icalData.includes('BEGIN:VCALENDAR')) {
-      throw new Error('Response is not a valid iCal file');
-    }
-
-    const jcalData = ICAL.parse(icalData);
-    const comp = new ICAL.Component(jcalData);
-    const events = comp.getAllSubcomponents('vevent');
-
-    // For now, using mock data as in the original code
-    // In a production environment, uncomment the code below to use real data
-    const jsonEvents = events.map((event) => {
-      const icalEvent = new ICAL.Event(event);
+    // Convert Google Calendar API format to our format
+    const jsonEvents = data.items.map((event) => {
       return {
-        id: icalEvent.uid,
-        summary: icalEvent.summary,
-        description: icalEvent.description || '',
-        location: icalEvent.location || '',
-        start: icalEvent.startDate.toJSDate().toISOString(),
-        end: icalEvent.endDate.toJSDate().toISOString(),
-        status: icalEvent.status || 'confirmed',
+        id: event.id,
+        summary: event.summary || 'No Title',
+        description: event.description || '',
+        location: event.location || '',
+        // Handle both date and dateTime formats
+        start: event.start.dateTime || event.start.date,
+        end: event.end.dateTime || event.end.date,
+        status: event.status || 'confirmed',
       };
     });
 
-    // Sort events by start date
-    jsonEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
+    console.log(`Loaded ${jsonEvents.length} events from Google Calendar API`);
 
     return jsonEvents;
   } catch (error) {
