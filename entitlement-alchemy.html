@@ -1083,12 +1083,16 @@
         font-size: 10px;
         color: #aaa49e;
         white-space: nowrap;
-        min-width: 4ch;
+        width: 5ch;
         flex-shrink: 0;
       }
 
-      .s-max {
+      .s-min {
         text-align: right;
+      }
+
+      .s-max {
+        text-align: left;
       }
 
       .s-desc {
@@ -1785,7 +1789,11 @@
                   data,
                   borderColor: c.line,
                   borderWidth: 1.5,
-                  fill: false,
+                  fill: {
+                    target: {value: 0},
+                    below: 'rgba(220, 38, 38, 0.15)',
+                    above: 'rgba(22, 163, 74, 0.12)',
+                  },
                   tension: 0.3,
                   pointRadius: 0,
                 },
