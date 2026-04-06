@@ -1770,16 +1770,17 @@ profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_r
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    var sidebar = document.querySelector('.sidebar');
     var navLinks = document.querySelector('.sidebar--nav-links');
+    if (sidebar) {
+      var wideWrap = document.createElement('div');
+      wideWrap.className = 'wide-only';
+      wideWrap.style.marginTop = '16px';
+      wideWrap.appendChild(makeToggle());
+      sidebar.appendChild(wideWrap);
+    }
     if (navLinks) {
-      var wide = navLinks.querySelector('.wide-only');
       var narrow = navLinks.querySelector('.narrow-only');
-      if (wide) {
-        var wideWrap = document.createElement('div');
-        wideWrap.style.marginTop = '8px';
-        wideWrap.appendChild(makeToggle());
-        wide.appendChild(wideWrap);
-      }
       if (narrow) {
         narrow.appendChild(document.createTextNode('\u00a0\u00b7\u00a0'));
         narrow.appendChild(makeToggle());

@@ -920,10 +920,6 @@ html[data-theme="dark"] ul.tags li a {
   display: block;
   flex-shrink: 0;
 }
-/* Wide sidebar: show as a block item below nav links */
-.wide-only #dark-mode-toggle {
-  margin-top: 10px;
-}
 /* Narrow header: show inline after the nav links */
 .narrow-only #dark-mode-toggle {
   margin-left: 6px;
