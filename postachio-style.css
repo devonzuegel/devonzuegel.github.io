@@ -231,7 +231,7 @@
   display: inline-block;
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
   border: none;
-  color: #d14;
+  color: black !important;
   background-color: #f7f7f9;
   word-break: break-all;
   word-wrap: break-word;
