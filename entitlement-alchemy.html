@@ -1151,12 +1151,13 @@
       }
 
       .m {
-        padding: 10px 14px;
+        padding: 12px 14px !important;
       }
 
       .metrics .m {
         flex: 1;
         border-bottom: 1px solid rgba(26, 24, 20, 0.08);
+        text-align: center;
       }
 
       .metrics .m:last-child {
@@ -1169,12 +1170,14 @@
         text-transform: uppercase;
         color: #888078;
         margin-bottom: 4px;
+        text-align: center !important;
       }
 
       .m-val {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 17px;
         color: #1a1814;
+        text-align: center !important;
       }
 
       .m-val.pos {
@@ -1483,6 +1486,35 @@
 
               <p>Here is a simplified model of how entitlements affects land value:</p>
 
+              <div class="model chart-metrics-wrap">
+                <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
+                <div class="metrics">
+                  <div class="m">
+                    <div class="m-label">Revenue</div>
+                    <div class="m-val" id="m-rev">—</div>
+                  </div>
+                  <div class="m">
+                    <div class="m-label">Total cost</div>
+                    <div class="m-val" id="m-cost">—</div>
+                  </div>
+                  <div class="m">
+                    <div class="m-label">Profit</div>
+                    <div class="m-val" id="m-profit">—</div>
+                  </div>
+                  <div class="m">
+                    <div class="m-label">Margin</div>
+                    <div class="m-val" id="m-margin">—</div>
+                  </div>
+                  <div class="m">
+                    <div class="m-label">carry_cost</div>
+                    <div class="m-val" id="m-carry">—</div>
+                  </div>
+                  <div class="m">
+                    <div class="m-label">IRR (approx)</div>
+                    <div class="m-val" id="m-irr">—</div>
+                  </div>
+                </div>
+              </div>
               <div class="model">
                 <div class="sliders">
                   <div class="s-row">
@@ -1538,35 +1570,6 @@
                       <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
                       <span class="s-max">10</span>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="model chart-metrics-wrap">
-                <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
-                <div class="metrics">
-                  <div class="m">
-                    <div class="m-label">Revenue</div>
-                    <div class="m-val" id="m-rev">—</div>
-                  </div>
-                  <div class="m">
-                    <div class="m-label">Total cost</div>
-                    <div class="m-val" id="m-cost">—</div>
-                  </div>
-                  <div class="m">
-                    <div class="m-label">Profit</div>
-                    <div class="m-val" id="m-profit">—</div>
-                  </div>
-                  <div class="m">
-                    <div class="m-label">Margin</div>
-                    <div class="m-val" id="m-margin">—</div>
-                  </div>
-                  <div class="m">
-                    <div class="m-label">carry_cost</div>
-                    <div class="m-val" id="m-carry">—</div>
-                  </div>
-                  <div class="m">
-                    <div class="m-label">IRR (approx)</div>
-                    <div class="m-val" id="m-irr">—</div>
                   </div>
                 </div>
               </div>
