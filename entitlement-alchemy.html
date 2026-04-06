@@ -998,7 +998,7 @@
       /********************************************************************/
 
       .model {
-        border: 1px solid rgba(26, 24, 20, 0.1);
+        border: 1px solid #ccc7bc;
         border-radius: 6px;
         padding: 16px 20px !important;
         margin: 8px -8px !important;
@@ -1161,14 +1161,14 @@
           flex: 0 0 auto !important;
           width: 100% !important;
           border-left: none !important;
-          border-top: 1px solid rgba(26, 24, 20, 0.1);
+          border-top: 1px solid #ddd8d0;
           flex-wrap: wrap;
         }
 
         .metrics .m {
           flex: 1 1 30% !important;
-          border-bottom: 1px solid rgba(26, 24, 20, 0.08) !important;
-          border-right: 1px solid rgba(26, 24, 20, 0.08);
+          border-bottom: 1px solid #ddd8d0 !important;
+          border-right: 1px solid #ddd8d0;
         }
 
         .chart-metrics-wrap .chart-wrap canvas {
@@ -1194,7 +1194,7 @@
         flex-direction: column;
         flex: 0 0 110px !important;
         width: 110px;
-        border-left: 1px solid rgba(26, 24, 20, 0.1);
+        border-left: 1px solid #ddd8d0;
         gap: 0;
       }
 
@@ -1204,7 +1204,7 @@
 
       .metrics .m {
         flex: 1;
-        border-bottom: 1px solid rgba(26, 24, 20, 0.08);
+        border-bottom: 1px solid #ddd8d0;
         text-align: center;
       }
 
@@ -1241,7 +1241,7 @@
         width: 100%;
         margin-top: 24px;
         padding-top: 20px;
-        border-top: 1px solid rgba(26, 24, 20, 0.1);
+        border-top: 1px solid #ddd8d0;
       }
 
       .chart-metrics-wrap .chart-wrap canvas {
@@ -1625,6 +1625,8 @@
                 </div>
               </div>
 
+              <p>This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which variables to stress-test, it's been useful to me.</p>
+
               <h2>Fixed Infrastructure Cost, Variable Unit Count</h2>
 
               <p>A key feature of infrastructure cost is that much of it is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
@@ -1656,12 +1658,11 @@
               <p>If spending an extra $2M on a town center, park, or aesthetic improvements lifts price_per_lot by even $10k across 700 lots, that's $7M in additional revenue — a 3.5x return. The slope of your profit line means amenity investments have massive leverage.</p>
 
               <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
+              <br />
 
-              <p>This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which variables to stress-test, it's been useful to me.</p>
-
-              <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
-
-              <p>I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to <a href="mailto:devon@devonzuegel.com">reach out</a> if this is your kind of thing.</p>
+              <div style="background: #f5f5f5; border-radius: 8px; padding: 12px 16px">
+                <p style="margin: 0">I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to <a href="mailto:devon@devonzuegel.com">reach out</a> if you're interested in learning more or getting involved!</p>
+              </div>
             </div>
 
             <ul class="tags">
