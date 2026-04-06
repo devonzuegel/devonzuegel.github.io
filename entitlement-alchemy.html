@@ -1363,16 +1363,7 @@
               <p>I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the dirt doesn't move, but the piece of paper that says "you may build here" can double the value overnight. In supply-constrained markets, the permission to build is a huge portion of the asset's value.</p>
 
               <p>Here is a simplified model of how entitlements affects land value:</p>
-              <ul>
-                <li><code>N</code>: the number of entitled units you can build — the single most important factor (assuming reasonable sale prices and infrastructure costs); if you can't build many units, the land is essentially worthless</li>
-                <li><code>price_per_lot</code>: how much each entitled lot is worth to a buyer</li>
-                <li><code>total_infra_cost</code>: the cost of building the roads, utilities, and grading to make the land developable</li>
-                <li><code>land_cost</code>: the price you pay for the land itself, which is often a smaller portion of the total cost than the infrastructure</li>
-                <li><code>interest_rate</code>: the rate of interest charged on the infrastructure loan</li>
-                <li><code>years</code>: how long it takes to build the infrastructure and sell the lots, which affects how much interest you pay. (Note that this is a simplification, as you may be able to sell lots before the infrastructure is fully built.)</li>
-              </ul>
-
-              <h2>Interactive model</h2>
+              <br />
 
               <div class="model">
                 <div class="model-label">Adjust variables</div>
@@ -1380,26 +1371,32 @@
                 <div class="sliders">
                   <div class="s-row">
                     <label>N (units) <span class="val" id="v-n">700</span></label>
+                    <div class="s-desc">The number of entitled units you can build — the single most important factor; if you can't build many units, the land is essentially worthless</div>
                     <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
                   </div>
                   <div class="s-row">
                     <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
+                    <div class="s-desc">How much each entitled lot is worth to a buyer</div>
                     <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
                   </div>
                   <div class="s-row">
                     <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
+                    <div class="s-desc">The cost of building the roads, utilities, and grading to make the land developable</div>
                     <input type="range" id="s-c" min="1" max="200" step="1" value="100" />
                   </div>
                   <div class="s-row">
                     <label>land_cost <span class="val" id="v-l">$20M</span></label>
+                    <div class="s-desc">The price you pay for the land itself — often a smaller portion of total cost than the infrastructure</div>
                     <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
                   </div>
                   <div class="s-row">
                     <label>interest_rate <span class="val" id="v-i">9%</span> <span style="font-size: 11px; color: #888078; font-style: italic">infra lender rate</span></label>
+                    <div class="s-desc">The rate of interest charged on the infrastructure loan</div>
                     <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
                   </div>
                   <div class="s-row">
                     <label>years to build infra <span class="val" id="v-t">2</span></label>
+                    <div class="s-desc">How long it takes to build the infrastructure and sell the lots, which affects how much interest you pay</div>
                     <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
                   </div>
                 </div>
@@ -1618,6 +1615,7 @@
         chart.options.plugins.tooltip.bodyColor = c.tooltipBody
         chart.options.plugins.annotation.annotations.vLine.borderColor = c.annotation
         chart.options.plugins.annotation.annotations.hLine.borderColor = c.annotation
+        chart.options.plugins.annotation.annotations.breakevenLabel.color = c.ticks
         chart.options.scales.x.grid.color = c.grid
         chart.options.scales.x.ticks.color = c.ticks
         chart.options.scales.x.border.color = c.border
@@ -1746,6 +1744,15 @@
                       borderWidth: 1,
                       borderDash: [4, 4],
                     },
+                    breakevenLabel: {
+                      type: 'label',
+                      xValue: totalCost / P,
+                      yValue: 0,
+                      content: ['break-even'],
+                      yAdjust: -14,
+                      color: c.ticks,
+                      font: {size: 10, family: 'Roboto Mono, monospace'},
+                    },
                   },
                 },
               },
@@ -1793,6 +1800,7 @@
         if (chart.options.plugins.annotation) {
           chart.options.plugins.annotation.annotations.vLine.value = N
           chart.options.plugins.annotation.annotations.hLine.value = currentProfit
+          chart.options.plugins.annotation.annotations.breakevenLabel.xValue = totalCost / P
           chart.update('none')
         }
       }
