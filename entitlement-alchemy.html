@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Land use alchemy: Why cheap land is cheap & how to turn it into gold — Devon Zuegel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+    <style>
+      :root {
+        --text: #1a1814;
+        --muted: #555048;
+        --light: #888078;
+        --rule: rgba(26, 24, 20, 0.1);
+        --bg: #fefcf8;
+        --tint: #f5f2ec;
+        --link: #2a6496;
+        --mono-bg: #eeeae2;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        background: var(--bg);
+        color: var(--text);
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        font-size: 17px;
+        line-height: 1.75;
+        font-weight: 400;
+        max-width: 660px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+      nav {
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        color: var(--light);
+        margin-bottom: 56px;
+      }
+      nav a {
+        color: var(--light);
+        text-decoration: none;
+      }
+      nav a:hover {
+        color: var(--text);
+      }
+      nav .sep {
+        margin: 0 8px;
+      }
+      h1 {
+        font-family: 'Lora', Georgia, serif;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+      .date {
+        font-size: 14px;
+        color: var(--light);
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 32px;
+      }
+      p {
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      a {
+        color: var(--link);
+      }
+      h2 {
+        font-family: 'Lora', Georgia, serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 44px 0 16px;
+      }
+      code {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 13px;
+        background: var(--mono-bg);
+        color: var(--text);
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+      .eq {
+        background: var(--tint);
+        border-left: 3px solid rgba(26, 24, 20, 0.15);
+        padding: 14px 18px;
+        margin: 24px 0;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--text);
+        border-radius: 0 4px 4px 0;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .eq .c {
+        color: var(--light);
+      }
+      .model {
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        padding: 28px;
+        margin: 36px 0;
+        background: var(--tint);
+      }
+      .model-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--light);
+        margin-bottom: 24px;
+      }
+      .sliders {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 36px;
+        margin-bottom: 28px;
+      }
+      @media (max-width: 480px) {
+        .sliders {
+          grid-template-columns: 1fr;
+        }
+      }
+      .s-row label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .s-row label .val {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 13px;
+        color: var(--text);
+      }
+      input[type='range'] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 2px;
+        background: rgba(26, 24, 20, 0.15);
+        border-radius: 1px;
+        outline: none;
+      }
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--text);
+        cursor: pointer;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: var(--rule);
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        font-family: 'Inter', sans-serif;
+      }
+      .m {
+        background: var(--bg);
+        padding: 14px 16px;
+      }
+      .m-label {
+        font-size: 11px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--light);
+        margin-bottom: 4px;
+      }
+      .m-val {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 17px;
+        color: var(--text);
+      }
+      .m-val.pos {
+        color: #2a6e4e;
+      }
+      .m-val.neg {
+        color: #8b2020;
+      }
+      .chart-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3 / 2;
+      }
+      .chart-note {
+        font-size: 12px;
+        color: var(--light);
+        font-family: 'Inter', sans-serif;
+        text-align: center;
+        margin-top: 8px;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid var(--rule);
+        margin: 44px 0;
+      }
+      .intro-note {
+        font-style: italic;
+        color: var(--light);
+        font-size: 16px;
+        margin-bottom: 32px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="https://devonzuegel.com">Devon Zuegel</a>
+      <span class="sep">·</span>
+      <a href="https://devonzuegel.com/tag/cities">Cities</a>
+    </nav>
+
+    <h1>Land use alchemy: Why cheap land is cheap & how to turn it into gold</h1>
+    <div class="date">March 2026</div>
+
+    <p class="intro-note">
+      The following is a writeup of my notes on where the value comes from in entitlement-driven development. My original goal was to build a simple model I can use to stress-test deals, and I figured
+      others might find it interesting too.
+    </p>
+
+    <p>
+      Friends often send me links to beautiful pieces of land with prices that seem too good to be true. I'm honored that people think of me, but these conversations almost always go the same way.
+      When we look into the zoning, it quickly explains the price: you're not allowed to build much on it. The land isn't "entitled."
+    </p>
+
+    <p>
+      "Entitlement" is the legal process by which raw land gets permission to become housing. In California, that process is long, expensive, uncertain, and controlled by local governments. Cheap land
+      is cheap because the market has correctly priced in that getting permission to build on it is somewhere between very hard and nearly impossible. The discount isn't a bargain — it's a reflection
+      of how much work it takes to unlock the value.
+    </p>
+
+    <p>However, if you <em>do</em> succeed in getting land entitled for a significant amount of development, the land's value jumps to reflect the new permitted supply.</p>
+
+    <p>
+      I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the land doesn't change, the dirt doesn't move, but the piece of paper that says "you may build here"
+      can double the value overnight. In supply-constrained markets, the permit is a huge portion of the product's value. Everything else — roads, utilities, infrastructure, the homes themselves — is
+      execution.
+    </p>
+
+    <h2>Interactive model</h2>
+
+    <div class="model">
+      <div class="model-label">Adjust variables</div>
+
+      <div class="sliders">
+        <div class="s-row">
+          <label>N (units) <span class="val" id="v-n">700</span></label>
+          <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
+        </div>
+        <div class="s-row">
+          <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
+          <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
+        </div>
+        <div class="s-row">
+          <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
+          <input type="range" id="s-c" min="1" max="200" step="1" value="100" />
+        </div>
+        <div class="s-row">
+          <label>land_cost <span class="val" id="v-l">$20M</span></label>
+          <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
+        </div>
+        <div class="s-row">
+          <label>interest_rate <span class="val" id="v-i">9%</span> <span style="font-size: 11px; color: var(--light); font-style: italic">infra lender rate</span></label>
+          <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
+        </div>
+        <div class="s-row">
+          <label>years to build infra <span class="val" id="v-t">2</span></label>
+          <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="m">
+          <div class="m-label">Revenue</div>
+          <div class="m-val" id="m-rev">—</div>
+        </div>
+        <div class="m">
+          <div class="m-label">Total cost</div>
+          <div class="m-val" id="m-cost">—</div>
+        </div>
+        <div class="m">
+          <div class="m-val" id="m-profit">—</div>
+          <div class="m-label">Profit</div>
+        </div>
+        <div class="m">
+          <div class="m-label">Margin</div>
+          <div class="m-val" id="m-margin">—</div>
+        </div>
+        <div class="m">
+          <div class="m-label">carry_cost</div>
+          <div class="m-val" id="m-carry">—</div>
+        </div>
+        <div class="m">
+          <div class="m-label">IRR (approx)</div>
+          <div class="m-val" id="m-irr">—</div>
+        </div>
+      </div>
+
+      <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
+      <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
+    </div>
+
+    <h2>1. <code>N</code> — entitled units</h2>
+
+    <p>
+      Before entitlement, land is priced assuming no new supply will emerge from it. When you successfully entitle, you've created units the market didn't expect to exist. This is where the return
+      comes from. Without <code>N &gt; 0</code>, nothing else matters.
+    </p>
+
+    <h2>2. The profit function</h2>
+
+    <p>
+      A key feature of infrastructure cost is that much of it is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more
+      units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.
+    </p>
+
+    <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
+
+    <p>
+      The slope is set by <code>price_per_lot</code> — small changes here rotate the line a lot. The intercept is shifted down by <code>total_infra_cost</code> and <code>land_cost</code>, both of
+      which are largely fixed, which is why squeezing more units out of an entitlement is so valuable.
+    </p>
+
+    <h2>3. <code>carry_cost</code> — time × rate</h2>
+
+    <p>
+      The third variable is cost of capital. It compounds with time because your investors or lenders are charging you interest the entire time the project is running, which means a one-year delay is
+      economically equivalent to a meaningful increase in the effective cost of your infrastructure.
+    </p>
+
+    <div class="eq">
+      carry_cost = total_infra_cost * interest_rate * years profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years <span class="c">// carry</span> - land_cost
+    </div>
+
+    <p>
+      This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which
+      variables to stress-test, it's been useful to me.
+    </p>
+
+    <hr />
+
+    <p style="font-size: 15px">
+      I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to
+      <a href="/cdn-cgi/l/email-protection#137776657c7d5376607e7661727f77723d7c6174">reach out</a> if this is your kind of thing.
+    </p>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+      const $ = (id) => document.getElementById(id)
+
+      function fmtM(d) {
+        const m = d / 1e6
+        return (d < 0 ? '-' : '') + '$' + (Math.abs(m) >= 10 ? Math.round(Math.abs(m)) : Math.abs(m).toFixed(1)) + 'M'
+      }
+
+      let chart
+
+      function update() {
+        const N = +$('s-n').value
+        const P = +$('s-p').value * 1000
+        const C = +$('s-c').value * 1e6 // total_infra_cost in dollars
+        const L = +$('s-l').value * 1e6
+        const ir = +$('s-i').value / 100
+        const t = +$('s-t').value
+
+        $('v-n').textContent = N
+        $('v-p').textContent = '$' + $('s-p').value + 'k'
+        $('v-c').textContent = '$' + $('s-c').value + 'M'
+        $('v-l').textContent = '$' + $('s-l').value + 'M'
+        $('v-i').textContent = (+$('s-i').value).toFixed(2).replace(/\.?0+$/, '') + '%'
+        $('v-t').textContent = t
+
+        const rev = N * P
+        const infra = C // fixed total, not per-unit
+        const carry = infra * ir * t
+        const totalCost = infra + carry + L
+        const profit = rev - totalCost
+        const margin = rev > 0 ? (profit / rev) * 100 : 0
+        const irr = profit > 0 && totalCost > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
+
+        $('m-rev').textContent = fmtM(rev)
+        $('m-cost').textContent = fmtM(totalCost)
+        $('m-carry').textContent = fmtM(carry)
+        $('m-margin').textContent = isFinite(margin) ? margin.toFixed(1) + '%' : '—'
+        $('m-irr').textContent = irr !== null ? irr.toFixed(1) + '%' : '—'
+
+        const profitEl = $('m-profit')
+        profitEl.textContent = fmtM(profit)
+        profitEl.className = 'm-val ' + (profit >= 0 ? 'pos' : 'neg')
+
+        const maxN = 1000
+        const step = Math.ceil(maxN / 80)
+        const labels = [],
+          data = []
+        for (let n = 0; n <= maxN; n += step) {
+          labels.push(n)
+          data.push((n * P - C - C * ir * t - L) / 1e6)
+        }
+        const currentProfit = profit / 1e6
+
+        if (chart) {
+          chart.data.labels = labels
+          chart.data.datasets[0].data = data
+          chart.data.datasets[1].data = labels.map(() => 0)
+          chart.data.datasets[2].data = [{x: N, y: currentProfit}]
+          chart.update('none')
+        } else {
+          chart = new Chart($('profitChart').getContext('2d'), {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [
+                {data, borderColor: '#1a1814', borderWidth: 1.5, fill: false, tension: 0.3, pointRadius: 0},
+                {data: labels.map(() => 0), borderColor: 'rgba(26,24,20,0.35)', borderWidth: 1, fill: false, pointRadius: 0},
+                {
+                  type: 'scatter',
+                  data: [{x: N, y: currentProfit}],
+                  borderColor: '#1a1814',
+                  backgroundColor: '#fefcf8',
+                  borderWidth: 2,
+                  pointRadius: 6,
+                  pointHoverRadius: 6,
+                },
+              ],
+            },
+            options: {
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {display: false},
+                tooltip: {
+                  filter: (item) => item.datasetIndex === 0,
+                  backgroundColor: 'rgba(26,24,20,0.88)',
+                  titleColor: 'rgba(254,252,248,0.5)',
+                  bodyColor: '#fefcf8',
+                  callbacks: {
+                    title: (items) => items[0].label + ' units',
+                    label: (item) => ' profit: $' + (+item.raw).toFixed(1) + 'M',
+                  },
+                },
+                annotation: {
+                  annotations: {
+                    vLine: {
+                      type: 'line',
+                      scaleID: 'x',
+                      value: N,
+                      borderColor: 'rgba(26,24,20,0.25)',
+                      borderWidth: 1,
+                      borderDash: [4, 4],
+                    },
+                    hLine: {
+                      type: 'line',
+                      scaleID: 'y',
+                      value: currentProfit,
+                      borderColor: 'rgba(26,24,20,0.25)',
+                      borderWidth: 1,
+                      borderDash: [4, 4],
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  type: 'linear',
+                  min: 0,
+                  max: 1000,
+                  grid: {color: 'rgba(26,24,20,0.05)'},
+                  ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, maxTicksLimit: 7},
+                  border: {color: 'rgba(26,24,20,0.1)'},
+                },
+                y: {
+                  title: {display: true, text: 'PROFIT', color: '#888078', font: {size: 10, family: 'Inter, sans-serif', weight: '500'}, padding: {bottom: 6}},
+                  min: -200,
+                  max: 600,
+                  grid: {color: 'rgba(26,24,20,0.05)'},
+                  ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, callback: (v) => '$' + v.toFixed(0) + 'M'},
+                  border: {color: 'rgba(26,24,20,0.1)'},
+                },
+              },
+            },
+          })
+        }
+
+        // update annotation values on subsequent calls
+        if (chart.options.plugins.annotation) {
+          chart.options.plugins.annotation.annotations.vLine.value = N
+          chart.options.plugins.annotation.annotations.hLine.value = currentProfit
+          chart.update('none')
+        }
+      }
+
+      ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => $(id).addEventListener('input', update))
+      update()
+    </script>
+  </body>
+</html>
