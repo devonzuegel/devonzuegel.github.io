@@ -986,8 +986,8 @@
           .model {
             border: 1px solid rgba(26, 24, 20, 0.1);
             border-radius: 6px;
-            padding: 28px;
-            margin: 24px 0;
+            padding: 16px 20px;
+            margin: 16px 0;
             background: #f5f2ec;
           }
 
@@ -996,14 +996,14 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: #888078;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
           }
 
           .sliders {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px 36px;
-            margin-bottom: 28px;
+            gap: 10px 36px;
+            margin-bottom: 16px;
           }
 
           @media (max-width: 480px) {
@@ -1018,7 +1018,7 @@
             align-items: baseline;
             font-size: 13px;
             color: #555048;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
           }
 
           .s-row label .val {
@@ -1045,20 +1045,20 @@
             cursor: pointer;
           }
 
-          .metrics {
-            display: grid;
+          .post .post-content .metrics {
+            display: grid !important;
             grid-template-columns: repeat(3, 1fr);
             gap: 1px;
             background: rgba(26, 24, 20, 0.1);
             border: 1px solid rgba(26, 24, 20, 0.1);
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 24px;
+            margin-bottom: 14px;
           }
 
           .m {
-            background: white;
-            padding: 14px 16px;
+            background: #f5f2ec;
+            padding: 10px 14px;
           }
 
           .m-label {
@@ -1086,7 +1086,7 @@
           .chart-wrap {
             position: relative;
             width: 100%;
-            aspect-ratio: 3 / 2;
+            aspect-ratio: 5 / 2;
           }
 
           .chart-note {
@@ -1130,7 +1130,14 @@
           })()
         </script>
 
-      </head>
+      <script id="dark-mode-early">
+(function() {
+  var stored = localStorage.getItem('theme');
+  if (stored === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  else if (stored === 'light') document.documentElement.setAttribute('data-theme', 'light');
+})();
+</script>
+</head>
 
       <body>
 
@@ -1281,8 +1288,8 @@
       <div class="m-val" id="m-cost">—</div>
     </div>
     <div class="m">
-      <div class="m-val" id="m-profit">—</div>
       <div class="m-label">Profit</div>
+      <div class="m-val" id="m-profit">—</div>
     </div>
     <div class="m">
       <div class="m-label">Margin</div>
@@ -1578,5 +1585,31 @@ profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_r
           ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => $(id).addEventListener('input', update))
           update()
         </script>
-      </body>
+      <script>
+(function() {
+  var stored = localStorage.getItem('theme');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (stored === 'dark' || (!stored && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.createElement('button');
+    btn.id = 'dark-mode-toggle';
+    btn.setAttribute('aria-label', 'Toggle dark mode');
+    function updateIcon() {
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+    updateIcon();
+    btn.addEventListener('click', function() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateIcon();
+    });
+    document.body.appendChild(btn);
+  });
+})();
+</script>
+</body>
     </html>
