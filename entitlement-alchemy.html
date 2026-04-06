@@ -1000,9 +1000,9 @@
       .model {
         border: 1px solid rgba(26, 24, 20, 0.1);
         border-radius: 6px;
-        padding: 16px 20px;
-        margin: 16px 0;
-        background: #f5f2ec;
+        padding: 16px 20px !important;
+        margin: 8px -8px !important;
+        background: #f5f2ecaa;
       }
 
       .model-label {
@@ -1026,6 +1026,11 @@
         }
       }
 
+      .s-row {
+        display: flex;
+        flex-direction: column;
+      }
+
       .s-row label {
         display: flex;
         justify-content: space-between;
@@ -1039,6 +1044,39 @@
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 13px;
         color: #1a1814;
+        cursor: text;
+        border-bottom: 1px dashed transparent;
+      }
+
+      .s-row label .val:hover {
+        border-bottom-color: #888078;
+      }
+
+      .s-row label .val-input {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-size: 13px;
+        color: #1a1814;
+        background: none;
+        border: none;
+        border-bottom: 1px solid #1a1814;
+        outline: none;
+        width: 6ch;
+        text-align: right;
+        padding: 0;
+      }
+
+      .s-range {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-size: 10px;
+        color: #aaa49e;
+        margin-top: 1px;
+        margin-bottom: 6px;
+      }
+
+      .s-range span:last-child {
+        text-align: right;
       }
 
       .s-desc {
@@ -1075,6 +1113,7 @@
         border: 1px solid rgba(26, 24, 20, 0.1);
         border-radius: 4px;
         overflow: hidden;
+        margin-top: 24px;
         margin-bottom: 14px;
       }
 
@@ -1109,6 +1148,9 @@
         position: relative;
         width: 100%;
         aspect-ratio: 5 / 2;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(26, 24, 20, 0.1);
       }
 
       .chart-note {
@@ -1140,11 +1182,15 @@
       html[data-theme='dark'] .model,
       html[data-theme='dark'] .m,
       html[data-theme='dark'] .eq {
-        background: #2a2a2c;
+        background: #2a2a2caa;
       }
 
       html[data-theme='dark'] .model {
         border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      html[data-theme='dark'] .chart-wrap {
+        border-top-color: rgba(255, 255, 255, 0.1);
       }
 
       html[data-theme='dark'] .model-label,
@@ -1163,9 +1209,18 @@
       }
 
       html[data-theme='dark'] .s-row label .val,
+      html[data-theme='dark'] .s-row label .val-input,
       html[data-theme='dark'] .m-val,
       html[data-theme='dark'] .eq {
         color: #e0e0e0;
+      }
+
+      html[data-theme='dark'] .s-row label .val-input {
+        border-bottom-color: #e0e0e0;
+      }
+
+      html[data-theme='dark'] .s-range {
+        color: #555;
       }
 
       html[data-theme='dark'] .m-val.pos {
@@ -1202,6 +1257,9 @@
         html:not([data-theme='light']) .model {
           border-color: rgba(255, 255, 255, 0.1);
         }
+        html:not([data-theme='light']) .chart-wrap {
+          border-top-color: rgba(255, 255, 255, 0.1);
+        }
         html:not([data-theme='light']) .model-label,
         html:not([data-theme='light']) .m-label,
         html:not([data-theme='light']) .chart-note,
@@ -1215,9 +1273,16 @@
           color: #777;
         }
         html:not([data-theme='light']) .s-row label .val,
+        html:not([data-theme='light']) .s-row label .val-input,
         html:not([data-theme='light']) .m-val,
         html:not([data-theme='light']) .eq {
           color: #e0e0e0;
+        }
+        html:not([data-theme='light']) .s-row label .val-input {
+          border-bottom-color: #e0e0e0;
+        }
+        html:not([data-theme='light']) .s-range {
+          color: #555;
         }
         html:not([data-theme='light']) .m-val.pos {
           color: #4caf82;
@@ -1363,7 +1428,6 @@
               <p>I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the dirt doesn't move, but the piece of paper that says "you may build here" can double the value overnight. In supply-constrained markets, the permission to build is a huge portion of the asset's value.</p>
 
               <p>Here is a simplified model of how entitlements affects land value:</p>
-              <br />
 
               <div class="model">
                 <div class="model-label">Adjust variables</div>
@@ -1373,37 +1437,45 @@
                     <label>N (units) <span class="val" id="v-n">700</span></label>
                     <div class="s-desc">The number of entitled units you can build — the single most important factor; if you can't build many units, the land is essentially worthless</div>
                     <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
+                    <div class="s-range"><span>50</span><span>1,000</span></div>
                   </div>
                   <div class="s-row">
                     <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
                     <div class="s-desc">How much each entitled lot is worth to a buyer</div>
                     <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
+                    <div class="s-range"><span>$100k</span><span>$700k</span></div>
                   </div>
                   <div class="s-row">
-                    <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
+                    <label>total_infra_cost <span class="val" id="v-c">$50M</span></label>
                     <div class="s-desc">The cost of building the roads, utilities, and grading to make the land developable</div>
                     <input type="range" id="s-c" min="1" max="200" step="1" value="50" />
+                    <div class="s-range"><span>$1M</span><span>$200M</span></div>
                   </div>
                   <div class="s-row">
                     <label>land_cost <span class="val" id="v-l">$20M</span></label>
                     <div class="s-desc">The price you pay for the land itself — often a smaller portion of total cost than the infrastructure</div>
                     <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
+                    <div class="s-range"><span>$0</span><span>$80M</span></div>
                   </div>
                   <div class="s-row">
-                    <label>interest_rate <span class="val" id="v-i">9%</span> <span style="font-size: 11px; color: #888078; font-style: italic">infra lender rate</span></label>
+                    <label>interest_rate <span class="val" id="v-i">9%</span></label>
                     <div class="s-desc">The rate of interest charged on the infrastructure loan</div>
                     <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
+                    <div class="s-range"><span>3%</span><span>20%</span></div>
                   </div>
                   <div class="s-row">
                     <label>years to build infra <span class="val" id="v-t">2</span></label>
                     <div class="s-desc">How long it takes to build the infrastructure and sell the lots, which affects how much interest you pay</div>
                     <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
+                    <div class="s-range"><span>0</span><span>10</span></div>
                   </div>
                 </div>
-
+              </div>
+              <div class="model">
                 <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
-                <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
+              </div>
 
+              <div class="model">
                 <div class="metrics">
                   <div class="m">
                     <div class="m-label">Revenue</div>
@@ -1446,10 +1518,7 @@
 
               <p>The third variable is cost of capital. It compounds with time because your investors or lenders are charging you interest the entire time the project is running, which means a one-year delay is economically equivalent to a meaningful increase in the effective cost of your infrastructure.</p>
 
-              <div class="eq">
-                carry_cost = total_infra_cost * interest_rate * years profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years
-                <span class="c">// carry</span> - land_cost
-              </div>
+              <div class="eq">carry_cost = total_infra_cost * interest_rate * years profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years</div>
 
               <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
 
@@ -1818,6 +1887,42 @@
 
       ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => $(id).addEventListener('input', update))
       update()
+
+      // Click-to-edit on value labels
+      ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => {
+        const slider = $(id)
+        const valSpan = $('v-' + id.slice(2))
+        valSpan.addEventListener('click', () => {
+          const input = document.createElement('input')
+          input.type = 'number'
+          input.className = 'val-input'
+          input.min = slider.min
+          input.max = slider.max
+          input.step = slider.step
+          input.value = slider.value
+          valSpan.replaceWith(input)
+          input.focus()
+          input.select()
+          function commit() {
+            let v = parseFloat(input.value)
+            if (isNaN(v)) v = parseFloat(slider.value)
+            v = Math.min(Math.max(v, parseFloat(slider.min)), parseFloat(slider.max))
+            slider.value = v
+            input.replaceWith(valSpan)
+            update()
+          }
+          input.addEventListener('blur', commit)
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              commit()
+            }
+            if (e.key === 'Escape') {
+              input.replaceWith(valSpan)
+            }
+          })
+        })
+      })
 
       // Re-apply chart colors when data-theme attribute changes
       new MutationObserver(applyChartColors).observe(document.documentElement, {
