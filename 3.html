@@ -2712,7 +2712,7 @@ Here in the Bay Area, the general response to gun ownership is an autom...</div>
     btn.setAttribute('aria-label', 'Toggle dark mode');
     function updateIcon() {
       var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-      btn.innerHTML = dark ? SUN : MOON;
+      btn.innerHTML = (dark ? SUN : MOON) + ' ' + (dark ? 'Switch to light mode' : 'Switch to dark mode');
     }
     updateIcon();
     btn.addEventListener('click', function() {
@@ -2721,7 +2721,7 @@ Here in the Bay Area, the general response to gun ownership is an autom...</div>
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
       document.querySelectorAll('#dark-mode-toggle').forEach(function(b) {
-        b.innerHTML = next === 'dark' ? SUN : MOON;
+        b.innerHTML = (next === 'dark' ? SUN : MOON) + ' ' + (next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
       });
     });
     return btn;

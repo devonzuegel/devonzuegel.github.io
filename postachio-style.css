@@ -920,8 +920,12 @@ html[data-theme="dark"] ul.tags li a {
   display: block;
   flex-shrink: 0;
 }
-/* Narrow header: show inline after the nav links */
+/* Narrow header: show inline after the nav links, icon only */
 .narrow-only #dark-mode-toggle {
   margin-left: 6px;
   vertical-align: middle;
+  font-size: 0;
+}
+.narrow-only #dark-mode-toggle svg {
+  display: inline-block;
 }
