@@ -1028,16 +1028,19 @@
 
       .s-row {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
       }
 
       .s-row label {
         display: flex;
-        justify-content: space-between;
         align-items: baseline;
+        gap: 6px;
         font-size: 13px;
         color: #555048;
-        margin-bottom: 2px;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       .s-row label .val {
@@ -1069,7 +1072,8 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 6px;
+        flex: 1;
+        min-width: 0;
       }
 
       .s-slider-wrap input[type='range'] {
@@ -1096,11 +1100,7 @@
       }
 
       .s-desc {
-        font-size: 11px;
-        color: #888078;
-        line-height: 1.4;
-        margin-bottom: 4px;
-        font-style: italic;
+        display: none;
       }
 
       input[type='range'] {
@@ -1129,7 +1129,6 @@
         align-items: stretch;
         padding: 0 !important;
         overflow: hidden;
-        min-height: 280px;
       }
 
       .chart-metrics-wrap .chart-wrap {
@@ -1138,7 +1137,8 @@
         padding: 16px 20px;
         margin: 0 !important;
         border: none !important;
-        height: 280px;
+        align-self: stretch;
+        position: relative !important;
       }
 
       .post .post-content .metrics {
@@ -1197,8 +1197,11 @@
       }
 
       .chart-metrics-wrap .chart-wrap canvas {
-        width: 100% !important;
-        height: 100% !important;
+        position: absolute !important;
+        inset: 16px 20px !important;
+        width: calc(100% - 40px) !important;
+        height: calc(100% - 32px) !important;
+        display: block;
       }
 
       .chart-note {
