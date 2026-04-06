@@ -1382,7 +1382,7 @@
                   <div class="s-row">
                     <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
                     <div class="s-desc">The cost of building the roads, utilities, and grading to make the land developable</div>
-                    <input type="range" id="s-c" min="1" max="200" step="1" value="100" />
+                    <input type="range" id="s-c" min="1" max="200" step="1" value="50" />
                   </div>
                   <div class="s-row">
                     <label>land_cost <span class="val" id="v-l">$20M</span></label>
@@ -1608,7 +1608,6 @@
         const c = chartColors()
         chart.data.datasets[0].borderColor = c.line
         chart.data.datasets[1].borderColor = c.zero
-        chart.data.datasets[2].borderColor = c.dot
         chart.data.datasets[2].backgroundColor = c.dotBg
         chart.options.plugins.tooltip.backgroundColor = c.tooltip
         chart.options.plugins.tooltip.titleColor = c.tooltipTitle
@@ -1671,11 +1670,13 @@
         }
         const currentProfit = profit / 1e6
 
+        const dotColor = profit >= 0 ? '#16a34a' : '#dc2626'
         if (chart) {
           chart.data.labels = labels
           chart.data.datasets[0].data = data
           chart.data.datasets[1].data = labels.map(() => 0)
           chart.data.datasets[2].data = [{x: N, y: currentProfit}]
+          chart.data.datasets[2].borderColor = dotColor
           chart.update('none')
         } else {
           const c = chartColors()
@@ -1702,7 +1703,7 @@
                 {
                   type: 'scatter',
                   data: [{x: N, y: currentProfit}],
-                  borderColor: c.dot,
+                  borderColor: dotColor,
                   backgroundColor: c.dotBg,
                   borderWidth: 2,
                   pointRadius: 6,
