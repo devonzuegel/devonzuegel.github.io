@@ -169,6 +169,11 @@
       .row .post h2 {
         margin-bottom: 0;
       }
+      
+      .row .post h3 {
+        font-weight: 500 !important;
+        margin-bottom: 0;
+      }
 
       .container {
         padding-bottom: 24px !important;
@@ -509,6 +514,7 @@
       .post-content code {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         line-height: 1.5em;
+        font-weight: 500;
       }
 
       .post-content .caption code {
@@ -1626,11 +1632,13 @@
                 </div>
               </div>
 
-              <p>This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which variables to stress-test, it's been useful to me.</p>
+              <p>This is a simplified model — it ignores all sorts of relevant variables like absorption pace, financing structure, product mix, etc. But it is useful for a first-order intuition about where value is created and which variables to stress-test when you're evaluating an opportunity.</p>
 
-              <h2>Fixed Infrastructure Cost, Variable Unit Count</h2>
+              <h3>Fixed Infrastructure Cost, Variable Unit Count</h2>
 
-              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
+              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot.</p>
+
+              <p>This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
 
               <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
 
@@ -1638,25 +1646,23 @@
 
               <p>The intercept between the black line and the x-axis represents the point where profit equals zero, indicating the minimum number of units that must be sold to break even on the infrastructure investment.</p>
 
-              <h2>The effective cost of infrastructure compounds over time (if you use debt)</h2>
+              <h3>The effective infrastructure cost compounds over time (if you use debt)</h2>
 
-              <p>The third variable is cost of capital. It compounds with time because your investors or lenders are charging you interest the entire time the project is running, which means a one-year delay is economically equivalent to a meaningful increase in the effective cost of your infrastructure.</p>
+              <p>When financed with debt, the total cost compounds with time because the lenders are charging you interest. This means a one-year delay is economically equivalent to a meaningful increase in the effective cost of your infrastructure.</p>
 
               <div class="eq">carry_cost = total_infra_cost * interest_rate * years profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years</div>
 
-              <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
+              <h3>Fixed infrastructure cost creates economies of scale & a moat for developers who have access to capital</h2>
 
-              <h2>Infrastructure cost creates a natural moat for larger players</h2>
+              <p>The fixed infra cost means there's a minimum project scale below which nothing pencils. If roads + utilities cost $50M regardless, you need hundreds of units just to break even. This effectively locks out small developers and creates a barrier to entry purely based on capital requirements.</p>
 
-              <p>The fixed infra cost means there's a minimum project scale below which nothing pencils. If roads + utilities cost $50M regardless, you need hundreds of units just to break even. This effectively locks out small developers and creates a barrier to entry that has nothing to do with skill or knowledge — it's pure capital requirements.</p>
+              <h3>The model reveals why infrastructure phasing is so helpful</h2>
 
-              <h2>The model reveals why infrastructure phasing is so common</h2>
+              <p>TODO: Rewrite</p>
 
-              <p>If you can build and sell Phase 1 while entitled for Phases 2-3, you're using early revenue to reduce carry time on later phases. This turns the linear profit function into something more like a step function where each phase partially self-funds the next, dramatically improving effective IRR vs. building everything at once.</p>
+              <h3>Price-per-lot sensitivity implies you should over-invest in placemaking</h2>
 
-              <h2>Price-per-lot sensitivity implies you should over-invest in placemaking</h2>
-
-              <p>If spending an extra $2M on a town center, park, or aesthetic improvements lifts price_per_lot by even $10k across 700 lots, that's $7M in additional revenue — a 3.5x return. The slope of your profit line means amenity investments have massive leverage.</p>
+              <p>If spending an extra $2M on a town center, park, nicer streets, etc lifts <code>price_per_lot</code> by even $10k across 700 lots, that's $7M in additional revenue — a 3.5x return. The slope of your profit line means amenity investments have massive leverage.</p>
 
               <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
               <br />
