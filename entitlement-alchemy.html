@@ -1273,7 +1273,6 @@
         margin: 4px -12px !important;
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 13px;
-        font-weight: 500;
         line-height: 1.9;
         color: #1a1814;
         border-radius: 4px;
@@ -1533,17 +1532,18 @@
             <p class="muted">April 2026</p>
 
             <div class="post-content" data-type-cleanup="true">
-              <p style="color: #888078; font-style: italic">Here are my notes about where land value comes from in entitlement-driven development. My original goal was to build a simple model I can use to stress-test deals, and I figured others might find it interesting too.</p>
+              <p style="color: #888078; font-style: italic">Here are my notes on where land value comes from in entitlement-driven development. I originally built a simple model to stress-test deals and figured others might find it useful.</p>
 
               <p>Friends often send me links to beautiful pieces of land with prices that are too good to be true. I'm honored that people think of me when they see great land, but these conversations almost always go the same way. When we look into the zoning, it quickly explains the price: you're not allowed to build much on it. The land isn't "entitled."</p>
 
-              <p>"Entitlement" is the legal process by which raw land gets permission to be developed. In California, that process is long, expensive, uncertain, and controlled by local governments. Cheap land is cheap because the market has correctly priced in that getting permission to build on it is very hard, or in some cases nearly impossible. The discount usually isn't a bargain — it's a reflection of how much work it takes to unlock the value.</p>
+              <p>Entitlement is the legal process by which raw land gets permission to be developed — in California, it's long, expensive, uncertain, and controlled by local governments. Cheap land is typically cheap because the market has priced in how hard it is to get that permission. The discount isn't a bargain; it reflects the work required to unlock the value.</p>
 
-              <p>However, if you <em>do</em> succeed in getting land entitled for a significant amount of development, the land's value shoots up to reflect the new permitted supply.</p>
+              <p>But if you <i>do</i> succeed in entitling land for significant development, its value shoots up to reflect the new permitted supply.
+              </p>
 
-              <p>I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the dirt doesn't move, but the piece of paper that says "you may build here" can double the value overnight. In supply-constrained markets, the permission to build is a huge portion of the asset's value.</p>
+              <p>I call this "entitlement alchemy" — the dirt doesn't move, but the piece of paper saying "you may build here" can double the value overnight. In supply-constrained markets, permission to build is a huge portion of the asset's value.</p>
 
-              <div class="model chart-metrics-wrap">
+              <div class="model chart-metrics-wrap" style="margin-top: 18px !important">
                 <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
                 <div class="metrics">
                   <div class="m">
@@ -1637,7 +1637,7 @@
 
               <p>If spending an extra $2M on a town center, park, nicer streets, etc lifts <code>price_per_lot</code> by even $10k across 700 lots, that's $7M in additional revenue — a 3.5x return. The slope of your profit line means amenity investments have massive leverage.</p>
 
-              <h3>fixed infrastructure cost, variable unit count</h2>
+              <h3>Fixed infrastructure cost, variable unit count</h2>
 
               <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot.</p>
 
@@ -1666,10 +1666,9 @@
 
               <p>Phasing also de-risks the project: if market conditions shift, you've only committed to a fraction of the total infrastructure spend.</p>
 
-              <hr style="margin: 30px 0 10px 0; margin-left: -30px" />
               <br />
 
-              <div style="background: #f5f5f5; border-radius: 8px; padding: 12px 16px">
+              <div style="border: 1px solid #e1e1e1; border-radius: 8px; padding: 12px 16px; margin: 8px -16px 36px -16px !important">
                 <p style="margin: 0">I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to <a href="mailto:devon@devonzuegel.com">reach out</a> if you're interested in learning more or getting involved!</p>
               </div>
             </div>
