@@ -1630,7 +1630,7 @@
 
               <h2>Fixed Infrastructure Cost, Variable Unit Count</h2>
 
-              <p>A key feature of infrastructure cost is that much of it is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
+              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
 
               <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
 
@@ -1793,6 +1793,7 @@
               border: 'rgba(255,255,255,0.1)',
               zeroAxis: 'rgba(200,200,200,0.18)',
               axisTitle: '#888',
+              breakeven: '#ffffff',
             }
           : {
               line: '#1a1814',
@@ -1808,6 +1809,7 @@
               border: 'rgba(26,24,20,0.1)',
               zeroAxis: 'rgba(26,24,20,0.18)',
               axisTitle: '#888078',
+              breakeven: '#000000',
             }
       }
 
@@ -1822,6 +1824,9 @@
         chart.options.plugins.tooltip.bodyColor = c.tooltipBody
         chart.options.plugins.annotation.annotations.vLine.borderColor = c.annotation
         chart.options.plugins.annotation.annotations.hLine.borderColor = c.annotation
+        chart.options.plugins.annotation.annotations.breakevenLabel.color = c.breakeven
+        chart.options.plugins.annotation.annotations.breakevenDot.backgroundColor = c.breakeven
+        chart.options.plugins.annotation.annotations.breakevenDot.borderColor = c.breakeven
 
         chart.options.scales.x.grid.color = c.grid
         chart.options.scales.x.ticks.color = c.ticks
@@ -1831,6 +1836,57 @@
         chart.options.scales.y.border.color = c.zeroAxis
         chart.options.scales.y.title.color = c.axisTitle
         chart.update('none')
+      }
+
+      const breakevenArrowPlugin = {
+        id: 'breakevenArrow',
+        afterDraw(chart) {
+          const ann = chart.options.plugins.annotation?.annotations?.breakevenLabel
+          if (!ann) return
+          const xScale = chart.scales.x
+          const yScale = chart.scales.y
+          if (!xScale || !yScale) return
+
+          const xPx = xScale.getPixelForValue(ann.xValue)
+          const yPx = yScale.getPixelForValue(ann.yValue ?? 0)
+
+          // label box center is at (xPx, yPx + yAdjust); approx half-height 10px
+          const labelBottomY = yPx + (ann.yAdjust ?? 0) + 10
+
+          const x1 = xPx,
+            y1 = labelBottomY + 4
+          const x2 = xPx,
+            y2 = yPx - 8
+
+          // control point offset to the right for a gentle curve
+          const cpx = xPx + 18
+          const cpy = (y1 + y2) / 2
+
+          const color = ann.color ?? '#000000'
+          const ctx = chart.ctx
+          ctx.save()
+          ctx.strokeStyle = color
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(x1, y1)
+          ctx.quadraticCurveTo(cpx, cpy, x2, y2)
+          ctx.stroke()
+
+          // arrowhead at tip
+          const t = 0.98
+          const tx = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cpx + t * t * x2
+          const ty = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cpy + t * t * y2
+          const angle = Math.atan2(y2 - ty, x2 - tx)
+          const headLen = 7
+          ctx.fillStyle = color
+          ctx.beginPath()
+          ctx.moveTo(x2, y2)
+          ctx.lineTo(x2 - headLen * Math.cos(angle - 0.4), y2 - headLen * Math.sin(angle - 0.4))
+          ctx.lineTo(x2 - headLen * Math.cos(angle + 0.4), y2 - headLen * Math.sin(angle + 0.4))
+          ctx.closePath()
+          ctx.fill()
+          ctx.restore()
+        },
       }
 
       let chart
@@ -1890,6 +1946,7 @@
           const c = chartColors()
           chart = new Chart($('profitChart').getContext('2d'), {
             type: 'line',
+            plugins: [breakevenArrowPlugin],
             data: {
               labels,
               datasets: [
@@ -1962,36 +2019,17 @@
                       xValue: totalCost / P,
                       yValue: 0,
                       content: ['break-even'],
-                      yAdjust: -36,
-                      color: '#000000',
+                      yAdjust: -44,
+                      color: c.breakeven,
                       font: {size: 10, family: 'Roboto Mono, monospace'},
-                    },
-                    breakevenArrow: {
-                      type: 'line',
-                      xMin: totalCost / P,
-                      xMax: totalCost / P,
-                      yMin: 0,
-                      yMax: 0,
-                      yMinAdjust: 8,
-                      yMaxAdjust: -28,
-                      borderColor: '#000000',
-                      borderWidth: 1,
-                      arrowHeads: {
-                        end: {
-                          display: true,
-                          length: 6,
-                          width: 4,
-                          fill: true,
-                        },
-                      },
                     },
                     breakevenDot: {
                       type: 'point',
                       xValue: totalCost / P,
                       yValue: 0,
                       radius: 5,
-                      backgroundColor: '#000000',
-                      borderColor: '#000000',
+                      backgroundColor: c.breakeven,
+                      borderColor: c.breakeven,
                       borderWidth: 0,
                     },
                   },
