@@ -1121,16 +1121,42 @@
         cursor: pointer;
       }
 
-      .post .post-content .metrics {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1px;
-        border-radius: 4px;
+      .chart-metrics-wrap {
+        display: flex !important;
+        gap: 0;
+        align-items: stretch;
+        padding: 0 !important;
         overflow: hidden;
+      }
+
+      .chart-metrics-wrap .chart-wrap {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 16px 20px;
+        display: flex;
+        align-items: stretch;
+      }
+
+      .post .post-content .metrics {
+        display: flex !important;
+        flex-direction: column;
+        flex-shrink: 0;
+        width: 140px;
+        border-left: 1px solid rgba(26, 24, 20, 0.1);
+        gap: 0;
       }
 
       .m {
         padding: 10px 14px;
+      }
+
+      .metrics .m {
+        flex: 1;
+        border-bottom: 1px solid rgba(26, 24, 20, 0.08);
+      }
+
+      .metrics .m:last-child {
+        border-bottom: none;
       }
 
       .m-label {
@@ -1158,10 +1184,14 @@
       .chart-wrap {
         position: relative;
         width: 100%;
-        aspect-ratio: 5 / 2;
         margin-top: 24px;
         padding-top: 20px;
         border-top: 1px solid rgba(26, 24, 20, 0.1);
+      }
+
+      .chart-metrics-wrap .chart-wrap canvas {
+        width: 100% !important;
+        height: 100% !important;
       }
 
       .chart-note {
@@ -1252,8 +1282,12 @@
       }
 
       html[data-theme='dark'] .post .post-content .metrics {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.08);
+        background: transparent;
+        border-left-color: rgba(255, 255, 255, 0.1);
+      }
+
+      html[data-theme='dark'] .metrics .m {
+        border-bottom-color: rgba(255, 255, 255, 0.07);
       }
 
       html[data-theme='dark'] .eq {
@@ -1310,8 +1344,11 @@
           background: #c0c0c0;
         }
         html:not([data-theme='light']) .post .post-content .metrics {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.08);
+          background: transparent;
+          border-left-color: rgba(255, 255, 255, 0.1);
+        }
+        html:not([data-theme='light']) .metrics .m {
+          border-bottom-color: rgba(255, 255, 255, 0.07);
         }
         html:not([data-theme='light']) .eq {
           border-left-color: rgba(255, 255, 255, 0.15);
@@ -1500,11 +1537,8 @@
                   </div>
                 </div>
               </div>
-              <div class="model">
+              <div class="model chart-metrics-wrap">
                 <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
-              </div>
-
-              <div class="model">
                 <div class="metrics">
                   <div class="m">
                     <div class="m-label">Revenue</div>
