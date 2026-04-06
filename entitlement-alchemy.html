@@ -1401,6 +1401,9 @@
                   </div>
                 </div>
 
+                <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
+                <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
+
                 <div class="metrics">
                   <div class="m">
                     <div class="m-label">Revenue</div>
@@ -1427,9 +1430,6 @@
                     <div class="m-val" id="m-irr">—</div>
                   </div>
                 </div>
-
-                <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
-                <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
               </div>
 
               <h2>Fixed Infrastructure Cost, Variable Unit Count</h2>
@@ -1750,8 +1750,17 @@
                       yValue: 0,
                       content: ['break-even'],
                       yAdjust: -14,
-                      color: c.ticks,
+                      color: '#7c3aed',
                       font: {size: 10, family: 'Roboto Mono, monospace'},
+                    },
+                    breakevenDot: {
+                      type: 'point',
+                      xValue: totalCost / P,
+                      yValue: 0,
+                      radius: 5,
+                      backgroundColor: '#7c3aed',
+                      borderColor: '#7c3aed',
+                      borderWidth: 0,
                     },
                   },
                 },
@@ -1801,6 +1810,7 @@
           chart.options.plugins.annotation.annotations.vLine.value = N
           chart.options.plugins.annotation.annotations.hLine.value = currentProfit
           chart.options.plugins.annotation.annotations.breakevenLabel.xValue = totalCost / P
+          chart.options.plugins.annotation.annotations.breakevenDot.xValue = totalCost / P
           chart.update('none')
         }
       }
