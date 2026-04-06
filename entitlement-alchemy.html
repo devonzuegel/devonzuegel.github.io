@@ -1,513 +1,1582 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Land use alchemy: Why cheap land is cheap & how to turn it into gold — Devon Zuegel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
-    <style>
-      :root {
-        --text: #1a1814;
-        --muted: #555048;
-        --light: #888078;
-        --rule: rgba(26, 24, 20, 0.1);
-        --bg: #fefcf8;
-        --tint: #f5f2ec;
-        --link: #2a6496;
-        --mono-bg: #eeeae2;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      html {
-        background: var(--bg);
-        color: var(--text);
-      }
-      body {
-        font-family: 'Inter', sans-serif;
-        font-size: 17px;
-        line-height: 1.75;
-        font-weight: 400;
-        max-width: 660px;
-        margin: 0 auto;
-        padding: 48px 24px 80px;
-      }
-      nav {
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: var(--light);
-        margin-bottom: 56px;
-      }
-      nav a {
-        color: var(--light);
-        text-decoration: none;
-      }
-      nav a:hover {
-        color: var(--text);
-      }
-      nav .sep {
-        margin: 0 8px;
-      }
-      h1 {
-        font-family: 'Lora', Georgia, serif;
-        font-size: 26px;
-        font-weight: 600;
-        line-height: 1.3;
-        margin-bottom: 8px;
-        color: var(--text);
-      }
-      .date {
-        font-size: 14px;
-        color: var(--light);
-        font-family: 'Inter', sans-serif;
-        margin-bottom: 32px;
-      }
-      p {
-        color: var(--muted);
-        margin-bottom: 20px;
-      }
-      a {
-        color: var(--link);
-      }
-      h2 {
-        font-family: 'Lora', Georgia, serif;
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text);
-        margin: 44px 0 16px;
-      }
-      code {
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
-        background: var(--mono-bg);
-        color: var(--text);
-        padding: 1px 5px;
-        border-radius: 3px;
-      }
-      .eq {
-        background: var(--tint);
-        border-left: 3px solid rgba(26, 24, 20, 0.15);
-        padding: 14px 18px;
-        margin: 24px 0;
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
-        line-height: 1.9;
-        color: var(--text);
-        border-radius: 0 4px 4px 0;
-        white-space: pre;
-        overflow-x: auto;
-      }
-      .eq .c {
-        color: var(--light);
-      }
-      .model {
-        border: 1px solid var(--rule);
-        border-radius: 6px;
-        padding: 28px;
-        margin: 36px 0;
-        background: var(--tint);
-      }
-      .model-label {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--light);
-        margin-bottom: 24px;
-      }
-      .sliders {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px 36px;
-        margin-bottom: 28px;
-      }
-      @media (max-width: 480px) {
-        .sliders {
-          grid-template-columns: 1fr;
-        }
-      }
-      .s-row label {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 6px;
-      }
-      .s-row label .val {
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
-        color: var(--text);
-      }
-      input[type='range'] {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 2px;
-        background: rgba(26, 24, 20, 0.15);
-        border-radius: 1px;
-        outline: none;
-      }
-      input[type='range']::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--text);
-        cursor: pointer;
-      }
-      .metrics {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1px;
-        background: var(--rule);
-        border: 1px solid var(--rule);
-        border-radius: 4px;
-        overflow: hidden;
-        margin-bottom: 24px;
-        font-family: 'Inter', sans-serif;
-      }
-      .m {
-        background: var(--bg);
-        padding: 14px 16px;
-      }
-      .m-label {
-        font-size: 11px;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
-        color: var(--light);
-        margin-bottom: 4px;
-      }
-      .m-val {
-        font-family: 'Roboto Mono', monospace;
-        font-size: 17px;
-        color: var(--text);
-      }
-      .m-val.pos {
-        color: #2a6e4e;
-      }
-      .m-val.neg {
-        color: #8b2020;
-      }
-      .chart-wrap {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 3 / 2;
-      }
-      .chart-note {
-        font-size: 12px;
-        color: var(--light);
-        font-family: 'Inter', sans-serif;
-        text-align: center;
-        margin-top: 8px;
-      }
-      hr {
-        border: none;
-        border-top: 1px solid var(--rule);
-        margin: 44px 0;
-      }
-      .intro-note {
-        font-style: italic;
-        color: var(--light);
-        font-size: 16px;
-        margin-bottom: 32px;
-      }
-    </style>
-  </head>
-  <body>
-    <nav>
-      <a href="https://devonzuegel.com">Devon Zuegel</a>
-      <span class="sep">·</span>
-      <a href="https://devonzuegel.com/tag/cities">Cities</a>
-    </nav>
 
-    <h1>Land use alchemy: Why cheap land is cheap & how to turn it into gold</h1>
-    <div class="date">March 2026</div>
 
-    <p class="intro-note">
-      The following is a writeup of my notes on where the value comes from in entitlement-driven development. My original goal was to build a simple model I can use to stress-test deals, and I figured
-      others might find it interesting too.
-    </p>
-
-    <p>
-      Friends often send me links to beautiful pieces of land with prices that seem too good to be true. I'm honored that people think of me, but these conversations almost always go the same way.
-      When we look into the zoning, it quickly explains the price: you're not allowed to build much on it. The land isn't "entitled."
-    </p>
-
-    <p>
-      "Entitlement" is the legal process by which raw land gets permission to become housing. In California, that process is long, expensive, uncertain, and controlled by local governments. Cheap land
-      is cheap because the market has correctly priced in that getting permission to build on it is somewhere between very hard and nearly impossible. The discount isn't a bargain — it's a reflection
-      of how much work it takes to unlock the value.
-    </p>
-
-    <p>However, if you <em>do</em> succeed in getting land entitled for a significant amount of development, the land's value jumps to reflect the new permitted supply.</p>
-
-    <p>
-      I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the land doesn't change, the dirt doesn't move, but the piece of paper that says "you may build here"
-      can double the value overnight. In supply-constrained markets, the permit is a huge portion of the product's value. Everything else — roads, utilities, infrastructure, the homes themselves — is
-      execution.
-    </p>
-
-    <h2>Interactive model</h2>
-
-    <div class="model">
-      <div class="model-label">Adjust variables</div>
-
-      <div class="sliders">
-        <div class="s-row">
-          <label>N (units) <span class="val" id="v-n">700</span></label>
-          <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
-        </div>
-        <div class="s-row">
-          <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
-          <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
-        </div>
-        <div class="s-row">
-          <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
-          <input type="range" id="s-c" min="1" max="200" step="1" value="100" />
-        </div>
-        <div class="s-row">
-          <label>land_cost <span class="val" id="v-l">$20M</span></label>
-          <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
-        </div>
-        <div class="s-row">
-          <label>interest_rate <span class="val" id="v-i">9%</span> <span style="font-size: 11px; color: var(--light); font-style: italic">infra lender rate</span></label>
-          <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
-        </div>
-        <div class="s-row">
-          <label>years to build infra <span class="val" id="v-t">2</span></label>
-          <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
-        </div>
-      </div>
-
-      <div class="metrics">
-        <div class="m">
-          <div class="m-label">Revenue</div>
-          <div class="m-val" id="m-rev">—</div>
-        </div>
-        <div class="m">
-          <div class="m-label">Total cost</div>
-          <div class="m-val" id="m-cost">—</div>
-        </div>
-        <div class="m">
-          <div class="m-val" id="m-profit">—</div>
-          <div class="m-label">Profit</div>
-        </div>
-        <div class="m">
-          <div class="m-label">Margin</div>
-          <div class="m-val" id="m-margin">—</div>
-        </div>
-        <div class="m">
-          <div class="m-label">carry_cost</div>
-          <div class="m-val" id="m-carry">—</div>
-        </div>
-        <div class="m">
-          <div class="m-label">IRR (approx)</div>
-          <div class="m-val" id="m-irr">—</div>
-        </div>
-      </div>
-
-      <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
-      <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
-    </div>
-
-    <h2>1. <code>N</code> — entitled units</h2>
-
-    <p>
-      Before entitlement, land is priced assuming no new supply will emerge from it. When you successfully entitle, you've created units the market didn't expect to exist. This is where the return
-      comes from. Without <code>N &gt; 0</code>, nothing else matters.
-    </p>
-
-    <h2>2. The profit function</h2>
-
-    <p>
-      A key feature of infrastructure cost is that much of it is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more
-      units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.
-    </p>
-
-    <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
-
-    <p>
-      The slope is set by <code>price_per_lot</code> — small changes here rotate the line a lot. The intercept is shifted down by <code>total_infra_cost</code> and <code>land_cost</code>, both of
-      which are largely fixed, which is why squeezing more units out of an entitlement is so valuable.
-    </p>
-
-    <h2>3. <code>carry_cost</code> — time × rate</h2>
-
-    <p>
-      The third variable is cost of capital. It compounds with time because your investors or lenders are charging you interest the entire time the project is running, which means a one-year delay is
-      economically equivalent to a meaningful increase in the effective cost of your infrastructure.
-    </p>
-
-    <div class="eq">
-      carry_cost = total_infra_cost * interest_rate * years profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years <span class="c">// carry</span> - land_cost
-    </div>
-
-    <p>
-      This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which
-      variables to stress-test, it's been useful to me.
-    </p>
-
-    <hr />
-
-    <p style="font-size: 15px">
-      I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to
-      <a href="/cdn-cgi/l/email-protection#137776657c7d5376607e7661727f77723d7c6174">reach out</a> if this is your kind of thing.
-    </p>
-
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <!-- Google tag (gtag.js) — added to Postachio template manually on 2024.03.09 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y511R13584"></script>
     <script>
-      const $ = (id) => document.getElementById(id)
-
-      function fmtM(d) {
-        const m = d / 1e6
-        return (d < 0 ? '-' : '') + '$' + (Math.abs(m) >= 10 ? Math.round(Math.abs(m)) : Math.abs(m).toFixed(1)) + 'M'
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
       }
-
-      let chart
-
-      function update() {
-        const N = +$('s-n').value
-        const P = +$('s-p').value * 1000
-        const C = +$('s-c').value * 1e6 // total_infra_cost in dollars
-        const L = +$('s-l').value * 1e6
-        const ir = +$('s-i').value / 100
-        const t = +$('s-t').value
-
-        $('v-n').textContent = N
-        $('v-p').textContent = '$' + $('s-p').value + 'k'
-        $('v-c').textContent = '$' + $('s-c').value + 'M'
-        $('v-l').textContent = '$' + $('s-l').value + 'M'
-        $('v-i').textContent = (+$('s-i').value).toFixed(2).replace(/\.?0+$/, '') + '%'
-        $('v-t').textContent = t
-
-        const rev = N * P
-        const infra = C // fixed total, not per-unit
-        const carry = infra * ir * t
-        const totalCost = infra + carry + L
-        const profit = rev - totalCost
-        const margin = rev > 0 ? (profit / rev) * 100 : 0
-        const irr = profit > 0 && totalCost > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
-
-        $('m-rev').textContent = fmtM(rev)
-        $('m-cost').textContent = fmtM(totalCost)
-        $('m-carry').textContent = fmtM(carry)
-        $('m-margin').textContent = isFinite(margin) ? margin.toFixed(1) + '%' : '—'
-        $('m-irr').textContent = irr !== null ? irr.toFixed(1) + '%' : '—'
-
-        const profitEl = $('m-profit')
-        profitEl.textContent = fmtM(profit)
-        profitEl.className = 'm-val ' + (profit >= 0 ? 'pos' : 'neg')
-
-        const maxN = 1000
-        const step = Math.ceil(maxN / 80)
-        const labels = [],
-          data = []
-        for (let n = 0; n <= maxN; n += step) {
-          labels.push(n)
-          data.push((n * P - C - C * ir * t - L) / 1e6)
-        }
-        const currentProfit = profit / 1e6
-
-        if (chart) {
-          chart.data.labels = labels
-          chart.data.datasets[0].data = data
-          chart.data.datasets[1].data = labels.map(() => 0)
-          chart.data.datasets[2].data = [{x: N, y: currentProfit}]
-          chart.update('none')
-        } else {
-          chart = new Chart($('profitChart').getContext('2d'), {
-            type: 'line',
-            data: {
-              labels,
-              datasets: [
-                {data, borderColor: '#1a1814', borderWidth: 1.5, fill: false, tension: 0.3, pointRadius: 0},
-                {data: labels.map(() => 0), borderColor: 'rgba(26,24,20,0.35)', borderWidth: 1, fill: false, pointRadius: 0},
-                {
-                  type: 'scatter',
-                  data: [{x: N, y: currentProfit}],
-                  borderColor: '#1a1814',
-                  backgroundColor: '#fefcf8',
-                  borderWidth: 2,
-                  pointRadius: 6,
-                  pointHoverRadius: 6,
-                },
-              ],
-            },
-            options: {
-              animation: false,
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {display: false},
-                tooltip: {
-                  filter: (item) => item.datasetIndex === 0,
-                  backgroundColor: 'rgba(26,24,20,0.88)',
-                  titleColor: 'rgba(254,252,248,0.5)',
-                  bodyColor: '#fefcf8',
-                  callbacks: {
-                    title: (items) => items[0].label + ' units',
-                    label: (item) => ' profit: $' + (+item.raw).toFixed(1) + 'M',
-                  },
-                },
-                annotation: {
-                  annotations: {
-                    vLine: {
-                      type: 'line',
-                      scaleID: 'x',
-                      value: N,
-                      borderColor: 'rgba(26,24,20,0.25)',
-                      borderWidth: 1,
-                      borderDash: [4, 4],
-                    },
-                    hLine: {
-                      type: 'line',
-                      scaleID: 'y',
-                      value: currentProfit,
-                      borderColor: 'rgba(26,24,20,0.25)',
-                      borderWidth: 1,
-                      borderDash: [4, 4],
-                    },
-                  },
-                },
-              },
-              scales: {
-                x: {
-                  type: 'linear',
-                  min: 0,
-                  max: 1000,
-                  grid: {color: 'rgba(26,24,20,0.05)'},
-                  ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, maxTicksLimit: 7},
-                  border: {color: 'rgba(26,24,20,0.1)'},
-                },
-                y: {
-                  title: {display: true, text: 'PROFIT', color: '#888078', font: {size: 10, family: 'Inter, sans-serif', weight: '500'}, padding: {bottom: 6}},
-                  min: -200,
-                  max: 600,
-                  grid: {color: 'rgba(26,24,20,0.05)'},
-                  ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, callback: (v) => '$' + v.toFixed(0) + 'M'},
-                  border: {color: 'rgba(26,24,20,0.1)'},
-                },
-              },
-            },
-          })
-        }
-
-        // update annotation values on subsequent calls
-        if (chart.options.plugins.annotation) {
-          chart.options.plugins.annotation.annotations.vLine.value = N
-          chart.options.plugins.annotation.annotations.hLine.value = currentProfit
-          chart.update('none')
-        }
-      }
-
-      ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => $(id).addEventListener('input', update))
-      update()
+      gtag('js', new Date())
+      gtag('config', 'G-Y511R13584')
     </script>
-  </body>
-</html>
+
+
+
+<meta charset="utf-8" />
+    <title> Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold | devonzuegel.com </title>
+
+    <link
+        rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>"
+    />
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+
+<meta name="author" content="Devon Zuegel">
+
+
+<meta name="description" content="A writeup of my notes on where the value comes from in entitlement-driven development, with an interactive model to stress-test deals.">
+
+
+<!-- OpenGraph tags -->
+
+<meta property="og:site_name" content="devonzuegel.com">
+
+<meta property="article:published_time" content="2026-03-01 00:00:00">
+<meta property="article:author" content="Devon Zuegel">
+<meta property="article:tag" content="housing">
+<meta property="article:tag" content="real-estate">
+<meta property="article:tag" content="cities">
+<meta property="article:tag" content="land-use">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold">
+<meta property="og:url" content="https://devonzuegel.com/entitlement-alchemy">
+<meta property="og:description" content="A writeup of my notes on where the value comes from in entitlement-driven development, with an interactive model to stress-test deals.">
+
+
+<!-- Twitter Cards -->
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@devonzuegel">
+<meta name="twitter:creator" content="@devonzuegel">
+<meta name="twitter:title" content="Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold">
+<meta name="twitter:description" content="A writeup of my notes on where the value comes from in entitlement-driven development, with an interactive model to stress-test deals.">
+<meta name="twitter:domain" content="https://devonzuegel.com">
+
+<link rel="canonical" href="entitlement-alchemy" />
+
+<!-- RSS feed -->
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../feed.xml">
+
+<!-- For older browsers -->
+<!--[if lt IE 9]>
+  <script src="https://cdn-static.postach.io/libs/html5shiv/html5shiv.min.js"></script>
+<![endif]-->
+
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Chart.js for interactive model -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+
+        <link href="postachio-style.css" rel="stylesheet" />
+
+        <style>
+          html {
+            font-family: 'Inter', sans-serif;
+          }
+          @supports (font-variation-settings: normal) {
+            html {
+              font-family: 'Inter var', sans-serif;
+            }
+          }
+
+          body {
+            -webkit-font-smoothing: antialiased;
+            color: #424241;
+            fill: currentcolor;
+            line-height: 1.5;
+            /* This will only use Inter if they have it on their system already. */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+            font-weight: 400;
+            overflow-x: hidden;
+          }
+
+          @media (max-width: 768px) {
+            body {
+              padding-top: 40px;
+            }
+
+            .narrow-only {
+              display: block;
+              margin-left: -4px;
+            }
+
+            .wide-only {
+              display: none;
+            }
+          }
+
+          @media (min-width: 768px) {
+            .narrow-only {
+              display: none;
+            }
+
+            .wide-only {
+              display: block;
+            }
+          }
+
+          /* Selected text */
+          ::selection {
+            background: rgba(97, 189, 236, 0.25);
+          }
+
+          ::-moz-selection {
+            background: rgba(97, 189, 236, 0.25);
+          }
+
+          table td {
+            border: none !important;
+          }
+
+          .row hr {
+            margin: 30px 0 10px 0;
+            margin-left: -30px;
+          }
+
+          .post h1 {
+            margin-top: 36px;
+            margin-bottom: 0;
+            line-height: 1.3em;
+            font-weight: 500 !important;
+          }
+
+          @media (max-width: 768px) {
+            .post h1 {
+              line-height: 34px;
+              font-size: 24px; /* to match the h2 on the preceding page on mobile */
+            }
+          }
+
+          .row .post h2 {
+            margin-bottom: 0;
+          }
+
+          .container {
+            padding-bottom: 24px !important;
+          }
+
+          @media (min-width: 768px) and (max-width: 979px) {
+            .row {
+              margin-left: 0;
+            }
+            .offset4 {
+              margin-left: 290px;
+            }
+            .span7 {
+              width: 550px;
+            }
+            .sidebar {
+              position: fixed;
+            }
+          }
+
+          .caption {
+            font-size: 0.9em;
+            color: #999;
+            line-height: 1.65em;
+            margin-top: 9px !important;
+          }
+
+          table .caption {
+            padding: 0 !important;
+          }
+
+          @media (max-width: 768px) {
+            .post .post-content .span2.expanded-img-spacer--desktop {
+              display: none !important;
+            }
+
+            ul.categories li {
+              padding-bottom: 6px !important;
+            }
+
+            .devon-box,
+            .CTAs {
+              margin-left: 0 !important;
+              margin-right: 6px !important;
+            }
+
+            .sidebar ul.sidebar--nav-links,
+            .themes {
+              margin-left: 4px !important;
+            }
+          }
+
+          /* Anchors and footnotes */
+
+          .anchor {
+            opacity: 0.5;
+            margin-left: 2px;
+          }
+
+          .anchor:focus {
+            outline: none;
+            border: none !important;
+          }
+
+          @media (min-width: 768px) {
+            .anchor {
+              margin-left: -28px;
+              margin-right: 12px;
+              float: left;
+            }
+          }
+
+          .footnote-content {
+            cursor: pointer !important;
+          }
+
+          /********************************************************************/
+          /* .wide-img-wrapper */
+          /********************************************************************/
+
+          /* Use to make the images bleed past the text */
+          .wide-img-wrapper {
+            margin-top: 12px !important;
+            margin-bottom: 12px !important;
+            line-height: 2em;
+          }
+
+          @media (min-width: 1200px) {
+            /* Use to make the images bleed past the text */
+            .wide-img-wrapper {
+              min-width: calc(100% + 190px);
+              margin-right: -90px !important;
+              margin-left: -90px !important;
+            }
+          }
+
+          @media (min-width: 768px) {
+            /* Use to make the images bleed past the text */
+            .wide-img-wrapper {
+              min-width: calc(100% + 140px);
+              margin-right: -70px !important;
+              margin-left: -70px !important;
+            }
+          }
+
+          /* When the image is the direct child (i.e. not in a table or div or
+           * something like that), then fill the entire width of the wrapper. */
+          .wide-img-wrapper > img {
+            width: 100% !important;
+          }
+
+          .wide-img-wrapper table tr:not(:last-of-type) {
+            margin-bottom: 6px;
+          }
+
+          /********************************************************************/
+
+          .post .post-content img {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+          }
+          @media only screen and (max-width: 1200px) {
+            #podcast-embed {
+              height: 98px;
+            }
+          }
+          .post .post-content .large-wrap-pull-right {
+            float: right;
+            width: 450px;
+            max-width: 60%;
+            margin: 16px 0 16px 16px;
+          }
+          .post .post-content .medium-wrap-pull-right {
+            float: right;
+            width: 450px;
+            max-width: 50%;
+            margin: 16px 0 16px 16px;
+          }
+          .post .post-content .small-wrap-pull-right {
+            float: right;
+            width: 300px;
+            max-width: 50%;
+            margin: 16px 0 16px 16px;
+          }
+          @media (max-width: 980px) {
+            /* LARGE */
+            .post .post-content .small-wrap-pull-right > img,
+            .post .post-content .medium-wrap-pull-right > img,
+            .post .post-content .large-wrap-pull-right > img {
+              width: calc(100% - 16px) !important;
+              width: calc(100%) !important;
+              max-width: inherit;
+            }
+            .post .post-content .small-wrap-pull-right,
+            .post .post-content .medium-wrap-pull-right,
+            .post .post-content .large-wrap-pull-right {
+              margin: 16px 0;
+              width: 100%;
+              max-width: inherit;
+            }
+            .container {
+              margin-top: 0 !important;
+            }
+          }
+
+          @media (min-width: 980px), (max-width: 768px) {
+            body {
+              padding-top: 18px;
+            }
+          }
+
+          /********************************************************************/
+
+          img.full-sized-image-from-click {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100%;
+            width: 100%;
+            max-height: calc(100vh - 16px);
+            max-width: calc(100vw - 16px);
+            position: fixed;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+          }
+
+          img.full-sized-image-from-click:hover {
+            cursor: pointer;
+          }
+
+          .full-sized-image-from-click--wrapper {
+            /* Provides the background */
+            width: 100vw;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+
+          .full-sized-image-from-click--wrapper:hover {
+            cursor: pointer;
+          }
+
+          /* Annotated clippings */
+
+          .annotated-clipping--label {
+            font-size: 0.5em;
+            color: white;
+            background: #aeaeae;
+            padding: 2px 4px;
+            vertical-align: middle;
+            margin-left: 6px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 4px;
+          }
+
+          .post .annotated-clipping--original-link {
+            bottom: 0;
+            background: #367da2;
+            color: white;
+            left: 0;
+            z-index: 100000;
+            padding: 16px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            margin: auto;
+          }
+
+          .post .annotated-clipping--original-link .clipping-source {
+            padding: 4px;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+
+          .post .annotated-clipping--original-link a {
+            font-weight: 900;
+            color: white !important;
+          }
+
+          .post .annotated-clipping--original-link .container {
+            padding-bottom: 0 !important;
+          }
+
+          @media (max-width: 768px) {
+            /* Remove when wrap break happens */
+            .hidden-spacer {
+              display: none;
+            }
+          }
+
+          .post .annotated-clipping--original-link a:hover,
+          .post .annotated-clipping--original-link a:active {
+            color: white !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4) !important;
+            text-decoration: none !important;
+            transition: border 0.15s ease-in;
+          }
+
+          .hidden-spacer {
+            opacity: 0;
+          }
+
+          .post .post-content div {
+            display: block !important;
+          }
+
+          .post .post-content blockquote ol {
+            margin: 0;
+            padding: 0;
+            margin-left: 1.5em;
+          }
+
+          .post .post-content blockquote ol li,
+          .post .post-content ul li,
+          .post .post-content ol li {
+            padding-left: 12px;
+            line-height: 1.5em !important;
+          }
+
+          .post .post-content ul li {
+            padding-left: 0;
+          }
+
+          .post .post-content ul,
+          .post .post-content ol {
+            margin-left: 30px;
+          }
+
+          .post .post-content ul li {
+            list-style-type: disc;
+          }
+
+          .post .post-content ul ul li {
+            list-style-type: circle;
+          }
+
+          .post .post-content ul ul ul li {
+            list-style-type: square;
+          }
+
+          .post .post-content img {
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+          }
+
+          .img-no-shadow--wrapper img,
+          .img-no-shadow--wrapper > img {
+            box-shadow: none !important;
+          }
+
+          .img-grey-border--wrapper img,
+          .img-grey-border--wrapper > img {
+            border: 1px solid #eee;
+          }
+
+          .post .post-content ul img {
+            margin-bottom: 8px;
+          }
+
+          .post .post-content ul img:first-of-type {
+            margin-top: 8px;
+          }
+
+          .post-content code {
+            line-height: 1.5em;
+          }
+
+          .post-content .caption code {
+            line-height: 1em;
+          }
+
+          img.bordered {
+            border: 1px solid rgb(221, 221, 221);
+          }
+
+          .disable-img-click img {
+            pointer-events: none;
+          }
+
+          table td img {
+            width: 100% !important;
+            max-height: none;
+          }
+
+          blockquote {
+            margin: 12px 20px !important;
+            padding-left: 20px !important;
+            border-left: 4px solid #f0f0f0 !important;
+            color: #999;
+          }
+
+          blockquote > :first-child {
+            padding-top: 0 !important;
+          }
+
+          blockquote > :last-child {
+            padding-bottom: 0 !important;
+          }
+
+          .post-content div {
+            padding-left: 0 important !;
+            padding-right: 0 important !;
+          }
+
+          .post-content > div {
+            display: block !important;
+          }
+
+          .post .post-content div div {
+            padding: 0;
+          }
+
+          .post .post-content p,
+          .post .post-content > div {
+            padding: 8px 0;
+            margin: 0;
+          }
+
+          table,
+          tbody {
+            display: block;
+          }
+
+          table tr {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -8px;
+          }
+
+          table tr > * {
+            flex: 1 1 160px;
+            padding: 0 6px !important;
+          }
+
+          .gist table tr {
+            /* Turn off flex inside of gists */
+            display: block;
+          }
+
+          ul.categories {
+            list-style-type: none;
+            margin: 0;
+            margin-top: 16px;
+          }
+
+          ul.categories li {
+            padding-bottom: 16px;
+            line-height: 1.6em;
+          }
+
+          ul.tags {
+            border-top: 1px solid #eee;
+
+            margin-top: 20px;
+            padding-top: 24px;
+
+            margin-bottom: 20px;
+
+            margin-left: -30px;
+            padding-left: 30px;
+
+            margin-right: -30px;
+            padding-right: 30px;
+          }
+
+          ul.categories li,
+          ul.tags li {
+            opacity: 0.8;
+            font-size: 0.85em;
+          }
+
+          ul.categories li a,
+          ul.tags li a {
+            color: #333;
+          }
+
+          .themes {
+            margin-top: 16px;
+          }
+
+          .CTAs {
+            padding: 8px 8px 8px 10px;
+            margin: 12px -8px 4px;
+            border: 1px solid #e3e3e3;
+            border-radius: 8px;
+          }
+
+          .CTAs li:last-child {
+            padding-bottom: 0 !important;
+          }
+
+          img {
+            margin: 0;
+          }
+
+          a {
+            color: #367da2 !important;
+            padding-bottom: 1px;
+            margin-bottom: -1px;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(54, 125, 162, 0) !important;
+            transition: border 0.15s ease-in;
+          }
+
+          a:hover,
+          a:active {
+            color: #295f7c !important;
+            border-bottom: 1px solid rgba(54, 125, 162, 0.4) !important;
+            text-decoration: none !important;
+            transition: border 0.15s ease-in;
+          }
+
+          a:visited {
+            text-decoration: none;
+          }
+
+          .centered-heart {
+            margin-top: 20px;
+            text-align: center;
+            color: #aaa;
+          }
+
+          .post .post-content .hide-on-small-screen {
+            padding: 0;
+          }
+
+          @media (max-width: 979px) {
+            .post .post-content .hide-on-small-screen {
+              display: none !important;
+            }
+          }
+
+          /* Youtube videos */
+
+          .responsive-embed {
+            height: auto !important;
+          }
+
+          .responsive-embed iframe {
+            position: inherit !important;
+            height: 360px !important;
+          }
+
+          /* Sidebar */
+
+          .sidebar {
+            width: 170px;
+            margin-left: 0;
+          }
+
+          @media (min-width: 979px) {
+            .post .post-content .small-wrap-pull-right,
+            .post .post-content .medium-wrap-pull-right,
+            .post .post-content .large-wrap-pull-right {
+              margin-right: -70px;
+            }
+          }
+
+          @media (min-width: 979px) {
+            .sidebar {
+              left: 48px;
+              position: fixed;
+            }
+          }
+
+          @media (max-width: 1100px) {
+            .post .post-content .large-wrap-pull-right {
+              margin-left: 12px;
+            }
+
+            .sidebar {
+              /* width: 140px; */
+              margin-top: 16px;
+              margin-left: 16px;
+            }
+          }
+
+          @media (max-width: 767px) {
+            .sidebar {
+              width: 100%;
+              margin-left: 0;
+            }
+          }
+
+          .sidebar a {
+            margin-bottom: 8px;
+          }
+
+          .sidebar ul.sidebar--nav-links {
+            margin: 0;
+            padding: 0;
+          }
+
+          .sidebar ul.sidebar--nav-links li {
+            list-style: none;
+            margin-bottom: 8px;
+            line-height: 1.15em;
+          }
+
+          .devon-box {
+            display: inline-block;
+            padding: 8px 10px 7px 10px;
+            margin: 0 -10px 15px -10px;
+            text-align: center;
+            transition: background 0.15s ease-in;
+            background: #367da2 !important;
+            border-radius: 4px;
+          }
+
+          .devon-box:hover {
+            background: #2f7398 !important;
+            transition: background box-shadow 0.15s ease-in;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+
+          .devon-box a {
+            color: white !important;
+          }
+
+          /* Email newsletter form */
+
+          .submit-button {
+            text-align: center;
+            padding: 4px 5px 4px 5px;
+            transition: background 0.15s ease-in;
+            color: white !important;
+            background: #367da2 !important;
+            border: none;
+          }
+
+          .submit-button:hover {
+            background: #2f7398 !important;
+            transition: background 0.15s ease-in;
+          }
+
+          /* Tag cloud */
+
+          .tag-cloud {
+            margin-left: -30px;
+          }
+
+          .tag-cloud a {
+            margin-right: 8px;
+          }
+
+          /* Post */
+
+          .container .post .post-content li div {
+            padding: 0;
+          }
+
+          .container .post .post-content ul {
+            padding: 0;
+          }
+
+          .pagination {
+            margin-bottom: 40px;
+          }
+
+          .keep-in-touch--wrapper {
+            text-align: center;
+          }
+
+          .keep-in-touch {
+            margin: 36px 0 42px 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px 4px 10px;
+            fill: #367da2;
+            color: #367da2;
+            border: 1px solid #367da2;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: border box-shadow 0.15s ease-in;
+          }
+
+          .keep-in-touch:hover {
+            cursor: pointer;
+            fill: #295f7c;
+            color: #295f7c;
+            border: 1px solid #295f7c;
+            transition: border box-shadow 0.15s ease-in;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+
+          .keep-in-touch > * {
+            margin: 0 4px;
+          }
+
+          .keep-in-touch--twitter > svg {
+            margin-top: 5px;
+            margin-bottom: -1px;
+          }
+
+          .post .post-content div .twitter-tweet-rendered {
+            width: fit-content !important;
+            display: inline-block !important;
+            vertical-align: top;
+            margin-bottom: 0 !important;
+          }
+
+          @media (min-width: 980px) {
+            .post .post-content div .twitter-tweet-rendered {
+              margin-right: 8px !important;
+            }
+          }
+
+          @media (min-width: 768px) {
+            .post .post-content div .twitter-tweet-rendered iframe {
+              width: 100% !important;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .post .post-content div .twitter-tweet-rendered iframe {
+              width: 89vw !important;
+            }
+          }
+
+          /********************************************************************/
+          /** Details with animated caret *************************************/
+          /********************************************************************/
+
+          details {
+            overflow: initial;
+            margin-left: 22px;
+          }
+
+          details summary {
+            padding: 0;
+            display: block;
+            padding-left: 1.5rem;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            margin-left: -24px;
+          }
+
+          summary:before {
+            content: '▶';
+            font-size: 0.7em;
+            top: 3px;
+            position: absolute;
+            left: 0.5rem;
+            transform: rotate(0);
+            transform-origin: 0.2rem 50%;
+            transition: 0.25s transform ease;
+          }
+
+          @media (max-width: 768px) {
+            summary:before {
+              top: 2px;
+            }
+          }
+
+          /* THE MAGIC 🧙‍♀️ */
+          details[open] > summary:before {
+            transform: rotate(90deg);
+          }
+
+          details summary::-webkit-details-marker {
+            display: none;
+          }
+
+          details > ul {
+            padding-bottom: 1rem;
+            margin-bottom: 0;
+          }
+
+          /********************************************************************/
+          /********************************************************************/
+          /********************************************************************/
+
+          @media (min-width: 768px) {
+            .post .post-content .gallery--wrap-on-mobile {
+              display: flex !important;
+            }
+            .post .post-content .gallery--wrap-on-mobile .column:not(:first-child) {
+              margin-left: 16px;
+            }
+          }
+          @media (max-width: 768px) {
+            .post .post-content .gallery--wrap-on-mobile {
+              display: block !important;
+            }
+            .post .post-content .gallery--wrap-on-mobile .column {
+              width: 100%;
+              margin: 0;
+            }
+            .post .post-content .gallery--wrap-on-mobile .column:not(:first-child) {
+              margin-top: 8px;
+            }
+          }
+
+          /********************************************************************/
+          /********************************************************************/
+          /********************************************************************/
+
+          .post .post-content tr div {
+            padding: 6px 0;
+            display: block;
+          }
+
+          tr div span span {
+            padding: 0;
+          }
+
+          tr blockquote {
+            margin-top: 0 !important;
+          }
+
+          /* To override Highly's highlighter pointer cursor */
+          .post-content div span {
+            cursor: inherit !important;
+          }
+
+          .post-content span.my-highlight {
+            background: rgba(0, 230, 181, 0.4);
+            padding: 1px 4px;
+            margin: 0;
+            border-radius: 4px;
+            color: black;
+            cursor: crosshair !important;
+          }
+
+          .container,
+          .navbar-static-top .container,
+          .navbar-fixed-top .container,
+          .navbar-fixed-bottom .container {
+            width: 100%;
+            margin-top: 12px;
+          }
+
+          .container {
+            width: calc(100% - 60px);
+          }
+
+          body {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+          }
+
+          /********************************************************************/
+          /* Interactive model styles */
+          /********************************************************************/
+
+          .model {
+            border: 1px solid rgba(26, 24, 20, 0.1);
+            border-radius: 6px;
+            padding: 28px;
+            margin: 24px 0;
+            background: #f5f2ec;
+          }
+
+          .model-label {
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888078;
+            margin-bottom: 24px;
+          }
+
+          .sliders {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 36px;
+            margin-bottom: 28px;
+          }
+
+          @media (max-width: 480px) {
+            .sliders {
+              grid-template-columns: 1fr;
+            }
+          }
+
+          .s-row label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 13px;
+            color: #555048;
+            margin-bottom: 6px;
+          }
+
+          .s-row label .val {
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 13px;
+            color: #1a1814;
+          }
+
+          input[type='range'] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: rgba(26, 24, 20, 0.15);
+            border-radius: 1px;
+            outline: none;
+          }
+
+          input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #424241;
+            cursor: pointer;
+          }
+
+          .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(26, 24, 20, 0.1);
+            border: 1px solid rgba(26, 24, 20, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 24px;
+          }
+
+          .m {
+            background: white;
+            padding: 14px 16px;
+          }
+
+          .m-label {
+            font-size: 11px;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #888078;
+            margin-bottom: 4px;
+          }
+
+          .m-val {
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 17px;
+            color: #1a1814;
+          }
+
+          .m-val.pos {
+            color: #2a6e4e;
+          }
+
+          .m-val.neg {
+            color: #8b2020;
+          }
+
+          .chart-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 2;
+          }
+
+          .chart-note {
+            font-size: 12px;
+            color: #888078;
+            text-align: center;
+            margin-top: 8px;
+          }
+
+          .eq {
+            background: #f5f2ec;
+            border-left: 3px solid rgba(26, 24, 20, 0.15);
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.9;
+            color: #1a1814;
+            border-radius: 0 4px 4px 0;
+            white-space: pre;
+            overflow-x: auto;
+          }
+
+          .eq .c {
+            color: #888078;
+          }
+        </style>
+
+
+        <script>
+          var _gaq = _gaq || []
+          _gaq.push(['_setAccount', 'UA-65875472-2'])
+          _gaq.push(['_trackPageview'])
+          ;(function () {
+            var ga = document.createElement('script')
+            ga.type = 'text/javascript'
+            ga.async = true
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'
+            var s = document.getElementsByTagName('script')[0]
+            s.parentNode.insertBefore(ga, s)
+          })()
+        </script>
+
+      </head>
+
+      <body>
+
+
+        <div class="container">
+          <div class="row">
+            <div class="span2 sidebar">
+              <div class="devon-box">
+                <a href="http://devonzuegel.com">Devon Zuegel</a>
+              </div>
+              <ul class="sidebar--nav-links">
+                <div class="narrow-only">
+                  <a href="../page/about-me">About me</a>
+                  &nbsp;·&nbsp;
+                  <a href="../page/contact">Contact</a>
+                  &nbsp;·&nbsp;
+                  <a href="../page/projects">Projects</a>
+                  &nbsp;·&nbsp;
+                  <a href="../page/tapas">Tapas</a>
+                </div>
+
+                <div class="wide-only">
+                  <li><a href="../page/about-me">About me</a></li>
+                  <li><a href="../page/contact">Contact</a></li>
+                  <li>
+                    <a href="../page/projects">Projects</a>
+                  </li>
+                  <li><a href="../page/tapas">Tapas</a></li>
+                </div>
+              </ul>
+
+              <ul class="categories">
+                <div class="CTAs wide-only">
+                  <li>
+                    <b
+                      ><a href="../tag/order-without-design"><i>Order Without Design</i></a></b
+                    >, my podcast about cities
+                  </li>
+                  <li>
+                    <b
+                      ><a href="https://www.notion.so/blog/topic/pioneers" target="_blank"> <i>Tools &amp; Craft</i></a></b
+                    >, my podcast about tools for thought
+                  </li>
+                  <li>
+                    If you like what I do,
+                    <b><a href="https://github.com/sponsors/devonzuegel" target="_blank">sponsor my work</a></b>
+                  </li>
+                  <li style="display: none">
+                    For occasional updates, here's my
+                    <b><a href="https://vonzu.substack.com" target="_blank">newsletter</a></b>
+                  </li>
+                  <li>
+                    Here are some
+                    <b><a href="podcasts-conferences-i-ve-spoken-at" target="_blank">podcasts &amp; conferences I've spoken at</a></b>
+                  </li>
+                </div>
+                <div class="themes wide-only">
+                  <li>
+                    Highlighted pages from around the web:
+                    <b><a href="https://clippings.devonzuegel.com" target="_blank"> #clipping </a></b>
+                  </li>
+                  <li>
+                    Trains &amp; trees &amp; human-scale streets:
+                    <b><a href="../tag/cities">#cities</a></b>
+                  </li>
+                  <li>
+                    How we relate to others &amp; ourselves:
+                    <b><a href="../tag/interpersonal"> #interpersonal </a></b>
+                  </li>
+                  <li>
+                    Bicycles for the mind:
+                    <b><a href="../tag/tools-for-thought"> #tools-for-thought </a></b>
+                  </li>
+                  <li>
+                    Developers! Developers! Developers!
+                    <b><a href="../tag/programming"> #programming </a></b>
+                  </li>
+                  <li>
+                    Let's go on an adventure!
+                    <b><a href="../tag/travel"> #travel </a></b>
+                  </li>
+                </div>
+              </ul>
+            </div>
+            <div class="span7 offset4">
+
+              <div class="post">
+
+                <h1>
+                  Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold
+                </h1>
+
+                <p class="muted">March 2026</p>
+
+                <div class="post-content" data-type-cleanup="true">
+
+<p style="color: #888078; font-style: italic;">
+  The following is a writeup of my notes on where the value comes from in entitlement-driven development. My original goal was to build a simple model I can use to stress-test deals, and I figured others might find it interesting too.
+</p>
+
+<p>Friends often send me links to beautiful pieces of land with prices that seem too good to be true. I'm honored that people think of me, but these conversations almost always go the same way. When we look into the zoning, it quickly explains the price: you're not allowed to build much on it. The land isn't "entitled."</p>
+
+<p>"Entitlement" is the legal process by which raw land gets permission to become housing. In California, that process is long, expensive, uncertain, and controlled by local governments. Cheap land is cheap because the market has correctly priced in that getting permission to build on it is somewhere between very hard and nearly impossible. The discount isn't a bargain — it's a reflection of how much work it takes to unlock the value.</p>
+
+<p>However, if you <em>do</em> succeed in getting land entitled for a significant amount of development, the land's value jumps to reflect the new permitted supply.</p>
+
+<p>I call this "entitlement alchemy" because you're essentially conjuring value from thin air — the land doesn't change, the dirt doesn't move, but the piece of paper that says "you may build here" can double the value overnight. In supply-constrained markets, the permit is a huge portion of the product's value. Everything else — roads, utilities, infrastructure, the homes themselves — is execution.</p>
+
+<h2>Interactive model</h2>
+
+<div class="model">
+  <div class="model-label">Adjust variables</div>
+
+  <div class="sliders">
+    <div class="s-row">
+      <label>N (units) <span class="val" id="v-n">700</span></label>
+      <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
+    </div>
+    <div class="s-row">
+      <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
+      <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
+    </div>
+    <div class="s-row">
+      <label>total_infra_cost <span class="val" id="v-c">$100M</span></label>
+      <input type="range" id="s-c" min="1" max="200" step="1" value="100" />
+    </div>
+    <div class="s-row">
+      <label>land_cost <span class="val" id="v-l">$20M</span></label>
+      <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
+    </div>
+    <div class="s-row">
+      <label>interest_rate <span class="val" id="v-i">9%</span> <span style="font-size: 11px; color: #888078; font-style: italic">infra lender rate</span></label>
+      <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
+    </div>
+    <div class="s-row">
+      <label>years to build infra <span class="val" id="v-t">2</span></label>
+      <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="m">
+      <div class="m-label">Revenue</div>
+      <div class="m-val" id="m-rev">—</div>
+    </div>
+    <div class="m">
+      <div class="m-label">Total cost</div>
+      <div class="m-val" id="m-cost">—</div>
+    </div>
+    <div class="m">
+      <div class="m-val" id="m-profit">—</div>
+      <div class="m-label">Profit</div>
+    </div>
+    <div class="m">
+      <div class="m-label">Margin</div>
+      <div class="m-val" id="m-margin">—</div>
+    </div>
+    <div class="m">
+      <div class="m-label">carry_cost</div>
+      <div class="m-val" id="m-carry">—</div>
+    </div>
+    <div class="m">
+      <div class="m-label">IRR (approx)</div>
+      <div class="m-val" id="m-irr">—</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
+  <p class="chart-note">profit(N) at current settings — fixed total_infra_cost, so slope = price_per_lot</p>
+</div>
+
+<h2>1. <code>N</code> — entitled units</h2>
+
+<p>Before entitlement, land is priced assuming no new supply will emerge from it. When you successfully entitle, you've created units the market didn't expect to exist. This is where the return comes from. Without <code>N &gt; 0</code>, nothing else matters.</p>
+
+<h2>2. The profit function</h2>
+
+<p>A key feature of infrastructure cost is that much of it is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
+
+<div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
+
+<p>The slope is set by <code>price_per_lot</code> — small changes here rotate the line a lot. The intercept is shifted down by <code>total_infra_cost</code> and <code>land_cost</code>, both of which are largely fixed, which is why squeezing more units out of an entitlement is so valuable.</p>
+
+<h2>3. <code>carry_cost</code> — time × rate</h2>
+
+<p>The third variable is cost of capital. It compounds with time because your investors or lenders are charging you interest the entire time the project is running, which means a one-year delay is economically equivalent to a meaningful increase in the effective cost of your infrastructure.</p>
+
+<div class="eq">carry_cost = total_infra_cost * interest_rate * years
+profit(N) = N * price_per_lot - total_infra_cost - total_infra_cost * interest_rate * years <span class="c">// carry</span> - land_cost</div>
+
+<p>This is obviously a simplified model — it ignores absorption pace, financing structure, product mix, and a lot else. But for first-order intuition about where value is created and which variables to stress-test, it's been useful to me.</p>
+
+<hr style="margin: 30px 0 10px 0; margin-left: -30px;" />
+
+<p style="font-size: 15px">
+  I'm building <a href="https://esmeralda.org">Esmeralda</a>, a walkable village in Sonoma County. Feel free to <a href="mailto:devon@devonzuegel.com">reach out</a> if this is your kind of thing.
+</p>
+
+                </div>
+
+                <ul class="tags">
+                  <li>
+                    <a href="../tag/housing">#housing</a>
+                  </li>
+                  <li>
+                    <a href="../tag/real-estate">#real-estate</a>
+                  </li>
+                  <li>
+                    <a href="../tag/cities">#cities</a>
+                  </li>
+                  <li>
+                    <a href="../tag/land-use">#land-use</a>
+                  </li>
+                </ul>
+
+                <div class="keep-in-touch--wrapper">
+                  <div class="keep-in-touch" onclick="window.open('https://twitter.com/devonzuegel')">
+                    <span class="keep-in-touch--twitter">
+                      <svg viewBox="0 0 33 33" width="20" height="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g>
+                          <path
+                            d="M 32,6.076c-1.177,0.522-2.443,0.875-3.771,1.034c 1.355-0.813, 2.396-2.099, 2.887-3.632 c-1.269,0.752-2.674,1.299-4.169,1.593c-1.198-1.276-2.904-2.073-4.792-2.073c-3.626,0-6.565,2.939-6.565,6.565 c0,0.515, 0.058,1.016, 0.17,1.496c-5.456-0.274-10.294-2.888-13.532-6.86c-0.565,0.97-0.889,2.097-0.889,3.301 c0,2.278, 1.159,4.287, 2.921,5.465c-1.076-0.034-2.088-0.329-2.974-0.821c-0.001,0.027-0.001,0.055-0.001,0.083 c0,3.181, 2.263,5.834, 5.266,6.438c-0.551,0.15-1.131,0.23-1.73,0.23c-0.423,0-0.834-0.041-1.235-0.118 c 0.836,2.608, 3.26,4.506, 6.133,4.559c-2.247,1.761-5.078,2.81-8.154,2.81c-0.53,0-1.052-0.031-1.566-0.092 c 2.905,1.863, 6.356,2.95, 10.064,2.95c 12.076,0, 18.679-10.004, 18.679-18.68c0-0.285-0.006-0.568-0.019-0.849 C 30.007,8.548, 31.12,7.392, 32,6.076z"
+                          ></path>
+                        </g>
+                      </svg>
+                    </span>
+                    <span>Keep in touch!</span>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+          <!-- Keep in mind that this sidebar occurs in several places as
+                     a hack to deal with screen resizing. -->
+          <ul class="sidebar categories narrow-only">
+            <div class="CTAs">
+              <li>
+                <b
+                  ><a href="../tag/podcast"><i>Order Without Design</i></a></b
+                >, my podcast about cities
+              </li>
+              <li>
+                <b
+                  ><a href="https://www.notion.so/blog/topic/pioneers" target="_blank"> <i>Tools &amp; Craft</i></a></b
+                >, my podcast about tools for thought
+              </li>
+              <li>
+                If you like what I do,
+                <b><a href="https://github.com/sponsors/devonzuegel" target="_blank">sponsor my work</a></b>
+              </li>
+
+              <li style="display: none">
+                For occasional updates, here's my
+                <b><a href="https://vonzu.substack.com" target="_blank">newsletter</a></b>
+              </li>
+              <li>
+                Here are some
+                <b><a href="podcasts-conferences-i-ve-spoken-at" target="_blank">podcasts &amp; conferences I've spoken at</a></b>
+              </li>            </div>
+            <div class="themes">
+              <li>
+                Highlighted pages from around the web:
+                <b><a href="https://clippings.devonzuegel.com" target="_blank">#clipping</a></b>
+              </li>
+              <li>
+                Trains &amp; trees &amp; human-scale streets:
+                <b><a href="../tag/cities">#cities</a></b>
+              </li>
+              <li>
+                How we relate to others &amp; ourselves:
+                <b><a href="../tag/interpersonal">#interpersonal</a></b>
+              </li>
+              <li>
+                Bicycles for the mind:
+                <b><a href="../tag/tools-for-thought">#tools-for-thought</a></b>
+              </li>
+              <li>
+                Developers! Developers! Developers!
+                <b><a href="../tag/programming">#programming</a></b>
+              </li>
+              <li>
+                Let's go on an adventure!
+                <b><a href="../tag/travel">#travel</a></b>
+              </li>
+            </div>
+          </ul>
+        </div>
+
+         <!-- assets -->
+<script src="https://cdn-static.postach.io/libs/postachio/postachio.js"></script>
+<script>
+    var links_same_tab =  false ;
+</script>
+
+        <script src="https://cdn-static.postach.io/libs/bootstrap/js/bootstrap.min.js"></script>
+
+        <script>
+          const $ = (id) => document.getElementById(id)
+
+          function fmtM(d) {
+            const m = d / 1e6
+            return (d < 0 ? '-' : '') + '$' + (Math.abs(m) >= 10 ? Math.round(Math.abs(m)) : Math.abs(m).toFixed(1)) + 'M'
+          }
+
+          let chart
+
+          function update() {
+            const N = +$('s-n').value
+            const P = +$('s-p').value * 1000
+            const C = +$('s-c').value * 1e6 // total_infra_cost in dollars
+            const L = +$('s-l').value * 1e6
+            const ir = +$('s-i').value / 100
+            const t = +$('s-t').value
+
+            $('v-n').textContent = N
+            $('v-p').textContent = '$' + $('s-p').value + 'k'
+            $('v-c').textContent = '$' + $('s-c').value + 'M'
+            $('v-l').textContent = '$' + $('s-l').value + 'M'
+            $('v-i').textContent = (+$('s-i').value).toFixed(2).replace(/\.?0+$/, '') + '%'
+            $('v-t').textContent = t
+
+            const rev = N * P
+            const infra = C // fixed total, not per-unit
+            const carry = infra * ir * t
+            const totalCost = infra + carry + L
+            const profit = rev - totalCost
+            const margin = rev > 0 ? (profit / rev) * 100 : 0
+            const irr = profit > 0 && totalCost > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
+
+            $('m-rev').textContent = fmtM(rev)
+            $('m-cost').textContent = fmtM(totalCost)
+            $('m-carry').textContent = fmtM(carry)
+            $('m-margin').textContent = isFinite(margin) ? margin.toFixed(1) + '%' : '—'
+            $('m-irr').textContent = irr !== null ? irr.toFixed(1) + '%' : '—'
+
+            const profitEl = $('m-profit')
+            profitEl.textContent = fmtM(profit)
+            profitEl.className = 'm-val ' + (profit >= 0 ? 'pos' : 'neg')
+
+            const maxN = 1000
+            const step = Math.ceil(maxN / 80)
+            const labels = [],
+              data = []
+            for (let n = 0; n <= maxN; n += step) {
+              labels.push(n)
+              data.push((n * P - C - C * ir * t - L) / 1e6)
+            }
+            const currentProfit = profit / 1e6
+
+            if (chart) {
+              chart.data.labels = labels
+              chart.data.datasets[0].data = data
+              chart.data.datasets[1].data = labels.map(() => 0)
+              chart.data.datasets[2].data = [{x: N, y: currentProfit}]
+              chart.update('none')
+            } else {
+              chart = new Chart($('profitChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                  labels,
+                  datasets: [
+                    {data, borderColor: '#1a1814', borderWidth: 1.5, fill: false, tension: 0.3, pointRadius: 0},
+                    {data: labels.map(() => 0), borderColor: 'rgba(26,24,20,0.35)', borderWidth: 1, fill: false, pointRadius: 0},
+                    {
+                      type: 'scatter',
+                      data: [{x: N, y: currentProfit}],
+                      borderColor: '#1a1814',
+                      backgroundColor: '#ffffff',
+                      borderWidth: 2,
+                      pointRadius: 6,
+                      pointHoverRadius: 6,
+                    },
+                  ],
+                },
+                options: {
+                  animation: false,
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {display: false},
+                    tooltip: {
+                      filter: (item) => item.datasetIndex === 0,
+                      backgroundColor: 'rgba(26,24,20,0.88)',
+                      titleColor: 'rgba(254,252,248,0.5)',
+                      bodyColor: '#fefcf8',
+                      callbacks: {
+                        title: (items) => items[0].label + ' units',
+                        label: (item) => ' profit: $' + (+item.raw).toFixed(1) + 'M',
+                      },
+                    },
+                    annotation: {
+                      annotations: {
+                        vLine: {
+                          type: 'line',
+                          scaleID: 'x',
+                          value: N,
+                          borderColor: 'rgba(26,24,20,0.25)',
+                          borderWidth: 1,
+                          borderDash: [4, 4],
+                        },
+                        hLine: {
+                          type: 'line',
+                          scaleID: 'y',
+                          value: currentProfit,
+                          borderColor: 'rgba(26,24,20,0.25)',
+                          borderWidth: 1,
+                          borderDash: [4, 4],
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      type: 'linear',
+                      min: 0,
+                      max: 1000,
+                      grid: {color: 'rgba(26,24,20,0.05)'},
+                      ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, maxTicksLimit: 7},
+                      border: {color: 'rgba(26,24,20,0.1)'},
+                    },
+                    y: {
+                      title: {display: true, text: 'PROFIT', color: '#888078', font: {size: 10, family: 'Inter, sans-serif', weight: '500'}, padding: {bottom: 6}},
+                      min: -200,
+                      max: 600,
+                      grid: {color: 'rgba(26,24,20,0.05)'},
+                      ticks: {color: '#888078', font: {size: 11, family: 'sans-serif'}, callback: (v) => '$' + v.toFixed(0) + 'M'},
+                      border: {color: 'rgba(26,24,20,0.1)'},
+                    },
+                  },
+                },
+              })
+            }
+
+            // update annotation values on subsequent calls
+            if (chart.options.plugins.annotation) {
+              chart.options.plugins.annotation.annotations.vLine.value = N
+              chart.options.plugins.annotation.annotations.hLine.value = currentProfit
+              chart.update('none')
+            }
+          }
+
+          ;['s-n', 's-p', 's-c', 's-l', 's-i', 's-t'].forEach((id) => $(id).addEventListener('input', update))
+          update()
+        </script>
+      </body>
+    </html>
