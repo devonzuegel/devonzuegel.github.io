@@ -74,6 +74,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
 
     <link href="postachio-style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <style>
       html {
@@ -506,6 +507,7 @@
       }
 
       .post-content code {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
         line-height: 1.5em;
       }
 
@@ -1039,6 +1041,14 @@
         color: #1a1814;
       }
 
+      .s-desc {
+        font-size: 11px;
+        color: #888078;
+        line-height: 1.4;
+        margin-bottom: 4px;
+        font-style: italic;
+      }
+
       input[type='range'] {
         -webkit-appearance: none;
         width: 100%;
@@ -1148,6 +1158,10 @@
         color: #bbb;
       }
 
+      html[data-theme='dark'] .s-desc {
+        color: #777;
+      }
+
       html[data-theme='dark'] .s-row label .val,
       html[data-theme='dark'] .m-val,
       html[data-theme='dark'] .eq {
@@ -1196,6 +1210,9 @@
         }
         html:not([data-theme='light']) .s-row label {
           color: #bbb;
+        }
+        html:not([data-theme='light']) .s-desc {
+          color: #777;
         }
         html:not([data-theme='light']) .s-row label .val,
         html:not([data-theme='light']) .m-val,
@@ -1634,7 +1651,7 @@
         const totalCost = infra + carry + L
         const profit = rev - totalCost
         const margin = rev > 0 ? (profit / rev) * 100 : 0
-        const irr = profit > 0 && totalCost > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
+        const irr = totalCost > 0 && rev > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
 
         $('m-rev').textContent = fmtM(rev)
         $('m-cost').textContent = fmtM(totalCost)
