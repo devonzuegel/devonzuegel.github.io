@@ -1630,7 +1630,7 @@
 
               <h2>Fixed Infrastructure Cost, Variable Unit Count</h2>
 
-              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with every additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
+              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
 
               <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
 
@@ -1890,6 +1890,9 @@
       }
 
       let chart
+      let prevBaseCost = null
+      let yMin = -200
+      let yMax = 400
 
       function update() {
         const N = +$('s-n').value
@@ -1911,6 +1914,15 @@
         const carry = infra * ir * t
         const totalCost = infra + carry + L
         const profit = rev - totalCost
+
+        // When cost variables change (C, ir, t, L), shift the y-axis so the profit
+        // line stays visually fixed and the zero-profit level moves up/down instead.
+        if (prevBaseCost !== null && chart) {
+          const delta = (totalCost - prevBaseCost) / 1e6
+          yMin -= delta
+          yMax -= delta
+        }
+        prevBaseCost = totalCost
         const margin = rev > 0 ? (profit / rev) * 100 : 0
         const irr = totalCost > 0 && rev > 0 ? (Math.pow(rev / totalCost, 1 / t) - 1) * 100 : null
 
@@ -2071,8 +2083,8 @@
                     },
                     padding: {bottom: 6},
                   },
-                  min: -200,
-                  max: 400,
+                  min: yMin,
+                  max: yMax,
                   grid: {color: c.grid},
                   ticks: {
                     color: c.ticks,
@@ -2086,12 +2098,14 @@
           })
         }
 
-        // update annotation values on subsequent calls
+        // update annotation values and y-axis bounds on subsequent calls
         if (chart.options.plugins.annotation) {
           chart.options.plugins.annotation.annotations.vLine.value = N
           chart.options.plugins.annotation.annotations.hLine.value = currentProfit
           chart.options.plugins.annotation.annotations.breakevenLabel.xValue = totalCost / P
           chart.options.plugins.annotation.annotations.breakevenDot.xValue = totalCost / P
+          chart.options.scales.y.min = yMin
+          chart.options.scales.y.max = yMax
           chart.update('none')
         }
       }
