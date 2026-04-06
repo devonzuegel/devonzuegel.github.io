@@ -1055,7 +1055,7 @@
       .s-row label .val {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 13px;
-        font-weight: bold;
+        font-weight: 500;
         color: #1a1814;
         cursor: text;
         border-bottom: 1px dashed transparent;
@@ -1224,6 +1224,7 @@
       .m-val {
         font-family: 'Roboto Mono', 'Courier New', monospace;
         font-size: 17px;
+        font-weight: 500;
         color: #1a1814;
         text-align: center !important;
       }
@@ -1961,9 +1962,28 @@
                       xValue: totalCost / P,
                       yValue: 0,
                       content: ['break-even'],
-                      yAdjust: -14,
+                      yAdjust: -36,
                       color: '#000000',
                       font: {size: 10, family: 'Roboto Mono, monospace'},
+                    },
+                    breakevenArrow: {
+                      type: 'line',
+                      xMin: totalCost / P,
+                      xMax: totalCost / P,
+                      yMin: 0,
+                      yMax: 0,
+                      yMinAdjust: 8,
+                      yMaxAdjust: -28,
+                      borderColor: '#000000',
+                      borderWidth: 1,
+                      arrowHeads: {
+                        end: {
+                          display: true,
+                          length: 6,
+                          width: 4,
+                          fill: true,
+                        },
+                      },
                     },
                     breakevenDot: {
                       type: 'point',
