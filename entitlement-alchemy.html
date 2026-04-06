@@ -1065,17 +1065,29 @@
         padding: 0;
       }
 
-      .s-range {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        font-family: 'Roboto Mono', 'Courier New', monospace;
-        font-size: 10px;
-        color: #aaa49e;
-        margin-top: 1px;
+      .s-slider-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         margin-bottom: 6px;
       }
 
-      .s-range span:last-child {
+      .s-slider-wrap input[type='range'] {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .s-min,
+      .s-max {
+        font-family: 'Roboto Mono', 'Courier New', monospace;
+        font-size: 10px;
+        color: #aaa49e;
+        white-space: nowrap;
+        min-width: 4ch;
+        flex-shrink: 0;
+      }
+
+      .s-max {
         text-align: right;
       }
 
@@ -1109,16 +1121,11 @@
         display: grid !important;
         grid-template-columns: repeat(3, 1fr);
         gap: 1px;
-        background: rgba(26, 24, 20, 0.1);
-        border: 1px solid rgba(26, 24, 20, 0.1);
         border-radius: 4px;
         overflow: hidden;
-        margin-top: 24px;
-        margin-bottom: 14px;
       }
 
       .m {
-        background: #f5f2ec;
         padding: 10px 14px;
       }
 
@@ -1219,7 +1226,8 @@
         border-bottom-color: #e0e0e0;
       }
 
-      html[data-theme='dark'] .s-range {
+      html[data-theme='dark'] .s-min,
+      html[data-theme='dark'] .s-max {
         color: #555;
       }
 
@@ -1281,7 +1289,8 @@
         html:not([data-theme='light']) .s-row label .val-input {
           border-bottom-color: #e0e0e0;
         }
-        html:not([data-theme='light']) .s-range {
+        html:not([data-theme='light']) .s-min,
+        html:not([data-theme='light']) .s-max {
           color: #555;
         }
         html:not([data-theme='light']) .m-val.pos {
@@ -1436,38 +1445,56 @@
                   <div class="s-row">
                     <label>N (units) <span class="val" id="v-n">700</span></label>
                     <div class="s-desc">The number of entitled units you can build — the single most important factor; if you can't build many units, the land is essentially worthless</div>
-                    <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
-                    <div class="s-range"><span>50</span><span>1,000</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">50</span>
+                      <input type="range" id="s-n" min="50" max="1000" step="10" value="700" />
+                      <span class="s-max">1,000</span>
+                    </div>
                   </div>
                   <div class="s-row">
                     <label>price_per_lot <span class="val" id="v-p">$300k</span></label>
                     <div class="s-desc">How much each entitled lot is worth to a buyer</div>
-                    <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
-                    <div class="s-range"><span>$100k</span><span>$700k</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">$100k</span>
+                      <input type="range" id="s-p" min="100" max="700" step="10" value="300" />
+                      <span class="s-max">$700k</span>
+                    </div>
                   </div>
                   <div class="s-row">
                     <label>total_infra_cost <span class="val" id="v-c">$50M</span></label>
                     <div class="s-desc">The cost of building the roads, utilities, and grading to make the land developable</div>
-                    <input type="range" id="s-c" min="1" max="200" step="1" value="50" />
-                    <div class="s-range"><span>$1M</span><span>$200M</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">$1M</span>
+                      <input type="range" id="s-c" min="1" max="200" step="1" value="50" />
+                      <span class="s-max">$200M</span>
+                    </div>
                   </div>
                   <div class="s-row">
                     <label>land_cost <span class="val" id="v-l">$20M</span></label>
                     <div class="s-desc">The price you pay for the land itself — often a smaller portion of total cost than the infrastructure</div>
-                    <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
-                    <div class="s-range"><span>$0</span><span>$80M</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">$0</span>
+                      <input type="range" id="s-l" min="0" max="80" step="1" value="20" />
+                      <span class="s-max">$80M</span>
+                    </div>
                   </div>
                   <div class="s-row">
                     <label>interest_rate <span class="val" id="v-i">9%</span></label>
                     <div class="s-desc">The rate of interest charged on the infrastructure loan</div>
-                    <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
-                    <div class="s-range"><span>3%</span><span>20%</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">3%</span>
+                      <input type="range" id="s-i" min="3" max="20" step="0.25" value="9" />
+                      <span class="s-max">20%</span>
+                    </div>
                   </div>
                   <div class="s-row">
                     <label>years to build infra <span class="val" id="v-t">2</span></label>
                     <div class="s-desc">How long it takes to build the infrastructure and sell the lots, which affects how much interest you pay</div>
-                    <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
-                    <div class="s-range"><span>0</span><span>10</span></div>
+                    <div class="s-slider-wrap">
+                      <span class="s-min">0</span>
+                      <input type="range" id="s-t" min="0" max="10" step="1" value="2" />
+                      <span class="s-max">10</span>
+                    </div>
                   </div>
                 </div>
               </div>
