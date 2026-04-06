@@ -1356,7 +1356,14 @@
           })()
         </script>
         
-      </head>
+      <script id="dark-mode-early">
+(function() {
+  var stored = localStorage.getItem('theme');
+  if (stored === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  else if (stored === 'light') document.documentElement.setAttribute('data-theme', 'light');
+})();
+</script>
+</head>
 
       <body>
         
@@ -2276,7 +2283,33 @@
 </script>
 
         <script src="https://cdn-static.postach.io/libs/bootstrap/js/bootstrap.min.js"></script>
-      </body>
+      <script>
+(function() {
+  var stored = localStorage.getItem('theme');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (stored === 'dark' || (!stored && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.createElement('button');
+    btn.id = 'dark-mode-toggle';
+    btn.setAttribute('aria-label', 'Toggle dark mode');
+    function updateIcon() {
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+    updateIcon();
+    btn.addEventListener('click', function() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateIcon();
+    });
+    document.body.appendChild(btn);
+  });
+})();
+</script>
+</body>
     </html>
 
     

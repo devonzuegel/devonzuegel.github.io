@@ -747,3 +747,177 @@ footer {
   line-height: 10pt;
   padding: 7px;
 }
+
+/* =====================================================================
+   Dark mode — respects system preference, overridable via data-theme
+   ===================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+  html:not([data-theme="light"]) body {
+    background-color: #1c1c1e !important;
+    color: #e0e0e0 !important;
+  }
+  html:not([data-theme="light"]) p,
+  html:not([data-theme="light"]) li,
+  html:not([data-theme="light"]) td,
+  html:not([data-theme="light"]) th,
+  html:not([data-theme="light"]) div,
+  html:not([data-theme="light"]) span {
+    color: #e0e0e0;
+  }
+  html:not([data-theme="light"]) h1,
+  html:not([data-theme="light"]) h2,
+  html:not([data-theme="light"]) h3,
+  html:not([data-theme="light"]) h4,
+  html:not([data-theme="light"]) h5,
+  html:not([data-theme="light"]) h6 {
+    color: #f0f0f0 !important;
+  }
+  html:not([data-theme="light"]) a,
+  html:not([data-theme="light"]) a:visited {
+    color: #5fb3d4 !important;
+  }
+  html:not([data-theme="light"]) a:hover,
+  html:not([data-theme="light"]) a:active {
+    color: #82c8e4 !important;
+    border-bottom-color: rgba(95, 179, 212, 0.4) !important;
+  }
+  html:not([data-theme="light"]) blockquote {
+    border-left-color: #444 !important;
+    color: #aaa !important;
+  }
+  html:not([data-theme="light"]) .post-content code,
+  html:not([data-theme="light"]) .post-content pre {
+    background-color: #2a2a2c !important;
+    color: #e06c75 !important;
+  }
+  html:not([data-theme="light"]) .bio,
+  html:not([data-theme="light"]) footer {
+    background-color: #2a2a2c !important;
+    color: #aaa !important;
+  }
+  html:not([data-theme="light"]) .navbar-inner {
+    background-color: #1f6b57 !important;
+  }
+  html:not([data-theme="light"]) ul.tags,
+  html:not([data-theme="light"]) .CTAs {
+    border-color: #444 !important;
+  }
+  html:not([data-theme="light"]) .img-grey-border--wrapper img {
+    border-color: #444 !important;
+  }
+  html:not([data-theme="light"]) .keep-in-touch {
+    color: #5fb3d4 !important;
+    fill: #5fb3d4 !important;
+    border-color: #5fb3d4 !important;
+  }
+  html:not([data-theme="light"]) .full-sized-image-from-click--wrapper {
+    background: #1c1c1e !important;
+  }
+  html:not([data-theme="light"]) .caption {
+    color: #888 !important;
+  }
+  html:not([data-theme="light"]) ul.categories li a,
+  html:not([data-theme="light"]) ul.tags li a {
+    color: #c0c0c0 !important;
+  }
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+html[data-theme="dark"] body {
+  background-color: #1c1c1e !important;
+  color: #e0e0e0 !important;
+}
+html[data-theme="dark"] p,
+html[data-theme="dark"] li,
+html[data-theme="dark"] td,
+html[data-theme="dark"] th,
+html[data-theme="dark"] div,
+html[data-theme="dark"] span {
+  color: #e0e0e0;
+}
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+  color: #f0f0f0 !important;
+}
+html[data-theme="dark"] a,
+html[data-theme="dark"] a:visited {
+  color: #5fb3d4 !important;
+}
+html[data-theme="dark"] a:hover,
+html[data-theme="dark"] a:active {
+  color: #82c8e4 !important;
+  border-bottom-color: rgba(95, 179, 212, 0.4) !important;
+}
+html[data-theme="dark"] blockquote {
+  border-left-color: #444 !important;
+  color: #aaa !important;
+}
+html[data-theme="dark"] .post-content code,
+html[data-theme="dark"] .post-content pre {
+  background-color: #2a2a2c !important;
+  color: #e06c75 !important;
+}
+html[data-theme="dark"] .bio,
+html[data-theme="dark"] footer {
+  background-color: #2a2a2c !important;
+  color: #aaa !important;
+}
+html[data-theme="dark"] .navbar-inner {
+  background-color: #1f6b57 !important;
+}
+html[data-theme="dark"] ul.tags,
+html[data-theme="dark"] .CTAs {
+  border-color: #444 !important;
+}
+html[data-theme="dark"] .img-grey-border--wrapper img {
+  border-color: #444 !important;
+}
+html[data-theme="dark"] .keep-in-touch {
+  color: #5fb3d4 !important;
+  fill: #5fb3d4 !important;
+  border-color: #5fb3d4 !important;
+}
+html[data-theme="dark"] .full-sized-image-from-click--wrapper {
+  background: #1c1c1e !important;
+}
+html[data-theme="dark"] .caption {
+  color: #888 !important;
+}
+html[data-theme="dark"] ul.categories li a,
+html[data-theme="dark"] ul.tags li a {
+  color: #c0c0c0 !important;
+}
+
+/* Dark mode toggle button */
+#dark-mode-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+#dark-mode-toggle:hover {
+  opacity: 1;
+}
