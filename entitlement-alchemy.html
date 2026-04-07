@@ -13,7 +13,7 @@
     </script>
 
     <meta charset="utf-8" />
-    <title>Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold | devonzuegel.com</title>
+    <title>Land Development Math Is Alchemy: Why Cheap Land Is Cheap &amp; How To Turn It Into Gold | devonzuegel.com</title>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>" />
 
@@ -43,7 +43,7 @@
     <meta property="article:tag" content="land-use" />
 
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold" />
+    <meta property="og:title" content="Land development math is alchemy: Why cheap land is cheap &amp; how to turn it into gold" />
     <meta property="og:url" content="https://devonzuegel.com/entitlement-alchemy" />
     <meta property="og:description" content="A writeup of my notes on where the value comes from in entitlement-driven development, with an interactive model to stress-test deals." />
 
@@ -52,7 +52,7 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@devonzuegel" />
     <meta name="twitter:creator" content="@devonzuegel" />
-    <meta name="twitter:title" content="Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold" />
+    <meta name="twitter:title" content="Land development math is alchemy: Why cheap land is cheap &amp; how to turn it into gold" />
     <meta name="twitter:description" content="A writeup of my notes on where the value comes from in entitlement-driven development, with an interactive model to stress-test deals." />
     <meta name="twitter:domain" content="https://devonzuegel.com" />
 
@@ -169,10 +169,11 @@
       .row .post h2 {
         margin-bottom: 0;
       }
-      
+
       .row .post h3 {
         font-weight: 500 !important;
         margin-bottom: 0;
+        text-indent: -0.9em !important;
       }
 
       .container {
@@ -1527,7 +1528,7 @@
         </div>
         <div class="span7 offset4">
           <div class="post">
-            <h1>Land use alchemy: Why cheap land is cheap &amp; how to turn it into gold</h1>
+            <h1>Land development math is alchemy: Why cheap land is cheap &amp; how to turn it into gold</h1>
 
             <p class="muted">April 2026</p>
 
@@ -1538,8 +1539,7 @@
 
               <p>Entitlement is the legal process by which raw land gets permission to be developed — in California, it's long, expensive, uncertain, and controlled by local governments. Cheap land is typically cheap because the market has priced in how hard it is to get that permission. The discount isn't a bargain; it reflects the work required to unlock the value.</p>
 
-              <p>But if you <i>do</i> succeed in entitling land for significant development, its value shoots up to reflect the new permitted supply.
-              </p>
+              <p>But if you <i>do</i> succeed in entitling land for significant development, its value shoots up to reflect the new permitted supply.</p>
 
               <p>I call this "entitlement alchemy". The dirt doesn't move, but the piece of paper saying "you may build here" can double the value overnight. In supply-constrained markets, permission to build is a huge portion of the asset's value.</p>
 
@@ -1626,43 +1626,46 @@
                       <input type="range" id="s-t" min="1" max="8" step="1" value="2" />
                       <span class="s-max">8</span>
                     </div>
-                    <div class="s-desc">How long it takes to build the infrastructure and sell the lots, which affects how much interest you pay</div>
+                    <div class="s-desc">How long it takes to build the infrastructure and sell the lots, which affects both the IRR and how much interest you pay</div>
                   </div>
                 </div>
               </div>
 
               <p>This is a simplified model — it ignores all sorts of relevant variables like absorption pace, financing structure, product mix, etc. But it is useful for a first-order intuition about where value is created and which variables to stress-test when you're evaluating an opportunity.</p>
-              
-              <h3>Price-per-lot sensitivity implies you should over-invest in placemaking</h2>
+
+              <h3>1. Price-per-lot sensitivity implies you should over-invest in placemaking</h3>
 
               <p>If spending an extra $2M on a town center, park, nicer streets, etc lifts <code>price_per_lot</code> by even $10k across 700 lots, that's $7M in additional revenue — a 3.5x return. The slope of your profit line means amenity investments have massive leverage.</p>
 
-              <h3>Fixed infrastructure cost, variable unit count</h2>
+              <p>Making <a href="https://www.esmeralda.org" target="_blank">Esmeralda</a> beautiful and loveable is not just the right thing to do; it's one of the highest-leverage things we can do for the bottom line. It doesn't trade off against the returns — it amplifies them!</p>
 
-              <p>A key feature of infrastructure is that much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot.</p>
+              <h3>2. Fixed infrastructure cost, variable unit count</h3>
 
-              <p>This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
+              <p>Much of its cost is fixed regardless of unit count — the roads, utilities, and grading don't scale linearly with each additional lot. This means more units not only increases total profit but also increases profit per unit, since <code>total_infra_cost</code> gets spread across more lots.</p>
 
               <div class="eq">profit(N) = N * price_per_lot - total_infra_cost - land_cost</div>
 
-              <p>The slope is set by <code>price_per_lot</code> — small changes here rotate the line a lot. The intercept is shifted down by <code>total_infra_cost</code> and <code>land_cost</code>, both of which are largely fixed, which is why squeezing more units out of an entitlement is so valuable.</p>
+              <p>The slope is set by <code>price_per_lot</code>, and small changes here rotate the line a lot. The intercept is shifted down by <code>total_infra_cost</code> and <code>land_cost</code>, both of which are largely fixed, which is why it is so valuable to get more units.</p>
 
               <p>The intercept between the black line and the x-axis represents the point where profit equals zero, indicating the minimum number of units that must be sold to break even on the infrastructure investment.</p>
 
-              <h3>The effective infrastructure cost compounds over time (if you use debt)</h2>
+              <h3>3. The effective infrastructure cost compounds over time (if you use debt)</h3>
 
               <p>The total cost compounds with time because the lenders are charging you interest. This means a one-year delay is economically equivalent to a meaningful increase in the effective cost of your infrastructure.</p>
 
               <div class="eq">carry_cost = total_infra_cost * interest_rate * years</div>
 
-              <h3>Fixed infrastructure cost creates economies of scale & a moat for developers who have access to capital</h2>
+              <h3>4. Maximizing absorption rate → pay off the compounding debt faster</h3>
+
+              <p>Because infra costs compound over time, maximizing absorption rate (i.e. getting revenue sooner to pay off debt) is very helpful. Investing in placemaking is a key lever for this, too. </p>
+
+              <h3>5. Fixed infrastructure cost creates economies of scale & a moat for developers who have access to capital</h3>
 
               <p>The fixed infra cost means there's a minimum project scale below which nothing pencils. If roads + utilities cost $50M regardless, you need hundreds of units just to break even. This effectively locks out small developers and creates a barrier to entry purely based on capital requirements.</p>
 
-              <h3>The model reveals why infrastructure phasing is so helpful</h2>
+              <h3>6. The model reveals why infrastructure phasing is so helpful</h3>
 
-              <p>Rather than building all infrastructure upfront, phasing lets you spread that fixed cost across time — installing roads and utilities for Phase 1 only, then using revenue from early lot sales to fund subsequent phases. By lowering your carrying costs, your debt clock doesn't tick on the full infrastructure cost from day one, which can make a huge difference for IRR and overall profitability.
-              </p>
+              <p>Rather than building all infrastructure upfront, phasing lets you spread that fixed cost across time — installing roads and utilities for Phase 1 only, then using revenue from early lot sales to fund subsequent phases. By lowering your carrying costs, your debt clock doesn't tick on the full infrastructure cost from day one, which can make a huge difference for IRR and overall profitability.</p>
 
               <p>Phasing also de-risks the project: if market conditions shift, you've only committed to a fraction of the total infrastructure spend.</p>
 
