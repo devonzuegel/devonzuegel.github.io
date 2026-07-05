@@ -456,7 +456,41 @@
             }
           }
 
-          <link rel="stylesheet" href="lightbox.css" />
+          /********************************************************************/
+
+          img.full-sized-image-from-click {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-height: calc(100vh - 16px);
+            max-width: calc(100vw - 16px);
+            width: auto;
+            height: auto;
+            position: fixed;
+            object-fit: contain;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+          }
+
+          img.full-sized-image-from-click:hover {
+            cursor: pointer;
+          }
+
+          .full-sized-image-from-click--wrapper {
+            /* Provides the background */
+            width: 100vw;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+
+          .full-sized-image-from-click--wrapper:hover {
+            cursor: pointer;
+          }
 
           /* Annotated clippings */
 
@@ -1337,8 +1371,34 @@
           </div>
         </div>
 
-        <script src="lightbox.js"></script>
         <script>
+          // Image full-screen on click
+
+          var images = document.getElementsByTagName('img')
+
+          for (var i = 0; i < images.length; i++) {
+            images[i].addEventListener('click', handleClickOnImage)
+          }
+
+          function handleClickOnImage(e) {
+            var div = document.createElement('div')
+            div.setAttribute('class', 'full-sized-image-from-click--wrapper')
+
+            var img = document.createElement('img')
+            img.setAttribute('src', e.target.src)
+            img.setAttribute('class', 'full-sized-image-from-click')
+
+            div.appendChild(img)
+            document.body.appendChild(div)
+
+            var closeFullScreenImage = function () {
+              document.body.removeChild(div)
+            }
+
+            div.addEventListener('click', closeFullScreenImage)
+            img.addEventListener('click', closeFullScreenImage)
+          }
+
           // Equal height gallery: adjust flex values based on aspect ratios
           function adjustEqualHeightGalleries() {
             var galleries = document.querySelectorAll('.equal-height-gallery')

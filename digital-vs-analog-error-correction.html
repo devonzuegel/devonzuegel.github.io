@@ -494,7 +494,38 @@
 
           /********************************************************************/
 
-          <link rel="stylesheet" href="lightbox.css" />
+          img.full-sized-image-from-click {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100%;
+            width: 100%;
+            max-height: calc(100vh - 16px);
+            max-width: calc(100vw - 16px);
+            position: fixed;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+          }
+
+          img.full-sized-image-from-click:hover {
+            cursor: pointer;
+          }
+
+          .full-sized-image-from-click--wrapper {
+            /* Provides the background */
+            width: 100vw;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+
+          .full-sized-image-from-click--wrapper:hover {
+            cursor: pointer;
+          }
 
           /* Annotated clippings */
 
@@ -2069,7 +2100,6 @@
   });
 })();
 </script>
-<script src="lightbox.js"></script>
 </body>
     </html>
 
@@ -2111,4 +2141,34 @@
         }
       }
 
+      window.onload = function () {
+        function remove(me) {
+          document.getElementById(me).outerHTML = ''
+        }
+
+        // Wait for the images to load
+        var images = document.getElementsByTagName('img')
+        for (var i = 0; i < images.length; i++) {
+          var image = images[i]
+
+          image.addEventListener(
+            'click',
+            function () {
+              var fullSizedImg = this.cloneNode(true)
+              fullSizedImg.className = 'full-sized-image-from-click'
+
+              var wrapperWithBkgd = document.createElement('div')
+              wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
+              wrapperWithBkgd.onclick = function () {
+                this.parentNode.removeChild(this)
+              }
+
+              wrapperWithBkgd.appendChild(fullSizedImg)
+              document.body.appendChild(wrapperWithBkgd)
+            },
+            false
+          )
+        }
+      }
     </script>
+  </head>

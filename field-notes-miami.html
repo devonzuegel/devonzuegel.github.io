@@ -1206,7 +1206,97 @@
             }
           }
 
-          <link rel="stylesheet" href="lightbox.css" />
+          /********************************************************************/
+
+          img.full-sized-image-from-click {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            height: 100%;
+            width: 100%;
+            max-height: calc(100vh - 16px);
+            max-width: calc(100vw - 16px);
+            position: fixed;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+          }
+
+          img.full-sized-image-from-click:hover {
+            cursor: pointer;
+          }
+
+          .full-sized-image-from-click--wrapper {
+            /* Provides the background */
+            width: 100vw;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+
+          .full-sized-image-from-click--wrapper:hover {
+            cursor: pointer;
+          }
+
+          .lightbox-thumbnails {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            z-index: 10;
+            max-width: calc(100vw - 32px);
+            flex-wrap: nowrap;
+            overflow: hidden;
+          }
+
+          .lightbox-thumbnails img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            opacity: 0.45;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: opacity 0.15s, border-color 0.15s;
+          }
+
+          .lightbox-thumbnails img.active {
+            opacity: 1;
+            border-color: white;
+          }
+
+          .lightbox-thumbnails img:hover {
+            opacity: 0.8;
+          }
+
+          .lightbox-close {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+            background: none;
+            border: none;
+            z-index: 10;
+            line-height: 1;
+          }
+
+          .lightbox-close:hover {
+            color: #333;
+          }
 
           /* Annotated clippings */
 
@@ -2952,7 +3042,6 @@
   });
 })();
 </script>
-<script src="lightbox.js"></script>
 </body>
     </html>
 
@@ -2994,4 +3083,122 @@
         }
       }
 
+      window.onload = function () {
+        function remove(me) {
+          document.getElementById(me).outerHTML = ''
+        }
+
+        // Build ordered list of navigable images (exclude .disable-img-click children)
+        var allImgs = document.getElementsByTagName('img')
+        var navigableImgs = []
+        for (var i = 0; i < allImgs.length; i++) {
+          var img = allImgs[i]
+          if (!img.closest('.disable-img-click')) {
+            navigableImgs.push(img)
+          }
+        }
+
+        var currentIndex = null
+        var currentWrapper = null
+
+        // Build thumbnail strip
+        var thumbnailStrip = document.createElement('div')
+        thumbnailStrip.className = 'lightbox-thumbnails'
+        var thumbnailImgs = []
+        for (var k = 0; k < navigableImgs.length; k++) {
+          ;(function (index) {
+            var thumb = document.createElement('img')
+            thumb.src = navigableImgs[index].src
+            thumb.onclick = function (e) {
+              e.stopPropagation()
+              openLightbox(index)
+            }
+            thumbnailStrip.appendChild(thumb)
+            thumbnailImgs.push(thumb)
+          })(k)
+        }
+
+        function updateThumbnails() {
+          for (var t = 0; t < thumbnailImgs.length; t++) {
+            thumbnailImgs[t].className = t === currentIndex ? 'active' : ''
+          }
+          // Shift strip so the active thumbnail is horizontally centered on screen.
+          // Each thumbnail is 40px wide + 6px gap; the gap is between items so the
+          // offset of item i's center is: i * (40 + 6) + 20
+          // The strip's own center is at: n * (40 + 6) / 2 - 3  (subtract half a gap)
+          var itemWidth = 40 + 6 // thumb width + gap
+          var activeMidpoint = currentIndex * itemWidth + 20
+          var stripMidpoint = navigableImgs.length * itemWidth / 2 - 3
+          var offset = activeMidpoint - stripMidpoint
+          thumbnailStrip.style.transform = 'translateX(calc(-50% + ' + (-offset) + 'px))'
+        }
+
+        function openLightbox(index) {
+          // Close any existing lightbox
+          if (currentWrapper && currentWrapper.parentNode) {
+            currentWrapper.parentNode.removeChild(currentWrapper)
+          }
+
+          currentIndex = index
+          var sourceImg = navigableImgs[index]
+
+          var fullSizedImg = sourceImg.cloneNode(true)
+          fullSizedImg.className = 'full-sized-image-from-click'
+
+          var wrapperWithBkgd = document.createElement('div')
+          wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
+          wrapperWithBkgd.onclick = function () {
+            closeLightbox()
+          }
+
+          var closeBtn = document.createElement('button')
+          closeBtn.className = 'lightbox-close'
+          closeBtn.innerHTML = '&#x2715;'
+          closeBtn.onclick = function (e) {
+            e.stopPropagation()
+            closeLightbox()
+          }
+
+          wrapperWithBkgd.appendChild(fullSizedImg)
+          wrapperWithBkgd.appendChild(closeBtn)
+          wrapperWithBkgd.appendChild(thumbnailStrip)
+          document.body.appendChild(wrapperWithBkgd)
+          currentWrapper = wrapperWithBkgd
+          updateThumbnails()
+        }
+
+        function closeLightbox() {
+          if (currentWrapper && currentWrapper.parentNode) {
+            currentWrapper.parentNode.removeChild(currentWrapper)
+          }
+          currentWrapper = null
+          currentIndex = null
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+          if (currentIndex === null) return
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault()
+            openLightbox((currentIndex + 1) % navigableImgs.length)
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault()
+            openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
+          } else if (e.key === 'Escape') {
+            closeLightbox()
+          }
+        })
+
+        // Attach click handlers
+        for (var j = 0; j < navigableImgs.length; j++) {
+          ;(function (index) {
+            navigableImgs[index].addEventListener(
+              'click',
+              function () { openLightbox(index) },
+              false
+            )
+          })(j)
+        }
+      }
     </script>
+  </head>
