@@ -3031,28 +3031,71 @@
           document.getElementById(me).outerHTML = ''
         }
 
-        // Wait for the images to load
-        var images = document.getElementsByTagName('img')
-        for (var i = 0; i < images.length; i++) {
-          var image = images[i]
+        // Build ordered list of navigable images (exclude .disable-img-click children)
+        var allImgs = document.getElementsByTagName('img')
+        var navigableImgs = []
+        for (var i = 0; i < allImgs.length; i++) {
+          var img = allImgs[i]
+          if (!img.closest('.disable-img-click')) {
+            navigableImgs.push(img)
+          }
+        }
 
-          image.addEventListener(
-            'click',
-            function () {
-              var fullSizedImg = this.cloneNode(true)
-              fullSizedImg.className = 'full-sized-image-from-click'
+        var currentIndex = null
+        var currentWrapper = null
 
-              var wrapperWithBkgd = document.createElement('div')
-              wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
-              wrapperWithBkgd.onclick = function () {
-                this.parentNode.removeChild(this)
-              }
+        function openLightbox(index) {
+          // Close any existing lightbox
+          if (currentWrapper && currentWrapper.parentNode) {
+            currentWrapper.parentNode.removeChild(currentWrapper)
+          }
 
-              wrapperWithBkgd.appendChild(fullSizedImg)
-              document.body.appendChild(wrapperWithBkgd)
-            },
-            false
-          )
+          currentIndex = index
+          var sourceImg = navigableImgs[index]
+
+          var fullSizedImg = sourceImg.cloneNode(true)
+          fullSizedImg.className = 'full-sized-image-from-click'
+
+          var wrapperWithBkgd = document.createElement('div')
+          wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
+          wrapperWithBkgd.onclick = function () {
+            closeLightbox()
+          }
+
+          wrapperWithBkgd.appendChild(fullSizedImg)
+          document.body.appendChild(wrapperWithBkgd)
+          currentWrapper = wrapperWithBkgd
+        }
+
+        function closeLightbox() {
+          if (currentWrapper && currentWrapper.parentNode) {
+            currentWrapper.parentNode.removeChild(currentWrapper)
+          }
+          currentWrapper = null
+          currentIndex = null
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+          if (currentIndex === null) return
+          if (e.key === 'ArrowRight') {
+            openLightbox((currentIndex + 1) % navigableImgs.length)
+          } else if (e.key === 'ArrowLeft') {
+            openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
+          } else if (e.key === 'Escape') {
+            closeLightbox()
+          }
+        })
+
+        // Attach click handlers
+        for (var j = 0; j < navigableImgs.length; j++) {
+          ;(function (index) {
+            navigableImgs[index].addEventListener(
+              'click',
+              function () { openLightbox(index) },
+              false
+            )
+          })(j)
         }
       }
     </script>
