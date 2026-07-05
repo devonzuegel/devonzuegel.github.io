@@ -91,10 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (currentIndex === null) return
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault()
-      openLightbox((currentIndex + 1) % navigableImgs.length)
+      if (currentIndex < navigableImgs.length - 1) openLightbox(currentIndex + 1)
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
       e.preventDefault()
-      openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
+      if (currentIndex > 0) openLightbox(currentIndex - 1)
     } else if (e.key === 'Escape') {
       closeLightbox()
     }
