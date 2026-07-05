@@ -1,4 +1,4 @@
-window.addEventListener('load', function () {
+(function () {
   // Build ordered list of navigable images (exclude .disable-img-click children)
   var allImgs = document.getElementsByTagName('img')
   var navigableImgs = []
