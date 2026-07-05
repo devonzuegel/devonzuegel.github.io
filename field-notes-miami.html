@@ -3079,8 +3079,10 @@
         document.addEventListener('keydown', function (e) {
           if (currentIndex === null) return
           if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault()
             openLightbox((currentIndex + 1) % navigableImgs.length)
           } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault()
             openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
           } else if (e.key === 'Escape') {
             closeLightbox()
