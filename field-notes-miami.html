@@ -1246,13 +1246,16 @@
             bottom: 16px;
             left: 50%;
             transform: translateX(-50%);
+            width: 40px;
+            overflow: visible;
+            z-index: 10;
+          }
+
+          .lightbox-thumbnails-inner {
             display: flex;
             gap: 6px;
             align-items: center;
-            z-index: 10;
-            max-width: calc(100vw - 32px);
             flex-wrap: nowrap;
-            overflow: hidden;
             padding: 1px 6px;
           }
 
@@ -3106,6 +3109,9 @@
         // Build thumbnail strip
         var thumbnailStrip = document.createElement('div')
         thumbnailStrip.className = 'lightbox-thumbnails'
+        var thumbnailInner = document.createElement('div')
+        thumbnailInner.className = 'lightbox-thumbnails-inner'
+        thumbnailStrip.appendChild(thumbnailInner)
         var thumbnailImgs = []
         for (var k = 0; k < navigableImgs.length; k++) {
           ;(function (index) {
@@ -3115,7 +3121,7 @@
               e.stopPropagation()
               openLightbox(index)
             }
-            thumbnailStrip.appendChild(thumb)
+            thumbnailInner.appendChild(thumb)
             thumbnailImgs.push(thumb)
           })(k)
         }
@@ -3124,15 +3130,12 @@
           for (var t = 0; t < thumbnailImgs.length; t++) {
             thumbnailImgs[t].className = t === currentIndex ? 'active' : ''
           }
-          // Shift strip so the active thumbnail is horizontally centered on screen.
-          // Each thumbnail is 40px wide + 6px gap; the gap is between items so the
-          // offset of item i's center is: i * (40 + 6) + 20
-          // The strip's own center is at: n * (40 + 6) / 2 - 3  (subtract half a gap)
-          var itemWidth = 40 + 6 // thumb width + gap
+          // Shift inner row so the active thumbnail is centered over the fixed anchor.
+          // Each thumbnail is 40px wide + 6px gap.
+          var itemWidth = 40 + 6
           var activeMidpoint = currentIndex * itemWidth + 20
-          var stripMidpoint = navigableImgs.length * itemWidth / 2 - 3
-          var offset = activeMidpoint - stripMidpoint
-          thumbnailStrip.style.transform = 'translateX(calc(-50% + ' + (-offset) + 'px))'
+          var offset = activeMidpoint - 20 // 20 = half of anchor width (40px)
+          thumbnailInner.style.transform = 'translateX(' + (-offset) + 'px)'
         }
 
         function openLightbox(index) {
