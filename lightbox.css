@@ -2,10 +2,11 @@ img.full-sized-image-from-click {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 100%;
-  width: 100%;
+  width: auto;
+  height: auto;
   max-height: calc(100vh - 16px);
   max-width: calc(100vw - 16px);
+  object-fit: contain;
   position: fixed;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
