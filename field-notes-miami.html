@@ -3078,9 +3078,9 @@
         // Keyboard navigation
         document.addEventListener('keydown', function (e) {
           if (currentIndex === null) return
-          if (e.key === 'ArrowRight') {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
             openLightbox((currentIndex + 1) % navigableImgs.length)
-          } else if (e.key === 'ArrowLeft') {
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
             openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
           } else if (e.key === 'Escape') {
             closeLightbox()
