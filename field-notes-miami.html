@@ -3122,6 +3122,15 @@
           for (var t = 0; t < thumbnailImgs.length; t++) {
             thumbnailImgs[t].className = t === currentIndex ? 'active' : ''
           }
+          // Shift strip so the active thumbnail is horizontally centered on screen.
+          // Each thumbnail is 40px wide + 6px gap; the gap is between items so the
+          // offset of item i's center is: i * (40 + 6) + 20
+          // The strip's own center is at: n * (40 + 6) / 2 - 3  (subtract half a gap)
+          var itemWidth = 40 + 6 // thumb width + gap
+          var activeMidpoint = currentIndex * itemWidth + 20
+          var stripMidpoint = navigableImgs.length * itemWidth / 2 - 3
+          var offset = activeMidpoint - stripMidpoint
+          thumbnailStrip.style.transform = 'translateX(calc(-50% + ' + (-offset) + 'px))'
         }
 
         function openLightbox(index) {
