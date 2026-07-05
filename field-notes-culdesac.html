@@ -202,6 +202,7 @@
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
         <link href="postachio-style.css" rel="stylesheet" />
+        <link href="lightbox.css" rel="stylesheet" />
 
         <style>
           html {
@@ -457,103 +458,6 @@
           }
 
           /********************************************************************/
-
-          img.full-sized-image-from-click {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-height: calc(100vh - 16px);
-            max-width: calc(100vw - 16px);
-            width: auto;
-            height: auto;
-            position: fixed;
-            object-fit: contain;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
-          }
-
-          img.full-sized-image-from-click:hover {
-            cursor: pointer;
-          }
-
-          .full-sized-image-from-click--wrapper {
-            /* Provides the background */
-            width: 100vw;
-            background: white;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-          }
-
-          .full-sized-image-from-click--wrapper:hover {
-            cursor: pointer;
-          }
-
-          .lightbox-thumbnails {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 52px;
-            overflow: visible;
-            z-index: 10;
-          }
-
-          .lightbox-thumbnails-inner {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            flex-wrap: nowrap;
-            padding: 1px 6px;
-            transition: transform 0.2s ease;
-          }
-
-          .lightbox-thumbnails img {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 4px;
-            opacity: 0.45;
-            border: 2px solid transparent;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: opacity 0.15s, border-color 0.15s;
-          }
-
-          .lightbox-thumbnails img.active {
-            opacity: 1;
-            border-color: white;
-            box-shadow: 0 0 0 1px black;
-          }
-
-          .lightbox-thumbnails img:hover {
-            opacity: 0.8;
-          }
-
-          .lightbox-close {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            color: #888;
-            background: none;
-            border: none;
-            z-index: 10;
-            line-height: 1;
-          }
-
-          .lightbox-close:hover {
-            color: #333;
-          }
 
           /* Annotated clippings */
 
@@ -1434,118 +1338,8 @@
           </div>
         </div>
 
+        <script src="lightbox.js"></script>
         <script>
-          // Build ordered list of navigable images (exclude .disable-img-click children)
-          var allImgs = document.getElementsByTagName('img')
-          var navigableImgs = []
-          for (var i = 0; i < allImgs.length; i++) {
-            var img = allImgs[i]
-            if (!img.closest('.disable-img-click')) {
-              navigableImgs.push(img)
-            }
-          }
-
-          var currentIndex = null
-          var currentWrapper = null
-
-          // Build thumbnail strip
-          var thumbnailStrip = document.createElement('div')
-          thumbnailStrip.className = 'lightbox-thumbnails'
-          var thumbnailInner = document.createElement('div')
-          thumbnailInner.className = 'lightbox-thumbnails-inner'
-          thumbnailStrip.appendChild(thumbnailInner)
-          var thumbnailImgs = []
-          for (var k = 0; k < navigableImgs.length; k++) {
-            ;(function (index) {
-              var thumb = document.createElement('img')
-              thumb.src = navigableImgs[index].src
-              thumb.onclick = function (e) {
-                e.stopPropagation()
-                openLightbox(index)
-              }
-              thumbnailInner.appendChild(thumb)
-              thumbnailImgs.push(thumb)
-            })(k)
-          }
-
-          function updateThumbnails() {
-            for (var t = 0; t < thumbnailImgs.length; t++) {
-              thumbnailImgs[t].className = t === currentIndex ? 'active' : ''
-            }
-            // Shift inner row so the active thumbnail is centered over the fixed anchor.
-            var itemWidth = 40 + 6
-            var activeMidpoint = currentIndex * itemWidth + 20
-            var offset = activeMidpoint - 26 // 26 = half of anchor width (52px)
-            thumbnailInner.style.transform = 'translateX(' + (-offset) + 'px)'
-          }
-
-          function openLightbox(index) {
-            // Close any existing lightbox
-            if (currentWrapper && currentWrapper.parentNode) {
-              currentWrapper.parentNode.removeChild(currentWrapper)
-            }
-
-            currentIndex = index
-            var sourceImg = navigableImgs[index]
-
-            var fullSizedImg = sourceImg.cloneNode(true)
-            fullSizedImg.className = 'full-sized-image-from-click'
-
-            var wrapperWithBkgd = document.createElement('div')
-            wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
-            wrapperWithBkgd.onclick = function () {
-              closeLightbox()
-            }
-
-            var closeBtn = document.createElement('button')
-            closeBtn.className = 'lightbox-close'
-            closeBtn.innerHTML = '&#x2715;'
-            closeBtn.onclick = function (e) {
-              e.stopPropagation()
-              closeLightbox()
-            }
-
-            wrapperWithBkgd.appendChild(fullSizedImg)
-            wrapperWithBkgd.appendChild(closeBtn)
-            wrapperWithBkgd.appendChild(thumbnailStrip)
-            document.body.appendChild(wrapperWithBkgd)
-            currentWrapper = wrapperWithBkgd
-            updateThumbnails()
-          }
-
-          function closeLightbox() {
-            if (currentWrapper && currentWrapper.parentNode) {
-              currentWrapper.parentNode.removeChild(currentWrapper)
-            }
-            currentWrapper = null
-            currentIndex = null
-          }
-
-          // Keyboard navigation
-          document.addEventListener('keydown', function (e) {
-            if (currentIndex === null) return
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-              e.preventDefault()
-              openLightbox((currentIndex + 1) % navigableImgs.length)
-            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-              e.preventDefault()
-              openLightbox((currentIndex - 1 + navigableImgs.length) % navigableImgs.length)
-            } else if (e.key === 'Escape') {
-              closeLightbox()
-            }
-          })
-
-          // Attach click handlers
-          for (var j = 0; j < navigableImgs.length; j++) {
-            ;(function (index) {
-              navigableImgs[index].addEventListener(
-                'click',
-                function () { openLightbox(index) },
-                false
-              )
-            })(j)
-          }
-
           // Equal height gallery: adjust flex values based on aspect ratios
           function adjustEqualHeightGalleries() {
             var galleries = document.querySelectorAll('.equal-height-gallery')
