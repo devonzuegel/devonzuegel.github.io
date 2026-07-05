@@ -1276,6 +1276,28 @@
             opacity: 0.8;
           }
 
+          .lightbox-close {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+            background: none;
+            border: none;
+            z-index: 10;
+            line-height: 1;
+          }
+
+          .lightbox-close:hover {
+            color: #333;
+          }
+
           /* Annotated clippings */
 
           .annotated-clipping--label {
@@ -3120,7 +3142,16 @@
             closeLightbox()
           }
 
+          var closeBtn = document.createElement('button')
+          closeBtn.className = 'lightbox-close'
+          closeBtn.innerHTML = '&#x2715;'
+          closeBtn.onclick = function (e) {
+            e.stopPropagation()
+            closeLightbox()
+          }
+
           wrapperWithBkgd.appendChild(fullSizedImg)
+          wrapperWithBkgd.appendChild(closeBtn)
           wrapperWithBkgd.appendChild(thumbnailStrip)
           document.body.appendChild(wrapperWithBkgd)
           currentWrapper = wrapperWithBkgd
