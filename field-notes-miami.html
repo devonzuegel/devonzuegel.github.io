@@ -1241,6 +1241,41 @@
             cursor: pointer;
           }
 
+          .lightbox-thumbnails {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            z-index: 10;
+            max-width: calc(100vw - 32px);
+            flex-wrap: nowrap;
+            overflow: hidden;
+          }
+
+          .lightbox-thumbnails img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            opacity: 0.45;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: opacity 0.15s, border-color 0.15s;
+          }
+
+          .lightbox-thumbnails img.active {
+            opacity: 1;
+            border-color: white;
+          }
+
+          .lightbox-thumbnails img:hover {
+            opacity: 0.8;
+          }
+
           /* Annotated clippings */
 
           .annotated-clipping--label {
@@ -3044,6 +3079,29 @@
         var currentIndex = null
         var currentWrapper = null
 
+        // Build thumbnail strip
+        var thumbnailStrip = document.createElement('div')
+        thumbnailStrip.className = 'lightbox-thumbnails'
+        var thumbnailImgs = []
+        for (var k = 0; k < navigableImgs.length; k++) {
+          ;(function (index) {
+            var thumb = document.createElement('img')
+            thumb.src = navigableImgs[index].src
+            thumb.onclick = function (e) {
+              e.stopPropagation()
+              openLightbox(index)
+            }
+            thumbnailStrip.appendChild(thumb)
+            thumbnailImgs.push(thumb)
+          })(k)
+        }
+
+        function updateThumbnails() {
+          for (var t = 0; t < thumbnailImgs.length; t++) {
+            thumbnailImgs[t].className = t === currentIndex ? 'active' : ''
+          }
+        }
+
         function openLightbox(index) {
           // Close any existing lightbox
           if (currentWrapper && currentWrapper.parentNode) {
@@ -3063,8 +3121,10 @@
           }
 
           wrapperWithBkgd.appendChild(fullSizedImg)
+          wrapperWithBkgd.appendChild(thumbnailStrip)
           document.body.appendChild(wrapperWithBkgd)
           currentWrapper = wrapperWithBkgd
+          updateThumbnails()
         }
 
         function closeLightbox() {
