@@ -55,7 +55,7 @@ window.addEventListener('load', function () {
 
     var fullSizedImg = sourceImg.cloneNode(true)
     fullSizedImg.className = 'full-sized-image-from-click'
-    fullSizedImg.style.cursor = 'pointer'
+    fullSizedImg.style.cursor = 'e-resize'
     fullSizedImg.onclick = function (e) {
       e.stopPropagation()
       if (currentIndex < navigableImgs.length - 1) {
