@@ -66,7 +66,7 @@ img.full-sized-image-from-click:hover {
 .lightbox-thumbnails img.active {
   opacity: 1;
   border-color: white;
-  box-shadow: 0 0 0 1px black;
+  box-shadow: 0 0 0 1px black !important;
 }
 
 .lightbox-thumbnails img:hover {
