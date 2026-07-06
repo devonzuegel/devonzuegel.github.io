@@ -55,6 +55,15 @@ window.addEventListener('load', function () {
 
     var fullSizedImg = sourceImg.cloneNode(true)
     fullSizedImg.className = 'full-sized-image-from-click'
+    fullSizedImg.style.cursor = 'pointer'
+    fullSizedImg.onclick = function (e) {
+      e.stopPropagation()
+      if (currentIndex < navigableImgs.length - 1) {
+        openLightbox(currentIndex + 1)
+      } else {
+        openLightbox(0)
+      }
+    }
 
     var wrapperWithBkgd = document.createElement('div')
     wrapperWithBkgd.className = 'full-sized-image-from-click--wrapper'
