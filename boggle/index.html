@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:13:29Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:14:26Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1069,7 +1069,7 @@ function screenIdle(){
   });
   tbl.appendChild(tbody);
   var scoring = document.createElement("div");
-  scoring.style.cssText = "display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
+  scoring.style.cssText = "display:inline-block;border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
   scoring.appendChild(tbl);
 
   return h("div", { class: "stack" }, [
