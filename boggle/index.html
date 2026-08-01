@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:07:47Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:10:47Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1631,10 +1631,24 @@ renderUnsyncedPill();
 
 /* offline caching + background sync when served over http(s) */
 if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
-  navigator.serviceWorker.register("sw.js").then(function(reg){
+  navigator.serviceWorker.register("sw.js?v=" + BUILD).then(function(reg){
     /* register background sync tag so Android Chrome retries when back online */
     if (syncState.pending && reg.sync) reg.sync.register("boggle-sync").catch(function(){});
+    /* when a new SW is waiting, tell it to skip waiting and take over immediately */
+    reg.addEventListener("updatefound", function(){
+      var sw = reg.installing;
+      if (!sw) return;
+      sw.addEventListener("statechange", function(){
+        if (sw.state === "installed" && navigator.serviceWorker.controller) {
+          sw.postMessage({ type: "SKIP_WAITING" });
+        }
+      });
+    });
   }).catch(function(){});
+  /* reload the page when SW controller changes (new SW took over) */
+  navigator.serviceWorker.addEventListener("controllerchange", function(){
+    window.location.reload();
+  });
 }
 </script>
 </body>
