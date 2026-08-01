@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:10:47Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:14:12Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1609,6 +1609,23 @@ if (new URLSearchParams(location.search).get("debug") === "true") {
 
   btnRow.appendChild(dbgBtn("Local state", "#8CA598", function(){
     dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length, "#8CA598");
+  }));
+
+  btnRow.appendChild(dbgBtn("Hard refresh", "#C8593F", function(){
+    dbgLog("unregistering SW + clearing caches…", "#C8593F");
+    var done = function(){ window.location.reload(true); };
+    var p = [];
+    if (navigator.serviceWorker) {
+      p.push(navigator.serviceWorker.getRegistrations().then(function(regs){
+        return Promise.all(regs.map(function(r){ return r.unregister(); }));
+      }));
+    }
+    if (window.caches) {
+      p.push(caches.keys().then(function(keys){
+        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+      }));
+    }
+    Promise.all(p).then(done).catch(done);
   }));
 
   /* build stamp — big and obvious */
