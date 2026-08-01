@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:12:54Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:13:29Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1034,7 +1034,7 @@ function screenIdle(){
   ];
   var SCORE_HDRS = ["3L", "4L", "5L", "6L", "7L", "8L+"];
   var tbl = document.createElement("table");
-  tbl.style.cssText = "border-collapse:collapse;font-family:var(--mono);font-size:12px;margin-top:6px";
+  tbl.style.cssText = "border-collapse:collapse;font-family:var(--mono);font-size:12px";
   var thead = document.createElement("thead");
   var hr = document.createElement("tr");
   ["", "", "3L", "4L", "5L", "6L", "7L", "8L+"].forEach(function(lbl, i){
@@ -1068,7 +1068,9 @@ function screenIdle(){
     tbody.appendChild(tr);
   });
   tbl.appendChild(tbody);
-  var scoring = tbl;
+  var scoring = document.createElement("div");
+  scoring.style.cssText = "display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
+  scoring.appendChild(tbl);
 
   return h("div", { class: "stack" }, [
     h("div", { style: "margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px" }, [
