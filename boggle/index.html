@@ -69,8 +69,8 @@
       padding:0 16px}
     .reviewLeft{position:fixed;top:var(--hdr-h);bottom:var(--nav-h);
       width:min(42%,420px);left:max(0px,calc(50vw - 480px));
-      border-bottom:none;padding:16px 24px 16px 16px;
-      display:flex;flex-direction:column;justify-content:center;z-index:20;
+      border-bottom:none;padding:24px 24px 16px 16px;
+      display:flex;flex-direction:column;justify-content:flex-start;z-index:20;
       background:var(--ground)}
     .reviewLeft .trayWrap{max-width:min(420px,calc(var(--full-h) - 200px));width:100%}
     .reviewLeft-spacer{width:min(42%,420px);flex-shrink:0}
@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:27:43Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:30:28Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
