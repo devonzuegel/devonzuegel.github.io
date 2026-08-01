@@ -4,21 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boggle Admin</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --ground:#141F1A; --surface:#1D2C25; --surface2:#27392F; --bone:#F2EDDF;
-    --boneEdge:#CFC5AE; --ink:#17201B; --amber:#E9A83A; --rust:#C8593F;
-    --sage:#8CA598; --line:#31463B;
+    --ink:#17201B; --amber:#E9A83A; --rust:#C8593F; --sage:#8CA598; --line:#31463B;
     --display: Futura, "Avenir Next Condensed", "Century Gothic", system-ui, sans-serif;
     --body: "Avenir Next", Avenir, system-ui, sans-serif;
     --mono: ui-monospace, "SF Mono", Menlo, monospace;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--ground); color: var(--bone); font-family: var(--body); }
-  #app { max-width: 860px; margin: 0 auto; padding: 32px 16px 80px; }
+  #app { max-width: 960px; margin: 0 auto; padding: 32px 16px 80px; }
   h1 { font-family: var(--display); font-size: 28px; margin: 0 0 4px; }
   .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--sage); text-transform: uppercase; }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+  /* tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .tab { font-family: var(--mono); font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--sage); cursor: pointer; background: none; }
+  .tab.on { border-color: var(--amber); color: var(--amber); }
+  /* cards */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
   .player-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
   .player-name { font-family: var(--display); font-size: 20px; }
   .player-meta { font-family: var(--mono); font-size: 11px; color: var(--sage); margin-top: 2px; }
@@ -27,24 +34,33 @@
   .session-row { display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-family: var(--mono); font-size: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); }
   .session-row:last-child { border-bottom: none; }
-  .session-info { color: var(--sage); }
-  .session-score { color: var(--bone); }
+  .session-info { color: var(--sage); flex: 1; }
+  .session-score { color: var(--bone); white-space: nowrap; }
   button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-  .btn-delete { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust);
-    border-radius: 999px; padding: 3px 10px; opacity: 0.7; }
+  .btn-delete { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust); border-radius: 999px; padding: 3px 10px; opacity: 0.7; }
   .btn-delete:hover { opacity: 1; }
-  .btn-delete-player { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust);
-    border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+  .btn-delete-player { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
   .btn-delete-player:hover { background: var(--rust); color: var(--ink); }
-  .chevron { font-size: 12px; color: var(--sage); transition: transform 200ms; }
+  .chevron { font-size: 12px; color: var(--sage); transition: transform 200ms; display: inline-block; }
   .chevron.open { transform: rotate(90deg); }
   .empty { font-family: var(--mono); font-size: 12px; color: var(--sage); padding: 8px 0; }
   .loading { font-family: var(--mono); font-size: 13px; color: var(--sage); margin-top: 40px; }
   .err { color: var(--rust); font-family: var(--mono); font-size: 12px; margin-top: 8px; }
-  .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
-  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line);
-    border-radius: 999px; padding: 5px 12px; }
+  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
+  /* audit log */
+  .event-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .event-row:last-child { border-bottom: none; }
+  .event-ts { color: var(--sage); white-space: nowrap; min-width: 140px; }
+  .event-player { color: var(--amber); min-width: 80px; }
+  .event-type { min-width: 70px; }
+  .event-loc { color: var(--sage); }
+  .event-type.signup { color: var(--amber); }
+  .event-type.session { color: var(--bone); }
+  /* map */
+  #map { height: 480px; border-radius: 12px; border: 1px solid var(--line); margin-top: 4px; }
+  .leaflet-container { background: #1D2C25; }
+  .map-popup { font-family: var(--mono); font-size: 12px; color: var(--ink); }
 </style>
 </head>
 <body>
@@ -54,80 +70,123 @@
       <div class="eyebrow">boggle trainer</div>
       <h1>Admin</h1>
     </div>
-    <button class="refresh" onclick="loadPlayers()">Refresh</button>
+    <button class="refresh" onclick="loadAll()">Refresh</button>
   </div>
-  <div id="content"><div class="loading">Loading…</div></div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('players', this)">Players</button>
+    <button class="tab" onclick="showTab('audit', this)">Audit log</button>
+    <button class="tab" onclick="showTab('map', this)">Map</button>
+  </div>
+
+  <div id="tab-players"><div class="loading">Loading…</div></div>
+  <div id="tab-audit" style="display:none"><div class="loading">Loading…</div></div>
+  <div id="tab-map" style="display:none">
+    <div id="map"></div>
+  </div>
 </div>
+
 <script>
 var API = "https://boggle-api.vercel.app/api";
 var expanded = {};
+var allPlayers = [];
+var allEvents = [];
+var mapInstance = null;
+
+function showTab(name, btn) {
+  ["players","audit","map"].forEach(function(t){
+    document.getElementById("tab-" + t).style.display = t === name ? "" : "none";
+  });
+  document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("on"); });
+  btn.classList.add("on");
+  if (name === "map") initMap();
+}
 
 function fmt(ts) {
   if (!ts) return "—";
+  return new Date(ts).toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+function fmtDate(ts) {
+  if (!ts) return "—";
   return new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
+function locStr(loc) {
+  if (!loc) return "";
+  var parts = [loc.city, loc.country].filter(Boolean);
+  return parts.length ? parts.join(", ") : (loc.lat ? loc.lat.toFixed(2) + ", " + loc.lon.toFixed(2) : "");
+}
 
-function loadPlayers() {
-  document.getElementById("content").innerHTML = '<div class="loading">Loading…</div>';
+function loadAll() {
   fetch(API + "/admin?action=list")
     .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(renderPlayers)
+    .then(function(players) {
+      allPlayers = players;
+      return Promise.all(players.map(function(p) {
+        return fetch(API + "/admin?action=player&user=" + encodeURIComponent(p.player))
+          .then(function(r) { return r.json(); })
+          .then(function(d) { p.fullData = d; return p; });
+      }));
+    })
+    .then(function(players) {
+      allPlayers = players;
+      // collect all events across all players
+      allEvents = [];
+      players.forEach(function(p) {
+        (p.fullData && p.fullData.events || []).forEach(function(e) { allEvents.push(e); });
+      });
+      allEvents.sort(function(a,b){ return b.ts - a.ts; });
+      renderPlayers();
+      renderAudit();
+      if (mapInstance) { mapInstance.remove(); mapInstance = null; }
+    })
     .catch(function(e) {
-      document.getElementById("content").innerHTML = '<div class="err">Error loading players: ' + e + '</div>';
+      document.getElementById("tab-players").innerHTML = '<div class="err">Error: ' + e + '</div>';
     });
 }
 
-function renderPlayers(players) {
-  var content = document.getElementById("content");
-  content.innerHTML = "";
-  if (!players.length) {
-    content.innerHTML = '<div class="empty">No players yet.</div>';
-    return;
-  }
-  players.forEach(function(p) { renderPlayerCard(content, p); });
+/* ---- players tab ---- */
+function renderPlayers() {
+  var el = document.getElementById("tab-players");
+  el.innerHTML = "";
+  if (!allPlayers.length) { el.innerHTML = '<div class="empty">No players yet.</div>'; return; }
+  allPlayers.forEach(function(p) { el.appendChild(makePlayerCard(p)); });
 }
 
-function renderPlayerCard(container, p) {
+function makePlayerCard(p) {
+  var d = p.fullData || {};
   var card = document.createElement("div");
   card.className = "card";
-  card.id = "player-" + p.player;
 
   var header = document.createElement("div");
   header.className = "player-header";
 
   var left = document.createElement("div");
-  var nameEl = document.createElement("div");
-  nameEl.className = "player-name";
-  nameEl.textContent = p.player;
-  var metaEl = document.createElement("div");
-  metaEl.className = "player-meta";
-  metaEl.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · last played " + fmt(p.lastPlayed);
-  left.appendChild(nameEl);
-  left.appendChild(metaEl);
+  var nameEl = document.createElement("div"); nameEl.className = "player-name"; nameEl.textContent = p.player;
+  var loc = d.location ? " · " + locStr(d.location) : "";
+  var meta = document.createElement("div"); meta.className = "player-meta";
+  meta.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · joined " + fmtDate(d.createdAt) + loc;
+  left.appendChild(nameEl); left.appendChild(meta);
 
   var right = document.createElement("div");
-  right.style.display = "flex"; right.style.gap = "8px"; right.style.alignItems = "center";
+  right.style.cssText = "display:flex;gap:8px;align-items:center";
 
   var chevron = document.createElement("span");
   chevron.className = "chevron" + (expanded[p.player] ? " open" : "");
   chevron.textContent = "▶";
 
   var delBtn = document.createElement("button");
-  delBtn.className = "btn-delete-player";
-  delBtn.textContent = "Delete player";
+  delBtn.className = "btn-delete-player"; delBtn.textContent = "Delete player";
   delBtn.onclick = function(e) {
     e.stopPropagation();
-    if (!confirm("Delete " + p.player + " and all their sessions? This cannot be undone.")) return;
+    if (!confirm("Delete " + p.player + " and all their data?")) return;
     fetch(API + "/admin?action=delete_player&user=" + encodeURIComponent(p.player), { method: "POST" })
       .then(function(r) { return r.ok ? Promise.resolve() : Promise.reject(r.status); })
       .then(function() { card.remove(); })
       .catch(function(e) { alert("Error: " + e); });
   };
 
-  right.appendChild(delBtn);
-  right.appendChild(chevron);
-  header.appendChild(left);
-  header.appendChild(right);
+  right.appendChild(delBtn); right.appendChild(chevron);
+  header.appendChild(left); header.appendChild(right);
   card.appendChild(header);
 
   var sessions = document.createElement("div");
@@ -137,66 +196,86 @@ function renderPlayerCard(container, p) {
     expanded[p.player] = !expanded[p.player];
     chevron.className = "chevron" + (expanded[p.player] ? " open" : "");
     sessions.className = "sessions" + (expanded[p.player] ? " open" : "");
-    if (expanded[p.player] && !sessions.dataset.loaded) {
-      loadSessions(p.player, sessions);
-    }
+    if (expanded[p.player] && !sessions.dataset.loaded) renderSessions(p, sessions);
   };
 
   card.appendChild(sessions);
-  container.appendChild(card);
-
-  if (expanded[p.player] && !sessions.dataset.loaded) {
-    loadSessions(p.player, sessions);
-  }
+  if (expanded[p.player]) renderSessions(p, sessions);
+  return card;
 }
 
-function loadSessions(player, container) {
+function renderSessions(p, container) {
   container.dataset.loaded = "1";
-  container.innerHTML = '<div class="empty">Loading sessions…</div>';
-  fetch(API + "/admin?action=player&user=" + encodeURIComponent(player))
-    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function(d) { renderSessions(player, d.sessions || [], container); })
-    .catch(function(e) { container.innerHTML = '<div class="err">Error: ' + e + '</div>'; });
-}
-
-function renderSessions(player, sessions, container) {
   container.innerHTML = "";
-  if (!sessions.length) {
-    container.innerHTML = '<div class="empty">No sessions.</div>';
-    return;
-  }
-  sessions.forEach(function(s) {
-    var row = document.createElement("div");
-    row.className = "session-row";
-    row.id = "session-" + s.id;
-
-    var info = document.createElement("div");
-    info.className = "session-info";
-    info.textContent = fmt(s.ts) + (s.board ? " · " + s.board.join("") : "") + (s.early ? " · ended early" : "");
-
-    var score = document.createElement("div");
-    score.className = "session-score";
+  var list = (p.fullData && p.fullData.sessions) || [];
+  if (!list.length) { container.innerHTML = '<div class="empty">No sessions.</div>'; return; }
+  list.forEach(function(s) {
+    var row = document.createElement("div"); row.className = "session-row";
+    var info = document.createElement("div"); info.className = "session-info";
+    info.textContent = fmt(s.ts) + (s.loc ? " · " + locStr(s.loc) : "") + (s.early ? " · ended early" : "");
+    var score = document.createElement("div"); score.className = "session-score";
     score.textContent = s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts";
-
-    var del = document.createElement("button");
-    del.className = "btn-delete";
-    del.textContent = "Delete";
+    var del = document.createElement("button"); del.className = "btn-delete"; del.textContent = "Delete";
     del.onclick = function() {
       if (!confirm("Delete this session?")) return;
-      fetch(API + "/admin?action=delete_session&user=" + encodeURIComponent(player) + "&id=" + encodeURIComponent(s.id), { method: "POST" })
+      fetch(API + "/admin?action=delete_session&user=" + encodeURIComponent(p.player) + "&id=" + encodeURIComponent(s.id), { method: "POST" })
         .then(function(r) { return r.ok ? Promise.resolve() : Promise.reject(r.status); })
         .then(function() { row.remove(); })
         .catch(function(e) { alert("Error: " + e); });
     };
-
-    row.appendChild(info);
-    row.appendChild(score);
-    row.appendChild(del);
+    row.appendChild(info); row.appendChild(score); row.appendChild(del);
     container.appendChild(row);
   });
 }
 
-loadPlayers();
+/* ---- audit log tab ---- */
+function renderAudit() {
+  var el = document.getElementById("tab-audit");
+  el.innerHTML = "";
+  if (!allEvents.length) { el.innerHTML = '<div class="empty">No events yet. Events are recorded when players sign up or finish a game.</div>'; return; }
+  var box = document.createElement("div");
+  allEvents.forEach(function(e) {
+    var row = document.createElement("div"); row.className = "event-row";
+    var ts = document.createElement("div"); ts.className = "event-ts"; ts.textContent = fmt(e.ts);
+    var player = document.createElement("div"); player.className = "event-player"; player.textContent = e.player || "—";
+    var type = document.createElement("div"); type.className = "event-type " + (e.type || ""); type.textContent = e.type || "—";
+    var detail = document.createElement("div"); detail.className = "event-loc";
+    if (e.type === "session") detail.textContent = (e.score || 0) + " pts" + (e.loc ? " · " + locStr(e.loc) : "");
+    else detail.textContent = e.loc ? locStr(e.loc) : "";
+    row.appendChild(ts); row.appendChild(player); row.appendChild(type); row.appendChild(detail);
+    box.appendChild(row);
+  });
+  el.appendChild(box);
+}
+
+/* ---- map tab ---- */
+function initMap() {
+  if (mapInstance) return;
+  mapInstance = L.map("map", { zoomControl: true }).setView([20, 0], 2);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+    subdomains: "abcd", maxZoom: 19
+  }).addTo(mapInstance);
+
+  var points = [];
+  allEvents.forEach(function(e) {
+    if (!e.loc || !e.loc.lat) return;
+    var color = e.type === "signup" ? "#E9A83A" : "#8CA598";
+    var marker = L.circleMarker([e.loc.lat, e.loc.lon], {
+      radius: e.type === "signup" ? 8 : 6,
+      fillColor: color, color: color, weight: 1, opacity: 0.9, fillOpacity: 0.7
+    }).addTo(mapInstance);
+    var label = e.type === "signup"
+      ? "<b>" + (e.player || "") + "</b> signed up<br>" + fmt(e.ts) + (e.loc.city ? "<br>" + locStr(e.loc) : "")
+      : "<b>" + (e.player || "") + "</b> played<br>" + fmt(e.ts) + "<br>" + (e.score || 0) + " pts" + (e.loc.city ? "<br>" + locStr(e.loc) : "");
+    marker.bindPopup('<div class="map-popup">' + label + '</div>');
+    points.push([e.loc.lat, e.loc.lon]);
+  });
+
+  if (points.length) mapInstance.fitBounds(points, { padding: [40, 40], maxZoom: 8 });
+}
+
+loadAll();
 </script>
 </body>
 </html>

@@ -283,6 +283,15 @@ function mergeData(remote){
   /* players: union */
   (remote.players || []).forEach(function(n){ if (data.players.indexOf(n) < 0) data.players.push(n); });
 
+  /* events: union by ts+type */
+  var seenEv = {};
+  (data.events || []).forEach(function(e){ seenEv[e.type + ":" + e.ts] = true; });
+  (remote.events || []).forEach(function(e){ if (!seenEv[e.type + ":" + e.ts]) { if (!data.events) data.events = []; data.events.push(e); } });
+  if (data.events) data.events.sort(function(a,b){ return b.ts - a.ts; });
+
+  /* location: keep whichever exists */
+  if (!data.location && remote.location) data.location = remote.location;
+
   /* queue: keep local (device has fresher due-dates) unless empty */
   if (!data.queue.length && remote.queue) data.queue = remote.queue;
 }
@@ -421,6 +430,19 @@ function endRound(early){
   render();
   showGameOver();
 }
+function getLocation(cb){
+  if (!navigator.geolocation) { cb(null); return; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat = pos.coords.latitude, lon = pos.coords.longitude;
+    fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon, {
+      headers: { "Accept-Language": "en", "User-Agent": "BoggleTrainer/1.0" }
+    }).then(function(r){ return r.json(); }).then(function(d){
+      var a = d.address || {};
+      cb({ lat: lat, lon: lon, city: a.city || a.town || a.village || a.county || "", country: a.country || "" });
+    }).catch(function(){ cb({ lat: lat, lon: lon, city: "", country: "" }); });
+  }, function(){ cb(null); }, { timeout: 5000 });
+}
+
 function setPlayer(name){
   var n = String(name || "").trim().slice(0, 24) || "Player";
   var first = !data.player;
@@ -428,12 +450,23 @@ function setPlayer(name){
   if (data.players.indexOf(n) < 0) data.players.push(n);
   /* rounds played before names existed belong to whoever names themselves first */
   if (first) data.sessions.forEach(function(x){ if (!x.player) x.player = n; });
+  if (!data.createdAt) data.createdAt = Date.now();
   saveLocal();
   closeModal();
-  /* upload immediately, then pull server history and merge */
-  clearTimeout(syncDebounce);
-  syncUp();
-  syncDown(function(){ render(); });
+  /* grab location for account creation event */
+  getLocation(function(loc){
+    if (loc && !data.location) { data.location = loc; saveLocal(); }
+    if (!data.events) data.events = [];
+    var alreadyHasSignup = data.events.some(function(e){ return e.type === "signup"; });
+    if (!alreadyHasSignup) {
+      data.events.push({ type: "signup", ts: data.createdAt, player: n, loc: loc });
+      saveLocal();
+    }
+    /* upload immediately, then pull server history and merge */
+    clearTimeout(syncDebounce);
+    syncUp();
+    syncDown(function(){ render(); });
+  });
 }
 function showNameModal(firstRun){
   var m = document.getElementById("modal");
@@ -552,12 +585,13 @@ function showGameOver(){
 function saveSession(){
   var key = S.board.join("");
   var prev = data.queue.filter(function(q){ return q.boardKey === key; })[0];
-  data.sessions.unshift({
+  var session = {
     id: key + ":" + Date.now(), ts: Date.now(), boardKey: key, board: S.board.slice(),
     seconds: S.duration, found: S.found.slice(), total5: all5().length, found5: found5().length,
     pct: pct(), score: sumScore(S.found), replay: !!S.replay, prevPct: prev ? prev.lastPct : null,
     early: !!S.endedEarly, left: S.leftAtEnd || 0, player: data.player || "Player"
-  });
+  };
+  data.sessions.unshift(session);
   data.sessions = data.sessions.slice(0, 200);
   var attempts = (prev ? prev.attempts : 0) + 1;
   data.queue = data.queue.filter(function(q){ return q.boardKey !== key; });
@@ -567,6 +601,15 @@ function saveSession(){
   });
   S.replay = false;
   save();
+  /* attach location to session + events log asynchronously */
+  getLocation(function(loc){
+    if (loc) {
+      session.loc = loc;
+      if (!data.events) data.events = [];
+      data.events.push({ type: "session", ts: session.ts, player: session.player, sessionId: session.id, score: session.score, loc: loc });
+      save();
+    }
+  });
 }
 function submitWord(rawWord){
   var w = String(rawWord).trim().toLowerCase();
