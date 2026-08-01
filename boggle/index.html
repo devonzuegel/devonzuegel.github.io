@@ -254,9 +254,99 @@ try {
   var raw = localStorage.getItem(KEY);
   if (raw) data = Object.assign(data, JSON.parse(raw));
 } catch (e) { storageOk = false; }
-function save(){
+
+/* ---------------- cloud sync ---------------- */
+var API = "https://boggle-api.vercel.app/api/boggle";
+var syncState = { status: "idle", lastSync: null, error: null }; /* idle | syncing | ok | error */
+var syncDebounce = null;
+
+function mergeData(remote){
+  /* sessions: union by id, keep newest 200 */
+  var seenId = {};
+  data.sessions.forEach(function(s){ seenId[s.id] = true; });
+  (remote.sessions || []).forEach(function(s){ if (!seenId[s.id]) data.sessions.push(s); });
+  data.sessions.sort(function(a,b){ return b.ts - a.ts; });
+  data.sessions = data.sessions.slice(0, 200);
+
+  /* vocab: union by word */
+  var seenW = {};
+  data.vocab.forEach(function(v){ seenW[v.word] = v; });
+  (remote.vocab || []).forEach(function(v){
+    if (!seenW[v.word]) data.vocab.push(v);
+    else seenW[v.word].learned = seenW[v.word].learned || v.learned;
+  });
+
+  /* defs: merge objects */
+  var rd = remote.defs || {};
+  for (var w in rd) { if (!data.defs[w]) data.defs[w] = rd[w]; }
+
+  /* players: union */
+  (remote.players || []).forEach(function(n){ if (data.players.indexOf(n) < 0) data.players.push(n); });
+
+  /* queue: keep local (device has fresher due-dates) unless empty */
+  if (!data.queue.length && remote.queue) data.queue = remote.queue;
+}
+
+function fmtAgo(ts){
+  if (!ts) return "";
+  var s = Math.round((Date.now() - ts) / 1000);
+  if (s < 5) return "just now";
+  if (s < 60) return s + "s ago";
+  return Math.round(s/60) + "m ago";
+}
+
+function renderSyncStatus(){
+  var el = document.getElementById("syncStatus");
+  if (!el) return;
+  if (syncState.status === "syncing") { el.textContent = "syncing…"; el.style.color = "var(--sage)"; }
+  else if (syncState.status === "ok") { el.textContent = "synced " + fmtAgo(syncState.lastSync); el.style.color = "var(--sage)"; }
+  else if (syncState.status === "error") { el.textContent = "sync error · offline?"; el.style.color = "var(--rust)"; }
+  else { el.textContent = ""; }
+}
+
+function syncDown(cb){
+  if (!data.player) { if (cb) cb(); return; }
+  syncState.status = "syncing"; renderSyncStatus();
+  fetch(API + "?user=" + encodeURIComponent(data.player))
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(remote){
+      if (remote && Object.keys(remote).length) { mergeData(remote); saveLocal(); }
+      syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
+      renderSyncStatus();
+      if (cb) cb();
+    }).catch(function(e){
+      syncState.status = "error"; syncState.error = String(e);
+      renderSyncStatus();
+      if (cb) cb();
+    });
+}
+
+function syncUp(){
+  if (!data.player) return;
+  fetch(API + "?user=" + encodeURIComponent(data.player), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  }).then(function(r){ return r.ok ? Promise.resolve() : Promise.reject(r.status); })
+  .then(function(){
+    syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
+    renderSyncStatus();
+  }).catch(function(e){
+    syncState.status = "error"; syncState.error = String(e);
+    renderSyncStatus();
+  });
+}
+
+function saveLocal(){
   try { localStorage.setItem(KEY, JSON.stringify(data)); }
   catch (e) { storageOk = false; }
+}
+
+function save(){
+  saveLocal();
+  /* debounce uploads — wait 1.5s after last save before pushing */
+  clearTimeout(syncDebounce);
+  syncDebounce = setTimeout(syncUp, 1500);
 }
 
 /* ---------------- state ---------------- */
@@ -340,7 +430,8 @@ function setPlayer(name){
   if (first) data.sessions.forEach(function(x){ if (!x.player) x.player = n; });
   save();
   closeModal();
-  render();
+  /* pull this player's history from the server */
+  syncDown(function(){ render(); });
 }
 function showNameModal(firstRun){
   var m = document.getElementById("modal");
@@ -370,7 +461,7 @@ function showNameModal(firstRun){
       firstRun ? null : h("button", { class: "btn ghost", text: "Cancel", onclick: closeModal })
     ]),
     switcher,
-    h("div", { class: "mnote", text: "stored on this device only · rounds are filed under this name" })
+    h("div", { class: "mnote", text: "synced across devices · rounds are filed under this name" })
   ]));
   m.className = "on";
   m.onclick = function(e){ if (e.target === m && !firstRun) closeModal(); };
@@ -1059,19 +1150,24 @@ function screenProgress(){
   };
 
   var backupBlock = function(){
-  var file = h("input", { type: "file", accept: "application/json", style: "display:none" });
+    var file = h("input", { type: "file", accept: "application/json", style: "display:none" });
     file.addEventListener("change", function(){ if (file.files[0]) importData(file.files[0]); });
+    var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
+      h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
+      h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ render(); }); } })
+    ]);
+    setTimeout(renderSyncStatus, 50);
     return h("div", {}, [
-      h("div", { class: "eyebrow", text: "backup" }),
+      h("div", { class: "eyebrow", text: "backup & sync" }),
       h("div", { class: "row", style: "margin-top:8px" }, [
-        h("button", { class: "linkbtn", text: "Export history", onclick: exportData }),
-        h("button", { class: "linkbtn", text: "Import", onclick: function(){ file.click(); } }),
+        h("button", { class: "linkbtn", text: "Export JSON", onclick: exportData }),
+        h("button", { class: "linkbtn", text: "Import JSON", onclick: function(){ file.click(); } }),
         file
       ]),
+      syncRow,
       h("div", { class: "mono sage", style: "font-size:10px;margin-top:6px",
-        text: "history lives in this device's local storage · export before clearing Safari data" })
+        text: "history synced to cloud by username · also cached locally" })
     ]);
-
   };
 
 
@@ -1265,6 +1361,9 @@ function render(){
 }
 render();
 if (!data.player) showNameModal(true);
+
+/* pull latest from server on startup */
+syncDown(function(){ render(); });
 
 /* offline caching when served over http(s) */
 if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
