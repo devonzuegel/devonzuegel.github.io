@@ -25,12 +25,12 @@
   body{min-height:100vh}
   #app{max-width:520px;margin:0 auto;padding:0 16px 130px}
   #app.wide{max-width:960px}
-  .hdr{padding:calc(env(safe-area-inset-top) + 10px) 0 6px;margin-bottom:4px}
+  .hdr{padding:calc(env(safe-area-inset-top) + 8px) 0 4px;margin-bottom:4px}
   /* floating countdown — stays put while the page scrolls */
-  #clockPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:14px;z-index:45;
-    display:none;font-family:var(--mono);font-size:20px;color:var(--amber);
+  #clockPill{position:fixed;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:45;
+    display:none;font-family:var(--mono);font-size:16px;color:var(--amber);
     background:rgba(20,31,26,.86);border:1px solid var(--line);border-radius:999px;
-    padding:6px 14px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
+    padding:4px 10px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
   #clockPill.on{display:block}
   #clockPill.low{color:var(--rust);border-color:var(--rust)}
   #unsyncedPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);left:14px;z-index:45;
@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:26:39Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:27:53Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1520,10 +1520,10 @@ var showLearned = false;
 function render(){
   app.innerHTML = "";
   var header = h("div", { class: "hdr between" }, [
-    h("div", {}, [
-      h("div", { class: "h1", text: "Boggle Trainer" }),
+    h("div", { class: "row", style: "gap:10px;align-items:baseline" }, [
+      h("div", { class: "h1", style: "font-size:16px;letter-spacing:.01em", text: "Boggle Trainer" }),
       h("button", { class: "playerbtn", onclick: function(){ showNameModal(false); } }, [
-        h("span", { text: "playing as " }),
+        h("span", { text: "player: " }),
         h("b", { text: data.player || "—" }),
         h("span", { text: " ▾" })
       ])
