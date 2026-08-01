@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:09:18Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:09:41Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1074,8 +1074,8 @@ function screenIdle(){
     h("p", { class: "p", text: "Drag your finger across the letters to make a word, then lift to submit." }),
     h("p", { class: "p", text: "Then review the words you missed and mark any that were unfamiliar." }),
     h("p", { class: "p", text: "Boards come back a day later so you can learn from the paths you missed." }),
-    h("div", {}, [h("div", { class: "eyebrow", text: "round length" }), lens]),
-    h("div", {}, [h("div", { class: "eyebrow", text: "scoring" }), scoring]),
+    h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "round length" })]), lens]),
+    h("div", { style: "margin-top:20px" }, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "scoring" })]), scoring]),
     h("button", { class: "btn", text: "Shake the tray", onclick: function(){ startRound(); } }),
     due.length ? h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }) : null
   ]);
