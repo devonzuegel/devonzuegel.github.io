@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:11:15Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:12:54Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1071,7 +1071,7 @@ function screenIdle(){
   var scoring = tbl;
 
   return h("div", { class: "stack" }, [
-    h("div", { style: "margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px" }, [
+    h("div", { style: "margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px" }, [
       h("p", { class: "p", style: "margin:0", text: "Drag your finger across the letters to make a word, then lift to submit." }),
       h("p", { class: "p", style: "margin:0", text: "Then review the words you missed and mark any that were unfamiliar." }),
       h("p", { class: "p", style: "margin:0", text: "Boards come back a day later so you can learn from the paths you missed." }),
