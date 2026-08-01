@@ -272,7 +272,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:53:21Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:58:01Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1520,7 +1520,7 @@ function render(){
   app.innerHTML = "";
   var header = h("div", { class: "hdr between" }, [
     h("div", { class: "row", style: "gap:10px;align-items:baseline" }, [
-      h("div", { class: "h1", style: "font-size:16px;letter-spacing:.01em", text: "Boggle Trainer" }),
+      h("button", { class: "h1", style: "font-size:16px;letter-spacing:.01em;background:none;border:none;color:inherit;cursor:pointer;padding:0;font-family:inherit", text: "Boggle Trainer", onclick: function(){ S.tab = "play"; render(); } }),
       h("button", { class: "playerbtn", onclick: function(){ showNameModal(false); } }, [
         h("span", { text: "player: " }),
         h("b", { text: data.player || "—" }),
