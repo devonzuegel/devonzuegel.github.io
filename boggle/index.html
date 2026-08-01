@@ -57,11 +57,13 @@
     padding:6px 0 10px;border-bottom:1px solid var(--line)}
   .reviewLeft .trayWrap{max-width:min(340px,36vh)}
   .reviewRight{width:100%;min-width:0}
-  @media (min-width:720px){
-    .reviewLayout{flex-direction:row;gap:24px}
-    .reviewLeft{width:42%;max-width:400px;top:16px;border-bottom:none;padding:0}
-    .reviewLeft .trayWrap{max-width:min(380px,74vh)}
-    .reviewRight{flex:1}
+  @media (min-width:600px){
+    .reviewLayout{flex-direction:row;gap:24px;align-items:flex-start}
+    .reviewLeft{width:42%;max-width:420px;border-bottom:none;padding:0;
+      position:sticky;top:8px;
+      height:calc(100vh - 120px);display:flex;flex-direction:column;justify-content:center}
+    .reviewLeft .trayWrap{max-width:min(420px,calc(100vh - 200px));width:100%}
+    .reviewRight{flex:1;min-width:0}
   }
   button{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer}
   .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--sage);text-transform:uppercase}
@@ -272,7 +274,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:58:01Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T19:00:27Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -999,37 +1001,46 @@ function screenIdle(){
       onclick: function(){ S.duration = d; render(); }
     }));
   });
-  return h("div", { class: "stack" }, [
-    h("p", { class: "p", text: "Drag your finger across the letters to make a word — lift to submit. Then review every word you missed and mark any that were unfamiliar — those go into your vocab list. Boards come back a day later so you can prove the path miss is gone." }),
-    h("div", {}, [h("div", { class: "eyebrow", text: "round length" }), lens]),
-    h("button", { class: "btn", text: "Shake the tray", onclick: function(){ startRound(); } }),
-    due.length ? h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }) : null
-  ]);
+  var layout = h("div", { class: "reviewLayout" });
+  var left = h("div", { class: "reviewLeft" });
+  left.appendChild(buildTray({ interactive: false }));
+  var right = h("div", { class: "reviewRight stack" });
+  right.appendChild(h("p", { class: "p", text: "Drag your finger across the letters to make a word — lift to submit. Then review every word you missed and mark any that were unfamiliar — those go into your vocab list. Boards come back a day later so you can prove the path miss is gone." }));
+  right.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "round length" }), lens]));
+  right.appendChild(h("button", { class: "btn", text: "Shake the tray", onclick: function(){ startRound(); } }));
+  if (due.length) right.appendChild(h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }));
+  layout.appendChild(left);
+  layout.appendChild(right);
+  return layout;
 }
 
 function screenRunning(){
-  var wrap = h("div", { class: "stack" });
-  wrap.appendChild(buildTray({ interactive: true }));
+  var layout = h("div", { class: "reviewLayout" });
+  var left = h("div", { class: "reviewLeft" });
+  left.appendChild(buildTray({ interactive: true }));
+  var right = h("div", { class: "reviewRight stack" });
   if (S.typing) {
     var input = h("input", { class: "entry", placeholder: "type a word, hit enter", autocapitalize: "none", autocorrect: "off", autocomplete: "off", spellcheck: "false" });
     input.addEventListener("keydown", function(e){
       if (e.key === "Enter") { submitWord(input.value); input.value = ""; }
     });
-    wrap.appendChild(h("div", { class: "row" }, [
+    right.appendChild(h("div", { class: "row" }, [
       input,
       h("button", { class: "btn small", text: "Add", onclick: function(){ submitWord(input.value); input.value = ""; } })
     ]));
     setTimeout(function(){ input.focus(); }, 50);
   } else {
-    wrap.appendChild(h("div", { class: "center" }, [
+    right.appendChild(h("div", { class: "center" }, [
       h("button", { class: "mono sage", style: "font-size:11px", text: "drag across the letters · or type instead",
         onclick: function(){ S.typing = true; render(); } })
     ]));
   }
   footerEl = h("div", { class: "stack" });
-  wrap.appendChild(footerEl);
+  right.appendChild(footerEl);
   renderFooter();
-  return wrap;
+  layout.appendChild(left);
+  layout.appendChild(right);
+  return layout;
 }
 
 function screenReview(){
@@ -1538,7 +1549,7 @@ function render(){
   if (!storageOk) app.appendChild(h("div", { class: "mono", style: "color:var(--rust);font-size:11px;margin-top:20px",
     text: "Storage is unavailable here — progress won't be saved between sessions." }));
 
-  app.className = (S.tab === "play" && S.phase === "review") ? "wide" : "";
+  app.className = S.tab === "play" ? "wide" : "";
   paintClock();
 
   navEl.innerHTML = "";
