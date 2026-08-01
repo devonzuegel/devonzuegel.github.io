@@ -25,7 +25,7 @@
   body{min-height:100vh}
   #app{max-width:520px;margin:0 auto;padding:0 16px 130px}
   #app.wide{max-width:960px}
-  .hdr{padding:calc(env(safe-area-inset-top) + 18px) 0 10px;margin-bottom:8px}
+  .hdr{padding:calc(env(safe-area-inset-top) + 10px) 0 6px;margin-bottom:4px}
   /* floating countdown — stays put while the page scrolls */
   #clockPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:14px;z-index:45;
     display:none;font-family:var(--mono);font-size:20px;color:var(--amber);
@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:02:28Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:04:51Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1523,7 +1523,6 @@ function render(){
   app.innerHTML = "";
   var header = h("div", { class: "hdr between" }, [
     h("div", {}, [
-      h("div", { class: "eyebrow", text: "deliberate practice" }),
       h("div", { class: "h1", text: "Boggle Trainer" }),
       h("button", { class: "playerbtn", onclick: function(){ showNameModal(false); } }, [
         h("span", { text: "playing as " }),
