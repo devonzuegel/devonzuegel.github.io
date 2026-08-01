@@ -102,6 +102,7 @@
   .tile.q span{font-size:1.5rem}
   .tile.lit{background:var(--amber)}
   .tile.litbad{background:var(--rust)}
+  .tile.litdupe{background:#5b9bd5}
   svg.trace{position:absolute;inset:0;width:100%;height:100%;padding:12px;pointer-events:none}
 
   .word{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:999px;background:var(--surface2)}
@@ -115,6 +116,7 @@
   .tag.knew{border-color:var(--amber);color:var(--amber)}
   .tag.new{border-color:var(--rust);color:var(--rust)}
   .flash{height:18px;font-size:13px;color:var(--rust);font-family:var(--mono)}
+  .flash.dupe{color:#5b9bd5}
   input.entry{flex:1;background:var(--surface);border:1px solid var(--line);color:var(--bone);border-radius:12px;
     padding:12px 14px;font-family:var(--mono);font-size:16px;outline:none}
   nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;
@@ -274,7 +276,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T19:01:14Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T19:03:24Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -711,15 +713,15 @@ function saveSession(){
 function submitWord(rawWord){
   var w = String(rawWord).trim().toLowerCase();
   if (w.length < 3) return "short";
-  if (S.found.indexOf(w) >= 0) { flash(w, "already found"); return "dupe"; }
+  if (S.found.indexOf(w) >= 0) { flash(w, "already found", true); return "dupe"; }
   if (!S.paths.has(w)) { flash(w, ALLSET.has(w) ? "not on this board" : "not in the dictionary"); return "invalid"; }
   S.found.unshift(w);
-  S.flash = null;
+  S.flash = null; S.flashDupe = false;
   renderFooter();
   celebrate(w);
   return "ok";
 }
-function flash(w, m){ S.flash = w + " — " + m; renderFooter(); }
+function flash(w, m, dupe){ S.flash = w + " — " + m; S.flashDupe = !!dupe; renderFooter(); }
 
 /* ---------------- celebration ---------------- */
 var toastBox = null;
@@ -801,11 +803,11 @@ function buildTray(opts){
 function center(i){ return [11.8 + 25.4 * (i % 4), 11.8 + 25.4 * Math.floor(i / 4)]; }
 function paint(path, mode){
   // mode: "drag" | "ok" | "bad" | "trace" | null
-  tileEls.forEach(function(t){ t.className = t.className.replace(/ lit\b| litbad\b/g, ""); t.style.transform = t.style.transform.replace(/ scale\([^)]*\)/, ""); });
+  tileEls.forEach(function(t){ t.className = t.className.replace(/ lit\b| litbad\b| litdupe\b/g, ""); t.style.transform = t.style.transform.replace(/ scale\([^)]*\)/, ""); });
   var line = traceEl.line;
   if (!path || !path.length) { line.setAttribute("points", ""); labelEl.textContent = ""; labelEl.className = "label"; return; }
   path.forEach(function(i){
-    tileEls[i].className += mode === "bad" ? " litbad" : " lit";
+    tileEls[i].className += mode === "bad" ? " litbad" : mode === "dupe" ? " litdupe" : " lit";
     if (mode === "drag") tileEls[i].style.transform += " scale(1.04)";
   });
   line.setAttribute("points", path.map(function(i){ return center(i).join(","); }).join(" "));
@@ -892,7 +894,7 @@ function dragEnd(){
   if (S.phase === "review") { guessChallenge(word, path); return; }
   if (word.length < 3) { paint(null); return; }
   var res = submitWord(word);
-  paint(path, res === "ok" ? "ok" : "bad");
+  paint(path, res === "ok" ? "ok" : res === "dupe" ? "dupe" : "bad");
   setTimeout(function(){ if (!dragPath) paint(null); }, 600);
 }
 function attachSwipe(){
@@ -979,7 +981,7 @@ var footerEl = null;
 function renderFooter(){
   if (!footerEl) return;
   footerEl.innerHTML = "";
-  footerEl.appendChild(h("div", { class: "flash", text: S.flash || "" }));
+  footerEl.appendChild(h("div", { class: "flash" + (S.flashDupe ? " dupe" : ""), text: S.flash || "" }));
   footerEl.appendChild(h("div", { class: "between" }, [
     h("div", { class: "row" }, [
       h("span", { class: "runscore", id: "runscore", text: sumScore(S.found) + " pts" }),
