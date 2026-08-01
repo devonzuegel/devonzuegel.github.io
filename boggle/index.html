@@ -428,9 +428,11 @@ function setPlayer(name){
   if (data.players.indexOf(n) < 0) data.players.push(n);
   /* rounds played before names existed belong to whoever names themselves first */
   if (first) data.sessions.forEach(function(x){ if (!x.player) x.player = n; });
-  save();
+  saveLocal();
   closeModal();
-  /* pull this player's history from the server */
+  /* upload immediately, then pull server history and merge */
+  clearTimeout(syncDebounce);
+  syncUp();
   syncDown(function(){ render(); });
 }
 function showNameModal(firstRun){
