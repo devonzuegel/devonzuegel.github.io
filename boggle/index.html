@@ -22,8 +22,9 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0;background:var(--ground);color:var(--bone);font-family:var(--body);overscroll-behavior:none}
-  body{min-height:100vh}
-  :root{--hdr-h:calc(env(safe-area-inset-top) + 44px);--nav-h:calc(env(safe-area-inset-bottom) + 52px)}
+  body{min-height:100vh;min-height:100dvh}
+  :root{--hdr-h:calc(env(safe-area-inset-top) + 44px);--nav-h:calc(env(safe-area-inset-bottom) + 52px);
+    --full-h:100vh;--full-h:100dvh}
   #app{max-width:520px;margin:0 auto;padding:0 16px 130px}
   #app.wide{max-width:960px;padding-bottom:0}
   @media (min-width:600px){
@@ -58,20 +59,20 @@
   .mnote{font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:14px}
   /* review: board parked, words scroll beside it */
   .reviewLayout{display:flex;flex-direction:column;gap:0;align-items:stretch;
-    height:calc(100vh - var(--hdr-h) - var(--nav-h))}
+    height:calc(var(--full-h) - var(--hdr-h) - var(--nav-h))}
   .reviewLeft{flex-shrink:0;width:100%;background:var(--ground);
     padding:6px 0 10px;border-bottom:1px solid var(--line)}
   .reviewLeft .trayWrap{max-width:min(100%,calc(100vh - var(--hdr-h) - var(--nav-h) - 160px));margin:0 auto}
   .reviewRight{flex:1;min-height:0;overflow-y:auto;width:100%}
   @media (min-width:600px){
-    .reviewLayout{flex-direction:row;gap:0;align-items:stretch;height:calc(100vh - var(--hdr-h) - var(--nav-h));
+    .reviewLayout{flex-direction:row;gap:0;align-items:stretch;height:calc(var(--full-h) - var(--hdr-h) - var(--nav-h));
       padding:0 16px}
     .reviewLeft{position:fixed;top:var(--hdr-h);bottom:var(--nav-h);
       width:min(42%,420px);left:max(0px,calc(50vw - 480px));
       border-bottom:none;padding:16px 24px 16px 16px;
       display:flex;flex-direction:column;justify-content:center;z-index:20;
       background:var(--ground)}
-    .reviewLeft .trayWrap{max-width:min(420px,calc(100vh - 200px));width:100%}
+    .reviewLeft .trayWrap{max-width:min(420px,calc(var(--full-h) - 200px));width:100%}
     .reviewLeft-spacer{width:min(42%,420px);flex-shrink:0}
     .reviewRight{flex:1;min-width:0;overflow-y:auto;padding:8px 0 24px 24px}
   }
@@ -286,7 +287,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T20:13:00Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T20:16:28Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
