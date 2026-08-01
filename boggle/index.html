@@ -289,7 +289,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T20:46:07Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T20:47:02Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1300,8 +1300,9 @@ function screenProgress(){
   }
 
   var recentBlock = function(){
+    var recentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).slice(0, 10);
     var box = h("div", {});
-    allS.slice(0, 10).forEach(function(x){
+    recentS.forEach(function(x){
       var tags = (x.replay ? " · replay" : "");
       box.appendChild(h("div", { class: "missrow mono", style: "font-size:12px" }, [
         h("span", { class: "w sage" }, [
@@ -1311,7 +1312,13 @@ function screenProgress(){
         h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + x.score + " pts" })
       ]));
     });
-    return h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "recent rounds" }), box]);
+    var hdr = h("div", { class: "between", style: "align-items:center" }, [
+      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "recent rounds" })]),
+      earlyCount ? h("button", { class: "linkbtn" + (data.includeEarly ? " on" : ""), style: "font-size:10px",
+        text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " ended early",
+        onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); } }) : null
+    ]);
+    return h("div", { class: "section" }, [hdr, box]);
   };
 
 
@@ -1333,7 +1340,6 @@ function screenProgress(){
 
   if (!s.length) {
     wrap.appendChild(h("p", { class: "p", text: "Every round so far was ended early, so the stats are empty. Turn them on below or play one to the buzzer." }));
-    if (earlyToggle) wrap.appendChild(earlyToggle);
     wrap.appendChild(recentBlock());
     return wrap;
   }
@@ -1359,8 +1365,6 @@ function screenProgress(){
     stat("rounds", s.length, totalWords + " words found"),
     stat("day streak", streak(), "best score " + Math.max.apply(null, s.map(function(x){ return x.score; })))
   ]));
-
-  if (earlyToggle) wrap.appendChild(earlyToggle);
 
   var chips = h("div", { class: "row", style: "margin:8px 0;flex-wrap:wrap" });
   lens.forEach(function(d){
