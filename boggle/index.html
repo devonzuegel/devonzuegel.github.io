@@ -25,7 +25,13 @@
   body{min-height:100vh}
   #app{max-width:520px;margin:0 auto;padding:0 16px 130px}
   #app.wide{max-width:960px}
-  .hdr{padding:calc(env(safe-area-inset-top) + 8px) 0 4px;margin-bottom:4px}
+  .hdr{position:fixed;top:0;left:0;right:0;z-index:30;background:var(--ground);
+    padding:calc(env(safe-area-inset-top) + 8px) 16px 6px;margin-bottom:0;
+    border-bottom:1px solid var(--line);max-width:520px;margin:0 auto}
+  .hdr-spacer{height:calc(env(safe-area-inset-top) + 44px)}
+  .fixed-tray{position:fixed;left:0;right:0;z-index:20;background:var(--ground);
+    padding:0 16px 10px;top:calc(env(safe-area-inset-top) + 44px)}
+  .fixed-tray-spacer{height:calc(36vh + 60px)}
   /* floating countdown — stays put while the page scrolls */
   #clockPill{position:fixed;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:45;
     display:none;font-family:var(--mono);font-size:16px;color:var(--amber);
@@ -52,13 +58,13 @@
   .mnote{font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:14px}
   /* review: board parked, words scroll beside it */
   .reviewLayout{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
-  .reviewLeft{position:sticky;top:0;z-index:15;width:100%;background:var(--ground);
+  .reviewLeft{position:sticky;top:calc(env(safe-area-inset-top) + 44px);z-index:15;width:100%;background:var(--ground);
     padding:6px 0 10px;border-bottom:1px solid var(--line)}
   .reviewLeft .trayWrap{max-width:min(340px,36vh)}
   .reviewRight{width:100%;min-width:0}
   @media (min-width:720px){
     .reviewLayout{flex-direction:row;gap:24px}
-    .reviewLeft{width:42%;max-width:400px;top:16px;border-bottom:none;padding:0}
+    .reviewLeft{width:42%;max-width:400px;top:calc(env(safe-area-inset-top) + 60px);border-bottom:none;padding:0}
     .reviewLeft .trayWrap{max-width:min(380px,74vh)}
     .reviewRight{flex:1}
   }
@@ -271,7 +277,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:31:46Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:45:21Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1008,7 +1014,10 @@ function screenIdle(){
 
 function screenRunning(){
   var wrap = h("div", { class: "stack" });
-  wrap.appendChild(buildTray({ interactive: true }));
+  var tray = h("div", { class: "fixed-tray" });
+  tray.appendChild(buildTray({ interactive: true }));
+  wrap.appendChild(tray);
+  wrap.appendChild(h("div", { class: "fixed-tray-spacer" }));
   if (S.typing) {
     var input = h("input", { class: "entry", placeholder: "type a word, hit enter", autocapitalize: "none", autocorrect: "off", autocomplete: "off", spellcheck: "false" });
     input.addEventListener("keydown", function(e){
@@ -1532,6 +1541,7 @@ function render(){
     S.phase === "review" ? h("div", { class: "mono sage", style: "font-size:12px", text: "round over" }) : null
   ]);
   app.appendChild(header);
+  app.appendChild(h("div", { class: "hdr-spacer" }));
 
   if (S.tab === "play") app.appendChild(S.phase === "idle" ? screenIdle() : S.phase === "running" ? screenRunning() : screenReview());
   else if (S.tab === "progress") app.appendChild(screenProgress());
