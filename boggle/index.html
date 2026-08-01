@@ -78,6 +78,7 @@
   }
   button{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer}
   .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--sage);text-transform:uppercase}
+  .section{margin-top:28px}
   .h1{font-family:var(--display);font-size:26px}
   .mono{font-family:var(--mono)}
   .sage{color:var(--sage)}
@@ -287,7 +288,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T20:38:47Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T20:41:22Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1309,7 +1310,7 @@ function screenProgress(){
         h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + x.score + " pts" })
       ]));
     });
-    return h("div", {}, [h("div", { class: "eyebrow", text: "recent rounds" }), box]);
+    return h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "recent rounds" }), box]);
   };
 
   var backupBlock = function(){
@@ -1366,7 +1367,7 @@ function screenProgress(){
       h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ render(); }); } })
     ]);
     setTimeout(renderSyncStatus, 50);
-    return h("div", {}, [
+    return h("div", { class: "section" }, [
       h("div", { class: "eyebrow", text: "backup & sync" }),
       h("div", { class: "row", style: "margin-top:8px" }, [
         h("button", { class: "linkbtn", text: "Export JSON", onclick: exportData }),
@@ -1449,17 +1450,17 @@ function screenProgress(){
   trendCard.appendChild(trendChart(recent, actives));
   trendCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
     text: "last " + recent.length + " rounds, oldest left · hollow dot = replay · tap a chip to isolate" }));
-  wrap.appendChild(h("div", {}, [
+  wrap.appendChild(h("div", { class: "section" }, [
     h("div", { class: "eyebrow", text: "share of 5+ letter words found" }), chips, trendCard
   ]));
 
   var scoreCard = h("div", { class: "card" });
   scoreCard.appendChild(scoreBars(recent, actives));
-  wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "points per round" }), scoreCard]));
+  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "points per round" }), scoreCard]));
 
   var heatCard = h("div", { class: "card" });
   heatCard.appendChild(heatmap());
-  wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "rounds played · last 10 weeks · all rounds" }), heatCard]));
+  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "rounds played · last 10 weeks · all rounds" }), heatCard]));
 
   var replays = s.filter(function(x){ return x.replay && x.prevPct != null; }).slice(0, 6);
   if (replays.length) {
@@ -1471,7 +1472,7 @@ function screenProgress(){
         h("span", { class: "delta " + (d >= 0 ? "up" : "down"), text: x.prevPct + "% → " + x.pct + "%  " + (d >= 0 ? "+" : "") + d })
       ]));
     });
-    wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "second looks at the same board" }), rbox]));
+    wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "second looks at the same board" }), rbox]));
   }
 
   var due = data.queue.filter(function(q){ return q.due <= Date.now(); });
@@ -1488,7 +1489,7 @@ function screenProgress(){
     ]));
   });
   if (later.length) dueBox.appendChild(h("div", { class: "mono sage", style: "font-size:11px", text: later.length + " more scheduled later" }));
-  wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "due for replay" }), dueBox]));
+  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "due for replay" }), dueBox]));
 
   wrap.appendChild(recentBlock());
 
@@ -1505,7 +1506,7 @@ function screenProgress(){
           text: r.rounds + (r.rounds === 1 ? " round · " : " rounds · ") + r.rate + "% at 5+ · best " + r.best })
       ]));
     });
-    wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "players on this device" }), board]));
+    wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "players on this device" }), board]));
   }
 
   /* vocab */
@@ -1524,7 +1525,7 @@ function screenProgress(){
         onclick: function(){ v.learned = !v.learned; save(); render(); } })
     ]));
   });
-  wrap.appendChild(h("div", {}, [
+  wrap.appendChild(h("div", { class: "section" }, [
     h("div", { class: "eyebrow", text: "unfamiliar words" }),
     h("div", { class: "p", style: "margin-top:4px", text: "Words you marked unfamiliar during review. Path misses fix themselves from replaying — these are the real vocab gaps." }),
     vocabTabs,
