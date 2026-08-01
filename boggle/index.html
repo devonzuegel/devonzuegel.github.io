@@ -25,7 +25,7 @@
   body{min-height:100vh;min-height:100dvh}
   :root{--hdr-h:calc(env(safe-area-inset-top) + 44px);--nav-h:calc(env(safe-area-inset-bottom) + 52px);
     --full-h:100vh;--full-h:100dvh}
-  #app{max-width:520px;margin:0 auto;padding:0 16px 130px}
+  #app{max-width:520px;margin:0 auto;padding:16px 20px 130px}
   #app.wide{max-width:960px;padding-bottom:0}
   @media (min-width:600px){
     #app.wide{padding-left:0;padding-right:0}
@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:10:40Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:11:15Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
