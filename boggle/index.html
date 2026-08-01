@@ -660,7 +660,11 @@ function loadDef(w){
     return;
   }
   fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(w))
-    .then(function(r){ if (!r.ok) throw new Error("miss"); return r.json(); })
+    .then(function(r){
+      if (r.status === 404) throw new Error("notfound");
+      if (!r.ok) throw new Error("neterr");
+      return r.json();
+    })
     .then(function(j){
       var out = (j[0].meanings || []).slice(0, 3).map(function(mn){
         return { pos: mn.partOfSpeech, defs: (mn.definitions || []).slice(0, 2).map(function(d){ return d.definition; }) };
@@ -668,11 +672,13 @@ function loadDef(w){
       data.defs[w] = out; save();
       if (document.getElementById("defbody")) paintDef(document.getElementById("defbody"), out, false);
     })
-    .catch(function(){
+    .catch(function(e){
       if (!document.getElementById("defbody")) return;
       document.getElementById("defbody").innerHTML = "";
-      document.getElementById("defbody").appendChild(h("div", { class: "p",
-        text: "Couldn't reach the dictionary. It's an obscure entry or the connection dropped." }));
+      var msg = (e && e.message === "notfound")
+        ? "No dictionary entry found for \"" + w + "\"."
+        : "Couldn't reach the dictionary. Check your connection and try again.";
+      document.getElementById("defbody").appendChild(h("div", { class: "p", text: msg }));
     });
 }
 function closeModal(){
