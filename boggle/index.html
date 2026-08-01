@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:21:23Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:22:05Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -684,7 +684,8 @@ function showGameOver(){
   if (!m) return;
   var longest = S.found.slice().sort(function(a, b){ return b.length - a.length; })[0];
   m.innerHTML = "";
-  m.appendChild(h("div", { class: "mcard" }, [
+  m.appendChild(h("div", { class: "mcard", style: "position:relative" }, [
+    h("button", { style: "position:absolute;top:10px;right:12px;font-size:18px;color:var(--sage);line-height:1", text: "×", onclick: closeModal }),
     h("div", { class: "eyebrow", text: S.endedEarly
       ? "ended early · " + fmt(S.leftAtEnd) + " left on the clock"
       : fmt(S.duration) + " round · " + S.found.length + " words" }),
@@ -709,8 +710,7 @@ function showGameOver(){
         S.phase = "idle"; S.sel = null; render();
         notify("Game deleted.", false);
       }
-    }) : null,
-    h("div", { class: "mnote", text: "tap anywhere to dismiss" })
+    }) : null
   ]));
   m.className = "on";
   m.onclick = function(e){ if (e.target === m) closeModal(); };
