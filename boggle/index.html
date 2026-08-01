@@ -137,6 +137,10 @@
     24%{transform:translateY(0) scale(1)}
     78%{opacity:1}
     100%{transform:translateY(-14px);opacity:0}}
+  .notify{font-family:var(--mono);font-size:12px;padding:8px 16px;border-radius:999px;
+    box-shadow:0 6px 20px rgba(0,0,0,.45);animation:toastin 2.8s cubic-bezier(.2,.8,.2,1) forwards;pointer-events:none}
+  .notify.ok{background:var(--surface2);color:var(--bone);border:1px solid var(--line)}
+  .notify.err{background:#3a1a14;color:var(--rust);border:1px solid var(--rust)}
   .spark{position:fixed;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:60;
     animation:fly 850ms cubic-bezier(.2,.7,.3,1) forwards}
   @keyframes fly{0%{transform:translate(0,0) scale(1);opacity:1}
@@ -267,13 +271,19 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T17:54:20Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:02:28Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
 
-/* restore pending flag across page loads */
+/* restore pending flag + last server sync time across page loads */
 try { if (localStorage.getItem(PENDING_KEY) === "1") syncState.pending = true; } catch(e) {}
+try { var _lss = localStorage.getItem("boggle:lastServerSync"); if (_lss) syncState.lastSync = Number(_lss); } catch(e) {}
+
+function unsyncedSessions(){
+  if (!syncState.lastSync) return data.sessions.slice();
+  return data.sessions.filter(function(s){ return s.ts > syncState.lastSync; });
+}
 
 function setPending(val){
   syncState.pending = val;
@@ -328,6 +338,7 @@ if (navigator.serviceWorker) {
     } else if (e.data && e.data.type === "SYNC_FLUSHED") {
       setPending(false);
       syncState.status = "ok"; syncState.lastSync = Date.now();
+      try { localStorage.setItem("boggle:lastServerSync", String(syncState.lastSync)); } catch(e) {}
       renderSyncStatus();
     }
   });
@@ -420,6 +431,7 @@ function syncUp(){
     if (res && res.queued) { syncState.status = "error"; syncState.error = "queued"; renderSyncStatus(); return; }
     setPending(false);
     syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
+    try { localStorage.setItem("boggle:lastServerSync", String(syncState.lastSync)); } catch(e) {}
     renderSyncStatus();
   }).catch(function(e){
     syncState.status = "error"; syncState.error = String(e);
@@ -710,6 +722,13 @@ var toastBox = null;
 function reducedMotion(){
   return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 }
+function notify(msg, isErr){
+  toastBox = toastBox || document.getElementById("toasts");
+  var t = h("div", { class: "notify " + (isErr ? "err" : "ok"), text: msg });
+  toastBox.appendChild(t);
+  setTimeout(function(){ if (t.parentNode) t.parentNode.removeChild(t); }, 2800);
+}
+
 function celebrate(w){
   toastBox = toastBox || document.getElementById("toasts");
   var pts = scoreOf(w);
@@ -1278,6 +1297,52 @@ function screenProgress(){
   var backupBlock = function(){
     var file = h("input", { type: "file", accept: "application/json", style: "display:none" });
     file.addEventListener("change", function(){ if (file.files[0]) importData(file.files[0]); });
+
+    /* unsynced sessions */
+    var unsynced = unsyncedSessions();
+    var pendingBlock = null;
+    if (syncState.pending || unsynced.length) {
+      var pendingRows = h("div", { style: "margin-top:6px" });
+      if (unsynced.length) {
+        unsynced.forEach(function(s){
+          pendingRows.appendChild(h("div", { class: "missrow mono", style: "font-size:11px;opacity:.8" }, [
+            h("span", { class: "sage", text: new Date(s.ts).toLocaleString() + " · " + ((s.seconds||180)/60) + "m" }),
+            h("span", { text: s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts" })
+          ]));
+        });
+      }
+      var pushBtn = h("button", { class: "linkbtn", style: "margin-top:8px", text: "Push to server now" });
+      pushBtn.onclick = function(){
+        pushBtn.disabled = true; pushBtn.textContent = "Pushing…";
+        clearTimeout(syncDebounce);
+        var was = syncState.lastSync;
+        syncUp();
+        /* poll briefly to give syncUp time to complete */
+        var attempts = 0;
+        var poll = setInterval(function(){
+          attempts++;
+          if (syncState.lastSync !== was) {
+            clearInterval(poll);
+            notify("Synced! " + unsynced.length + " session" + (unsynced.length === 1 ? "" : "s") + " uploaded.", false);
+            render();
+          } else if (syncState.status === "error" && syncState.error !== "queued") {
+            clearInterval(poll);
+            notify(syncState.offline ? "Offline — saved locally, will sync when reconnected." : "Sync failed: " + syncState.error, true);
+            pushBtn.disabled = false; pushBtn.textContent = "Push to server now";
+          } else if (attempts > 10) {
+            clearInterval(poll);
+            notify(syncState.pending ? "Queued for retry when online." : "Done.", !syncState.pending);
+            render();
+          }
+        }, 400);
+      };
+      pendingBlock = h("div", { style: "margin-top:10px;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--amber)" }, [
+        h("div", { class: "eyebrow", style: "color:var(--amber)", text: unsynced.length + " local session" + (unsynced.length === 1 ? "" : "s") + " not yet on server" }),
+        pendingRows,
+        pushBtn
+      ]);
+    }
+
     var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
       h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
       h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ render(); }); } })
@@ -1290,6 +1355,7 @@ function screenProgress(){
         h("button", { class: "linkbtn", text: "Import JSON", onclick: function(){ file.click(); } }),
         file
       ]),
+      pendingBlock,
       syncRow,
       h("div", { class: "mono sage", style: "font-size:10px;margin-top:6px",
         text: "history synced to cloud by username · also cached locally" })
