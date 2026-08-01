@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:14:12Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:24:20Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1536,7 +1536,8 @@ function render(){
 
   if (S.tab === "play") app.appendChild(S.phase === "idle" ? screenIdle() : S.phase === "running" ? screenRunning() : screenReview());
   else if (S.tab === "progress") app.appendChild(screenProgress());
-  else app.appendChild(screenWords());
+  else if (S.tab === "words") app.appendChild(screenWords());
+  else if (S.tab === "settings") app.appendChild(screenSettings());
 
   if (!storageOk) app.appendChild(h("div", { class: "mono", style: "color:var(--rust);font-size:11px;margin-top:20px",
     text: "Storage is unavailable here — progress won't be saved between sessions." }));
@@ -1545,7 +1546,7 @@ function render(){
   paintClock();
 
   navEl.innerHTML = "";
-  [["play", "Play"], ["progress", "Progress"], ["words", "Words"]].forEach(function(t){
+  [["play", "Play"], ["progress", "Progress"], ["words", "Words"], ["settings", "⚙"]].forEach(function(t){
     navEl.appendChild(h("button", { class: S.tab === t[0] ? "on" : "", text: t[1],
       onclick: function(){ S.tab = t[0]; S.challenge = null; hideQbar(); render(); } }));
   });
@@ -1556,92 +1557,85 @@ if (!data.player) showNameModal(true);
 /* pull latest from server on startup */
 syncDown(function(){ render(); });
 
-/* ---------------- debug panel (?debug=true) ---------------- */
-if (new URLSearchParams(location.search).get("debug") === "true") {
-  var dbg = document.createElement("div");
-  dbg.style.cssText = "position:fixed;bottom:80px;left:0;right:0;z-index:200;background:#0a0f0c;border-top:1px solid #31463B;padding:12px 16px;font-family:ui-monospace,monospace;font-size:11px;color:#8CA598";
-  function dbgLog(msg, color){
-    var line = document.createElement("div");
-    line.style.color = color || "#8CA598";
-    line.textContent = new Date().toISOString().slice(11,19) + " " + msg;
-    dbg.insertBefore(line, dbg.firstChild);
-    while (dbg.children.length > 12) dbg.removeChild(dbg.lastChild);
-  }
-  function dbgBtn(label, color, fn){
-    var b = document.createElement("button");
-    b.textContent = label;
-    b.style.cssText = "margin-right:8px;margin-bottom:6px;padding:4px 10px;border-radius:999px;border:1px solid " + color + ";color:" + color + ";background:none;font:inherit;cursor:pointer;font-size:11px";
-    b.onclick = fn;
-    return b;
-  }
-  var btnRow = document.createElement("div");
-  btnRow.style.marginBottom = "8px";
+/* ---------------- settings screen ---------------- */
+var dbgLog = function(){}; /* no-op until settings screen is mounted */
+function screenSettings(){
+  var wrap = h("div", { class: "stack" });
 
-  btnRow.appendChild(dbgBtn("Force sync UP", "#E9A83A", function(){
-    dbgLog("forcing syncUp for user: " + (data.player||"(none)"), "#E9A83A");
-    clearTimeout(syncDebounce);
-    syncUp();
-    dbgLog("POST sent — check network tab", "#E9A83A");
-  }));
-
-  btnRow.appendChild(dbgBtn("Force sync DOWN", "#8CA598", function(){
-    dbgLog("forcing syncDown for user: " + (data.player||"(none)"), "#8CA598");
-    syncDown(function(){
-      dbgLog("syncDown done — sessions: " + data.sessions.length, "#8CA598");
-      render();
-    });
-  }));
-
-  btnRow.appendChild(dbgBtn("Check KV", "#8CA598", function(){
-    if (!data.player) { dbgLog("no player set", "#C8593F"); return; }
-    dbgLog("fetching KV for: " + data.player, "#8CA598");
-    fetch(API + "?user=" + encodeURIComponent(data.player))
-      .then(function(r){ return r.json(); })
-      .then(function(d){ dbgLog("KV sessions: " + (d.sessions||[]).length + " · players: " + (d.players||[]).join(","), "#8CA598"); })
-      .catch(function(e){ dbgLog("fetch error: " + e, "#C8593F"); });
-  }));
-
-  btnRow.appendChild(dbgBtn("Clear localStorage", "#C8593F", function(){
-    if (!confirm("Clear local storage? Data on server is safe.")) return;
-    try { localStorage.removeItem(KEY); } catch(e){}
-    dbgLog("localStorage cleared — reload to start fresh", "#C8593F");
-  }));
-
-  btnRow.appendChild(dbgBtn("Local state", "#8CA598", function(){
-    dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length, "#8CA598");
-  }));
-
-  btnRow.appendChild(dbgBtn("Hard refresh", "#C8593F", function(){
-    dbgLog("unregistering SW + clearing caches…", "#C8593F");
-    var done = function(){ window.location.reload(true); };
-    var p = [];
-    if (navigator.serviceWorker) {
-      p.push(navigator.serviceWorker.getRegistrations().then(function(regs){
-        return Promise.all(regs.map(function(r){ return r.unregister(); }));
-      }));
-    }
-    if (window.caches) {
-      p.push(caches.keys().then(function(keys){
-        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
-      }));
-    }
-    Promise.all(p).then(done).catch(done);
-  }));
-
-  /* build stamp — big and obvious */
-  var buildEl = document.createElement("div");
-  buildEl.style.cssText = "margin-bottom:10px;padding:8px 10px;background:#0f1a14;border-radius:8px;border-left:3px solid #E9A83A";
+  /* build info */
   var buildTime = new Date(BUILD).toLocaleString(undefined, {
     month:"short", day:"numeric", year:"numeric",
     hour:"2-digit", minute:"2-digit", second:"2-digit", timeZoneName:"short"
   });
-  buildEl.innerHTML = '<span style="color:#E9A83A;font-size:13px;font-weight:bold">⚙ DEBUG MODE</span>' +
-    '<span style="color:#8CA598;margin-left:12px;font-size:11px">built ' + buildTime + '</span>';
-  dbg.insertBefore(buildEl, dbg.firstChild);
+  wrap.appendChild(h("div", { style: "padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:3px solid var(--amber)" }, [
+    h("div", { class: "mono", style: "font-size:13px;color:var(--amber);font-weight:bold", text: "Boggle Trainer" }),
+    h("div", { class: "mono sage", style: "font-size:11px;margin-top:2px", text: "built " + buildTime })
+  ]));
 
-  dbg.appendChild(btnRow);
-  dbgLog("debug mode on · user: " + (data.player||"(none set)") + " · sessions: " + data.sessions.length);
-  document.body.appendChild(dbg);
+  /* log output */
+  var logEl = h("div", { style: "font-family:var(--mono);font-size:11px;color:var(--sage);min-height:32px" });
+  dbgLog = function(msg, color){
+    var line = h("div", { text: new Date().toISOString().slice(11,19) + " " + msg });
+    line.style.color = color || "var(--sage)";
+    logEl.insertBefore(line, logEl.firstChild);
+    while (logEl.children.length > 10) logEl.removeChild(logEl.lastChild);
+  };
+
+  function dbgBtn(label, color, fn){
+    var b = h("button", { class: "linkbtn", text: label });
+    b.style.cssText = "border-color:" + color + ";color:" + color;
+    b.onclick = fn;
+    return b;
+  }
+
+  /* sync buttons */
+  wrap.appendChild(h("div", {}, [
+    h("div", { class: "eyebrow", text: "sync" }),
+    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px" }, [
+      dbgBtn("Force sync UP", "var(--amber)", function(){
+        dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--amber)");
+        clearTimeout(syncDebounce); syncUp();
+      }),
+      dbgBtn("Force sync DOWN", "var(--sage)", function(){
+        dbgLog("syncing down for: " + (data.player||"(none)"), "var(--sage)");
+        syncDown(function(){ dbgLog("done — sessions: " + data.sessions.length); render(); });
+      }),
+      dbgBtn("Check KV", "var(--sage)", function(){
+        if (!data.player) { dbgLog("no player set", "var(--rust)"); return; }
+        dbgLog("fetching KV for: " + data.player);
+        fetch(API + "?user=" + encodeURIComponent(data.player))
+          .then(function(r){ return r.json(); })
+          .then(function(d){ dbgLog("KV sessions: " + (d.sessions||[]).length + " · players: " + (d.players||[]).join(",")); })
+          .catch(function(e){ dbgLog("fetch error: " + e, "var(--rust)"); });
+      }),
+      dbgBtn("Local state", "var(--sage)", function(){
+        dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length);
+      })
+    ])
+  ]));
+
+  /* danger zone */
+  wrap.appendChild(h("div", {}, [
+    h("div", { class: "eyebrow", text: "danger zone" }),
+    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px" }, [
+      dbgBtn("Clear localStorage", "var(--rust)", function(){
+        if (!confirm("Clear local storage? Data on server is safe.")) return;
+        try { localStorage.removeItem(KEY); } catch(e){}
+        dbgLog("localStorage cleared — reload to start fresh", "var(--rust)");
+      }),
+      dbgBtn("Hard refresh", "var(--rust)", function(){
+        dbgLog("unregistering SW + clearing caches…", "var(--rust)");
+        var done = function(){ window.location.reload(true); };
+        var p = [];
+        if (navigator.serviceWorker) p.push(navigator.serviceWorker.getRegistrations().then(function(regs){ return Promise.all(regs.map(function(r){ return r.unregister(); })); }));
+        if (window.caches) p.push(caches.keys().then(function(keys){ return Promise.all(keys.map(function(k){ return caches.delete(k); })); }));
+        Promise.all(p).then(done).catch(done);
+      })
+    ])
+  ]));
+
+  wrap.appendChild(logEl);
+  return wrap;
 }
 
 renderUnsyncedPill();
