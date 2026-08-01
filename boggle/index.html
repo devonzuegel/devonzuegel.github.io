@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:18:55Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:21:23Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1085,18 +1085,41 @@ function screenIdle(){
   scoring.style.cssText = "display:inline-block;border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
   scoring.appendChild(tbl);
 
-  return h("div", { class: "stack" }, [
-    h("div", { class: "h1", style: "margin:12px 0 8px", text: "New Board" }),
-    h("div", { style: "display:none;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;flex-direction:column;gap:10px" }, [
-      h("p", { class: "p", style: "margin:0", text: "Drag your finger across the letters to make a word, then lift to submit." }),
-      h("p", { class: "p", style: "margin:0", text: "Then review the words you missed and mark any that were unfamiliar." }),
-      h("p", { class: "p", style: "margin:0", text: "Boards come back a day later so you can learn from the paths you missed." }),
-    ]),
-    h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "round length" })]), lens]),
-    h("div", { style: "margin-top:20px" }, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "scoring" })]), scoring]),
-    h("button", { class: "btn", text: "Shake the tray", onclick: function(){ startRound(); } }),
-    due.length ? h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }) : null
-  ]);
+  /* placeholder board — 4×4 grid of ? tiles */
+  var idleBoard = document.createElement("div");
+  idleBoard.className = "board";
+  idleBoard.style.opacity = "0.35";
+  for (var i = 0; i < 16; i++) {
+    var tile = document.createElement("div");
+    tile.className = "tile";
+    var span = document.createElement("span");
+    span.textContent = "?";
+    tile.appendChild(span);
+    idleBoard.appendChild(tile);
+  }
+  var idleTray = h("div", { class: "trayWrap" });
+  idleTray.appendChild(idleBoard);
+
+  var layout = h("div", { class: "reviewLayout" });
+  var left = h("div", { class: "reviewLeft" });
+  left.appendChild(idleTray);
+  layout.appendChild(left);
+  layout.appendChild(h("div", { class: "reviewLeft-spacer" }));
+
+  var right = h("div", { class: "reviewRight stack" });
+  right.appendChild(h("div", { class: "h1", style: "margin:4px 0 8px", text: "New Board" }));
+  right.appendChild(h("div", { style: "display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;flex-direction:column;gap:10px" }, [
+    h("p", { class: "p", style: "margin:0", text: "Drag your finger across the letters to make a word, then lift to submit." }),
+    h("p", { class: "p", style: "margin:0", text: "Then review the words you missed and mark any that were unfamiliar." }),
+    h("p", { class: "p", style: "margin:0", text: "Boards come back a day later so you can learn from the paths you missed." }),
+  ]));
+  right.appendChild(h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "round length" })]), lens]));
+  right.appendChild(h("div", { style: "margin-top:20px" }, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "scoring" })]), scoring]));
+  right.appendChild(h("button", { class: "btn", style: "margin-top:8px", text: "Shake the tray", onclick: function(){ startRound(); } }));
+  if (due.length) right.appendChild(h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }));
+
+  layout.appendChild(right);
+  return layout;
 }
 
 function screenRunning(){
