@@ -75,7 +75,7 @@
     .reviewLeft .trayWrap{max-width:min(420px,calc(var(--full-h) - 200px));width:100%}
     .reviewLeft-spacer{width:min(42%,420px);flex-shrink:0}
     .reviewRight{flex:1;min-width:0;overflow-y:auto;padding:8px 0 24px 40px}
-    .idleTitle{margin-top:32px !important}
+    .idleSpacer{height:16px}
   }
   button{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer}
   .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--sage);text-transform:uppercase}
@@ -1092,7 +1092,7 @@ function screenIdle(){
   });
   tbl.appendChild(tbody);
   var scoring = document.createElement("div");
-  scoring.style.cssText = "display:inline-block;border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
+  scoring.style.cssText = "display:inline-block;border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;margin-bottom:18px;overflow:hidden";
   scoring.appendChild(tbl);
 
   /* placeholder board — 4×4 grid of ? tiles, same DOM structure as buildTray() */
@@ -1120,7 +1120,7 @@ function screenIdle(){
   layout.appendChild(h("div", { class: "reviewLeft-spacer" }));
 
   var right = h("div", { class: "reviewRight stack" });
-  right.appendChild(h("div", { class: "h1 idleTitle", style: "margin:4px 0 8px", text: "New Board" }));
+  right.appendChild(h("div", { class: "idleSpacer" }));
   right.appendChild(h("div", { style: "display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;flex-direction:column;gap:10px" }, [
     h("p", { class: "p", style: "margin:0", text: "Drag your finger across the letters to make a word, then lift to submit." }),
     h("p", { class: "p", style: "margin:0", text: "Then review the words you missed and mark any that were unfamiliar." }),
