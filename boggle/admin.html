@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boggle Admin</title>
+<style>
+  :root {
+    --ground:#141F1A; --surface:#1D2C25; --surface2:#27392F; --bone:#F2EDDF;
+    --boneEdge:#CFC5AE; --ink:#17201B; --amber:#E9A83A; --rust:#C8593F;
+    --sage:#8CA598; --line:#31463B;
+    --display: Futura, "Avenir Next Condensed", "Century Gothic", system-ui, sans-serif;
+    --body: "Avenir Next", Avenir, system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--ground); color: var(--bone); font-family: var(--body); }
+  #app { max-width: 860px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-family: var(--display); font-size: 28px; margin: 0 0 4px; }
+  .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--sage); text-transform: uppercase; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .player-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+  .player-name { font-family: var(--display); font-size: 20px; }
+  .player-meta { font-family: var(--mono); font-size: 11px; color: var(--sage); margin-top: 2px; }
+  .sessions { display: none; margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .sessions.open { display: block; }
+  .session-row { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-family: var(--mono); font-size: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .session-row:last-child { border-bottom: none; }
+  .session-info { color: var(--sage); }
+  .session-score { color: var(--bone); }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  .btn-delete { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust);
+    border-radius: 999px; padding: 3px 10px; opacity: 0.7; }
+  .btn-delete:hover { opacity: 1; }
+  .btn-delete-player { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust);
+    border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+  .btn-delete-player:hover { background: var(--rust); color: var(--ink); }
+  .chevron { font-size: 12px; color: var(--sage); transition: transform 200ms; }
+  .chevron.open { transform: rotate(90deg); }
+  .empty { font-family: var(--mono); font-size: 12px; color: var(--sage); padding: 8px 0; }
+  .loading { font-family: var(--mono); font-size: 13px; color: var(--sage); margin-top: 40px; }
+  .err { color: var(--rust); font-family: var(--mono); font-size: 12px; margin-top: 8px; }
+  .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 24px; }
+  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 12px; }
+  .refresh:hover { color: var(--bone); border-color: var(--bone); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div>
+      <div class="eyebrow">boggle trainer</div>
+      <h1>Admin</h1>
+    </div>
+    <button class="refresh" onclick="loadPlayers()">Refresh</button>
+  </div>
+  <div id="content"><div class="loading">Loading…</div></div>
+</div>
+<script>
+var API = "https://boggle-api.vercel.app/api";
+var expanded = {};
+
+function fmt(ts) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+function loadPlayers() {
+  document.getElementById("content").innerHTML = '<div class="loading">Loading…</div>';
+  fetch(API + "/admin?action=list")
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(renderPlayers)
+    .catch(function(e) {
+      document.getElementById("content").innerHTML = '<div class="err">Error loading players: ' + e + '</div>';
+    });
+}
+
+function renderPlayers(players) {
+  var content = document.getElementById("content");
+  content.innerHTML = "";
+  if (!players.length) {
+    content.innerHTML = '<div class="empty">No players yet.</div>';
+    return;
+  }
+  players.forEach(function(p) { renderPlayerCard(content, p); });
+}
+
+function renderPlayerCard(container, p) {
+  var card = document.createElement("div");
+  card.className = "card";
+  card.id = "player-" + p.player;
+
+  var header = document.createElement("div");
+  header.className = "player-header";
+
+  var left = document.createElement("div");
+  var nameEl = document.createElement("div");
+  nameEl.className = "player-name";
+  nameEl.textContent = p.player;
+  var metaEl = document.createElement("div");
+  metaEl.className = "player-meta";
+  metaEl.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · last played " + fmt(p.lastPlayed);
+  left.appendChild(nameEl);
+  left.appendChild(metaEl);
+
+  var right = document.createElement("div");
+  right.style.display = "flex"; right.style.gap = "8px"; right.style.alignItems = "center";
+
+  var chevron = document.createElement("span");
+  chevron.className = "chevron" + (expanded[p.player] ? " open" : "");
+  chevron.textContent = "▶";
+
+  var delBtn = document.createElement("button");
+  delBtn.className = "btn-delete-player";
+  delBtn.textContent = "Delete player";
+  delBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (!confirm("Delete " + p.player + " and all their sessions? This cannot be undone.")) return;
+    fetch(API + "/admin?action=delete_player&user=" + encodeURIComponent(p.player), { method: "POST" })
+      .then(function(r) { return r.ok ? Promise.resolve() : Promise.reject(r.status); })
+      .then(function() { card.remove(); })
+      .catch(function(e) { alert("Error: " + e); });
+  };
+
+  right.appendChild(delBtn);
+  right.appendChild(chevron);
+  header.appendChild(left);
+  header.appendChild(right);
+  card.appendChild(header);
+
+  var sessions = document.createElement("div");
+  sessions.className = "sessions" + (expanded[p.player] ? " open" : "");
+
+  header.onclick = function() {
+    expanded[p.player] = !expanded[p.player];
+    chevron.className = "chevron" + (expanded[p.player] ? " open" : "");
+    sessions.className = "sessions" + (expanded[p.player] ? " open" : "");
+    if (expanded[p.player] && !sessions.dataset.loaded) {
+      loadSessions(p.player, sessions);
+    }
+  };
+
+  card.appendChild(sessions);
+  container.appendChild(card);
+
+  if (expanded[p.player] && !sessions.dataset.loaded) {
+    loadSessions(p.player, sessions);
+  }
+}
+
+function loadSessions(player, container) {
+  container.dataset.loaded = "1";
+  container.innerHTML = '<div class="empty">Loading sessions…</div>';
+  fetch(API + "/admin?action=player&user=" + encodeURIComponent(player))
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d) { renderSessions(player, d.sessions || [], container); })
+    .catch(function(e) { container.innerHTML = '<div class="err">Error: ' + e + '</div>'; });
+}
+
+function renderSessions(player, sessions, container) {
+  container.innerHTML = "";
+  if (!sessions.length) {
+    container.innerHTML = '<div class="empty">No sessions.</div>';
+    return;
+  }
+  sessions.forEach(function(s) {
+    var row = document.createElement("div");
+    row.className = "session-row";
+    row.id = "session-" + s.id;
+
+    var info = document.createElement("div");
+    info.className = "session-info";
+    info.textContent = fmt(s.ts) + (s.board ? " · " + s.board.join("") : "") + (s.early ? " · ended early" : "");
+
+    var score = document.createElement("div");
+    score.className = "session-score";
+    score.textContent = s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts";
+
+    var del = document.createElement("button");
+    del.className = "btn-delete";
+    del.textContent = "Delete";
+    del.onclick = function() {
+      if (!confirm("Delete this session?")) return;
+      fetch(API + "/admin?action=delete_session&user=" + encodeURIComponent(player) + "&id=" + encodeURIComponent(s.id), { method: "POST" })
+        .then(function(r) { return r.ok ? Promise.resolve() : Promise.reject(r.status); })
+        .then(function() { row.remove(); })
+        .catch(function(e) { alert("Error: " + e); });
+    };
+
+    row.appendChild(info);
+    row.appendChild(score);
+    row.appendChild(del);
+    container.appendChild(row);
+  });
+}
+
+loadPlayers();
+</script>
+</body>
+</html>
