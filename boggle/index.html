@@ -276,7 +276,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T19:03:24Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T19:13:33Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -529,6 +529,7 @@ function endRound(early){
   showGameOver();
 }
 function getLocation(cb){
+  if (data.location) { cb(data.location, "granted"); return; }
   if (!navigator.geolocation) { cb(null, "unavailable"); return; }
   navigator.geolocation.getCurrentPosition(function(pos){
     var lat = pos.coords.latitude, lon = pos.coords.longitude;
