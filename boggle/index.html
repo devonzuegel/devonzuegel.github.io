@@ -289,7 +289,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T20:44:18Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T20:46:07Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1314,73 +1314,6 @@ function screenProgress(){
     return h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "recent rounds" }), box]);
   };
 
-  var backupBlock = function(){
-    var file = h("input", { type: "file", accept: "application/json", style: "display:none" });
-    file.addEventListener("change", function(){ if (file.files[0]) importData(file.files[0]); });
-
-    /* unsynced sessions */
-    var unsynced = unsyncedSessions();
-    var pendingBlock = null;
-    if (syncState.pending || unsynced.length) {
-      var pendingRows = h("div", { style: "margin-top:6px" });
-      if (unsynced.length) {
-        unsynced.forEach(function(s){
-          pendingRows.appendChild(h("div", { class: "missrow mono", style: "font-size:11px;opacity:.8" }, [
-            h("span", { class: "sage", text: new Date(s.ts).toLocaleString() + " · " + ((s.seconds||180)/60) + "m" }),
-            h("span", { text: s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts" })
-          ]));
-        });
-      }
-      var pushBtn = h("button", { class: "linkbtn", style: "margin-top:8px", text: "Push to server now" });
-      pushBtn.onclick = function(){
-        pushBtn.disabled = true; pushBtn.textContent = "Pushing…";
-        clearTimeout(syncDebounce);
-        var was = syncState.lastSync;
-        syncUp();
-        /* poll briefly to give syncUp time to complete */
-        var attempts = 0;
-        var poll = setInterval(function(){
-          attempts++;
-          if (syncState.lastSync !== was) {
-            clearInterval(poll);
-            notify("Synced! " + unsynced.length + " session" + (unsynced.length === 1 ? "" : "s") + " uploaded.", false);
-            render();
-          } else if (syncState.status === "error" && syncState.error !== "queued") {
-            clearInterval(poll);
-            notify(syncState.offline ? "Offline — saved locally, will sync when reconnected." : "Sync failed: " + syncState.error, true);
-            pushBtn.disabled = false; pushBtn.textContent = "Push to server now";
-          } else if (attempts > 10) {
-            clearInterval(poll);
-            notify(syncState.pending ? "Queued for retry when online." : "Done.", !syncState.pending);
-            render();
-          }
-        }, 400);
-      };
-      pendingBlock = h("div", { style: "margin-top:10px;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--amber)" }, [
-        h("div", { class: "eyebrow", style: "color:var(--amber)", text: unsynced.length + " local session" + (unsynced.length === 1 ? "" : "s") + " not yet on server" }),
-        pendingRows,
-        pushBtn
-      ]);
-    }
-
-    var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
-      h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
-      h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ render(); }); } })
-    ]);
-    setTimeout(renderSyncStatus, 50);
-    return h("div", { class: "section" }, [
-      h("div", { class: "eyebrow", text: "backup & sync" }),
-      h("div", { class: "row", style: "margin-top:8px" }, [
-        h("button", { class: "linkbtn", text: "Export JSON", onclick: exportData }),
-        h("button", { class: "linkbtn", text: "Import JSON", onclick: function(){ file.click(); } }),
-        file
-      ]),
-      pendingBlock,
-      syncRow,
-      h("div", { class: "mono sage", style: "font-size:10px;margin-top:6px",
-        text: "history synced to cloud by username · also cached locally" })
-    ]);
-  };
 
 
   if (!allS.length) {
@@ -1402,7 +1335,6 @@ function screenProgress(){
     wrap.appendChild(h("p", { class: "p", text: "Every round so far was ended early, so the stats are empty. Turn them on below or play one to the buzzer." }));
     if (earlyToggle) wrap.appendChild(earlyToggle);
     wrap.appendChild(recentBlock());
-    wrap.appendChild(backupBlock());
     return wrap;
   }
 
@@ -1533,7 +1465,6 @@ function screenProgress(){
     vocabBox
   ]));
 
-  wrap.appendChild(backupBlock());
   return wrap;
 }
 
@@ -1580,6 +1511,72 @@ syncDown(function(){ render(); });
 
 /* ---------------- settings screen ---------------- */
 var dbgLog = function(){}; /* no-op until settings screen is mounted */
+function backupBlock(){
+  var file = h("input", { type: "file", accept: "application/json", style: "display:none" });
+  file.addEventListener("change", function(){ if (file.files[0]) importData(file.files[0]); });
+
+  var unsynced = unsyncedSessions();
+  var pendingBlock = null;
+  if (syncState.pending || unsynced.length) {
+    var pendingRows = h("div", { style: "margin-top:6px" });
+    if (unsynced.length) {
+      unsynced.forEach(function(s){
+        pendingRows.appendChild(h("div", { class: "missrow mono", style: "font-size:11px;opacity:.8" }, [
+          h("span", { class: "sage", text: new Date(s.ts).toLocaleString() + " · " + ((s.seconds||180)/60) + "m" }),
+          h("span", { text: s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts" })
+        ]));
+      });
+    }
+    var pushBtn = h("button", { class: "linkbtn", style: "margin-top:8px", text: "Push to server now" });
+    pushBtn.onclick = function(){
+      pushBtn.disabled = true; pushBtn.textContent = "Pushing…";
+      clearTimeout(syncDebounce);
+      var was = syncState.lastSync;
+      syncUp();
+      var attempts = 0;
+      var poll = setInterval(function(){
+        attempts++;
+        if (syncState.lastSync !== was) {
+          clearInterval(poll);
+          notify("Synced! " + unsynced.length + " session" + (unsynced.length === 1 ? "" : "s") + " uploaded.", false);
+          render();
+        } else if (syncState.status === "error" && syncState.error !== "queued") {
+          clearInterval(poll);
+          notify(syncState.offline ? "Offline — saved locally, will sync when reconnected." : "Sync failed: " + syncState.error, true);
+          pushBtn.disabled = false; pushBtn.textContent = "Push to server now";
+        } else if (attempts > 10) {
+          clearInterval(poll);
+          notify(syncState.pending ? "Queued for retry when online." : "Done.", !syncState.pending);
+          render();
+        }
+      }, 400);
+    };
+    pendingBlock = h("div", { style: "margin-top:10px;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--amber)" }, [
+      h("div", { class: "eyebrow", style: "color:var(--amber)", text: unsynced.length + " local session" + (unsynced.length === 1 ? "" : "s") + " not yet on server" }),
+      pendingRows,
+      pushBtn
+    ]);
+  }
+
+  var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
+    h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
+    h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ render(); }); } })
+  ]);
+  setTimeout(renderSyncStatus, 50);
+  return h("div", { class: "section" }, [
+    h("div", { class: "eyebrow", text: "backup & sync" }),
+    h("div", { class: "row", style: "margin-top:8px" }, [
+      h("button", { class: "linkbtn", text: "Export JSON", onclick: exportData }),
+      h("button", { class: "linkbtn", text: "Import JSON", onclick: function(){ file.click(); } }),
+      file
+    ]),
+    pendingBlock,
+    syncRow,
+    h("div", { class: "mono sage", style: "font-size:10px;margin-top:6px",
+      text: "history synced to cloud by username · also cached locally" })
+  ]);
+}
+
 function screenSettings(){
   var wrap = h("div", { class: "stack" });
 
@@ -1655,6 +1652,7 @@ function screenSettings(){
     ])
   ]));
 
+  wrap.appendChild(backupBlock());
   wrap.appendChild(logEl);
   return wrap;
 }
