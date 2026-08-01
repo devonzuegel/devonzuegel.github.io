@@ -1091,7 +1091,7 @@ function screenIdle(){
   scoring.style.cssText = "display:inline-block;border:1px solid var(--line);border-radius:12px;padding:6px 8px;margin-top:6px;overflow:hidden";
   scoring.appendChild(tbl);
 
-  /* placeholder board — 4×4 grid of ? tiles */
+  /* placeholder board — 4×4 grid of ? tiles, same DOM structure as buildTray() */
   var idleBoard = document.createElement("div");
   idleBoard.className = "board";
   idleBoard.style.opacity = "0.35";
@@ -1103,8 +1103,10 @@ function screenIdle(){
     tile.appendChild(span);
     idleBoard.appendChild(tile);
   }
-  var idleTray = h("div", { class: "trayWrap" });
-  idleTray.appendChild(idleBoard);
+  var idleTray = h("div", { class: "trayWrap" }, [
+    h("div", { class: "label" }),
+    h("div", { class: "boardBox" }, [idleBoard])
+  ]);
 
   var layout = h("div", { class: "reviewLayout" });
   var left = h("div", { class: "reviewLeft" });
