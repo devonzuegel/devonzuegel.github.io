@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:24:20Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:25:00Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -998,7 +998,7 @@ function screenIdle(){
     }));
   });
   return h("div", { class: "stack" }, [
-    h("p", { class: "p", text: "Drag your finger across the letters to make a word — lift to submit. Then review every word you missed and tag it: did you know the word and not see the path, or not know the word at all? Boards come back a day later so you can prove the path miss is gone." }),
+    h("p", { class: "p", text: "Drag your finger across the letters to make a word — lift to submit. Then review every word you missed and mark any that were unfamiliar — those go into your vocab list. Boards come back a day later so you can prove the path miss is gone." }),
     h("div", {}, [h("div", { class: "eyebrow", text: "round length" }), lens]),
     h("button", { class: "btn", text: "Shake the tray", onclick: function(){ startRound(); } }),
     due.length ? h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }) : null
@@ -1095,30 +1095,27 @@ function screenReview(){
    is a no-op, except "unfamiliar", which re-opens the definition */
 function tagPair(w, hidden){
   var box = h("div", { class: "row", style: "gap:6px" });
-  var rec = h("button", { class: "tag", text: "recognized" });
   var unf = h("button", { class: "tag", text: "unfamiliar" });
   var paint = function(){
-    rec.className = "tag" + (S.tags[w] === "knew" ? " knew" : "");
     unf.className = "tag" + (S.tags[w] === "new" ? " new" : "");
   };
-  rec.addEventListener("click", function(){
-    if (S.tags[w] === "knew") return;
-    tagMiss(w, "knew");
-    paint();
-  });
   unf.addEventListener("click", function(){
     var already = S.tags[w] === "new";
-    if (!already) { tagMiss(w, "new"); paint(); }
-    if (hidden && !S.revealed[w]) {
-      S.revealed[w] = "shown";
-      if (S.challenge === w) { S.challenge = null; hideQbar(); }
-      S.sel = w;
-      render();
+    if (already) {
+      tagMiss(w, "knew"); /* untoggle — removes from vocab */
+      paint();
+    } else {
+      tagMiss(w, "new"); paint();
+      if (hidden && !S.revealed[w]) {
+        S.revealed[w] = "shown";
+        if (S.challenge === w) { S.challenge = null; hideQbar(); }
+        S.sel = w;
+        render();
+      }
+      showDefModal(w);
     }
-    showDefModal(w);
   });
   paint();
-  box.appendChild(rec);
   box.appendChild(unf);
   return box;
 }
