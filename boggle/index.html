@@ -1405,7 +1405,7 @@ function screenProgress(){
       prow.appendChild(h("button", { class: "chipbtn" + (S.playerFilter === n ? " on" : ""), text: n,
         onclick: function(){ S.playerFilter = n; render(); } }));
     });
-    wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", text: "whose rounds" }), prow]));
+    wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:6px", text: "whose rounds" }), prow]));
   }
 
   var recentBlock = function(){
@@ -1556,7 +1556,7 @@ function screenProgress(){
   }
 
   /* vocab */
-  var vocabTabs = h("div", { class: "row" });
+  var vocabTabs = h("div", { class: "row", style: "margin:8px 0" });
   [["to learn", false], ["learned", true]].forEach(function(pair){
     vocabTabs.appendChild(h("button", { class: "chipbtn" + (showLearned === pair[1] ? " on" : ""), text: pair[0],
       onclick: function(){ showLearned = pair[1]; render(); } }));
