@@ -295,7 +295,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T21:17:03Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T21:18:08Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -698,6 +698,18 @@ function showGameOver(){
       h("button", { class: "btn", text: "Review misses", onclick: closeModal }),
       h("button", { class: "btn ghost", text: "New board", onclick: function(){ closeModal(); S.phase = "idle"; S.sel = null; render(); } })
     ]),
+    S.endedEarly ? h("button", { class: "linkbtn", style: "margin-top:14px;color:var(--rust);font-size:12px",
+      text: "Delete this game from history",
+      onclick: function(){
+        var id = S.lastSessionId;
+        data.sessions = data.sessions.filter(function(s){ return s.id !== id; });
+        data.events = (data.events || []).filter(function(e){ return e.sessionId !== id; });
+        save();
+        closeModal();
+        S.phase = "idle"; S.sel = null; render();
+        notify("Game deleted.", false);
+      }
+    }) : null,
     h("div", { class: "mnote", text: "tap anywhere to dismiss" })
   ]));
   m.className = "on";
@@ -713,6 +725,7 @@ function saveSession(){
     pct: pct(), score: sumScore(S.found), replay: !!S.replay, prevPct: prev ? prev.lastPct : null,
     early: !!S.endedEarly, left: S.leftAtEnd || 0, player: data.player || "Player"
   };
+  S.lastSessionId = session.id;
   data.sessions.unshift(session);
   data.sessions = data.sessions.slice(0, 200);
   var attempts = (prev ? prev.attempts : 0) + 1;
