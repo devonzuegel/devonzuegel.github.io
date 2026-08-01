@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="92.16" fill="#141F1A"/>
+<rect x="40.96" y="40.96" width="430.08" height="430.08" rx="34.4064" fill="#27392F"/>
+<rect x="47.4" y="47.4" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="94.7" y="108.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">B</text>
+<rect x="154.9" y="47.4" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="202.2" y="108.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">O</text>
+<rect x="262.5" y="47.4" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="309.8" y="108.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">G</text>
+<rect x="370.0" y="47.4" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="417.3" y="108.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">G</text>
+<rect x="47.4" y="154.9" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="94.7" y="216.1" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">L</text>
+<rect x="154.9" y="154.9" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="202.2" y="216.1" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">E</text>
+<rect x="262.5" y="154.9" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="309.8" y="216.1" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">T</text>
+<rect x="370.0" y="154.9" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="417.3" y="216.1" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">R</text>
+<rect x="47.4" y="262.5" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="94.7" y="323.7" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">A</text>
+<rect x="154.9" y="262.5" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="202.2" y="323.7" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">I</text>
+<rect x="262.5" y="262.5" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="309.8" y="323.7" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">N</text>
+<rect x="370.0" y="262.5" width="94.6" height="94.6" rx="17.0" fill="#E9A83A"/>
+<text x="417.3" y="323.7" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">E</text>
+<rect x="47.4" y="370.0" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="94.7" y="431.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">R</text>
+<rect x="154.9" y="370.0" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="202.2" y="431.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">!</text>
+<rect x="262.5" y="370.0" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="309.8" y="431.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">!</text>
+<rect x="370.0" y="370.0" width="94.6" height="94.6" rx="17.0" fill="#F2EDDF"/>
+<text x="417.3" y="431.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="39.7" fill="#17201B">!</text>
+</svg>

@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="Boggle">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#141F1A">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.svg">
 <title>Boggle Trainer</title>
 <style>
   :root{
@@ -31,6 +33,13 @@
     padding:6px 14px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
   #clockPill.on{display:block}
   #clockPill.low{color:var(--rust);border-color:var(--rust)}
+  #unsyncedPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);left:14px;z-index:45;
+    display:none;font-family:var(--mono);font-size:11px;color:var(--amber);
+    background:rgba(20,31,26,.92);border:1px solid var(--amber);border-radius:999px;
+    padding:5px 12px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px);
+    cursor:pointer}
+  #unsyncedPill.on{display:block}
+  #unsyncedPill.offline{color:var(--rust);border-color:var(--rust)}
   /* game over */
   #modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;
     background:rgba(9,15,12,.76);padding:24px}
@@ -180,6 +189,7 @@
 <div id="toasts"></div>
 <div id="qbar"><div class="inner"></div></div>
 <div id="clockPill"></div>
+<div id="unsyncedPill" onclick="syncUp()"></div>
 <div id="modal"></div>
 <nav id="nav"></nav>
 <script>
@@ -257,8 +267,70 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var syncState = { status: "idle", lastSync: null, error: null }; /* idle | syncing | ok | error */
+var PENDING_KEY = "boggle:pendingSync";
+var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
+
+/* restore pending flag across page loads */
+try { if (localStorage.getItem(PENDING_KEY) === "1") syncState.pending = true; } catch(e) {}
+
+function setPending(val){
+  syncState.pending = val;
+  try { if (val) localStorage.setItem(PENDING_KEY, "1"); else localStorage.removeItem(PENDING_KEY); } catch(e) {}
+  renderUnsyncedPill();
+}
+
+function renderUnsyncedPill(){
+  var pill = document.getElementById("unsyncedPill");
+  if (!pill) return;
+  if (syncState.offline && syncState.pending) {
+    pill.textContent = "offline · changes saved locally";
+    pill.className = "on offline";
+  } else if (syncState.pending) {
+    pill.textContent = "syncing…";
+    pill.className = "on";
+  } else {
+    pill.className = "";
+  }
+}
+
+function renderSyncStatus(){
+  var el = document.getElementById("syncStatus");
+  if (!el) return;
+  if (syncState.status === "syncing") { el.textContent = "syncing…"; el.style.color = "var(--sage)"; }
+  else if (syncState.status === "ok") { el.textContent = "synced " + fmtAgo(syncState.lastSync); el.style.color = "var(--sage)"; }
+  else if (syncState.status === "error") { el.textContent = syncState.offline ? "offline" : "sync error"; el.style.color = "var(--rust)"; }
+  else { el.textContent = ""; }
+}
+
+/* online/offline events */
+window.addEventListener("online", function(){
+  syncState.offline = false;
+  renderUnsyncedPill();
+  /* tell SW to flush its queue */
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: "FLUSH_QUEUE" });
+  }
+  /* also try a direct syncUp in case SW queue is empty but we have pending local changes */
+  if (syncState.pending) syncUp();
+});
+window.addEventListener("offline", function(){
+  syncState.offline = true;
+  renderUnsyncedPill();
+});
+
+/* messages from SW */
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.addEventListener("message", function(e) {
+    if (e.data && e.data.type === "SYNC_QUEUED") {
+      setPending(true);
+    } else if (e.data && e.data.type === "SYNC_FLUSHED") {
+      setPending(false);
+      syncState.status = "ok"; syncState.lastSync = Date.now();
+      renderSyncStatus();
+    }
+  });
+}
 
 function mergeData(remote){
   /* sessions: union by id, keep newest 200 */
@@ -324,20 +396,28 @@ function syncDown(cb){
       renderSyncStatus();
       if (cb) cb();
     }).catch(function(e){
+      syncState.offline = !navigator.onLine;
       syncState.status = "error"; syncState.error = String(e);
       renderSyncStatus();
+      renderUnsyncedPill();
       if (cb) cb();
     });
 }
 
 function syncUp(){
   if (!data.player) return;
+  setPending(true);
+  syncState.status = "syncing"; renderSyncStatus();
+  var payload = Object.assign({}, data, { lastSyncedAt: Date.now() });
   fetch(API + "?user=" + encodeURIComponent(data.player), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  }).then(function(r){ return r.ok ? Promise.resolve() : Promise.reject(r.status); })
-  .then(function(){
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(res){
+    /* queued by SW (offline) — pending stays true */
+    if (res && res.queued) { syncState.status = "error"; syncState.error = "queued"; renderSyncStatus(); return; }
+    setPending(false);
     syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
     renderSyncStatus();
   }).catch(function(e){
@@ -1470,9 +1550,14 @@ if (new URLSearchParams(location.search).get("debug") === "true") {
   document.body.appendChild(dbg);
 }
 
-/* offline caching when served over http(s) */
+renderUnsyncedPill();
+
+/* offline caching + background sync when served over http(s) */
 if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
-  navigator.serviceWorker.register("sw.js").catch(function(){});
+  navigator.serviceWorker.register("sw.js").then(function(reg){
+    /* register background sync tag so Android Chrome retries when back online */
+    if (syncState.pending && reg.sync) reg.sync.register("boggle-sync").catch(function(){});
+  }).catch(function(){});
 }
 </script>
 </body>

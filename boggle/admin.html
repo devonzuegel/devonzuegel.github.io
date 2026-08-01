@@ -163,8 +163,9 @@ function makePlayerCard(p) {
   var left = document.createElement("div");
   var nameEl = document.createElement("div"); nameEl.className = "player-name"; nameEl.textContent = p.player;
   var loc = d.location ? " · " + locStr(d.location) : "";
+  var synced = d.lastSyncedAt ? " · synced " + fmt(d.lastSyncedAt) : " · never synced";
   var meta = document.createElement("div"); meta.className = "player-meta";
-  meta.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · joined " + fmtDate(d.createdAt) + loc;
+  meta.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · joined " + fmtDate(d.createdAt) + loc + synced;
   left.appendChild(nameEl); left.appendChild(meta);
 
   var right = document.createElement("div");
