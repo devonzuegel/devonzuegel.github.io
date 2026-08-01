@@ -277,7 +277,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:45:21Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:46:03Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1048,8 +1048,10 @@ function screenReview(){
   layout.appendChild(wrap);
 
   left.appendChild(buildTray({ interactive: S.quiz }));
-  left.appendChild(h("div", { class: "center mono sage", style: "font-size:10px;margin-top:4px",
-    text: S.quiz ? "quiz mode · tap a word to light its letters, then draw it" : "tap a word to trace its path" }));
+  left.appendChild(h("div", { class: "row", style: "margin-top:8px;gap:8px" }, [
+    h("button", { class: "btn", style: "flex:1", text: "New board", onclick: function(){ S.phase = "idle"; S.sel = null; S.challenge = null; hideQbar(); render(); } }),
+    h("button", { class: "btn ghost", style: "flex:1", text: "Progress", onclick: function(){ S.tab = "progress"; hideQbar(); render(); } })
+  ]));
   var longest = S.found.slice().sort(function(a, b){ return b.length - a.length; })[0];
   wrap.appendChild(h("div", { class: "grid3" }, [
     stat("5+ found", pct() + "%", found5().length + " of " + all5().length),
@@ -1094,11 +1096,6 @@ function screenReview(){
   });
   if (!missed.length) list.appendChild(h("div", { class: "p", text: "Nothing missed at this length. Rare." }));
   wrap.appendChild(list);
-
-  wrap.appendChild(h("div", { class: "row" }, [
-    h("button", { class: "btn", text: "New board", onclick: function(){ S.phase = "idle"; S.sel = null; S.challenge = null; hideQbar(); render(); } }),
-    h("button", { class: "btn ghost", text: "Progress", onclick: function(){ S.tab = "progress"; hideQbar(); render(); } })
-  ]));
   return layout;
 }
 /* the two tags are mutually exclusive; tapping the one that's already set
