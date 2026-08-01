@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:27:53Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:29:11Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -524,16 +524,16 @@ function endRound(early){
   showGameOver();
 }
 function getLocation(cb){
-  if (!navigator.geolocation) { cb(null); return; }
+  if (!navigator.geolocation) { cb(null, "unavailable"); return; }
   navigator.geolocation.getCurrentPosition(function(pos){
     var lat = pos.coords.latitude, lon = pos.coords.longitude;
     fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon, {
       headers: { "Accept-Language": "en", "User-Agent": "BoggleTrainer/1.0" }
     }).then(function(r){ return r.json(); }).then(function(d){
       var a = d.address || {};
-      cb({ lat: lat, lon: lon, city: a.city || a.town || a.village || a.county || "", country: a.country || "" });
-    }).catch(function(){ cb({ lat: lat, lon: lon, city: "", country: "" }); });
-  }, function(){ cb(null); }, { timeout: 5000 });
+      cb({ lat: lat, lon: lon, city: a.city || a.town || a.village || a.county || "", country: a.country || "" }, "granted");
+    }).catch(function(){ cb({ lat: lat, lon: lon, city: "", country: "" }, "granted"); });
+  }, function(e){ cb(null, e.code === 1 ? "denied" : "unavailable"); }, { timeout: 5000 });
 }
 
 function setPlayer(name){
@@ -544,21 +544,22 @@ function setPlayer(name){
   /* rounds played before names existed belong to whoever names themselves first */
   if (first) data.sessions.forEach(function(x){ if (!x.player) x.player = n; });
   if (!data.createdAt) data.createdAt = Date.now();
+  if (!data.events) data.events = [];
+  var alreadyHasSignup = data.events.some(function(e){ return e.type === "signup"; });
+  if (!alreadyHasSignup) data.events.push({ type: "signup", ts: data.createdAt, player: n, loc: null, locationPerms: "pending" });
   saveLocal();
   closeModal();
-  /* grab location for account creation event */
-  getLocation(function(loc){
-    if (loc && !data.location) { data.location = loc; saveLocal(); }
-    if (!data.events) data.events = [];
-    var alreadyHasSignup = data.events.some(function(e){ return e.type === "signup"; });
-    if (!alreadyHasSignup) {
-      data.events.push({ type: "signup", ts: data.createdAt, player: n, loc: loc });
-      saveLocal();
-    }
-    /* upload immediately, then pull server history and merge */
-    clearTimeout(syncDebounce);
-    syncUp();
-    syncDown(function(){ render(); });
+  /* upload immediately before waiting for location */
+  clearTimeout(syncDebounce);
+  syncUp();
+  syncDown(function(){ render(); });
+  /* grab location asynchronously and update if granted */
+  getLocation(function(loc, perms){
+    if (loc && !data.location) data.location = loc;
+    /* update the signup event with location result */
+    var signup = data.events.filter(function(e){ return e.type === "signup" && e.player === n; })[0];
+    if (signup) { signup.loc = loc; signup.locationPerms = perms; }
+    save();
   });
 }
 function showNameModal(firstRun){
@@ -693,15 +694,15 @@ function saveSession(){
     due: Date.now() + (attempts === 1 ? DAY : 7 * DAY)
   });
   S.replay = false;
-  save();
-  /* attach location to session + events log asynchronously */
-  getLocation(function(loc){
-    if (loc) {
-      session.loc = loc;
-      if (!data.events) data.events = [];
-      data.events.push({ type: "session", ts: session.ts, player: session.player, sessionId: session.id, score: session.score, loc: loc });
-      save();
-    }
+  if (!data.events) data.events = [];
+  data.events.push({ type: "session", ts: session.ts, player: session.player, sessionId: session.id, score: session.score, loc: null, locationPerms: "pending" });
+  save(); /* upload immediately */
+  /* attach location asynchronously */
+  getLocation(function(loc, perms){
+    var ev = data.events.filter(function(e){ return e.type === "session" && e.sessionId === session.id; })[0];
+    if (ev) { ev.loc = loc; ev.locationPerms = perms; }
+    if (loc) session.loc = loc;
+    save();
   });
 }
 function submitWord(rawWord){
