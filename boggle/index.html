@@ -271,7 +271,7 @@ try {
 
 /* ---------------- cloud sync ---------------- */
 var API = "https://boggle-api.vercel.app/api/boggle";
-var BUILD = "2026-08-01T18:29:11Z"; /* updated by deploy script */
+var BUILD = "2026-08-01T18:31:46Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1489,24 +1489,24 @@ function screenProgress(){
   }
 
   /* vocab */
-  var vocabTabs = h(“div”, { class: “row” });
-  [[“to learn”, false], [“learned”, true]].forEach(function(pair){
-    vocabTabs.appendChild(h(“button”, { class: “chipbtn” + (showLearned === pair[1] ? “ on” : “”), text: pair[0],
+  var vocabTabs = h("div", { class: "row" });
+  [["to learn", false], ["learned", true]].forEach(function(pair){
+    vocabTabs.appendChild(h("button", { class: "chipbtn" + (showLearned === pair[1] ? " on" : ""), text: pair[0],
       onclick: function(){ showLearned = pair[1]; render(); } }));
   });
   var vocabList = data.vocab.filter(function(v){ return showLearned ? v.learned : !v.learned; });
-  var vocabBox = h(“div”, {});
-  if (!vocabList.length) vocabBox.appendChild(h(“div”, { class: “p”, text: showLearned ? “Nothing learned yet.” : “No unfamiliar words tagged yet.” }));
+  var vocabBox = h("div", {});
+  if (!vocabList.length) vocabBox.appendChild(h("div", { class: "p", text: showLearned ? "Nothing learned yet." : "No unfamiliar words tagged yet." }));
   vocabList.forEach(function(v){
-    vocabBox.appendChild(h(“div”, { class: “missrow” }, [
-      h(“span”, { class: “w mono”, text: v.word + “ · “ + v.word.length + “L” }),
-      h(“button”, { class: “tag”, text: v.learned ? “unlearn” : “learned”,
+    vocabBox.appendChild(h("div", { class: "missrow" }, [
+      h("span", { class: "w mono", text: v.word + " · " + v.word.length + "L" }),
+      h("button", { class: "tag", text: v.learned ? "unlearn" : "learned",
         onclick: function(){ v.learned = !v.learned; save(); render(); } })
     ]));
   });
-  wrap.appendChild(h(“div”, {}, [
-    h(“div”, { class: “eyebrow”, text: “unfamiliar words” }),
-    h(“div”, { class: “p”, style: “margin-top:4px”, text: “Words you marked unfamiliar during review. Path misses fix themselves from replaying — these are the real vocab gaps.” }),
+  wrap.appendChild(h("div", {}, [
+    h("div", { class: "eyebrow", text: "unfamiliar words" }),
+    h("div", { class: "p", style: "margin-top:4px", text: "Words you marked unfamiliar during review. Path misses fix themselves from replaying — these are the real vocab gaps." }),
     vocabTabs,
     vocabBox
   ]));
