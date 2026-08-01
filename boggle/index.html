@@ -1365,6 +1365,66 @@ if (!data.player) showNameModal(true);
 /* pull latest from server on startup */
 syncDown(function(){ render(); });
 
+/* ---------------- debug panel (?debug=true) ---------------- */
+if (new URLSearchParams(location.search).get("debug") === "true") {
+  var dbg = document.createElement("div");
+  dbg.style.cssText = "position:fixed;bottom:80px;left:0;right:0;z-index:200;background:#0a0f0c;border-top:1px solid #31463B;padding:12px 16px;font-family:ui-monospace,monospace;font-size:11px;color:#8CA598";
+  function dbgLog(msg, color){
+    var line = document.createElement("div");
+    line.style.color = color || "#8CA598";
+    line.textContent = new Date().toISOString().slice(11,19) + " " + msg;
+    dbg.insertBefore(line, dbg.firstChild);
+    while (dbg.children.length > 12) dbg.removeChild(dbg.lastChild);
+  }
+  function dbgBtn(label, color, fn){
+    var b = document.createElement("button");
+    b.textContent = label;
+    b.style.cssText = "margin-right:8px;margin-bottom:6px;padding:4px 10px;border-radius:999px;border:1px solid " + color + ";color:" + color + ";background:none;font:inherit;cursor:pointer;font-size:11px";
+    b.onclick = fn;
+    return b;
+  }
+  var btnRow = document.createElement("div");
+  btnRow.style.marginBottom = "8px";
+
+  btnRow.appendChild(dbgBtn("Force sync UP", "#E9A83A", function(){
+    dbgLog("forcing syncUp for user: " + (data.player||"(none)"), "#E9A83A");
+    clearTimeout(syncDebounce);
+    syncUp();
+    dbgLog("POST sent — check network tab", "#E9A83A");
+  }));
+
+  btnRow.appendChild(dbgBtn("Force sync DOWN", "#8CA598", function(){
+    dbgLog("forcing syncDown for user: " + (data.player||"(none)"), "#8CA598");
+    syncDown(function(){
+      dbgLog("syncDown done — sessions: " + data.sessions.length, "#8CA598");
+      render();
+    });
+  }));
+
+  btnRow.appendChild(dbgBtn("Check KV", "#8CA598", function(){
+    if (!data.player) { dbgLog("no player set", "#C8593F"); return; }
+    dbgLog("fetching KV for: " + data.player, "#8CA598");
+    fetch(API + "?user=" + encodeURIComponent(data.player))
+      .then(function(r){ return r.json(); })
+      .then(function(d){ dbgLog("KV sessions: " + (d.sessions||[]).length + " · players: " + (d.players||[]).join(","), "#8CA598"); })
+      .catch(function(e){ dbgLog("fetch error: " + e, "#C8593F"); });
+  }));
+
+  btnRow.appendChild(dbgBtn("Clear localStorage", "#C8593F", function(){
+    if (!confirm("Clear local storage? Data on server is safe.")) return;
+    try { localStorage.removeItem(KEY); } catch(e){}
+    dbgLog("localStorage cleared — reload to start fresh", "#C8593F");
+  }));
+
+  btnRow.appendChild(dbgBtn("Local state", "#8CA598", function(){
+    dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length, "#8CA598");
+  }));
+
+  dbg.appendChild(btnRow);
+  dbgLog("debug mode on · user: " + (data.player||"(none set)") + " · sessions: " + data.sessions.length);
+  document.body.appendChild(dbg);
+}
+
 /* offline caching when served over http(s) */
 if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
   navigator.serviceWorker.register("sw.js").catch(function(){});
