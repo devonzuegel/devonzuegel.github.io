@@ -123,7 +123,7 @@
   .boardBox{position:relative}
   .shakeBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     border:none;z-index:2;white-space:nowrap;
-    box-shadow:0 0 0 6px rgba(20,31,26,.8),0 0 16px rgb(255 255 255 / 50%)}
+    box-shadow:0 0 0 6px rgba(20,31,26,.8),0 0 16px rgb(255 255 255 / 100%)}
   .idleBoard{opacity:0.25}
   .board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px;border-radius:16px;
     background:var(--surface2);box-shadow:inset 0 2px 10px rgba(0,0,0,.45);
@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:58:37Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T23:00:17Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
