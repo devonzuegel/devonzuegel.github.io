@@ -349,7 +349,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:50:01Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:51:16Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1835,21 +1835,6 @@ function screenProgress(){
 
   wrap.appendChild(recentBlock());
 
-  if (roster.length > 1) {
-    var board = h("div", {});
-    roster.map(function(n){
-      var mine = data.sessions.filter(function(x){ return whoOf(x) === n && (data.includeEarly || !x.early); });
-      return { n: n, rounds: mine.length, best: mine.length ? Math.max.apply(null, mine.map(function(x){ return x.score; })) : 0,
-        rate: median(mine.map(function(x){ return x.pct; })) };
-    }).sort(function(a, b){ return b.best - a.best; }).forEach(function(r, i){
-      board.appendChild(h("div", { class: "missrow" }, [
-        h("span", { class: "w mono", text: (i + 1) + ". " + r.n }),
-        h("span", { class: "mono sage", style: "font-size:12px",
-          text: r.rounds + (r.rounds === 1 ? " round · " : " rounds · ") + r.rate + "% at 5+ · best " + r.best })
-      ]));
-    });
-    wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "players on this device" }), board]));
-  }
 
   /* vocab */
   var vocabTabs = h("div", { class: "row", style: "margin:8px 0" });
@@ -2044,6 +2029,25 @@ function screenSettings(){
   ]);
   wrap.appendChild(installBlock);
 
+  /* players on this device */
+  var settingsRoster = [];
+  data.sessions.forEach(function(x){ var n = whoOf(x); if (settingsRoster.indexOf(n) < 0) settingsRoster.push(n); });
+  if (settingsRoster.length > 1) {
+    var board = h("div", {});
+    settingsRoster.map(function(n){
+      var mine = data.sessions.filter(function(x){ return whoOf(x) === n && (data.includeEarly || !x.early); });
+      return { n: n, rounds: mine.length, best: mine.length ? Math.max.apply(null, mine.map(function(x){ return x.score; })) : 0,
+        rate: median(mine.map(function(x){ return x.pct; })) };
+    }).sort(function(a, b){ return b.best - a.best; }).forEach(function(r, i){
+      board.appendChild(h("div", { class: "missrow" }, [
+        h("span", { class: "w mono", text: (i + 1) + ". " + r.n }),
+        h("span", { class: "mono sage", style: "font-size:12px",
+          text: r.rounds + (r.rounds === 1 ? " round · " : " rounds · ") + r.rate + "% at 5+ · best " + r.best })
+      ]));
+    });
+    wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "players on this device" }), board]));
+  }
+
   /* build info */
   var buildDate = new Date(BUILD);
   var buildFmt = buildDate.toLocaleString(undefined, { month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short" });
@@ -2069,7 +2073,7 @@ function screenSettings(){
   }
 
   /* advanced (collapsed by default) */
-  var advancedBody = h("div", { style: "display:none;margin-top:12px" }, [
+  var advancedBody = h("div", { style: "display:none;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px" }, [
     h("div", { class: "eyebrow", text: "current version" }),
     h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px;margin-bottom:12px", text: "Built " + buildFmt + " · " + ago }),
 
