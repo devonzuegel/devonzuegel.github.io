@@ -1,36 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
-<rect width="180" height="180" rx="32.4" fill="#141F1A"/>
-<rect x="14.4" y="14.4" width="151.2" height="151.2" rx="12.096" fill="#27392F"/>
-<rect x="16.7" y="16.7" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="33.3" y="38.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">B</text>
-<rect x="54.5" y="16.7" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="71.1" y="38.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">O</text>
-<rect x="92.3" y="16.7" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="108.9" y="38.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">G</text>
-<rect x="130.1" y="16.7" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="146.7" y="38.2" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">G</text>
-<rect x="16.7" y="54.5" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="33.3" y="76.0" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">L</text>
-<rect x="54.5" y="54.5" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="71.1" y="76.0" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">E</text>
-<rect x="92.3" y="54.5" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="108.9" y="76.0" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">T</text>
-<rect x="130.1" y="54.5" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="146.7" y="76.0" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">R</text>
-<rect x="16.7" y="92.3" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="33.3" y="113.8" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">A</text>
-<rect x="54.5" y="92.3" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="71.1" y="113.8" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">I</text>
-<rect x="92.3" y="92.3" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="108.9" y="113.8" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">N</text>
-<rect x="130.1" y="92.3" width="33.3" height="33.3" rx="6.0" fill="#E9A83A"/>
-<text x="146.7" y="113.8" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">E</text>
-<rect x="16.7" y="130.1" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="33.3" y="151.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">R</text>
-<rect x="54.5" y="130.1" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="71.1" y="151.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">!</text>
-<rect x="92.3" y="130.1" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="108.9" y="151.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">!</text>
-<rect x="130.1" y="130.1" width="33.3" height="33.3" rx="6.0" fill="#F2EDDF"/>
-<text x="146.7" y="151.6" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="14.0" fill="#17201B">!</text>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="180" height="180" rx="32.4" fill="#141F1A"/>
+  <rect x="26" y="28" width="128" height="128" rx="18" fill="#CFC5AE" filter="url(#shadow)"/>
+  <rect x="26" y="26" width="128" height="128" rx="18" fill="#F2EDDF"/>
+  <text x="90" y="90" text-anchor="middle" dominant-baseline="central" font-family="Futura, 'Avenir Next Condensed', 'Century Gothic', system-ui, sans-serif" font-weight="700" font-size="90" fill="#17201B">B</text>
 </svg>
