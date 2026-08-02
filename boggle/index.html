@@ -132,8 +132,12 @@
   .word{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:999px;background:var(--surface2)}
   .word.big{background:var(--amber);color:var(--ink)}
   .wrap{display:flex;flex-wrap:wrap;gap:8px}
-  .missrow{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
-    border-radius:10px;padding:8px 12px;margin-bottom:4px}
+  .missrow{display:flex;align-items:center;gap:8px;background:var(--surface);border:0px solid var(--line);
+    padding:8px 12px}
+  .missrow:first-child{border-radius:10px 10px 0 0}
+  .missrow:last-child{border-radius:0 0 10px 10px}
+  .missrow:first-child:last-child{border-radius:10px}
+  .missrow+.missrow{border-top:1px solid var(--line)}
   .missrow.sel{background:var(--surface2)}
   .missrow .w{flex:1;text-align:left;font-family:var(--mono);font-size:15px}
   .tag{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
@@ -645,7 +649,7 @@ function showNameModal(firstRun){
       firstRun ? null : h("button", { class: "btn ghost", text: "Cancel", onclick: closeModal })
     ]),
     switcher,
-    h("div", { class: "mnote", text: "synced across devices · rounds are filed under this name" })
+    h("div", { class: "mnote", text: "synced across devices" })
   ]));
   m.className = "on";
   m.onclick = function(e){ if (e.target === m && !firstRun) closeModal(); };
@@ -1327,6 +1331,12 @@ function svgEl(tag, attrs){
 }
 function dayKey(ts){ var d = new Date(ts); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
 function median(arr){ if (!arr.length) return 0; var a = arr.slice().sort(function(x, y){ return x - y; }); return Math.round(a[Math.floor(a.length / 2)]); }
+function relDate(ts){
+  var hours = Math.floor((Date.now() - ts) / 3600000);
+  if (hours < 24) return hours < 1 ? "just now" : hours + " hour" + (hours === 1 ? "" : "s") + " ago";
+  var days = Math.floor(hours / 24);
+  return days + " day" + (days === 1 ? "" : "s") + " ago";
+}
 
 var LEN_COLOR = { 60: "#7FB8A6", 120: "#C8593F", 180: "#E9A83A" };
 function lenOf(x){ return x.seconds || 180; }
@@ -1335,13 +1345,75 @@ function lenName(d){ return (d / 60) + " min"; }
 /* one x-slot per round in overall chronological order, so the three
    round-length series stay in real sequence instead of being stretched
    to a common length */
-function trendChart(sessions, actives){
-  var W = 320, H = 140, PADL = 26, PADB = 14, top = 8;
+function showSvgTip(t, text, x, y, W){
+  var tip = t.tip, tipBg = t.tipBg, vline = t.vline;
+  tip.textContent = text;
+  tip.setAttribute("x", x);
+  tip.setAttribute("y", y - 8);
+  tip.setAttribute("visibility", "visible");
+  try {
+    var bb = tip.getBBox();
+    var pad = 3;
+    tipBg.setAttribute("x", bb.x - pad);
+    tipBg.setAttribute("y", bb.y - pad);
+    tipBg.setAttribute("width", bb.width + pad * 2);
+    tipBg.setAttribute("height", bb.height + pad * 2);
+    tipBg.setAttribute("visibility", "visible");
+  } catch(e) {}
+  if (vline) { vline.setAttribute("x1", x); vline.setAttribute("x2", x); vline.setAttribute("visibility", "visible"); }
+}
+function hideSvgTip(t){
+  t.tip.setAttribute("visibility", "hidden");
+  t.tipBg.setAttribute("visibility", "hidden");
+  if (t.vline) t.vline.setAttribute("visibility", "hidden");
+}
+function makeSvgTip(svg, H){
+  var vline = svgEl("line", { x1: 0, y1: 0, x2: 0, y2: H, stroke: "#141F1A", "stroke-width": 1, opacity: 0.6, visibility: "hidden" });
+  var tipBg = svgEl("rect", { x: 0, y: 0, rx: 3, fill: "#141F1A", "fill-opacity": 0.85, visibility: "hidden" });
+  var tip = svgEl("text", { x: 0, y: 0, fill: "#E9CFA0", "font-size": 9, "font-family": "ui-monospace, Menlo, monospace", "text-anchor": "middle", visibility: "hidden" });
+  /* appended lazily so they land after all lines/dots in DOM order (= on top) */
+  return {
+    tip: tip, tipBg: tipBg, vline: vline,
+    attach: function(){ svg.appendChild(vline); svg.appendChild(tipBg); svg.appendChild(tip); }
+  };
+}
+function addDotTooltips(svg, pts, W, H, valFn, t){
+  pts.forEach(function(p){
+    var hit = svgEl("circle", { cx: p.x, cy: p.y, r: 16, fill: "transparent", style: "cursor:pointer" });
+    function show(e){ e.stopPropagation(); showSvgTip(t, relDate(p.s.ts) + " · " + valFn(p.s), p.x, p.y, W); }
+    hit.addEventListener("click", show);
+    hit.addEventListener("mouseenter", show);
+    hit.addEventListener("mouseleave", function(){ hideSvgTip(t); });
+    svg.appendChild(hit);
+  });
+}
+function addMaTooltip(svg, maEl, W, t){
+  function showMa(e){
+    var svg = maEl.ownerSVGElement;
+    var pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    var local = pt.matrixTransform(svg.getScreenCTM().inverse());
+    showSvgTip(t, "5-round moving avg", local.x, local.y, W);
+    if (t.vline) t.vline.setAttribute("visibility", "hidden");
+  }
+  maEl.addEventListener("mouseenter", showMa);
+  maEl.addEventListener("mouseleave", function(){ hideSvgTip(t); });
+  maEl.addEventListener("click", function(e){ e.stopPropagation(); showMa(e); });
+  var pts = maEl.getAttribute("points");
+  var hitEl = svgEl("polyline", { points: pts, fill: "none", stroke: "transparent", "stroke-width": 20, style: "cursor:pointer" });
+  hitEl.addEventListener("mouseenter", showMa);
+  hitEl.addEventListener("mouseleave", function(){ hideSvgTip(t); });
+  hitEl.addEventListener("click", function(e){ e.stopPropagation(); showMa(e); });
+  maEl.parentNode.insertBefore(hitEl, maEl.nextSibling);
+}
+
+function trendChart(sessions, actives, allSessions){
+  var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
   var bottom = H - PADB, span = bottom - top;
-  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:160px" });
+  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:200px;overflow:visible" });
+  var t = makeSvgTip(svg, H);
   var vis = sessions.filter(function(x){ return actives.indexOf(lenOf(x)) >= 0; });
-  var peak = vis.length ? Math.max.apply(null, vis.map(function(x){ return x.pct; })) : 0;
-  var maxY = Math.max(50, Math.ceil(peak / 10) * 10);
+  var maxY = 100;
   [0, maxY / 2, maxY].forEach(function(v){
     var y = bottom - (v / maxY) * span;
     svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
@@ -1353,6 +1425,7 @@ function trendChart(sessions, actives){
     return PADL + (sessions.length > 1 ? i / (sessions.length - 1) : 0.5) * (W - PADL - 6);
   };
   var yAt = function(v){ return bottom - (v / maxY) * span; };
+  var allPts = [];
   actives.forEach(function(d){
     var pts = [];
     sessions.forEach(function(x, i){ if (lenOf(x) === d) pts.push({ x: xAt(i), y: yAt(x.pct), s: x }); });
@@ -1366,24 +1439,74 @@ function trendChart(sessions, actives){
       svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
+    if (pts.length >= 2) {
+      var maPts = pts.map(function(p, j){
+        var win = pts.slice(Math.max(0, j - 4), j + 1);
+        var avg = win.reduce(function(a, q){ return a + q.s.pct; }, 0) / win.length;
+        return p.x + "," + yAt(avg);
+      });
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
+      svg.appendChild(maEl);
+      addMaTooltip(svg, maEl, W, t);
+    }
+    allPts = allPts.concat(pts);
   });
+  addDotTooltips(svg, allPts, W, H, function(x){ return x.pct + "%"; }, t);
+  t.attach();
   return svg;
 }
 
-function scoreBars(sessions, actives){
-  var W = 320, H = 60;
-  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:64px" });
-  var vis = sessions.filter(function(x){ return actives.indexOf(lenOf(x)) >= 0; });
-  if (!vis.length) return svg;
-  var max = Math.max.apply(null, vis.map(function(x){ return x.score; })) || 1;
-  var bw = W / vis.length;
-  vis.forEach(function(x, i){
-    var hgt = Math.max(2, (x.score / max) * (H - 4));
-    svg.appendChild(svgEl("rect", { x: i * bw + bw * 0.18, y: H - hgt, width: bw * 0.64, height: hgt,
-      rx: 1.5, fill: LEN_COLOR[lenOf(x)], opacity: x.score === max ? 1 : 0.68 }));
+function scorePctChart(sessions, actives, allSessions){
+  var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
+  var bottom = H - PADB, span = bottom - top;
+  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:200px;overflow:visible" });
+  var t = makeSvgTip(svg, H);
+  var vis = sessions.filter(function(x){ return actives.indexOf(lenOf(x)) >= 0 && x.board; });
+  var maxY = 100;
+  [0, maxY / 2, maxY].forEach(function(v){
+    var y = bottom - (v / maxY) * span;
+    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
+    var lab = svgEl("text", { x: 0, y: y + 3, fill: "#8CA598", "font-size": 9, "font-family": "ui-monospace, Menlo, monospace" });
+    lab.textContent = Math.round(v) + "%";
+    svg.appendChild(lab);
   });
+  var xAt = function(i){ return PADL + (sessions.length > 1 ? i / (sessions.length - 1) : 0.5) * (W - PADL - 6); };
+  var yAt = function(v){ return bottom - (v / maxY) * span; };
+  var allPts = [];
+  actives.forEach(function(d){
+    var pts = [];
+    sessions.forEach(function(x, i){
+      if (lenOf(x) !== d || !x.board) return;
+      var v = sessionScorePct(x);
+      if (v !== null) pts.push({ x: xAt(i), y: yAt(v), s: x, v: v });
+    });
+    if (!pts.length) return;
+    if (pts.length > 1) svg.appendChild(svgEl("polyline", {
+      points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
+      fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round"
+    }));
+    pts.forEach(function(p){
+      svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
+        fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
+    });
+    if (pts.length >= 2) {
+      var maPts = pts.map(function(p, j){
+        var win = pts.slice(Math.max(0, j - 4), j + 1);
+        var avg = win.reduce(function(a, q){ return a + q.v; }, 0) / win.length;
+        return p.x + "," + yAt(avg);
+      });
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
+      svg.appendChild(maEl);
+      addMaTooltip(svg, maEl, W, t);
+    }
+    allPts = allPts.concat(pts);
+  });
+  addDotTooltips(svg, allPts, W, H, function(x){ var v = sessionScorePct(x); return v !== null ? v + "%" : "?"; }, t);
+  t.attach();
   return svg;
 }
+
 
 function heatmap(){
   var counts = {};
@@ -1444,36 +1567,27 @@ function screenProgress(){
   var whoOf = function(x){ return x.player || "Player"; };
   var roster = [];
   data.sessions.forEach(function(x){ if (roster.indexOf(whoOf(x)) < 0) roster.push(whoOf(x)); });
-  if (roster.length > 1 && S.playerFilter && roster.indexOf(S.playerFilter) < 0) S.playerFilter = null;
-  var allS = S.playerFilter ? data.sessions.filter(function(x){ return whoOf(x) === S.playerFilter; }) : data.sessions;
-
-  if (roster.length > 1) {
-    var prow = h("div", { class: "row", style: "flex-wrap:wrap" });
-    prow.appendChild(h("button", { class: "chipbtn" + (S.playerFilter ? "" : " on"), text: "everyone",
-      onclick: function(){ S.playerFilter = null; render(); } }));
-    roster.forEach(function(n){
-      prow.appendChild(h("button", { class: "chipbtn" + (S.playerFilter === n ? " on" : ""), text: n,
-        onclick: function(){ S.playerFilter = n; render(); } }));
-    });
-    wrap.appendChild(h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:6px", text: "whose rounds" }), prow]));
-  }
+  var currentPlayer = data.player || (roster.length ? roster[0] : null);
+  var allS = (roster.length > 1 && currentPlayer)
+    ? data.sessions.filter(function(x){ return whoOf(x) === currentPlayer; })
+    : data.sessions;
 
   var recentBlock = function(){
-    var recentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).slice(0, 10);
+    var recentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).filter(function(x){ return !actives || actives.indexOf(lenOf(x)) >= 0; }).slice(0, 10);
     var box = h("div", {});
     recentS.forEach(function(x){
       var tags = (x.replay ? " · replay" : "");
       box.appendChild(h("div", { class: "missrow mono", style: "font-size:12px" }, [
         h("span", { class: "w sage" }, [
-          h("span", { text: (roster.length > 1 ? whoOf(x) + " · " : "") + new Date(x.ts).toLocaleDateString() + " · " + ((x.seconds || 180) / 60) + "m" + tags }),
+          h("span", { text: new Date(x.ts).toLocaleDateString() + " · " + ((x.seconds || 180) / 60) + "m" + tags }),
           x.early ? h("span", { class: "early", text: "  ⏸ ended early, " + fmt(x.left || 0) + " left" }) : null
         ]),
         (function(){ var got = sessionScore(x); var total = sessionTotalScore(x); var pctStr = total ? " (" + Math.round(got/total*100) + "%)" : ""; return h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + got + "/" + (total || "?") + " pts" + pctStr }); })()
       ]));
     });
     var hdr = h("div", { class: "between", style: "align-items:center" }, [
-      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "recent rounds" })]),
-      earlyCount ? h("button", { class: "linkbtn" + (data.includeEarly ? " on" : ""), style: "font-size:10px",
+      h("div", { class: "eyebrow", style: "margin-bottom:6px" }, [h("span", { text: "recent rounds" })]),
+      earlyCount ? h("button", { class: "mono", style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
         text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " ended early",
         onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); } }) : null
     ]);
@@ -1492,7 +1606,7 @@ function screenProgress(){
   var earlyCount = allS.filter(function(x){ return x.early; }).length;
   var s = data.includeEarly ? allS : allS.filter(function(x){ return !x.early; });
   var earlyToggle = earlyCount ? h("div", { style: "margin-top:4px" }, [
-    h("button", { class: "linkbtn" + (data.includeEarly ? " on" : ""),
+    h("button", { class: "mono" + (data.includeEarly ? "" : ""),style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
       text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " round" + (earlyCount === 1 ? "" : "s") + " ended early",
       onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); } })
   ]) : null;
@@ -1508,53 +1622,64 @@ function screenProgress(){
   var lens = [60, 120, 180].filter(function(d){
     return s.some(function(x){ return lenOf(x) === d; });
   });
-  if (!S.trendShow) S.trendShow = {};
-  var actives = lens.filter(function(d){ return S.trendShow[d] !== false; });
-  if (!actives.length) { lens.forEach(function(d){ S.trendShow[d] = true; }); actives = lens.slice(); }
+  if (!S.trendShow || !Object.keys(S.trendShow).length) {
+    S.trendShow = {};
+    lens.forEach(function(d){ S.trendShow[d] = d === 180 || lens.indexOf(180) < 0; });
+  }
+  var actives = lens.filter(function(d){ return S.trendShow[d]; });
 
-  var statLen = lenOf(s[0]);
-  var statGroup = s.filter(function(x){ return lenOf(x) === statLen; });
-  var last5 = median(statGroup.slice(0, 5).map(function(x){ return x.pct; }));
-  var prior = median(statGroup.slice(5, 10).map(function(x){ return x.pct; }));
-  var diff = prior ? last5 - prior : 0;
-  var totalWords = s.reduce(function(a, x){ return a + x.found.length; }, 0);
-
-  var scorePcts = s.filter(function(x){ return x.board; }).map(function(x){ return sessionScorePct(x); }).filter(function(v){ return v !== null; });
-  var avgScorePct = scorePcts.length ? Math.round(scorePcts.reduce(function(a,v){ return a+v; }, 0) / scorePcts.length) : null;
-  wrap.appendChild(h("div", { class: "grid3", style: "margin-top:16px" }, [
-    stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : lenName(statLen) + " rounds"),
-    stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
-    stat("day streak", streak(), totalWords + " words found")
-  ]));
-
-  var chips = h("div", { class: "row", style: "margin:8px 0;flex-wrap:wrap" });
+  /* chips at the top — filter everything below */
+  var chips = h("div", { class: "row", style: "margin:4px 0 16px;flex-wrap:wrap" });
   lens.forEach(function(d){
     var on = actives.indexOf(d) >= 0;
     var group = s.filter(function(x){ return lenOf(x) === d; });
     var chip = h("button", { class: "chipbtn" + (on ? " on" : ""),
-      text: lenName(d) + " · " + median(group.map(function(x){ return x.pct; })) + "% · " + group.length,
+      text: lenName(d) + " · " + group.length + " game" + (group.length === 1 ? "" : "s"),
       onclick: function(){
         var only = actives.length === 1 && actives[0] === d;
-        if (only) lens.forEach(function(k){ S.trendShow[k] = true; });
+        if (only) lens.forEach(function(k){ S.trendShow[k] = k === 180 || lens.indexOf(180) < 0; });
         else S.trendShow[d] = !on;
         render();
       } });
     if (on) { chip.style.borderColor = LEN_COLOR[d]; chip.style.color = LEN_COLOR[d]; }
     chips.appendChild(chip);
   });
-
-  var recent = s.slice(0, 30).reverse();
-  var trendCard = h("div", { class: "card" });
-  trendCard.appendChild(trendChart(recent, actives));
-  trendCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
-    text: "last " + recent.length + " rounds, oldest left · hollow dot = replay · tap a chip to isolate" }));
   wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "share of 5+ letter words found" }), chips, trendCard
+    h("div", { class: "eyebrow", text: "game length" }), chips
   ]));
 
-  var scoreCard = h("div", { class: "card" });
-  scoreCard.appendChild(scoreBars(recent, actives));
-  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "points per round" }), scoreCard]));
+  /* all stats filtered to active lengths */
+  var sa = s.filter(function(x){ return actives.indexOf(lenOf(x)) >= 0; });
+  var last5 = median(sa.slice(0, 5).map(function(x){ return x.pct; }));
+  var prior = median(sa.slice(5, 10).map(function(x){ return x.pct; }));
+  var diff = prior ? last5 - prior : 0;
+  var totalWords = sa.reduce(function(a, x){ return a + x.found.length; }, 0);
+
+  var scorePcts = sa.filter(function(x){ return x.board; }).map(function(x){ return sessionScorePct(x); }).filter(function(v){ return v !== null; });
+  var avgScorePct = scorePcts.length ? Math.round(scorePcts.reduce(function(a,v){ return a+v; }, 0) / scorePcts.length) : null;
+  wrap.appendChild(h("div", { class: "grid3", style: "margin-top:16px" }, [
+    stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : sa.length + " rounds"),
+    stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
+    stat("day streak", streak(), totalWords + " words found")
+  ]));
+
+  var recent = sa.slice(0, 30).reverse();
+  var trendCard = h("div", { class: "card" });
+  trendCard.appendChild(trendChart(recent, actives, sa));
+  trendCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
+    text: "last " + recent.length + " rounds, oldest left · hollow dot = replay" }));
+  wrap.appendChild(h("div", { class: "section" }, [
+    h("div", { class: "eyebrow", text: "share of 5+ letter words found" }), trendCard
+  ]));
+
+  var scorePctCard = h("div", { class: "card" });
+  scorePctCard.appendChild(scorePctChart(recent, actives, sa));
+  scorePctCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
+    text: "last " + recent.length + " rounds, oldest left · hollow dot = replay" }));
+  wrap.appendChild(h("div", { class: "section" }, [
+    h("div", { class: "eyebrow", text: "share of total possible points" }), scorePctCard
+  ]));
+
 
   var heatCard = h("div", { class: "card" });
   heatCard.appendChild(heatmap());
