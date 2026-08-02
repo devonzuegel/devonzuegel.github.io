@@ -342,7 +342,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:39:32Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:44:19Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1981,6 +1981,54 @@ function backupBlock(){
 
 function screenSettings(){
   var wrap = h("div", { class: "stack" });
+
+  /* install as app */
+  var installDiagram = document.createElementNS ? (function(){
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 320 90");
+    svg.setAttribute("width", "100%");
+    svg.style.cssText = "max-width:320px;display:block;margin:14px auto 4px";
+    svg.innerHTML = [
+      /* step 1: share button */
+      '<rect x="4" y="8" width="72" height="74" rx="10" fill="#1D2C25" stroke="#31463B" stroke-width="1.5"/>',
+      '<text x="40" y="26" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8" fill="#8CA598">Safari</text>',
+      /* share icon */
+      '<rect x="22" y="54" width="36" height="22" rx="5" fill="#27392F" stroke="#31463B" stroke-width="1"/>',
+      '<line x1="40" y1="48" x2="40" y2="38" stroke="#E9A83A" stroke-width="1.5" stroke-linecap="round"/>',
+      '<polyline points="35,43 40,38 45,43" fill="none" stroke="#E9A83A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      '<text x="40" y="69" text-anchor="middle" font-family="ui-monospace,monospace" font-size="7" fill="#E9A83A">Share</text>',
+      /* arrow */
+      '<line x1="84" y1="45" x2="108" y2="45" stroke="#8CA598" stroke-width="1.5" stroke-linecap="round"/>',
+      '<polyline points="104,41 109,45 104,49" fill="none" stroke="#8CA598" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      /* step 2: menu item */
+      '<rect x="112" y="8" width="96" height="74" rx="10" fill="#1D2C25" stroke="#31463B" stroke-width="1.5"/>',
+      '<text x="160" y="26" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8" fill="#8CA598">Share menu</text>',
+      '<rect x="120" y="34" width="80" height="22" rx="5" fill="#27392F" stroke="#E9A83A" stroke-width="1"/>',
+      /* plus icon */
+      '<line x1="131" y1="45" x2="139" y2="45" stroke="#E9A83A" stroke-width="1.5" stroke-linecap="round"/>',
+      '<line x1="135" y1="41" x2="135" y2="49" stroke="#E9A83A" stroke-width="1.5" stroke-linecap="round"/>',
+      '<text x="162" y="49" text-anchor="middle" font-family="ui-monospace,monospace" font-size="7.5" fill="#F2EDDF">Add to Home Screen</text>',
+      /* arrow */
+      '<line x1="216" y1="45" x2="240" y2="45" stroke="#8CA598" stroke-width="1.5" stroke-linecap="round"/>',
+      '<polyline points="236,41 241,45 236,49" fill="none" stroke="#8CA598" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+      /* step 3: home screen icon */
+      '<rect x="244" y="8" width="72" height="74" rx="10" fill="#1D2C25" stroke="#31463B" stroke-width="1.5"/>',
+      '<text x="280" y="26" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8" fill="#8CA598">Home screen</text>',
+      '<rect x="262" y="33" width="36" height="36" rx="9" fill="#F2EDDF"/>',
+      '<text x="280" y="58" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="bold" fill="#141F1A">B</text>',
+    ].join("");
+    return svg;
+  })() : null;
+
+  var installBlock = h("div", { style: "padding:12px;background:var(--surface2);border-radius:10px;border-left:3px solid var(--sage)" }, [
+    h("div", { class: "eyebrow", text: "install as app" }),
+    h("div", { style: "font-size:13px;color:var(--bone);margin-top:6px;line-height:1.5" },
+      [document.createTextNode("Add Boggle Trainer to your home screen for a full-screen app experience with no browser chrome.")]),
+    installDiagram || null,
+    h("div", { class: "mono sage", style: "font-size:11px;margin-top:6px;text-align:center" },
+      [document.createTextNode("Safari → Share → Add to Home Screen")])
+  ]);
+  wrap.appendChild(installBlock);
 
   /* build info */
   var buildTime = new Date(BUILD).toLocaleString(undefined, {
