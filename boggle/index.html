@@ -349,7 +349,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:51:16Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:51:58Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1300,7 +1300,7 @@ function screenIdle(){
   ]));
   right.appendChild(h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "round length" })]), lens]));
   right.appendChild(h("div", { style: "margin-top:20px" }, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "scoring" })]), scoring]));
-  if (due.length) right.appendChild(h("div", { class: "p", text: due.length + " board(s) due for replay — see Progress." }));
+  if (due.length) right.appendChild(h("div", { class: "p", style: "margin-bottom:16px", text: due.length + " board(s) due for replay — see Progress." }));
 
   layout.appendChild(right);
   return layout;
@@ -1764,7 +1764,7 @@ function screenProgress(){
     chips.appendChild(chip);
   });
   wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "game length" }), chips
+    h("div", { class: "eyebrow", text: "filter stats by game length" }), chips
   ]));
 
   /* all stats filtered to active lengths */
