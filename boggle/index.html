@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T23:05:45Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T23:06:10Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2027,7 +2027,7 @@ function screenSettings(){
     installDiagram || null,
     h("a", { href: "https://youtu.be/lKbsY8hLVaw?si=fh9EAUYUbaGObQgP&t=35", target: "_blank", rel: "noopener",
       style: "display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;color:var(--bone);font-size:13px;text-decoration:none" }, [
-      h("span", { style: "display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--rust);flex-shrink:0" }, [
+      h("span", { style: "display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--amber);flex-shrink:0" }, [
         h("span", { style: "display:inline-block;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid white;margin-left:2px" })
       ]),
       h("span", { text: "Watch how to install" })
