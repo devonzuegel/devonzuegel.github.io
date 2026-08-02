@@ -342,7 +342,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:45:51Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:46:41Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2038,13 +2038,16 @@ function screenSettings(){
   wrap.appendChild(installBlock);
 
   /* build info */
-  var buildTime = new Date(BUILD).toLocaleString(undefined, {
-    month:"short", day:"numeric", year:"numeric",
-    hour:"2-digit", minute:"2-digit", second:"2-digit", timeZoneName:"short"
-  });
-  wrap.appendChild(h("div", { style: "padding:10px 12px;background:var(--surface2);border-radius:10px;border-left:3px solid var(--amber)" }, [
-    h("div", { class: "mono", style: "font-size:13px;color:var(--amber);font-weight:bold", text: "Boggle Trainer" }),
-    h("div", { class: "mono sage", style: "font-size:11px;margin-top:2px", text: "built " + buildTime })
+  var buildDate = new Date(BUILD);
+  var buildFmt = buildDate.toLocaleString(undefined, { month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short" });
+  var diffMs = Date.now() - buildDate.getTime();
+  var diffMins = Math.floor(diffMs / 60000);
+  var ago = diffMins < 60 ? diffMins + "m ago"
+    : diffMins < 1440 ? Math.floor(diffMins / 60) + "h ago"
+    : Math.floor(diffMins / 1440) + "d ago";
+  wrap.appendChild(h("div", {}, [
+    h("div", { class: "eyebrow", text: "current version" }),
+    h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px", text: "Built " + buildFmt + " · " + ago })
   ]));
 
   /* log output */
