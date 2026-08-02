@@ -1244,7 +1244,7 @@ function screenRunning(){
     setTimeout(function(){ input.focus(); }, 50);
   } else {
     right.appendChild(h("div", { class: "center" }, [
-      h("button", { class: "mono sage", style: "font-size:11px", text: "drag across the letters · or type instead",
+      h("button", { class: "mono sage", style: "font-size:11px", text: "type instead",
         onclick: function(){ S.typing = true; render(); } })
     ]));
   }
