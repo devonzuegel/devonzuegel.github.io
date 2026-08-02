@@ -342,7 +342,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:18:40Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:22:15Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -474,7 +474,12 @@ function renderSyncStatus(){
 function syncDown(cb){
   if (!data.player) { if (cb) cb(); return; }
   syncState.status = "syncing"; renderSyncStatus();
-  fetch(API + "?user=" + encodeURIComponent(data.player))
+  var getHeaders = {};
+  if (data.player && data.player.toLowerCase() === "devon") {
+    var tok = getDevonToken();
+    if (tok) getHeaders["X-Admin-Token"] = tok;
+  }
+  fetch(API + "?user=" + encodeURIComponent(data.player), { headers: getHeaders })
     .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function(remote){
       if (remote && Object.keys(remote).length) { mergeData(remote); saveLocal(); }
