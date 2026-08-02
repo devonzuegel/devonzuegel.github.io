@@ -1112,14 +1112,14 @@ function renderFooter(){
     ]),
     h("div", { class: "row" }, [
       (function(){
-        var iconPause = '<svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><rect x="0" y="0" width="3.5" height="12" rx="1"/><rect x="6.5" y="0" width="3.5" height="12" rx="1"/></svg>';
-        var iconPlay  = '<svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><polygon points="0,0 10,6 0,12"/></svg>';
+        var iconPause = '<svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><rect x="0" y="0" width="3.5" height="12" rx="1"/><rect x="6.5" y="0" width="3.5" height="12" rx="1"/></svg>';
+        var iconPlay  = '<svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><polygon points="0,0 10,6 0,12"/></svg>';
         var btn = h("button", { class: "btn ghost small", onclick: function(){ S.paused ? resumeRound() : pauseRound(); renderFooter(); } });
         btn.innerHTML = (S.paused ? iconPlay : iconPause) + (S.paused ? "Resume" : "Pause");
         return btn;
       })(),
       (function(){
-        var iconStop = '<svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><rect x="0" y="0" width="11" height="11" rx="2"/></svg>';
+        var iconStop = '<svg width="9" height="9" viewBox="0 0 11 11" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><rect x="0" y="0" width="11" height="11" rx="2"/></svg>';
         var btn = h("button", { class: "btn ghost small", onclick: function(){ if (S.paused) resumeRound(); endRound(true); } });
         btn.innerHTML = iconStop + "End round";
         return btn;
