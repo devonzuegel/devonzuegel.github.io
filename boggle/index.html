@@ -62,7 +62,7 @@
     max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);
     animation:popin 320ms cubic-bezier(.2,.9,.3,1)}
   @keyframes popin{0%{transform:scale(.86) translateY(10px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
-  .mtitle{font-family:var(--display);font-size:42px;line-height:1;color:var(--amber);margin:6px 0 18px}
+  .mtitle{font-family:var(--display);font-size:42px;line-height:1;color:var(--amber);margin:0px 0 18px}
   .mnote{font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:14px}
   /* review: board parked, words scroll beside it */
   .reviewLayout{display:flex;flex-direction:column;gap:0;align-items:stretch;
@@ -85,7 +85,7 @@
     .idleSpacer{height:16px}
   }
   button{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer}
-  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--sage);text-transform:uppercase}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--sage);text-transform:uppercase;margin-bottom:6px}
   .section{margin-top:40px}
   .section>.eyebrow{margin-bottom:6px}
   .h1{font-family:var(--display);font-size:26px}
@@ -104,8 +104,8 @@
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .stat .v{font-family:var(--display);font-size:28px;line-height:1.1;margin-top:4px}
-  .stat .s{font-size:12px;color:var(--sage)}
+  .stat .v{font-family:var(--display);font-size:28px;line-height:1.1;margin-top:4px;white-space:nowrap}
+  .stat .s{font-size:12px;color:var(--sage);white-space:nowrap}
   .p{color:var(--sage);font-size:14px;line-height:1.5}
 
   .trayWrap{max-width:380px;margin:0 auto;width:100%}
@@ -286,13 +286,29 @@ function solveBoard(board){
   for (var i = 0; i < 16; i++) walk(i, TRIE, "", []);
   return paths;
 }
-function scoreOf(w){
-  var sc = data.scoring || {};
+function scoreOf(w, mode){
+  var sc = mode || data.scoring || {};
   if (w.length === 3) return sc.zero3 ? 0 : 1;
   if (w.length === 4) return sc.zero4 ? 0 : 1;
   return w.length === 5 ? 2 : w.length === 6 ? 3 : w.length === 7 ? 5 : 11;
 }
-function sumScore(ws){ return ws.reduce(function(a, w){ return a + scoreOf(w); }, 0); }
+function sumScore(ws, mode){ return ws.reduce(function(a, w){ return a + scoreOf(w, mode); }, 0); }
+function sessionMode(x){ return x.scoringMode || { zero3: false, zero4: false }; }
+function sessionScore(x){ return sumScore(x.found || [], sessionMode(x)); }
+var _boardCache = {};
+function sessionTotalScore(x){
+  if (!x.board) return null;
+  var key = x.board.join("") + (x.scoringMode ? (x.scoringMode.zero3 ? "1" : "0") + (x.scoringMode.zero4 ? "1" : "0") : "00");
+  if (_boardCache[key] !== undefined) return _boardCache[key];
+  var paths = solveBoard(x.board);
+  _boardCache[key] = sumScore(Array.from(paths.keys()), sessionMode(x));
+  return _boardCache[key];
+}
+function sessionScorePct(x){
+  var total = sessionTotalScore(x);
+  if (!total) return null;
+  return Math.round(sessionScore(x) / total * 100);
+}
 
 /* ---------------- storage ---------------- */
 var KEY = "boggle:trainer:v1", DAY = 86400000;
@@ -703,15 +719,21 @@ function showGameOver(){
   m.innerHTML = "";
   m.appendChild(h("div", { class: "mcard", style: "position:relative" }, [
     h("button", { style: "position:absolute;top:10px;right:12px;font-size:18px;color:var(--sage);line-height:1", text: "×", onclick: closeModal }),
-    h("div", { class: "eyebrow", text: S.endedEarly
-      ? "ended early · " + fmt(S.leftAtEnd) + " left on the clock"
-      : fmt(S.duration) + " round · " + S.found.length + " words" }),
+    h("div", { class: "eyebrow", text: fmt(S.duration) + " round · " + S.found.length + " words" }),
     h("div", { class: "mtitle", text: "Game over!" }),
-    h("div", { class: "grid3" }, [
-      stat("score", sumScore(S.found)),
-      stat("5L+ found", pct() + "%", found5().length + " of " + all5().length),
-      stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
+    h("div", { style: "display:flex;justify-content:center" }, [
+      h("div", { class: "grid3", style: "display:inline-grid;grid-template-columns:repeat(3,1fr)" }, [
+        (function(){ var total = sumScore(Array.from(S.paths.keys())); var got = sumScore(S.found); return stat("score", Math.round(got / total * 100) + "%", got + " / " + total + " pts"); })(),
+        stat("5L+", pct() + "%", found5().length + " of " + all5().length),
+        stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
+      ])
     ]),
+    S.endedEarly
+      ? h("div", { class: "row", style: "gap:8px;align-items:center;justify-content:center;margin-top:20px;margin-bottom:0" }, [
+          h("span", { style: "background:var(--amber);color:var(--ink);font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px", text: "ended early" }),
+          h("span", { class: "eyebrow", style: "margin-bottom:0;color:var(--amber)", text: fmt(S.leftAtEnd) + " left" })
+        ])
+      : null,
   ]));
   m.className = "on";
   m.onclick = function(e){ if (e.target === m) closeModal(); };
@@ -724,7 +746,8 @@ function saveSession(){
     id: key + ":" + Date.now(), ts: Date.now(), boardKey: key, board: S.board.slice(),
     seconds: S.duration, found: S.found.slice(), total5: all5().length, found5: found5().length,
     pct: pct(), score: sumScore(S.found), replay: !!S.replay, prevPct: prev ? prev.lastPct : null,
-    early: !!S.endedEarly, left: S.leftAtEnd || 0, player: data.player || "Player"
+    early: !!S.endedEarly, left: S.leftAtEnd || 0, player: data.player || "Player",
+    scoringMode: { zero3: !!(data.scoring && data.scoring.zero3), zero4: !!(data.scoring && data.scoring.zero4) }
   };
   S.lastSessionId = session.id;
   data.sessions.unshift(session);
@@ -1172,8 +1195,8 @@ function screenReview(){
   ]));
   var longest = S.found.slice().sort(function(a, b){ return b.length - a.length; })[0];
   wrap.appendChild(h("div", { class: "grid3" }, [
+    (function(){ var total = sumScore(Array.from(S.paths.keys())); var got = sumScore(S.found); return stat("score", got + " / " + total + " pts", Math.round(got / total * 100) + "%"); })(),
     stat("5L+ found", pct() + "%", found5().length + " of " + all5().length),
-    stat("score", sumScore(S.found), S.found.length + " words"),
     stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
   ]));
 
@@ -1411,7 +1434,7 @@ function screenProgress(){
           h("span", { text: (roster.length > 1 ? whoOf(x) + " · " : "") + new Date(x.ts).toLocaleDateString() + " · " + ((x.seconds || 180) / 60) + "m" + tags }),
           x.early ? h("span", { class: "early", text: "  ⏸ ended early, " + fmt(x.left || 0) + " left" }) : null
         ]),
-        h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + x.score + " pts" })
+        (function(){ var got = sessionScore(x); var total = sessionTotalScore(x); var pctStr = total ? " (" + Math.round(got/total*100) + "%)" : ""; return h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + got + "/" + (total || "?") + " pts" + pctStr }); })()
       ]));
     });
     var hdr = h("div", { class: "between", style: "align-items:center" }, [
@@ -1462,10 +1485,12 @@ function screenProgress(){
   var diff = prior ? last5 - prior : 0;
   var totalWords = s.reduce(function(a, x){ return a + x.found.length; }, 0);
 
+  var scorePcts = s.filter(function(x){ return x.board; }).map(function(x){ return sessionScorePct(x); }).filter(function(v){ return v !== null; });
+  var avgScorePct = scorePcts.length ? Math.round(scorePcts.reduce(function(a,v){ return a+v; }, 0) / scorePcts.length) : null;
   wrap.appendChild(h("div", { class: "grid3", style: "margin-top:16px" }, [
     stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : lenName(statLen) + " rounds"),
-    stat("rounds", s.length, totalWords + " words found"),
-    stat("day streak", streak(), "best score " + Math.max.apply(null, s.map(function(x){ return x.score; })))
+    stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
+    stat("day streak", streak(), totalWords + " words found")
   ]));
 
   var chips = h("div", { class: "row", style: "margin:8px 0;flex-wrap:wrap" });
