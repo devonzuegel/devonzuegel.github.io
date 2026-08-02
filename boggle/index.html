@@ -222,6 +222,7 @@
   .up{color:var(--amber)} .down{color:var(--rust)}
   .linkbtn{font-family:var(--mono);font-size:11px;color:var(--sage);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
   .linkbtn.on{color:var(--amber);border-color:var(--amber)}
+  @media (max-width:599px){ .pause-label{display:none} .pause-btn svg{margin-right:0!important} }
   @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style>
 </head>
@@ -1114,8 +1115,8 @@ function renderFooter(){
       (function(){
         var iconPause = '<svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><rect x="0" y="0" width="3.5" height="12" rx="1"/><rect x="6.5" y="0" width="3.5" height="12" rx="1"/></svg>';
         var iconPlay  = '<svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><polygon points="0,0 10,6 0,12"/></svg>';
-        var btn = h("button", { class: "btn ghost small", onclick: function(){ S.paused ? resumeRound() : pauseRound(); renderFooter(); } });
-        btn.innerHTML = (S.paused ? iconPlay : iconPause) + (S.paused ? "Resume" : "Pause");
+        var btn = h("button", { class: "btn ghost small pause-btn", onclick: function(){ S.paused ? resumeRound() : pauseRound(); renderFooter(); } });
+        btn.innerHTML = (S.paused ? iconPlay : iconPause) + '<span class="pause-label">' + (S.paused ? "Resume" : "Pause") + '</span>';
         return btn;
       })(),
       (function(){
