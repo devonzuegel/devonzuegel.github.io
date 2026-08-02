@@ -123,6 +123,9 @@
     background:var(--bone);color:var(--ink);box-shadow:0 2px 0 var(--boneEdge),0 4px 8px rgba(0,0,0,.35);
     transition:background 140ms ease, transform 140ms ease}
   .tile span{font-family:var(--display);font-weight:600;font-size:2rem;letter-spacing:-.02em}
+  .board.paused .tile span{visibility:hidden}
+  .board.paused{position:relative}
+  .board.paused::after{content:"PAUSED";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:2rem;letter-spacing:.1em;color:var(--bone);background:rgba(20,31,26,.55);border-radius:12px;pointer-events:none}
   .tile.q span{font-size:1.5rem}
   .tile.lit{background:var(--amber)}
   .tile.litbad{background:var(--rust)}
@@ -514,7 +517,8 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, playerFilter: null
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, playerFilter: null,
+  paused: false
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
 
@@ -554,6 +558,7 @@ function startRound(existing){
   S.seed = Date.now() % 9973;
   S.left = S.duration;
   S.phase = "running";
+  S.paused = false;
   S.tab = "play";
   clearInterval(timer);
   timer = setInterval(tick, 1000);
@@ -564,16 +569,31 @@ function tick(){
   paintClock();
   if (S.left <= 0) endRound();
 }
+function pauseRound(){
+  clearInterval(timer); timer = null;
+  S.paused = true;
+  if (boardEl) boardEl.classList.add("paused");
+  paintClock();
+}
+function resumeRound(){
+  S.paused = false;
+  if (boardEl) boardEl.classList.remove("paused");
+  timer = setInterval(tick, 1000);
+  paintClock();
+  renderFooter();
+}
 function paintClock(){
   var pill = document.getElementById("clockPill");
   if (!pill) return;
   if (S.phase !== "running") { pill.className = ""; pill.textContent = ""; return; }
+  if (S.paused) { pill.textContent = "⏸ " + fmt(S.left); pill.className = "on"; return; }
   pill.textContent = fmt(S.left);
   pill.className = "on" + (S.left <= 20 ? " low" : "");
 }
 function fmt(s){ return Math.floor(s / 60) + ":" + String(Math.max(0, s % 60)).padStart(2, "0"); }
 function endRound(early){
   clearInterval(timer); timer = null;
+  S.paused = false;
   S.endedEarly = early === true;
   S.leftAtEnd = Math.max(0, S.left);
   S.phase = "review";
@@ -925,6 +945,7 @@ function bridge(a, b){
   return null;
 }
 function dragBegin(x, y){
+  if (S.paused) return false;
   cacheRects();
   var i = nearestTile(x, y, 0.62);
   if (i === null) return false;
@@ -1088,7 +1109,10 @@ function renderFooter(){
       h("span", { class: "runscore", id: "runscore", text: sumScore(S.found) + " pts" }),
       h("span", { class: "mono sage", text: S.found.length + " words · " + found5().length + " at 5+" })
     ]),
-    h("button", { class: "btn ghost small", text: "End round", onclick: function(){ endRound(true); } })
+    h("div", { class: "row" }, [
+      h("button", { class: "btn ghost small", text: S.paused ? "▶ Resume" : "⏸ Pause", onclick: function(){ S.paused ? resumeRound() : pauseRound(); renderFooter(); } }),
+      h("button", { class: "btn ghost small", text: "End round", onclick: function(){ if (S.paused) resumeRound(); endRound(true); } })
+    ])
   ]));
   var wrap = h("div", { class: "wrap" });
   S.found.forEach(function(w){ wrap.appendChild(h("span", { class: "word" + (w.length >= 5 ? " big" : ""), text: w })); });
