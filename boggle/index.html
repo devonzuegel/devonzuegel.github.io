@@ -349,7 +349,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:47:30Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:49:09Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2052,11 +2052,6 @@ function screenSettings(){
   var ago = diffMins < 60 ? diffMins + "m ago"
     : diffMins < 1440 ? Math.floor(diffMins / 60) + "h ago"
     : Math.floor(diffMins / 1440) + "d ago";
-  wrap.appendChild(h("div", {}, [
-    h("div", { class: "eyebrow", text: "current version" }),
-    h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px", text: "Built " + buildFmt + " · " + ago })
-  ]));
-
   /* log output */
   var logEl = h("div", { style: "font-family:var(--mono);font-size:11px;color:var(--sage);min-height:32px" });
   dbgLog = function(msg, color){
@@ -2073,10 +2068,13 @@ function screenSettings(){
     return b;
   }
 
-  /* sync buttons */
-  wrap.appendChild(h("div", {}, [
+  /* advanced (collapsed by default) */
+  var advancedBody = h("div", { style: "display:none;margin-top:12px" }, [
+    h("div", { class: "eyebrow", text: "current version" }),
+    h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px;margin-bottom:12px", text: "Built " + buildFmt + " · " + ago }),
+
     h("div", { class: "eyebrow", text: "sync" }),
-    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px" }, [
+    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px;margin-bottom:12px" }, [
       dbgBtn("Force sync UP", "var(--amber)", function(){
         dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--amber)");
         clearTimeout(syncDebounce); syncUp();
@@ -2096,13 +2094,10 @@ function screenSettings(){
       dbgBtn("Local state", "var(--sage)", function(){
         dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length);
       })
-    ])
-  ]));
+    ]),
 
-  /* danger zone */
-  wrap.appendChild(h("div", {}, [
     h("div", { class: "eyebrow", text: "danger zone" }),
-    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px" }, [
+    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px;margin-bottom:12px" }, [
       dbgBtn("Clear localStorage", "var(--rust)", function(){
         if (!confirm("Clear local storage? Data on server is safe.")) return;
         try { localStorage.removeItem(KEY); } catch(e){}
@@ -2116,11 +2111,23 @@ function screenSettings(){
         if (window.caches) p.push(caches.keys().then(function(keys){ return Promise.all(keys.map(function(k){ return caches.delete(k); })); }));
         Promise.all(p).then(done).catch(done);
       })
-    ])
-  ]));
+    ]),
 
-  wrap.appendChild(backupBlock());
-  wrap.appendChild(logEl);
+    backupBlock(),
+    logEl
+  ]);
+
+  var advancedToggle = h("button", { class: "eyebrow", style: "background:none;border:none;cursor:pointer;color:var(--sage);padding:0;display:flex;align-items:center;gap:6px" });
+  var chevron = h("span", { text: "▶" });
+  advancedToggle.appendChild(chevron);
+  advancedToggle.appendChild(h("span", { text: "advanced" }));
+  advancedToggle.onclick = function(){
+    var open = advancedBody.style.display !== "none";
+    advancedBody.style.display = open ? "none" : "block";
+    chevron.textContent = open ? "▶" : "▼";
+  };
+
+  wrap.appendChild(h("div", {}, [ advancedToggle, advancedBody ]));
   return wrap;
 }
 
