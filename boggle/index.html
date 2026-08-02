@@ -510,7 +510,7 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, revealed: {}, trendShow: null, playerFilter: null
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, playerFilter: null
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
 
@@ -546,7 +546,7 @@ function startRound(existing){
   S.board = existing || shakeTray();
   S.paths = solveBoard(S.board);
   S.found = []; S.tags = {}; S.sel = null; S.flash = null; S.typing = false;
-  S.challenge = null; S.revealed = {}; hideQbar();
+  S.challenge = null; S.confirm = null; S.revealed = {}; hideQbar();
   S.seed = Date.now() % 9973;
   S.left = S.duration;
   S.phase = "running";
@@ -1010,6 +1010,21 @@ function hideQbar(){
   if (bar) bar.className = "";
 }
 function guessChallenge(word, path){
+  if (S.confirm) {
+    if (word === S.confirm) {
+      var w = S.confirm;
+      S.confirm = null;
+      hideQbar();
+      paint(path, "ok");
+      setTimeout(function(){ paint(S.paths.get(w), "trace"); }, 700);
+    } else {
+      paint(path, "bad");
+      if (S.paths.has(word) && word.length >= 3) flashQ("that's " + word + " — try again");
+      else flashQ("not quite — try again");
+      setTimeout(function(){ if (!dragPath && S.confirm) paint(S.paths.get(S.confirm), "trace"); }, 700);
+    }
+    return;
+  }
   if (!S.challenge) { paint(null); return; }
   if (word === S.challenge) { revealChallenge(word, "got", path); return; }
   paint(path, "bad");
@@ -1030,8 +1045,27 @@ function revealChallenge(w, how, path){
   S.revealed[w] = how;
   S.challenge = null;
   S.sel = w;
-  hideQbar();
-  if (how === "got") celebrate(w);
+  if (how === "got") {
+    S.confirm = null;
+    hideQbar();
+    celebrate(w);
+  } else {
+    /* shown via "Show me" — ask them to retrace to confirm */
+    S.confirm = w;
+    var bar = document.getElementById("qbar");
+    var inner = bar ? bar.querySelector(".inner") : null;
+    if (inner) {
+      inner.innerHTML = "";
+      var q = h("div", { class: "q" }, [
+        h("span", { text: "now you trace it · " }),
+        h("b", { text: w.length + " letters" }),
+        h("span", { text: "  ·  +" + scoreOf(w) })
+      ]);
+      inner.appendChild(q);
+      inner.appendChild(h("button", { class: "linkbtn", style: "color:var(--ink);border-color:var(--ink)", text: "✕", onclick: function(){ S.confirm = null; S.sel = w; hideQbar(); paint(null); } }));
+      bar.className = "on";
+    }
+  }
   var prevScroll = (document.querySelector(".reviewRight") || {}).scrollTop || 0;
   render();
   var rr = document.querySelector(".reviewRight");
