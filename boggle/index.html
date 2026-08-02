@@ -1119,9 +1119,9 @@ function renderFooter(){
         return btn;
       })(),
       (function(){
-        var iconStop = '<svg width="9" height="9" viewBox="0 0 11 11" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><rect x="0" y="0" width="11" height="11" rx="2"/></svg>';
+        var iconX = '<svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" style="vertical-align:-1px;margin-right:7px"><line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
         var btn = h("button", { class: "btn ghost small", onclick: function(){ if (S.paused) resumeRound(); endRound(true); } });
-        btn.innerHTML = iconStop + "End round";
+        btn.innerHTML = iconX + "Cancel";
         return btn;
       })()
     ])
