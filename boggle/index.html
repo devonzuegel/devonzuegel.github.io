@@ -135,7 +135,7 @@
   .tile span{font-family:var(--display);font-weight:600;font-size:2rem;letter-spacing:-.02em}
   .board.paused .tile span{visibility:hidden}
   .board.paused{position:relative}
-  .board.paused::after{content:"PAUSED";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:2rem;letter-spacing:.1em;color:var(--bone);background:rgba(20,31,26,.55);border-radius:12px;pointer-events:none}
+  .board.paused::after{content:"PAUSED";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:2rem;letter-spacing:.1em;color:var(--bone);background:rgba(20,31,26,.55);border-radius:12px;pointer-events:none;text-shadow:0 0 20px var(--ground),0 0 40px var(--ground),0 0 60px var(--ground),0 2px 8px var(--ground)}
   .tile.q span{font-size:1.5rem}
   .tile.lit{background:var(--amber)}
   .tile.litbad{background:var(--rust)}
@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:57:30Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:58:13Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
