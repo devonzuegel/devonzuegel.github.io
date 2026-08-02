@@ -232,6 +232,13 @@
   .linkbtn.on{color:var(--amber);border-color:var(--amber)}
   @media (max-width:599px){ .pause-label{display:none} .pause-btn svg{margin-right:0!important} }
   @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+  @keyframes highlight-pop {
+    0%   { transform: scale(1);    box-shadow: none; }
+    30%  { transform: scale(1.03); box-shadow: 0 0 0 3px var(--amber); }
+    60%  { transform: scale(1.03); box-shadow: 0 0 0 3px var(--amber); }
+    100% { transform: scale(1);    box-shadow: none; }
+  }
+  .highlight-pop { animation: highlight-pop 1.2s ease both; }
 </style>
 </head>
 <body>
@@ -342,7 +349,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T22:46:41Z"; /* updated by deploy script */
+var BUILD = "2026-08-02T22:47:30Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1911,7 +1918,7 @@ if (!data.player && location.hash !== "#how-to-install") showNameModal(true);
 if (location.hash === "#how-to-install") {
   setTimeout(function(){
     var el = document.getElementById("install-block");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) el.classList.add("highlight-pop");
   }, 100);
 }
 
