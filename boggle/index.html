@@ -1257,10 +1257,12 @@ function screenReview(){
     h("button", { class: "linkbtn", style: "font-size:12px;color:var(--ink);background:var(--amber);border-radius:999px;padding:4px 16px", text: "New board", onclick: function(){ S.phase = "idle"; S.sel = null; S.challenge = null; hideQbar(); render(); } })
   ]));
   var longest = S.found.slice().sort(function(a, b){ return b.length - a.length; })[0];
-  wrap.appendChild(h("div", { class: "grid3" }, [
-    (function(){ var total = sumScore(Array.from(S.paths.keys())); var got = sumScore(S.found); return stat("score", got + " / " + total + " pts", Math.round(got / total * 100) + "%"); })(),
-    stat("5L+ found", pct() + "%", found5().length + " of " + all5().length),
-    stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
+  wrap.appendChild(h("div", { style: "display:flex;justify-content:center" }, [
+    h("div", { class: "grid3", style: "display:inline-grid;grid-template-columns:repeat(3,1fr)" }, [
+      (function(){ var total = sumScore(Array.from(S.paths.keys())); var got = sumScore(S.found); return stat("score", Math.round(got / total * 100) + "%", got + " / " + total + " pts"); })(),
+      stat("5L+", pct() + "%", found5().length + " of " + all5().length),
+      stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
+    ])
   ]));
 
   var head = h("div", { class: "between" }, [
