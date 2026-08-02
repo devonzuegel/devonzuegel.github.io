@@ -707,7 +707,7 @@ function loadDef(w){
       if (!document.getElementById("defbody")) return;
       document.getElementById("defbody").innerHTML = "";
       var msg = (e && e.message === "notfound")
-        ? "No dictionary entry found for \"" + w + "\"."
+        ? "No definition found for \"" + w + "\". (It\u2019s valid in Boggle, but dictionaryapi.dev doesn\u2019t have an entry for it.)"
         : "Couldn't reach the dictionary. Check your connection and try again.";
       document.getElementById("defbody").appendChild(h("div", { class: "p", text: msg }));
     });
