@@ -69,7 +69,7 @@
     height:calc(var(--full-h) - var(--hdr-h) - var(--nav-h))}
   .reviewLeft{flex-shrink:0;width:100%;background:var(--ground);
     padding:6px 0 20px;border-bottom:1px solid var(--line)}
-  .reviewLeft .trayWrap{max-width:min(100%,calc(100vh - var(--hdr-h) - var(--nav-h) - 160px));margin:0 auto}
+  .reviewLeft .trayWrap{max-width:min(480px,calc(100vh - var(--hdr-h) - var(--nav-h) - 160px));margin:0 auto}
   .reviewRight{flex:1;min-height:0;overflow-y:auto;width:100%;padding-top:16px}
   @media (min-width:600px){
     .reviewLayout{flex-direction:row;gap:0;align-items:stretch;height:calc(var(--full-h) - var(--hdr-h) - var(--nav-h));
@@ -109,7 +109,7 @@
   .p{color:var(--sage);font-size:14px;line-height:1.5}
 
   .trayWrap{max-width:380px;margin:0 auto;width:100%}
-  .label{height:24px;text-align:center;font-family:var(--mono);font-size:16px;letter-spacing:.12em;color:var(--amber)}
+  .label{height:24px;margin-top:-18px;text-align:center;font-family:var(--mono);font-size:16px;letter-spacing:.12em;color:var(--amber)}
   .label.bad{color:var(--rust)}
   .boardBox{position:relative}
   .shakeBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -709,25 +709,9 @@ function showGameOver(){
     h("div", { class: "mtitle", text: "Game over!" }),
     h("div", { class: "grid3" }, [
       stat("score", sumScore(S.found)),
-      stat("5+ found", pct() + "%", found5().length + " of " + all5().length),
+      stat("5L+ found", pct() + "%", found5().length + " of " + all5().length),
       stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
     ]),
-    h("div", { class: "row", style: "margin-top:18px;justify-content:center" }, [
-      h("button", { class: "btn", text: "Review misses", onclick: closeModal }),
-      h("button", { class: "btn ghost", text: "New board", onclick: function(){ closeModal(); S.phase = "idle"; S.sel = null; render(); } })
-    ]),
-    S.endedEarly ? h("button", { class: "linkbtn", style: "margin-top:14px;color:var(--rust);font-size:12px",
-      text: "Delete this game from history",
-      onclick: function(){
-        var id = S.lastSessionId;
-        data.sessions = data.sessions.filter(function(s){ return s.id !== id; });
-        data.events = (data.events || []).filter(function(e){ return e.sessionId !== id; });
-        save();
-        closeModal();
-        S.phase = "idle"; S.sel = null; render();
-        notify("Game deleted.", false);
-      }
-    }) : null
   ]));
   m.className = "on";
   m.onclick = function(e){ if (e.target === m) closeModal(); };
@@ -1025,7 +1009,10 @@ function revealChallenge(w, how, path){
   S.sel = w;
   hideQbar();
   if (how === "got") celebrate(w);
+  var prevScroll = (document.querySelector(".reviewRight") || {}).scrollTop || 0;
   render();
+  var rr = document.querySelector(".reviewRight");
+  if (rr && prevScroll) rr.scrollTop = prevScroll;
   paint(S.paths.get(w), "trace");
 }
 
@@ -1180,13 +1167,12 @@ function screenReview(){
   layout.appendChild(wrap);
 
   left.appendChild(buildTray({ interactive: S.quiz }));
-  left.appendChild(h("div", { class: "row", style: "margin-top:8px;gap:8px" }, [
-    h("button", { class: "btn", style: "flex:1", text: "New board", onclick: function(){ S.phase = "idle"; S.sel = null; S.challenge = null; hideQbar(); render(); } }),
-    h("button", { class: "btn ghost", style: "flex:1", text: "Progress", onclick: function(){ S.tab = "progress"; hideQbar(); render(); } })
+  left.appendChild(h("div", { style: "display:flex;justify-content:center;margin-top:6px" }, [
+    h("button", { class: "linkbtn", style: "font-size:12px;color:var(--ink);background:var(--amber);border-radius:999px;padding:4px 16px", text: "New board", onclick: function(){ S.phase = "idle"; S.sel = null; S.challenge = null; hideQbar(); render(); } })
   ]));
   var longest = S.found.slice().sort(function(a, b){ return b.length - a.length; })[0];
   wrap.appendChild(h("div", { class: "grid3" }, [
-    stat("5+ found", pct() + "%", found5().length + " of " + all5().length),
+    stat("5L+ found", pct() + "%", found5().length + " of " + all5().length),
     stat("score", sumScore(S.found), S.found.length + " words"),
     stat("longest", (longest ? longest.length : 0) + "L", longest || "—")
   ]));
