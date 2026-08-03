@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-03T19:35:27Z"; /* updated by deploy script */
+var BUILD = "2026-08-03T19:40:07Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1271,7 +1271,46 @@ function renderFooter(){
     ])
   ]));
   var wrap = h("div", { class: "wrap" });
-  S.found.forEach(function(w){ wrap.appendChild(h("span", { class: "word" + (w.length >= 5 ? " big" : ""), text: w })); });
+  var sc = data.scoring || {};
+  var byLen = {};
+  S.found.forEach(function(w){ (byLen[w.length] = byLen[w.length] || []).push(w); });
+  var lens = Object.keys(byLen).map(Number).sort(function(a,b){ return a-b; });
+  function ptsLabel(len){
+    var pts = scoreOf(Array(len+1).join("a"));
+    return pts === 0 ? "0 pts each" : pts + " pt" + (pts === 1 ? "" : "s") + " each";
+  }
+  function showScoringModal(){
+    var m = document.getElementById("modal");
+    if (!m) return;
+    m.innerHTML = "";
+    var modeSc = data.scoring || {};
+    var modeName = (!modeSc.zero3 && !modeSc.zero4) ? "Standard" : (modeSc.zero3 && !modeSc.zero4) ? "4+ only" : "5+ only";
+    m.appendChild(h("div", { class: "mcard" }, [
+      h("div", { class: "eyebrow", text: "scoring mode" }),
+      h("div", { style: "font-size:20px;color:var(--bone);font-family:var(--display);margin:6px 0 12px", text: modeName }),
+      h("div", { class: "mono sage", style: "font-size:12px;line-height:1.8", text:
+        "3 letters: " + (modeSc.zero3 ? "0" : "1") + " pt\n" +
+        "4 letters: " + (modeSc.zero4 ? "0" : "1") + " pt\n" +
+        "5 letters: 2 pts\n6 letters: 3 pts\n7 letters: 5 pts\n8+ letters: 11 pts" }),
+      h("button", { class: "btn ghost", style: "margin-top:16px", text: "Close", onclick: closeModal })
+    ]));
+    m.className = "on";
+    m.onclick = function(e){ if (e.target === m) closeModal(); };
+  }
+  if (lens.length === 0) {
+    /* nothing found yet — empty */
+  } else {
+    lens.forEach(function(len){
+      var words = byLen[len];
+      var infoBtn = h("button", { style: "background:none;border:1px solid var(--line);border-radius:50%;width:14px;height:14px;font-size:9px;color:var(--sage);cursor:pointer;line-height:1;padding:0;flex-shrink:0", text: "i", onclick: showScoringModal });
+      var hdr = h("div", { style: "display:flex;align-items:center;gap:6px;margin:8px 0 4px;width:100%" }, [
+        h("span", { class: "eyebrow", style: "font-size:9px", text: len + "-letter words · " + ptsLabel(len) }),
+        infoBtn
+      ]);
+      wrap.appendChild(hdr);
+      words.forEach(function(w){ wrap.appendChild(h("span", { class: "word" + (w.length >= 5 ? " big" : ""), text: w })); });
+    });
+  }
   footerEl.appendChild(wrap);
 }
 
