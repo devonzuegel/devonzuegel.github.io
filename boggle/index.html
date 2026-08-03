@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-03T19:40:07Z"; /* updated by deploy script */
+var BUILD = "2026-08-03T19:44:41Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1284,16 +1284,52 @@ function renderFooter(){
     if (!m) return;
     m.innerHTML = "";
     var modeSc = data.scoring || {};
-    var modeName = (!modeSc.zero3 && !modeSc.zero4) ? "Standard" : (modeSc.zero3 && !modeSc.zero4) ? "4+ only" : "5+ only";
-    m.appendChild(h("div", { class: "mcard" }, [
+    var SCORE_OPTS2 = [
+      { label: "Standard", zero3: false, zero4: false, vals: [1, 1, 2, 3, 5, 11] },
+      { label: "4+ only",  zero3: true,  zero4: false, vals: [0, 1, 2, 3, 5, 11] },
+      { label: "5+ only",  zero3: true,  zero4: true,  vals: [0, 0, 2, 3, 5, 11] }
+    ];
+    var tbl = document.createElement("table");
+    tbl.style.cssText = "border-collapse:collapse;font-family:var(--mono);font-size:12px;width:100%";
+    var thead = document.createElement("thead");
+    var hr = document.createElement("tr");
+    ["", "", "3L", "4L", "5L", "6L", "7L", "8L+"].forEach(function(lbl, i){
+      var th = document.createElement("th");
+      th.textContent = lbl;
+      th.style.cssText = "padding:4px 6px;color:var(--sage);font-weight:normal;text-align:" + (i <= 1 ? "left" : "center") + (i === 0 ? ";width:16px" : "");
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr);
+    tbl.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    SCORE_OPTS2.forEach(function(opt){
+      var on = !!modeSc.zero3 === !!opt.zero3 && !!modeSc.zero4 === !!opt.zero4;
+      var tr = document.createElement("tr");
+      tr.style.cssText = "border-radius:8px;" + (on ? "background:var(--surface2);" : "");
+      var arrowTd = document.createElement("td");
+      arrowTd.textContent = on ? "▶" : "";
+      arrowTd.style.cssText = "padding:7px 4px 7px 6px;width:16px;color:var(--amber)";
+      tr.appendChild(arrowTd);
+      [opt.label].concat(opt.vals).forEach(function(val, i){
+        var td = document.createElement("td");
+        td.style.cssText = "padding:7px 6px;text-align:" + (i === 0 ? "left" : "center") + ";" +
+          (i === 0 ? "color:" + (on ? "var(--amber)" : "var(--bone)") + ";font-weight:" + (on ? "bold" : "normal") : "") +
+          (i > 0 && val === 0 ? ";color:var(--sage);opacity:.45" : "");
+        td.textContent = i === 0 ? val : (val === 0 ? "—" : val + "pt");
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    var tblWrap = document.createElement("div");
+    tblWrap.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:6px 8px;overflow:hidden;margin-top:10px";
+    tblWrap.appendChild(tbl);
+    var card = h("div", { class: "mcard" }, [
       h("div", { class: "eyebrow", text: "scoring mode" }),
-      h("div", { style: "font-size:20px;color:var(--bone);font-family:var(--display);margin:6px 0 12px", text: modeName }),
-      h("div", { class: "mono sage", style: "font-size:12px;line-height:1.8", text:
-        "3 letters: " + (modeSc.zero3 ? "0" : "1") + " pt\n" +
-        "4 letters: " + (modeSc.zero4 ? "0" : "1") + " pt\n" +
-        "5 letters: 2 pts\n6 letters: 3 pts\n7 letters: 5 pts\n8+ letters: 11 pts" }),
-      h("button", { class: "btn ghost", style: "margin-top:16px", text: "Close", onclick: closeModal })
-    ]));
+      h("button", { class: "btn ghost", style: "margin-top:14px", text: "Close", onclick: closeModal })
+    ]);
+    card.insertBefore(tblWrap, card.lastChild);
+    m.appendChild(card);
     m.className = "on";
     m.onclick = function(e){ if (e.target === m) closeModal(); };
   }
