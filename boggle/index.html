@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-02T23:07:02Z"; /* updated by deploy script */
+var BUILD = "2026-08-03T19:18:01Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -916,7 +916,7 @@ function celebrate(w){
   setTimeout(function(){ if (t.parentNode) t.parentNode.removeChild(t); }, tier === 3 ? 1800 : 1200);
   if (tier >= 2) sparkle(tier);
   var el = document.getElementById("runscore");
-  if (el) { el.className = "runscore"; void el.offsetWidth; el.className = "runscore bump"; }
+  if (el) { el.textContent = sumScore(S.found) + " pts"; el.className = "runscore"; void el.offsetWidth; el.className = "runscore bump"; }
 }
 function sparkle(tier){
   if (reducedMotion() || !boardEl) return;
