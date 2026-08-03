@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-03T19:18:01Z"; /* updated by deploy script */
+var BUILD = "2026-08-03T19:22:44Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1822,7 +1822,8 @@ function screenProgress(){
   var later = data.queue.filter(function(q){ return q.due > Date.now(); });
   var dueBox = h("div", {});
   if (!due.length) dueBox.appendChild(h("div", { class: "p", text: "Nothing due. Boards return a day after you play them." }));
-  due.forEach(function(q){
+  var SHOW = 5;
+  due.slice(0, SHOW).forEach(function(q){
     dueBox.appendChild(h("div", { class: "missrow" }, [
       h("div", { class: "w" }, [
         h("div", { class: "mono", style: "font-size:13px", text: q.board.map(face).join(" ") }),
@@ -1831,7 +1832,26 @@ function screenProgress(){
       h("button", { class: "btn small", text: "Replay", onclick: function(){ S.replay = true; startRound(q.board.slice()); } })
     ]));
   });
-  if (later.length) dueBox.appendChild(h("div", { class: "mono sage", style: "font-size:11px", text: later.length + " more scheduled later" }));
+  if (due.length > SHOW) {
+    var rest = due.slice(SHOW);
+    var expandBtn = h("button", { class: "linkbtn", style: "margin-top:6px", text: "Show " + rest.length + " more…" });
+    expandBtn.onclick = function(){
+      expandBtn.remove();
+      rest.forEach(function(q){
+        dueBox.appendChild(h("div", { class: "missrow" }, [
+          h("div", { class: "w" }, [
+            h("div", { class: "mono", style: "font-size:13px", text: q.board.map(face).join(" ") }),
+            h("div", { class: "mono sage", style: "font-size:11px", text: "you got " + q.lastPct + "% · attempt " + (q.attempts + 1) })
+          ]),
+          h("button", { class: "btn small", text: "Replay", onclick: function(){ S.replay = true; startRound(q.board.slice()); } })
+        ]));
+      });
+      if (later.length) dueBox.appendChild(h("div", { class: "mono sage", style: "font-size:11px", text: later.length + " more scheduled later" }));
+    };
+    dueBox.appendChild(expandBtn);
+  } else {
+    if (later.length) dueBox.appendChild(h("div", { class: "mono sage", style: "font-size:11px", text: later.length + " more scheduled later" }));
+  }
   wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "due for replay" }), dueBox]));
 
   wrap.appendChild(recentBlock());
