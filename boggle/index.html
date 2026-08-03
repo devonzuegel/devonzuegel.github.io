@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-03T20:21:09Z"; /* updated by deploy script */
+var BUILD = "2026-08-03T22:50:09Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -548,7 +548,7 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, playerFilter: null,
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, playerFilter: null,
   paused: false
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
@@ -1888,6 +1888,29 @@ function screenProgress(){
   }
   var actives = lens.filter(function(d){ return S.trendShow[d]; });
 
+  /* scoring mode filtering */
+  var SCORING_MODES = [
+    { key: "standard", label: "Standard", zero3: false, zero4: false },
+    { key: "4plus",    label: "4+ only",  zero3: true,  zero4: false },
+    { key: "5plus",    label: "5+ only",  zero3: true,  zero4: true  }
+  ];
+  function modeKeyOf(x) {
+    var m = sessionMode(x);
+    if (m.zero3 && m.zero4) return "5plus";
+    if (m.zero3) return "4plus";
+    return "standard";
+  }
+  var scoringLens = SCORING_MODES.filter(function(m){
+    return s.some(function(x){ return modeKeyOf(x) === m.key; });
+  });
+  if (!S.trendShowScoring || !Object.keys(S.trendShowScoring).length) {
+    S.trendShowScoring = {};
+    scoringLens.forEach(function(m){ S.trendShowScoring[m.key] = true; });
+  }
+  /* ensure any newly-seen mode is on by default */
+  scoringLens.forEach(function(m){ if (S.trendShowScoring[m.key] === undefined) S.trendShowScoring[m.key] = true; });
+  var activeScoring = scoringLens.filter(function(m){ return S.trendShowScoring[m.key]; });
+
   /* chips at the top — filter everything below */
   var chips = h("div", { class: "row", style: "margin:4px 0 16px;flex-wrap:wrap" });
   lens.forEach(function(d){
@@ -1904,12 +1927,37 @@ function screenProgress(){
     if (on) { chip.style.borderColor = LEN_COLOR[d]; chip.style.color = LEN_COLOR[d]; }
     chips.appendChild(chip);
   });
-  wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "filter stats by game length" }), chips
-  ]));
 
-  /* all stats filtered to active lengths */
-  var sa = s.filter(function(x){ return actives.indexOf(lenOf(x)) >= 0; });
+  var filterSection = h("div", { class: "section" });
+  filterSection.appendChild(h("div", { class: "eyebrow", text: "filter stats by game length" }));
+  filterSection.appendChild(chips);
+
+  /* scoring mode chips — only show if more than one mode present */
+  if (scoringLens.length > 1) {
+    var scoringChips = h("div", { class: "row", style: "margin:4px 0 0;flex-wrap:wrap" });
+    scoringLens.forEach(function(m){
+      var on = S.trendShowScoring[m.key];
+      var group = s.filter(function(x){ return modeKeyOf(x) === m.key; });
+      var chip = h("button", { class: "chipbtn" + (on ? " on" : ""),
+        text: m.label + " · " + group.length + " game" + (group.length === 1 ? "" : "s"),
+        onclick: function(){
+          var only = activeScoring.length === 1 && activeScoring[0].key === m.key;
+          if (only) scoringLens.forEach(function(k){ S.trendShowScoring[k.key] = true; });
+          else S.trendShowScoring[m.key] = !on;
+          render();
+        } });
+      scoringChips.appendChild(chip);
+    });
+    filterSection.appendChild(h("div", { class: "eyebrow", style: "margin-top:10px", text: "filter stats by scoring mode" }));
+    filterSection.appendChild(scoringChips);
+  }
+  wrap.appendChild(filterSection);
+
+  /* all stats filtered to active lengths + scoring modes */
+  var sa = s.filter(function(x){
+    return actives.indexOf(lenOf(x)) >= 0 &&
+           (activeScoring.length === 0 || activeScoring.some(function(m){ return modeKeyOf(x) === m.key; }));
+  });
   var last5 = median(sa.slice(0, 5).map(function(x){ return x.pct; }));
   var prior = median(sa.slice(5, 10).map(function(x){ return x.pct; }));
   var diff = prior ? last5 - prior : 0;
