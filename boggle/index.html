@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T14:34:49Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:41:37Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -507,28 +507,33 @@ function syncUp(){
   if (!data.player) return;
   setPending(true);
   syncState.status = "syncing"; renderSyncStatus();
-  var payload = Object.assign({}, data, { lastSyncedAt: Date.now() });
-  var headers = { "Content-Type": "application/json" };
-  if (data.player && data.player.toLowerCase() === "devon") {
+  var getHeaders = {};
+  if (data.player.toLowerCase() === "devon") {
     var tok = getDevonToken();
-    if (tok) headers["X-Admin-Token"] = tok;
+    if (tok) getHeaders["X-Admin-Token"] = tok;
   }
-  fetch(API + "?user=" + encodeURIComponent(data.player), {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify(payload)
-  }).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
-  .then(function(res){
-    /* queued by SW (offline) — pending stays true */
-    if (res && res.queued) { syncState.status = "error"; syncState.error = "queued"; renderSyncStatus(); return; }
-    setPending(false);
-    syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
-    try { localStorage.setItem("boggle:lastServerSync", String(syncState.lastSync)); } catch(e) {}
-    renderSyncStatus();
-  }).catch(function(e){
-    syncState.status = "error"; syncState.error = String(e);
-    renderSyncStatus();
-  });
+  /* fetch server state first so we never overwrite sessions that only exist there */
+  fetch(API + "?user=" + encodeURIComponent(data.player), { headers: getHeaders })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(remote){
+      if (remote && Object.keys(remote).length) { mergeData(remote); saveLocal(); }
+      var payload = Object.assign({}, data, { lastSyncedAt: Date.now() });
+      var postHeaders = Object.assign({ "Content-Type": "application/json" }, getHeaders);
+      return fetch(API + "?user=" + encodeURIComponent(data.player), {
+        method: "POST", headers: postHeaders, body: JSON.stringify(payload)
+      });
+    })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(res){
+      if (res && res.queued) { syncState.status = "error"; syncState.error = "queued"; renderSyncStatus(); return; }
+      setPending(false);
+      syncState.status = "ok"; syncState.lastSync = Date.now(); syncState.error = null;
+      try { localStorage.setItem("boggle:lastServerSync", String(syncState.lastSync)); } catch(e) {}
+      renderSyncStatus();
+    }).catch(function(e){
+      syncState.status = "error"; syncState.error = String(e);
+      renderSyncStatus();
+    });
 }
 
 function saveLocal(){
@@ -2172,7 +2177,7 @@ function backupBlock(){
 
   var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
     h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
-    h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncDown(function(){ syncUp(); render(); }); } })
+    h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncUp(); render(); } })
   ]);
   setTimeout(renderSyncStatus, 50);
   return h("div", { class: "section" }, [
