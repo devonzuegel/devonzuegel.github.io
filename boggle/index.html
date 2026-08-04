@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T14:41:37Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:45:08Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2300,27 +2300,58 @@ function screenSettings(){
     h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px;margin-bottom:12px", text: "Built " + buildFmt + " · " + ago }),
 
     h("div", { class: "eyebrow", text: "sync" }),
-    h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px;margin-bottom:12px" }, [
-      dbgBtn("Force sync UP", "var(--amber)", function(){
-        dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--amber)");
-        clearTimeout(syncDebounce); syncUp();
-      }),
-      dbgBtn("Force sync DOWN", "var(--sage)", function(){
-        dbgLog("syncing down for: " + (data.player||"(none)"), "var(--sage)");
-        syncDown(function(){ dbgLog("done — sessions: " + data.sessions.length); render(); });
-      }),
-      dbgBtn("Check KV", "var(--sage)", function(){
-        if (!data.player) { dbgLog("no player set", "var(--rust)"); return; }
-        dbgLog("fetching KV for: " + data.player);
-        fetch(API + "?user=" + encodeURIComponent(data.player))
-          .then(function(r){ return r.json(); })
-          .then(function(d){ dbgLog("KV sessions: " + (d.sessions||[]).length + " · players: " + (d.players||[]).join(",")); })
-          .catch(function(e){ dbgLog("fetch error: " + e, "var(--rust)"); });
-      }),
-      dbgBtn("Local state", "var(--sage)", function(){
-        dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length);
-      })
-    ]),
+    (function(){
+      var rows = [
+        { btn: dbgBtn("Force sync UP", "var(--amber)", function(){
+            dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--amber)");
+            clearTimeout(syncDebounce); syncUp();
+          }),
+          what: "Merges server → local, then pushes combined result to server.",
+          when: "Sessions played on another device aren't showing up here."
+        },
+        { btn: dbgBtn("Force sync DOWN", "var(--sage)", function(){
+            dbgLog("syncing down for: " + (data.player||"(none)"), "var(--sage)");
+            syncDown(function(){ dbgLog("done — sessions: " + data.sessions.length); render(); });
+          }),
+          what: "Pulls server state and merges into local. Does not push.",
+          when: "You want to pull without triggering an upload."
+        },
+        { btn: dbgBtn("Check KV", "var(--sage)", function(){
+            if (!data.player) { dbgLog("no player set", "var(--rust)"); return; }
+            dbgLog("fetching KV for: " + data.player);
+            fetch(API + "?user=" + encodeURIComponent(data.player))
+              .then(function(r){ return r.json(); })
+              .then(function(d){ dbgLog("KV sessions: " + (d.sessions||[]).length + " · players: " + (d.players||[]).join(",")); })
+              .catch(function(e){ dbgLog("fetch error: " + e, "var(--rust)"); });
+          }),
+          what: "Read-only peek at what's stored on the server right now.",
+          when: "Verifying the server has the right data without changing anything."
+        },
+        { btn: dbgBtn("Local state", "var(--sage)", function(){
+            dbgLog("player: " + data.player + " · sessions: " + data.sessions.length + " · vocab: " + data.vocab.length + " · queue: " + data.queue.length);
+          }),
+          what: "Logs in-memory local state (no network). Read-only.",
+          when: "Checking what this device has before deciding whether to sync."
+        }
+      ];
+      var tbl = document.createElement("table");
+      tbl.style.cssText = "width:100%;border-collapse:collapse;margin-top:8px;margin-bottom:12px;font-family:var(--mono);font-size:11px";
+      rows.forEach(function(r){
+        var tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid var(--line)";
+        var tdBtn = document.createElement("td");
+        tdBtn.style.cssText = "padding:8px 12px 8px 0;white-space:nowrap;vertical-align:top";
+        tdBtn.appendChild(r.btn);
+        var tdDesc = document.createElement("td");
+        tdDesc.style.cssText = "padding:8px 0;vertical-align:top;line-height:1.5";
+        tdDesc.innerHTML = '<span style="color:var(--bone)">' + r.what + '</span>'
+          + '<br><span style="color:var(--sage)">Use when: ' + r.when + '</span>';
+        tr.appendChild(tdBtn);
+        tr.appendChild(tdDesc);
+        tbl.appendChild(tr);
+      });
+      return tbl;
+    })(),
 
     h("div", { class: "eyebrow", text: "danger zone" }),
     h("div", { class: "row", style: "margin-top:8px;flex-wrap:wrap;gap:8px;margin-bottom:12px" }, [
