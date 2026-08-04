@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T14:45:08Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:46:34Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -817,6 +817,112 @@ function loadDef(w){
       document.getElementById("defbody").appendChild(h("div", { class: "p", text: msg }));
     });
 }
+function showSyncDiffModal(){
+  var m = document.getElementById("modal");
+  if (!m) return;
+  m.innerHTML = "";
+  m.className = "on";
+
+  var wrap = h("div", { style: "background:var(--surface);border-radius:18px;padding:24px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;position:relative" });
+  wrap.appendChild(h("div", { class: "eyebrow", text: "reviewing sync changes" }));
+  wrap.appendChild(h("div", { class: "mono", style: "font-size:13px;color:var(--sage);margin-top:4px;margin-bottom:16px", text: "Fetching server state…" }));
+  m.appendChild(wrap);
+  m.onclick = function(e){ if (e.target === m) closeModal(); };
+
+  var getHeaders = {};
+  if (data.player && data.player.toLowerCase() === "devon") {
+    var tok = getDevonToken();
+    if (tok) getHeaders["X-Admin-Token"] = tok;
+  }
+
+  fetch(API + "?user=" + encodeURIComponent(data.player), { headers: getHeaders })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(remote){
+      var remoteIds = {};
+      (remote.sessions || []).forEach(function(s){ remoteIds[s.id] = s; });
+      var localIds = {};
+      data.sessions.forEach(function(s){ localIds[s.id] = s; });
+
+      var localOnly = data.sessions.filter(function(s){ return !remoteIds[s.id]; });
+      var remoteOnly = (remote.sessions || []).filter(function(s){ return !localIds[s.id]; });
+      var inBoth = data.sessions.filter(function(s){ return !!remoteIds[s.id]; });
+
+      wrap.innerHTML = "";
+      wrap.appendChild(h("div", { class: "eyebrow", text: "sync preview" }));
+      wrap.appendChild(h("div", { class: "mono", style: "font-size:11px;color:var(--sage);margin-top:2px;margin-bottom:20px",
+        text: "Both sides will be updated to include all sessions from either device." }));
+
+      function sessionLine(s, color){
+        var dt = new Date(s.ts);
+        var dateStr = dt.toLocaleDateString(undefined, { month:"short", day:"numeric" }) + " " + dt.toLocaleTimeString(undefined, { hour:"2-digit", minute:"2-digit" });
+        var boards = (s.board || []).slice(0, 6).map(face).join("");
+        var pts = s.score != null ? s.score + " pts" : "";
+        var pct = s.pct != null ? s.pct + "%" : "";
+        var row = h("div", { style: "display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;margin-bottom:4px;background:var(--surface2)" });
+        var dot = h("div", { style: "width:8px;height:8px;border-radius:50%;background:" + color + ";flex-shrink:0" });
+        var label = h("div", { class: "mono", style: "font-size:11px;flex:1;min-width:0" });
+        label.innerHTML = '<span style="color:var(--sage)">' + dateStr + '</span>'
+          + ' <span style="color:var(--bone);letter-spacing:.05em">' + boards + '…</span>'
+          + ' <span style="color:var(--sage)">' + [pts, pct].filter(Boolean).join(" · ") + (s.early ? " · early" : "") + '</span>';
+        row.appendChild(dot);
+        row.appendChild(label);
+        return row;
+      }
+
+      function diffBlock(title, sessions, color, emptyMsg){
+        var block = h("div", { style: "margin-bottom:18px" });
+        block.appendChild(h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:8px" }, [
+          h("div", { style: "width:10px;height:10px;border-radius:50%;background:" + color + ";flex-shrink:0" }),
+          h("div", { class: "mono", style: "font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:" + color, text: title })
+        ]));
+        if (!sessions.length) {
+          block.appendChild(h("div", { class: "mono", style: "font-size:11px;color:var(--sage);padding:6px 10px", text: emptyMsg }));
+        } else {
+          sessions.forEach(function(s){ block.appendChild(sessionLine(s, color)); });
+        }
+        return block;
+      }
+
+      wrap.appendChild(diffBlock(
+        localOnly.length + " session" + (localOnly.length === 1 ? "" : "s") + " on this device only → will upload",
+        localOnly, "var(--amber)", "None — server already has everything from this device."
+      ));
+      wrap.appendChild(diffBlock(
+        remoteOnly.length + " session" + (remoteOnly.length === 1 ? "" : "s") + " on server only → will download",
+        remoteOnly, "var(--sage)", "None — this device already has everything from the server."
+      ));
+
+      var alreadySynced = h("div", { class: "mono", style: "font-size:11px;color:var(--sage);margin-bottom:20px" });
+      alreadySynced.textContent = inBoth.length + " session" + (inBoth.length === 1 ? "" : "s") + " already on both — no change.";
+      wrap.appendChild(alreadySynced);
+
+      var noChanges = !localOnly.length && !remoteOnly.length;
+      if (noChanges) {
+        wrap.appendChild(h("div", { style: "background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:16px" }, [
+          h("div", { class: "mono", style: "font-size:12px;color:var(--sage)", text: "Everything is already in sync. Nothing will change." })
+        ]));
+      }
+
+      var btnRow = h("div", { style: "display:flex;gap:10px;margin-top:4px" });
+      var confirmBtn = h("button", { class: "btn" + (noChanges ? " ghost" : ""), text: noChanges ? "OK" : "Confirm sync",
+        onclick: function(){
+          closeModal();
+          if (!noChanges) syncUp();
+        }
+      });
+      var cancelBtn = h("button", { class: "btn ghost", text: "Cancel", onclick: closeModal });
+      btnRow.appendChild(confirmBtn);
+      if (!noChanges) btnRow.appendChild(cancelBtn);
+      wrap.appendChild(btnRow);
+    })
+    .catch(function(e){
+      wrap.innerHTML = "";
+      wrap.appendChild(h("div", { class: "eyebrow", text: "sync preview" }));
+      wrap.appendChild(h("div", { class: "mono", style: "font-size:12px;color:var(--rust);margin-top:8px", text: "Could not fetch server state: " + e }));
+      wrap.appendChild(h("button", { class: "btn ghost", style: "margin-top:16px", text: "Close", onclick: closeModal }));
+    });
+}
+
 function closeModal(){
   var m = document.getElementById("modal");
   if (m) { m.className = ""; m.innerHTML = ""; }
@@ -2177,7 +2283,7 @@ function backupBlock(){
 
   var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
     h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
-    h("button", { class: "linkbtn", text: "Sync now", onclick: function(){ syncUp(); render(); } })
+    h("button", { class: "linkbtn", text: "Sync now", onclick: showSyncDiffModal })
   ]);
   setTimeout(renderSyncStatus, 50);
   return h("div", { class: "section" }, [
