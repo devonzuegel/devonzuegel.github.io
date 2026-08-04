@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T14:48:00Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:51:33Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2216,10 +2216,18 @@ function render(){
   navEl.innerHTML = "";
   [["play", "Play"], ["progress", "Progress"], ["settings", "Settings"]].forEach(function(t){
     navEl.appendChild(h("button", { class: S.tab === t[0] ? "on" : "", text: t[1],
-      onclick: function(){ S.tab = t[0]; S.challenge = null; hideQbar(); render(); } }));
+      onclick: (function(tab){ return function(){
+        S.tab = tab; S.challenge = null; hideQbar();
+        history.replaceState(null, "", tab === "play" ? location.pathname : "#" + tab);
+        render();
+      }; })(t[0]) }));
   });
 }
-if (location.hash === "#how-to-install") S.tab = "settings";
+if (location.hash === "#progress" || location.hash === "#settings" || location.hash === "#how-to-install") {
+  S.tab = location.hash === "#progress" ? "progress" : "settings";
+} else if (location.hash === "#play") {
+  S.tab = "play";
+}
 render();
 if (!data.player && location.hash !== "#how-to-install") showNameModal(true);
 if (location.hash === "#how-to-install") {
