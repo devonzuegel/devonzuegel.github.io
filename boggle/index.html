@@ -111,6 +111,20 @@
   .btn.small{padding:6px 12px;font-size:13px}
   .chipbtn{font-family:var(--mono);font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
+  .filter-badge{font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid var(--amber);border-radius:4px;padding:3px 8px;opacity:.85;line-height:1;display:inline-flex;align-items:center}
+  .filter-matrix-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s ease;padding-left:14px}
+  .filter-matrix-wrap.open{max-height:400px;opacity:1;margin:10px 0 14px}
+  .filter-matrix{display:inline-grid;gap:4px}
+  .filter-matrix-row{display:contents}
+  .filter-matrix-corner{} /* empty top-left cell */
+  .filter-matrix-col-hdr{font-family:var(--mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 4px 2px}
+  .filter-matrix-row-hdr{font-family:var(--mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;padding-right:6px;white-space:nowrap}
+  .filter-matrix-cell{border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center;cursor:pointer;background:var(--surface);transition:border-color .15s,color .15s}
+  .filter-matrix-cell:hover:not(.empty){border-color:var(--sage)}
+  .filter-matrix-cell.selected{border-color:var(--amber);background:var(--surface2)}
+  .filter-matrix-cell.empty{opacity:.35;cursor:default}
+  .filter-matrix-count{font-family:var(--mono);font-size:13px;color:var(--bone)}
+  .filter-matrix-cell.selected .filter-matrix-count{color:var(--amber)}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   .stat .v{font-family:var(--display);font-size:28px;line-height:1.1;margin-top:4px;white-space:nowrap}
@@ -553,7 +567,7 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, playerFilter: null,
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, playerFilter: null,
   paused: false
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
@@ -1942,12 +1956,15 @@ function screenProgress(){
     var recentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).filter(function(x){ return !actives || actives.indexOf(lenOf(x)) >= 0; }).slice(0, 10);
     var box = h("div", {});
     recentS.forEach(function(x){
-      var tags = (x.replay ? " · replay" : "");
+      var modeLabel = (SCORING_MODES.filter(function(m){ return m.key === modeKeyOf(x); })[0] || {}).label || "";
+      var left = h("span", { class: "w sage", style: "display:flex;align-items:center;gap:6px;flex-wrap:wrap" });
+      left.appendChild(h("span", { text: new Date(x.ts).toLocaleDateString() }));
+      left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) }));
+      left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabel }));
+      if (x.replay) left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6;color:var(--sage);border-color:var(--sage)", text: "replay" }));
+      if (x.early) left.appendChild(h("span", { class: "early", text: "⏸ ended early, " + fmt(x.left || 0) + " left" }));
       var row = h("div", { class: "missrow mono", style: "font-size:12px;cursor:pointer" }, [
-        h("span", { class: "w sage" }, [
-          h("span", { text: new Date(x.ts).toLocaleDateString() + " · " + ((x.seconds || 180) / 60) + "m" + tags }),
-          x.early ? h("span", { class: "early", text: "  ⏸ ended early, " + fmt(x.left || 0) + " left" }) : null
-        ]),
+        left,
         (function(){ var got = sessionScore(x); var total = sessionTotalScore(x); var pctStr = total ? " (" + Math.round(got/total*100) + "%)" : ""; return h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + got + "/" + (total || "?") + " pts" + pctStr }); })()
       ]);
       if (x.board) row.onclick = function(){ showSessionModal(x); };
@@ -1985,18 +2002,12 @@ function screenProgress(){
     return wrap;
   }
 
-  /* a 1-minute round and a 3-minute round aren't comparable, so the rate
-     chart keeps them as separate series — chips filter which are drawn */
+  /* a 1-minute round and a 3-minute round aren't comparable */
   var lens = [60, 120, 180].filter(function(d){
     return s.some(function(x){ return lenOf(x) === d; });
   });
-  if (!S.trendShow || !Object.keys(S.trendShow).length) {
-    S.trendShow = {};
-    lens.forEach(function(d){ S.trendShow[d] = d === 180 || lens.indexOf(180) < 0; });
-  }
-  var actives = lens.filter(function(d){ return S.trendShow[d]; });
 
-  /* scoring mode filtering */
+  /* scoring mode definitions */
   var SCORING_MODES = [
     { key: "standard", label: "Standard", zero3: false, zero4: false },
     { key: "4plus",    label: "4+ only",  zero3: true,  zero4: false },
@@ -2011,60 +2022,94 @@ function screenProgress(){
   var scoringLens = SCORING_MODES.filter(function(m){
     return s.some(function(x){ return modeKeyOf(x) === m.key; });
   });
-  if (!S.trendShowScoring || !Object.keys(S.trendShowScoring).length) {
-    /* default: only select the mode the player has played most (first if tied) */
+
+  /* single-value dropdown filters — default to dominant (most-played) value */
+  if (S.trendLenFilter === null || S.trendLenFilter === undefined) {
+    var lenCounts = {};
+    lens.forEach(function(d){ lenCounts[d] = 0; });
+    s.forEach(function(x){ var d = lenOf(x); if (lenCounts[d] !== undefined) lenCounts[d]++; });
+    var domLen = lens.reduce(function(best, d){ return lenCounts[d] > lenCounts[best] ? d : best; }, lens[0]);
+    S.trendLenFilter = String(domLen);
+  }
+  if (S.trendScoringFilter === null || S.trendScoringFilter === undefined) {
     var modeCounts = {};
     scoringLens.forEach(function(m){ modeCounts[m.key] = 0; });
     s.forEach(function(x){ var k = modeKeyOf(x); if (modeCounts[k] !== undefined) modeCounts[k]++; });
-    var dominant = scoringLens.reduce(function(best, m){ return modeCounts[m.key] > modeCounts[best.key] ? m : best; }, scoringLens[0]);
-    S.trendShowScoring = {};
-    scoringLens.forEach(function(m){ S.trendShowScoring[m.key] = m.key === dominant.key; });
+    var domMode = scoringLens.reduce(function(best, m){ return modeCounts[m.key] > modeCounts[best.key] ? m : best; }, scoringLens[0]);
+    S.trendScoringFilter = domMode.key;
   }
-  /* ensure any newly-seen mode defaults off */
-  scoringLens.forEach(function(m){ if (S.trendShowScoring[m.key] === undefined) S.trendShowScoring[m.key] = false; });
-  var activeScoring = scoringLens.filter(function(m){ return S.trendShowScoring[m.key]; });
+  var lenFilter = S.trendLenFilter;
+  var scoringFilter = S.trendScoringFilter;
 
-  /* chips at the top — filter everything below */
-  var chips = h("div", { class: "row", style: "margin:4px 0 16px;flex-wrap:wrap" });
-  lens.forEach(function(d){
-    var on = actives.indexOf(d) >= 0;
-    var group = s.filter(function(x){ return lenOf(x) === d; });
-    var chip = h("button", { class: "chipbtn" + (on ? " on" : ""),
-      text: lenName(d) + " · " + group.length + " game" + (group.length === 1 ? "" : "s"),
-      onclick: function(){
-        var only = actives.length === 1 && actives[0] === d;
-        if (only) lens.forEach(function(k){ S.trendShow[k] = k === 180 || lens.indexOf(180) < 0; });
-        else S.trendShow[d] = !on;
-        render();
-      } });
-    if (on) { chip.style.borderColor = LEN_COLOR[d]; chip.style.color = LEN_COLOR[d]; }
-    chips.appendChild(chip);
-  });
+  /* compute actives for downstream chart compat */
+  var actives = lens.indexOf(parseInt(lenFilter)) >= 0 ? [parseInt(lenFilter)] : lens;
+  var activeScoring = scoringLens.filter(function(m){ return m.key === scoringFilter; });
 
-  var filterSection = h("div", { class: "section" });
-  filterSection.appendChild(h("div", { class: "eyebrow", text: "filter stats by game length" }));
-  filterSection.appendChild(chips);
-
-  /* scoring mode chips — only show if more than one mode present */
-  if (scoringLens.length > 1) {
-    var scoringChips = h("div", { class: "row", style: "margin:4px 0 0;flex-wrap:wrap" });
-    scoringLens.forEach(function(m){
-      var on = S.trendShowScoring[m.key];
-      var group = s.filter(function(x){ return modeKeyOf(x) === m.key; });
-      var chip = h("button", { class: "chipbtn" + (on ? " on" : ""),
-        text: m.label + " · " + group.length + " game" + (group.length === 1 ? "" : "s"),
-        onclick: function(){
-          var only = activeScoring.length === 1 && activeScoring[0].key === m.key;
-          if (only) scoringLens.forEach(function(k){ S.trendShowScoring[k.key] = true; });
-          else S.trendShowScoring[m.key] = !on;
-          render();
-        } });
-      scoringChips.appendChild(chip);
+  /* filter matrix — rows = game length, cols = scoring mode */
+  if (true) {
+    var filterSection = h("div", { class: "section" });
+    var selectedLenLabel = lenName(parseInt(lenFilter));
+    var selectedModeLabel = (SCORING_MODES.filter(function(m){ return m.key === scoringFilter; })[0] || {}).label || "";
+    var toggleRow = h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:10px" });
+    var toggleBtn = h("button", {
+      class: "mono eyebrow",
+      style: "color:var(--sage);letter-spacing:.06em;line-height:1;padding:0;margin:0;border:none;background:none;display:inline-flex;align-items:center",
+      text: (S.filterMatrixOpen ? "▾ " : "▸ ") + "FILTER DATA BY GAME TYPE"
     });
-    filterSection.appendChild(h("div", { class: "eyebrow", style: "margin-top:10px", text: "filter stats by scoring mode" }));
-    filterSection.appendChild(scoringChips);
+    toggleRow.appendChild(toggleBtn);
+    toggleRow.appendChild(h("span", { class: "filter-badge", text: selectedLenLabel }));
+    toggleRow.appendChild(h("span", { class: "filter-badge", text: selectedModeLabel }));
+    filterSection.appendChild(toggleRow);
+
+    /* always build the table; animate open/close via max-height */
+    var allLens = [60, 120, 180];
+    var table = h("div", { class: "filter-matrix", style: "grid-template-columns: auto " + Array(SCORING_MODES.length).fill("1fr").join(" ") });
+
+    /* header row: empty corner + scoring mode column headers */
+    var headerRow = h("div", { class: "filter-matrix-row" });
+    headerRow.appendChild(h("div", { class: "filter-matrix-corner" }));
+    SCORING_MODES.forEach(function(m){
+      headerRow.appendChild(h("div", { class: "filter-matrix-col-hdr", text: m.label }));
+    });
+    table.appendChild(headerRow);
+
+    /* data rows: one per game length */
+    allLens.forEach(function(d){
+      var row = h("div", { class: "filter-matrix-row" });
+      row.appendChild(h("div", { class: "filter-matrix-row-hdr", text: lenName(d) }));
+      SCORING_MODES.forEach(function(m){
+        var count = s.filter(function(x){ return lenOf(x) === d && modeKeyOf(x) === m.key; }).length;
+        var isSelected = String(d) === String(lenFilter) && m.key === scoringFilter;
+        var isEmpty = count === 0;
+        var cell = h("div", {
+          class: "filter-matrix-cell" + (isSelected ? " selected" : "") + (isEmpty ? " empty" : "")
+        });
+        cell.appendChild(h("span", { class: "filter-matrix-count", text: count + " game" + (count === 1 ? "" : "s") }));
+        if (!isEmpty) {
+          cell.onclick = function(){
+            S.trendLenFilter = String(d);
+            S.trendScoringFilter = m.key;
+            render();
+          };
+        }
+        row.appendChild(cell);
+      });
+      table.appendChild(row);
+    });
+
+    var matrixWrap = h("div", { class: "filter-matrix-wrap" + (S.filterMatrixOpen ? " open" : "") });
+    matrixWrap.appendChild(table);
+    filterSection.appendChild(matrixWrap);
+
+    /* toggle: flip class + persist state without full re-render */
+    toggleBtn.onclick = function(){
+      S.filterMatrixOpen = !S.filterMatrixOpen;
+      matrixWrap.classList.toggle("open", S.filterMatrixOpen);
+      toggleBtn.childNodes[0].nodeValue = (S.filterMatrixOpen ? "▾ " : "▸ ") + "FILTER DATA BY GAME TYPE";
+    };
+
+    wrap.appendChild(filterSection);
   }
-  wrap.appendChild(filterSection);
 
   /* all stats filtered to active lengths + scoring modes */
   var sa = s.filter(function(x){
