@@ -71,6 +71,8 @@
     max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);
     animation:popin 320ms cubic-bezier(.2,.9,.3,1)}
   @keyframes popin{0%{transform:scale(.86) translateY(10px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
+  .modal-panel-left,.modal-panel-right{align-items:center}
+  @media(max-width:440px){.modal-panel-left,.modal-panel-right{align-items:flex-start}}
   .mtitle{font-family:var(--display);font-size:42px;line-height:1;color:var(--amber);margin:0px 0 18px}
   .mnote{font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:14px}
   /* review: board parked, words scroll beside it */
@@ -374,7 +376,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T22:19:56Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T22:23:39Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -754,7 +756,7 @@ function showDevonPasswordModal(name){
       h("button", { class: "btn ghost", text: "Cancel", onclick: closeModal })
     ])
   ]));
-  m.className = "on";
+  openModal(m);
   setTimeout(function(){ input.focus(); }, 60);
 }
 
@@ -788,7 +790,7 @@ function showNameModal(firstRun){
     switcher,
     h("div", { class: "mnote", text: "synced across devices" })
   ]));
-  m.className = "on";
+  openModal(m);
   m.onclick = function(e){ if (e.target === m && !firstRun) closeModal(); };
   setTimeout(function(){ input.focus(); }, 60);
 }
@@ -802,7 +804,7 @@ function showDefModal(w){
     h("div", { class: "dbody", id: "defbody" }, [h("div", { class: "p", text: "Looking it up…" })]),
     h("button", { class: "btn ghost", style: "margin-top:16px", text: "Close", onclick: closeModal })
   ]));
-  m.className = "on";
+  openModal(m);
   m.onclick = function(e){ if (e.target === m) closeModal(); };
   loadDef(w);
 }
@@ -890,7 +892,7 @@ function showSyncDiffModal(){
   var m = document.getElementById("modal");
   if (!m) return;
   m.innerHTML = "";
-  m.className = "on";
+  openModal(m);
 
   var wrap = h("div", { style: "background:var(--surface);border-radius:18px;padding:24px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;position:relative" });
   wrap.appendChild(h("div", { class: "eyebrow", text: "reviewing sync changes" }));
@@ -992,9 +994,12 @@ function showSyncDiffModal(){
     });
 }
 
+function openModal(m){ m.className = "on"; document.body.style.overflow = "hidden"; }
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeModal(); });
 function closeModal(){
   var m = document.getElementById("modal");
   if (m) { m.className = ""; m.innerHTML = ""; }
+  document.body.style.overflow = "";
 }
 function showSessionModal(x){
   var m = document.getElementById("modal");
@@ -1036,12 +1041,12 @@ function showSessionModal(x){
     h("span", { class: "filter-badge", text: modeLabelOf(x) }),
     x.replay ? h("span", { class: "filter-badge", style: "color:var(--sage);border-color:var(--sage)", text: "replay" }) : null,
   ]);
-  var left = h("div", { style: "display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 180px;min-width:0" }, [
+  var left = h("div", { class: "modal-panel-left", style: "display:flex;flex-direction:column;justify-content:center;flex:1 1 180px;min-width:0" }, [
     badgeRow,
     boardDiv,
     x.early ? h("div", { class: "mono sage", style: "font-size:11px;margin-top:6px;text-align:center" }, [document.createTextNode("⏸ ended early, " + fmt(x.left || 0) + " left")]) : null,
   ]);
-  var right = h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;flex:1 1 200px" }, [
+  var right = h("div", { class: "modal-panel-right", style: "display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;flex:1 1 200px" }, [
     h("div", { style: "display:flex;gap:16px;flex-wrap:wrap" }, [
       stat2("score", pctStr, got + (total ? " / " + total + " pts" : " pts")),
       stat2("5+ words", x.found5 + "/" + x.total5, "found / total"),
@@ -1060,7 +1065,7 @@ function showSessionModal(x){
   ]);
 
   m.appendChild(card);
-  m.className = "on";
+  openModal(m);
   m.onclick = function(e){ if (e.target === m) closeModal(); };
 }
 function showGameOver(){
@@ -1086,7 +1091,7 @@ function showGameOver(){
         ])
       : null,
   ]));
-  m.className = "on";
+  openModal(m);
   m.onclick = function(e){ if (e.target === m) closeModal(); };
   if (sumScore(S.found) > 0) setTimeout(function(){ sparkle(3); }, 120);
 }
@@ -1516,7 +1521,7 @@ function renderFooter(){
     ]);
     card.insertBefore(tblWrap, card.lastChild);
     m.appendChild(card);
-    m.className = "on";
+    openModal(m);
     m.onclick = function(e){ if (e.target === m) closeModal(); };
   }
   if (lens.length === 0) {
@@ -2173,15 +2178,15 @@ function screenProgress(){
     var filterSection = h("div", { class: "section" });
     var selectedLenLabel = lenName(parseInt(lenFilter));
     var selectedModeLabel = (SCORING_MODES.filter(function(m){ return m.key === scoringFilter; })[0] || {}).label || "";
-    var toggleRow = h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:10px" });
+    var toggleRow = h("div", { style: "display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px" });
     var toggleBtn = h("button", {
       class: "mono eyebrow",
-      style: "color:var(--sage);letter-spacing:.06em;line-height:1;padding:0 6px 0 0;margin:0;border:none;background:none;display:inline-flex;align-items:center",
+      style: "color:var(--sage);letter-spacing:.06em;line-height:1;padding:0 6px 0 0;margin:0;border:none;background:none;display:inline-flex;align-items:center;white-space:nowrap",
       text: (S.filterMatrixOpen ? "▾ " : "▸ ") + "FILTER DATA BY GAME TYPE"
     });
     toggleRow.appendChild(toggleBtn);
-    toggleRow.appendChild(h("span", { class: "filter-badge", text: selectedLenLabel }));
-    toggleRow.appendChild(h("span", { class: "filter-badge", text: selectedModeLabel }));
+    toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap", text: selectedLenLabel }));
+    toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap", text: selectedModeLabel }));
     filterSection.appendChild(toggleRow);
 
     /* always build the table; animate open/close via max-height */
