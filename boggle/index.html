@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-03T22:50:09Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:27:05Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1904,11 +1904,16 @@ function screenProgress(){
     return s.some(function(x){ return modeKeyOf(x) === m.key; });
   });
   if (!S.trendShowScoring || !Object.keys(S.trendShowScoring).length) {
+    /* default: only select the mode the player has played most (first if tied) */
+    var modeCounts = {};
+    scoringLens.forEach(function(m){ modeCounts[m.key] = 0; });
+    s.forEach(function(x){ var k = modeKeyOf(x); if (modeCounts[k] !== undefined) modeCounts[k]++; });
+    var dominant = scoringLens.reduce(function(best, m){ return modeCounts[m.key] > modeCounts[best.key] ? m : best; }, scoringLens[0]);
     S.trendShowScoring = {};
-    scoringLens.forEach(function(m){ S.trendShowScoring[m.key] = true; });
+    scoringLens.forEach(function(m){ S.trendShowScoring[m.key] = m.key === dominant.key; });
   }
-  /* ensure any newly-seen mode is on by default */
-  scoringLens.forEach(function(m){ if (S.trendShowScoring[m.key] === undefined) S.trendShowScoring[m.key] = true; });
+  /* ensure any newly-seen mode defaults off */
+  scoringLens.forEach(function(m){ if (S.trendShowScoring[m.key] === undefined) S.trendShowScoring[m.key] = false; });
   var activeScoring = scoringLens.filter(function(m){ return S.trendShowScoring[m.key]; });
 
   /* chips at the top — filter everything below */
