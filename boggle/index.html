@@ -2610,9 +2610,6 @@ function screenSettings(){
         try { localStorage.removeItem(KEY); } catch(e){}
         dbgLog("localStorage cleared — reload to start fresh", "var(--rust)");
       }),
-      dbgBtn("Refresh page", "var(--sage)", function(){
-        window.location.reload();
-      }),
       dbgBtn("Hard refresh", "var(--rust)", function(){
         dbgLog("unregistering SW + clearing caches…", "var(--rust)");
         var done = function(){ window.location.reload(true); };
@@ -2637,6 +2634,8 @@ function screenSettings(){
     chevron.textContent = open ? "▶" : "▼";
   };
 
+  var refreshBtn = dbgBtn("Refresh page", "var(--sage)", function(){ window.location.reload(); });
+  wrap.appendChild(h("div", { style: "margin-bottom:10px" }, [ refreshBtn ]));
   wrap.appendChild(h("div", {}, [ advancedToggle, advancedBody ]));
   return wrap;
 }
