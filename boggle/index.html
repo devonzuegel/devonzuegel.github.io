@@ -350,7 +350,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T14:46:34Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T14:48:00Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2282,8 +2282,7 @@ function backupBlock(){
   }
 
   var syncRow = h("div", { class: "row", style: "margin-top:10px;gap:10px;flex-wrap:wrap" }, [
-    h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" }),
-    h("button", { class: "linkbtn", text: "Sync now", onclick: showSyncDiffModal })
+    h("span", { class: "mono", id: "syncStatus", style: "font-size:11px" })
   ]);
   setTimeout(renderSyncStatus, 50);
   return h("div", { class: "section" }, [
@@ -2408,12 +2407,18 @@ function screenSettings(){
     h("div", { class: "eyebrow", text: "sync" }),
     (function(){
       var rows = [
-        { btn: dbgBtn("Force sync UP", "var(--amber)", function(){
-            dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--amber)");
+        { btn: dbgBtn("Sync now", "var(--amber)", function(){
+            showSyncDiffModal();
+          }),
+          what: "Shows a diff of local vs. server, then merges both directions on confirm.",
+          when: "Your normal go-to sync. Safe to use anytime — always previews before changing anything."
+        },
+        { btn: dbgBtn("Force sync UP", "var(--sage)", function(){
+            dbgLog("forcing syncUp for: " + (data.player||"(none)"), "var(--sage)");
             clearTimeout(syncDebounce); syncUp();
           }),
-          what: "Merges server → local, then pushes combined result to server.",
-          when: "Sessions played on another device aren't showing up here."
+          what: "Merges server → local, then pushes combined result to server. No preview.",
+          when: "You want to force a sync immediately without the confirmation step."
         },
         { btn: dbgBtn("Force sync DOWN", "var(--sage)", function(){
             dbgLog("syncing down for: " + (data.player||"(none)"), "var(--sage)");
@@ -2465,6 +2470,9 @@ function screenSettings(){
         if (!confirm("Clear local storage? Data on server is safe.")) return;
         try { localStorage.removeItem(KEY); } catch(e){}
         dbgLog("localStorage cleared — reload to start fresh", "var(--rust)");
+      }),
+      dbgBtn("Refresh page", "var(--sage)", function(){
+        window.location.reload();
       }),
       dbgBtn("Hard refresh", "var(--rust)", function(){
         dbgLog("unregistering SW + clearing caches…", "var(--rust)");
