@@ -111,16 +111,15 @@
   .btn.small{padding:6px 12px;font-size:13px}
   .chipbtn{font-family:var(--mono);font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
+  .seg-ctrl{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:10px}
+  .seg-ctrl button{background:none;border:none;padding:3px 8px;color:var(--sage);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em}
+  .seg-ctrl button.on{background:var(--amber);color:#0C1510;font-weight:600}
   #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface2);color:var(--bone);font-family:var(--mono);font-size:13px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:100}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .filter-badge{font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid var(--amber);border-radius:4px;padding:3px 8px;opacity:.85;line-height:1;display:inline-flex;align-items:center}
   .recent-table{width:100%;border-collapse:collapse;font-size:12px}
-  .recent-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);padding:0 8px 6px;font-weight:normal;white-space:nowrap;border-bottom:1px solid var(--line)}
-  .recent-table th:first-child{padding-left:0}
-  .recent-table th:last-child{padding-right:0}
+  .recent-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);padding:4px 8px;font-weight:normal;white-space:nowrap;border-bottom:1px solid var(--line)}
   .recent-table td{padding:5px 8px;border-top:1px solid var(--line);white-space:nowrap;vertical-align:middle}
-  .recent-table td:first-child{padding-left:0}
-  .recent-table td:last-child{padding-right:0}
   .recent-table tbody tr:first-child td{border-top:none}
   .recent-table tbody tr:hover td{background:var(--surface2)}
   .filter-matrix-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s ease;padding-left:14px}
@@ -368,6 +367,8 @@ try {
   var raw = localStorage.getItem(KEY);
   if (raw) data = Object.assign(data, JSON.parse(raw));
   if (!data.scoring) data.scoring = { zero3: false, zero4: false };
+  var _last = data.sessions && data.sessions[0];
+  if (_last && _last.scoringMode) data.scoring = _last.scoringMode;
 } catch (e) { storageOk = false; }
 
 /* ---------------- cloud sync ---------------- */
@@ -451,8 +452,11 @@ if (navigator.serviceWorker) {
 function mergeData(remote){
   /* sessions: union by id, keep newest 200 */
   var seenId = {};
-  data.sessions.forEach(function(s){ seenId[s.id] = true; });
-  (remote.sessions || []).forEach(function(s){ if (!seenId[s.id]) data.sessions.push(s); });
+  data.sessions.forEach(function(s){ seenId[s.id] = s; });
+  (remote.sessions || []).forEach(function(s){
+    if (!seenId[s.id]) data.sessions.push(s);
+    else Object.assign(seenId[s.id], s);
+  });
   data.sessions.sort(function(a,b){ return b.ts - a.ts; });
   data.sessions = data.sessions.slice(0, 200);
 
@@ -575,7 +579,7 @@ function save(){
 
 /* ---------------- state ---------------- */
 var S = {
-  tab: "play", phase: "idle", duration: 180, board: null, paths: null,
+  tab: "play", phase: "idle", duration: (data.sessions[0] && data.sessions[0].seconds) || 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
   quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
@@ -1003,7 +1007,7 @@ function showSessionModal(x){
       stat2("5+ words", x.found5 + "/" + x.total5, "found / total"),
       stat2("words", (x.found || []).length, "total found"),
     ]),
-    h("div", { class: "eyebrow", style: "margin-top:4px" }, [document.createTextNode("words found")]),
+    h("div", { class: "eyebrow", style: "margin-top:20px;margin-bottom:0" }, [document.createTextNode("words found")]),
     wordsDiv
   ]);
 
@@ -2037,20 +2041,16 @@ function screenProgress(){
     });
     box.appendChild(tbody);
     var hdr = h("div", { class: "eyebrow", style: "margin-bottom:12px", text: "recent rounds" });
-    var section = h("div", { class: "section" }, [hdr, box]);
-    var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:8px" });
+    var tableCard = h("div", { class: "card", style: "padding:12px 0" });
+    box.style.cssText = "margin:-12px 0";
+    tableCard.appendChild(box);
+    var section = h("div", { class: "section" }, [hdr, tableCard]);
+    var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;justify-content:flex-end" });
     if (hiddenCount > 0) {
       btns.appendChild(h("button", {
         class: "linkbtn",
         text: "Show " + hiddenCount + " more…",
         onclick: function(){ S.recentShowAll = true; render(); }
-      }));
-    }
-    if (earlyCount) {
-      btns.appendChild(h("button", {
-        class: "linkbtn" + (data.includeEarly ? " on" : ""),
-        text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " ended early",
-        onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); }
       }));
     }
     if (btns.children.length) section.appendChild(btns);
@@ -2068,8 +2068,8 @@ function screenProgress(){
      of the stats unless you ask for them */
   var earlyCount = allS.filter(function(x){ return x.early; }).length;
   var s = data.includeEarly ? allS : allS.filter(function(x){ return !x.early; });
-  var earlyToggle = earlyCount ? h("div", { style: "margin-top:4px" }, [
-    h("button", { class: "mono" + (data.includeEarly ? "" : ""),style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
+  var earlyToggle = earlyCount ? h("div", { style: "margin-top:8px" }, [
+    h("button", { class: "mono", style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
       text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " round" + (earlyCount === 1 ? "" : "s") + " ended early",
       onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); } })
   ]) : null;
@@ -2161,6 +2161,7 @@ function screenProgress(){
 
     var matrixWrap = h("div", { class: "filter-matrix-wrap" + (S.filterMatrixOpen ? " open" : "") });
     matrixWrap.appendChild(table);
+    if (earlyToggle) matrixWrap.appendChild(earlyToggle);
     filterSection.appendChild(matrixWrap);
 
     /* toggle: flip class + persist state without full re-render */
@@ -2196,9 +2197,11 @@ function screenProgress(){
   trendCard.appendChild(trendChart(recent, actives, sa));
   trendCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
     text: "last " + recent.length + " rounds, oldest left · hollow dot = replay" }));
+  wrap.appendChild(h("div", { style: "height:10px" }));
   wrap.appendChild(h("div", { class: "section" }, [
     h("div", { class: "eyebrow", text: "share of 5+ letter words found" }), trendCard
   ]));
+  wrap.appendChild(h("div", { style: "height:10px" }));
 
   var scorePctCard = h("div", { class: "card" });
   scorePctCard.appendChild(scorePctChart(recent, actives, sa));
@@ -2211,7 +2214,9 @@ function screenProgress(){
 
   var heatCard = h("div", { class: "card" });
   heatCard.appendChild(heatmap());
-  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "rounds played · last 10 weeks · all rounds" }), heatCard]));
+  wrap.appendChild(h("div", { style: "height:10px" }));
+  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "rounds played · last 10 weeks" }), heatCard]));
+  wrap.appendChild(h("div", { style: "height:10px" }));
 
   var replays = s.filter(function(x){ return x.replay && x.prevPct != null; }).slice(0, 6);
   if (replays.length) {
@@ -2242,7 +2247,7 @@ function screenProgress(){
   });
   if (due.length > SHOW) {
     var rest = due.slice(SHOW);
-    var expandBtn = h("button", { class: "linkbtn", style: "margin-top:6px", text: "Show " + rest.length + " more…" });
+    var expandBtn = h("button", { class: "linkbtn", style: "margin-top:6px;display:block;margin-left:auto", text: "Show " + rest.length + " more…" });
     expandBtn.onclick = function(){
       expandBtn.remove();
       rest.forEach(function(q){
@@ -2266,9 +2271,9 @@ function screenProgress(){
 
 
   /* vocab */
-  var vocabTabs = h("div", { class: "row", style: "margin:8px 0" });
+  var segCtrl = h("div", { class: "seg-ctrl", style: "margin-bottom:4px" });
   [["to learn", false], ["learned", true]].forEach(function(pair){
-    vocabTabs.appendChild(h("button", { class: "chipbtn" + (showLearned === pair[1] ? " on" : ""), text: pair[0],
+    segCtrl.appendChild(h("button", { class: showLearned === pair[1] ? "on" : "", text: pair[0],
       onclick: function(){ showLearned = pair[1]; render(); } }));
   });
   var allVocabList = data.vocab.filter(function(v){ return showLearned ? v.learned : !v.learned; });
@@ -2276,24 +2281,45 @@ function screenProgress(){
   var vocabList = S.vocabShowAll ? allVocabList : allVocabList.slice(0, vocabLimit);
   var vocabHidden = allVocabList.length - vocabList.length;
   var vocabBox = h("div", {});
-  if (!vocabList.length) vocabBox.appendChild(h("div", { class: "p", text: showLearned ? "Nothing learned yet." : "No unfamiliar words tagged yet." }));
-  vocabList.forEach(function(v){
-    vocabBox.appendChild(h("div", { class: "missrow" }, [
-      h("span", { class: "w mono", text: v.word + " · " + v.word.length + "L" }),
-      h("button", { class: "tag", text: v.learned ? "unlearn" : "learned",
-        onclick: function(){ v.learned = !v.learned; save(); render(); } })
-    ]));
-  });
+  if (!vocabList.length) {
+    vocabBox.appendChild(h("div", { class: "p", text: showLearned ? "Nothing learned yet." : "No unfamiliar words tagged yet." }));
+  } else {
+    var vtbl = document.createElement("table");
+    vtbl.className = "recent-table mono";
+    var vtbody = document.createElement("tbody");
+    vocabList.forEach(function(v){
+      var tr = document.createElement("tr");
+      function vtd(content, align){
+        var td = document.createElement("td");
+        td.style.textAlign = align || "left";
+        if (typeof content === "string") td.textContent = content;
+        else td.appendChild(content);
+        return td;
+      }
+      var btn = h("button", { class: "tag", text: v.learned ? "needs more practice" : "mark as learned",
+        onclick: function(){ v.learned = !v.learned; save(); render(); } });
+      tr.appendChild(vtd(v.word));
+      tr.appendChild(vtd(v.word.length >= 5 ? "5+ letters" : v.word.length + " letters", "center"));
+      tr.appendChild(vtd(btn, "right"));
+      vtbody.appendChild(tr);
+    });
+    vtbl.appendChild(vtbody);
+    var vtblCard = h("div", { class: "card", style: "padding:12px 0" });
+    vtbl.style.cssText = "margin:-12px 0";
+    vtblCard.appendChild(vtbl);
+    vocabBox.appendChild(vtblCard);
+  }
   var vocabSection = h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "unfamiliar words" }),
-    h("div", { class: "p", style: "margin-top:4px", text: "Words you marked unfamiliar during review. Path misses fix themselves from replaying — these are the real vocab gaps." }),
-    vocabTabs,
+    h("div", { style: "display:flex;align-items:center;justify-content:space-between;margin-bottom:0" }, [
+      h("div", { class: "eyebrow", text: "unfamiliar words" }),
+      segCtrl
+    ]),
     vocabBox
   ]);
   if (vocabHidden > 0) {
     vocabSection.appendChild(h("button", {
       class: "linkbtn",
-      style: "margin-top:8px",
+      style: "margin-top:8px;display:block;margin-left:auto",
       text: "Show " + vocabHidden + " more…",
       onclick: function(){ S.vocabShowAll = true; render(); }
     }));
@@ -2441,6 +2467,10 @@ function backupBlock(){
 function screenSettings(){
   var wrap = h("div", { class: "stack" });
 
+  if ((data.player || "").toLowerCase() === "devon") {
+    wrap.appendChild(h("a", { href: "admin.html", style: "display:inline-block;margin-bottom:12px;font-family:var(--mono);font-size:11px;color:var(--sage);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:5px 10px", text: "→ admin page" }));
+  }
+
   /* install as app */
   var installDiagram = document.createElementNS ? (function(){
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -2540,9 +2570,6 @@ function screenSettings(){
 
   /* advanced (collapsed by default) */
   var advancedBody = h("div", { style: "display:none;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px" }, [
-    h("div", { class: "eyebrow", text: "current version" }),
-    h("div", { class: "mono sage", style: "font-size:11px;margin-top:4px;margin-bottom:12px", text: "Built " + buildFmt + " · " + ago }),
-
     h("div", { class: "eyebrow", text: "sync" }),
     (function(){
       var rows = [
@@ -2634,8 +2661,12 @@ function screenSettings(){
     chevron.textContent = open ? "▶" : "▼";
   };
 
-  var refreshBtn = dbgBtn("Refresh page", "var(--sage)", function(){ window.location.reload(); });
-  wrap.appendChild(h("div", { style: "margin-bottom:10px" }, [ refreshBtn ]));
+  var refreshBtn = dbgBtn("Refresh app", "var(--sage)", function(){ window.location.reload(); });
+  wrap.appendChild(h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:10px" }, [
+    h("span", { class: "mono sage", style: "font-size:11px", text: "Built " + buildFmt }),
+    h("span", { class: "filter-badge", style: "opacity:.55;font-size:9px", text: ago }),
+    refreshBtn
+  ]));
   wrap.appendChild(h("div", {}, [ advancedToggle, advancedBody ]));
   return wrap;
 }
