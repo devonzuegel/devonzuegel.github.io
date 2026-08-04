@@ -374,7 +374,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-04T20:38:40Z"; /* updated by deploy script */
+var BUILD = "2026-08-04T22:19:56Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -806,7 +806,7 @@ function showDefModal(w){
   m.onclick = function(e){ if (e.target === m) closeModal(); };
   loadDef(w);
 }
-function paintDef(body, entries, cached){
+function paintDef(body, entries, cached, src){
   body.innerHTML = "";
   if (!entries || !entries.length) {
     body.appendChild(h("div", { class: "p", text: "No definition came back for this one." }));
@@ -816,7 +816,7 @@ function paintDef(body, entries, cached){
     body.appendChild(h("div", { class: "pos", text: m.pos }));
     m.defs.forEach(function(d, i){ body.appendChild(h("div", { class: "dline", text: (i + 1) + ". " + d })); });
   });
-  body.appendChild(h("div", { class: "src", text: cached ? "saved on this device" : "dictionaryapi.dev · saved for offline" }));
+  body.appendChild(h("div", { class: "src", text: cached ? "saved on this device" : (src || "dictionaryapi.dev") + " · saved for offline" }));
 }
 function loadDef(w){
   var body = document.getElementById("defbody");
@@ -827,27 +827,64 @@ function loadDef(w){
     body.appendChild(h("div", { class: "p", text: "You're offline and this word isn't saved yet. Look it up next time you have a connection and it'll stay available." }));
     return;
   }
-  fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(w))
-    .then(function(r){
-      if (r.status === 404) throw new Error("notfound");
-      if (!r.ok) throw new Error("neterr");
-      return r.json();
-    })
-    .then(function(j){
-      var out = (j[0].meanings || []).slice(0, 3).map(function(mn){
-        return { pos: mn.partOfSpeech, defs: (mn.definitions || []).slice(0, 2).map(function(d){ return d.definition; }) };
+
+  function setBody(el){ var b = document.getElementById("defbody"); if (b){ b.innerHTML = ""; b.appendChild(el); } }
+  function saveDef(out, src){
+    data.defs[w] = out; save();
+    var b = document.getElementById("defbody");
+    if (b) paintDef(b, out, false, src);
+  }
+
+  /* fallback: datamuse */
+  function tryDatamuse(){
+    fetch("https://api.datamuse.com/words?sp=" + encodeURIComponent(w) + "&md=d&max=1")
+      .then(function(r){ return r.ok ? r.json() : Promise.reject("neterr"); })
+      .then(function(j){
+        var entry = j && j[0] && j[0].word && j[0].word.toLowerCase() === w.toLowerCase() ? j[0] : null;
+        var rawDefs = entry && entry.defs;
+        if (!rawDefs || !rawDefs.length) {
+          setBody(h("div", { class: "p", text: "No definition found for \u201c" + w + "\u201d. (Valid in Boggle but not in either dictionary.)" }));
+          return;
+        }
+        var grouped = {};
+        rawDefs.forEach(function(d){
+          var parts = d.match(/^(\S+)\s+(.*)/);
+          if (!parts) return;
+          var pos = parts[1], def = parts[2];
+          if (!grouped[pos]) grouped[pos] = [];
+          grouped[pos].push(def);
+        });
+        var out = Object.keys(grouped).slice(0, 3).map(function(pos){
+          return { pos: pos, defs: grouped[pos].slice(0, 2) };
+        });
+        saveDef(out, "datamuse.com");
+      })
+      .catch(function(){ setBody(h("div", { class: "p", text: "Couldn\u2019t reach the dictionary. Check your connection and try again." })); });
+  }
+
+  /* primary: dictionaryapi.dev with up to 2 retries */
+  var attempts = 0;
+  function tryPrimary(){
+    attempts++;
+    fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(w))
+      .then(function(r){
+        if (r.status === 404) throw new Error("notfound");
+        if (!r.ok) throw new Error("neterr");
+        return r.json();
+      })
+      .then(function(j){
+        var out = (j[0].meanings || []).slice(0, 3).map(function(mn){
+          return { pos: mn.partOfSpeech, defs: (mn.definitions || []).slice(0, 2).map(function(d){ return d.definition; }) };
+        });
+        saveDef(out, "dictionaryapi.dev");
+      })
+      .catch(function(e){
+        if (e && e.message === "notfound") { tryDatamuse(); return; }
+        if (attempts < 3) { setTimeout(tryPrimary, 800 * attempts); return; }
+        tryDatamuse();
       });
-      data.defs[w] = out; save();
-      if (document.getElementById("defbody")) paintDef(document.getElementById("defbody"), out, false);
-    })
-    .catch(function(e){
-      if (!document.getElementById("defbody")) return;
-      document.getElementById("defbody").innerHTML = "";
-      var msg = (e && e.message === "notfound")
-        ? "No definition found for \"" + w + "\". (It\u2019s valid in Boggle, but dictionaryapi.dev doesn\u2019t have an entry for it.)"
-        : "Couldn't reach the dictionary. Check your connection and try again.";
-      document.getElementById("defbody").appendChild(h("div", { class: "p", text: msg }));
-    });
+  }
+  tryPrimary();
 }
 function showSyncDiffModal(){
   var m = document.getElementById("modal");
@@ -999,12 +1036,12 @@ function showSessionModal(x){
     h("span", { class: "filter-badge", text: modeLabelOf(x) }),
     x.replay ? h("span", { class: "filter-badge", style: "color:var(--sage);border-color:var(--sage)", text: "replay" }) : null,
   ]);
-  var left = h("div", { style: "display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 0;min-width:0" }, [
+  var left = h("div", { style: "display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 180px;min-width:0" }, [
     badgeRow,
     boardDiv,
     x.early ? h("div", { class: "mono sage", style: "font-size:11px;margin-top:6px;text-align:center" }, [document.createTextNode("⏸ ended early, " + fmt(x.left || 0) + " left")]) : null,
   ]);
-  var right = h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;flex:1 1 0" }, [
+  var right = h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;flex:1 1 200px" }, [
     h("div", { style: "display:flex;gap:16px;flex-wrap:wrap" }, [
       stat2("score", pctStr, got + (total ? " / " + total + " pts" : " pts")),
       stat2("5+ words", x.found5 + "/" + x.total5, "found / total"),
@@ -1695,6 +1732,7 @@ function screenReview(){
     list.appendChild(row);
   });
   if (!missed.length) list.appendChild(h("div", { class: "p", text: "Nothing missed at this length. Rare." }));
+  list.style.marginBottom = "24px";
   wrap.appendChild(list);
   return layout;
 }
