@@ -56,7 +56,7 @@
     padding:4px 10px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
   #clockPill.on{display:block}
   #clockPill.low{color:var(--rust);border-color:var(--rust)}
-  #unsyncedPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);left:14px;z-index:45;
+  #unsyncedPill{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:14px;z-index:45;
     display:none;font-family:var(--mono);font-size:11px;color:var(--amber);
     background:rgba(20,31,26,.92);border:1px solid var(--amber);border-radius:999px;
     padding:5px 12px;box-shadow:0 4px 14px rgba(0,0,0,.4);backdrop-filter:blur(6px);
@@ -366,9 +366,7 @@ var storageOk = true;
 try {
   var raw = localStorage.getItem(KEY);
   if (raw) data = Object.assign(data, JSON.parse(raw));
-  if (!data.scoring) data.scoring = { zero3: false, zero4: false };
-  var _last = data.sessions && data.sessions[0];
-  if (_last && _last.scoringMode) data.scoring = _last.scoringMode;
+  data.scoring = { zero3: false, zero4: false };
 } catch (e) { storageOk = false; }
 
 /* ---------------- cloud sync ---------------- */
@@ -396,17 +394,23 @@ function setPending(val){
   renderUnsyncedPill();
 }
 
+var _pillHideTimer = null;
 function renderUnsyncedPill(){
   var pill = document.getElementById("unsyncedPill");
   if (!pill) return;
   if (syncState.offline && syncState.pending) {
+    clearTimeout(_pillHideTimer);
     pill.textContent = "offline · changes saved locally";
     pill.className = "on offline";
   } else if (syncState.pending) {
+    clearTimeout(_pillHideTimer);
     pill.textContent = "syncing…";
     pill.className = "on";
   } else {
-    pill.className = "";
+    clearTimeout(_pillHideTimer);
+    pill.textContent = "synced ✓";
+    pill.className = "on";
+    _pillHideTimer = setTimeout(function(){ pill.className = ""; }, 1500);
   }
 }
 
@@ -487,8 +491,7 @@ function mergeData(remote){
   /* queue: keep local (device has fresher due-dates) unless empty */
   if (!data.queue.length && remote.queue) data.queue = remote.queue;
 
-  /* scoring: take remote if local is still default */
-  if (remote.scoring && !data.scoring.zero3 && !data.scoring.zero4) data.scoring = remote.scoring;
+  /* scoring: always default to standard; do not inherit from remote */
 }
 
 function fmtAgo(ts){
@@ -579,7 +582,7 @@ function save(){
 
 /* ---------------- state ---------------- */
 var S = {
-  tab: "play", phase: "idle", duration: (data.sessions[0] && data.sessions[0].seconds) || 180, board: null, paths: null,
+  tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
   quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
@@ -1585,7 +1588,21 @@ function screenIdle(){
   ]));
   right.appendChild(h("div", {}, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "round length" })]), lens]));
   right.appendChild(h("div", { style: "margin-top:20px" }, [h("div", { class: "eyebrow", style: "margin-bottom:8px" }, [h("span", { text: "scoring" })]), scoring]));
-  if (due.length) right.appendChild(h("div", { class: "p", style: "margin-bottom:16px", text: due.length + " board(s) due for replay — see Progress." }));
+  if (due.length) right.appendChild(h("button", {
+    class: "mono",
+    style: "margin-bottom:24px;display:block;background:none;border:none;padding:0;cursor:pointer;color:var(--amber);font-size:13px;text-align:left",
+    text: due.length + " " + (due.length === 1 ? "board" : "boards") + " due for replay →",
+    onclick: function(){
+      S.tab = "progress"; render();
+      var el = document.getElementById("due-for-replay-section");
+      if (el) {
+        var hdr = document.querySelector(".hdr");
+        var hdrH = hdr ? hdr.getBoundingClientRect().height : 44;
+        var top = el.getBoundingClientRect().top + window.scrollY - hdrH - 8;
+        window.scrollTo({ top: top, behavior: "smooth" });
+      }
+    }
+  }));
 
   layout.appendChild(right);
   return layout;
@@ -1736,8 +1753,10 @@ function svgEl(tag, attrs){
 function dayKey(ts){ var d = new Date(ts); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
 function median(arr){ if (!arr.length) return 0; var a = arr.slice().sort(function(x, y){ return x - y; }); return Math.round(a[Math.floor(a.length / 2)]); }
 function relDate(ts){
-  var hours = Math.floor((Date.now() - ts) / 3600000);
-  if (hours < 24) return hours < 1 ? "just now" : hours + " hour" + (hours === 1 ? "" : "s") + " ago";
+  var mins = Math.floor((Date.now() - ts) / 60000);
+  if (mins < 60) return mins + " min" + (mins === 1 ? "" : "s") + " ago";
+  var hours = Math.floor(mins / 60);
+  if (hours < 24) return hours + " hour" + (hours === 1 ? "" : "s") + " ago";
   var days = Math.floor(hours / 24);
   return days + " day" + (days === 1 ? "" : "s") + " ago";
 }
@@ -2265,7 +2284,7 @@ function screenProgress(){
   } else {
     if (later.length) dueBox.appendChild(h("div", { class: "mono sage", style: "font-size:11px", text: later.length + " more scheduled later" }));
   }
-  wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "due for replay" }), dueBox]));
+  wrap.appendChild(h("div", { class: "section", id: "due-for-replay-section" }, [h("div", { class: "eyebrow", text: "due for replay" }), dueBox]));
 
   wrap.appendChild(recentBlock());
 
