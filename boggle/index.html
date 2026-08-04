@@ -125,7 +125,7 @@
   .recent-table tbody tr:hover td{background:var(--surface2)}
   .filter-matrix-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s ease;padding-left:14px}
   .filter-matrix-wrap.open{max-height:400px;opacity:1;margin:10px 0 14px}
-  .filter-matrix{display:inline-grid;border:1px solid var(--line);border-radius:10px;padding:15px 10px 5px 10px}
+  .filter-matrix{display:inline-grid;border:1px solid var(--line);border-radius:10px;padding:15px 10px 7px 10px}
   .filter-matrix-row{display:contents}
   .filter-matrix-corner{} /* empty top-left cell */
   .filter-matrix-col-hdr{font-family:var(--mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 4px 2px}
@@ -958,7 +958,7 @@ function showSessionModal(x){
   m.innerHTML = "";
 
   /* static board */
-  var boardDiv = h("div", { class: "board", style: "pointer-events:none;margin-bottom:8px" });
+  var boardDiv = h("div", { class: "board", style: "pointer-events:none" });
   (x.board || []).forEach(function(ch, i){
     var rot = ((((1 * (i + 7) * 2654435761) % 1000) / 1000 - 0.5) * 4).toFixed(2);
     var tile = h("div", { class: "tile" + (ch === "Q" ? " q" : ""), style: "transform:rotate(" + rot + "deg)" }, [h("span", { text: face(ch) })]);
@@ -986,10 +986,19 @@ function showSessionModal(x){
     ]);
   }
 
-  var right = h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0" }, [
-    h("div", { class: "eyebrow", text: date + " · " + mins + "m" + (x.replay ? " · replay" : "") }),
-    x.early ? h("div", { class: "mono sage", style: "font-size:11px" }, [document.createTextNode("⏸ ended early, " + fmt(x.left || 0) + " left")]) : null,
-    h("div", { style: "display:flex;gap:16px;flex-wrap:wrap;margin-top:4px" }, [
+  var badgeRow = h("div", { style: "display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px" }, [
+    h("div", { class: "eyebrow", style: "width:100%;margin-bottom:2px", text: date }),
+    h("span", { class: "filter-badge", text: lenName(lenOf(x)) }),
+    h("span", { class: "filter-badge", text: modeLabelOf(x) }),
+    x.replay ? h("span", { class: "filter-badge", style: "color:var(--sage);border-color:var(--sage)", text: "replay" }) : null,
+  ]);
+  var left = h("div", { style: "display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 0;min-width:0" }, [
+    badgeRow,
+    boardDiv,
+    x.early ? h("div", { class: "mono sage", style: "font-size:11px;margin-top:6px;text-align:center" }, [document.createTextNode("⏸ ended early, " + fmt(x.left || 0) + " left")]) : null,
+  ]);
+  var right = h("div", { style: "display:flex;flex-direction:column;gap:10px;min-width:0;justify-content:center;flex:1 1 0" }, [
+    h("div", { style: "display:flex;gap:16px;flex-wrap:wrap" }, [
       stat2("score", pctStr, got + (total ? " / " + total + " pts" : " pts")),
       stat2("5+ words", x.found5 + "/" + x.total5, "found / total"),
       stat2("words", (x.found || []).length, "total found"),
@@ -1000,8 +1009,8 @@ function showSessionModal(x){
 
   var card = h("div", { class: "mcard", style: "max-width:640px;text-align:left;position:relative;padding:20px" }, [
     h("button", { style: "position:absolute;top:10px;right:12px;font-size:20px;color:var(--sage);line-height:1;background:none;border:none;cursor:pointer", text: "×", onclick: closeModal }),
-    h("div", { style: "display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap" }, [
-      h("div", { style: "flex-shrink:0;width:min(180px,40vw)" }, [boardDiv]),
+    h("div", { style: "display:flex;gap:20px;align-items:center;flex-wrap:wrap" }, [
+      left,
       right
     ])
   ]);
@@ -1732,6 +1741,18 @@ function relDate(ts){
 var LEN_COLOR = { 60: "#7FB8A6", 120: "#C8593F", 180: "#E9A83A" };
 function lenOf(x){ return x.seconds || 180; }
 function lenName(d){ return (d / 60) + " min"; }
+var SCORING_MODES = [
+  { key: "standard", label: "Standard Scoring", zero3: false, zero4: false },
+  { key: "4plus",    label: "4L+ only",          zero3: true,  zero4: false },
+  { key: "5plus",    label: "5L+ only",           zero3: true,  zero4: true  }
+];
+function modeKeyOf(x){
+  var m = sessionMode(x);
+  if (m.zero3 && m.zero4) return "5plus";
+  if (m.zero3) return "4plus";
+  return "standard";
+}
+function modeLabelOf(x){ return (SCORING_MODES.filter(function(m){ return m.key === modeKeyOf(x); })[0] || {}).label || ""; }
 
 /* one x-slot per round in overall chronological order, so the three
    round-length series stay in real sequence instead of being stretched
@@ -1772,7 +1793,7 @@ function addDotTooltips(svg, pts, W, H, valFn, t){
   pts.forEach(function(p){
     var hit = svgEl("circle", { cx: p.x, cy: p.y, r: 16, fill: "transparent", style: "cursor:pointer" });
     function show(e){ e.stopPropagation(); showSvgTip(t, relDate(p.s.ts) + " · " + valFn(p.s), p.x, p.y, W); }
-    hit.addEventListener("click", show);
+    hit.addEventListener("click", function(e){ e.stopPropagation(); if (p.s.board) { showSessionModal(p.s); } else { show(e); } });
     hit.addEventListener("mouseenter", show);
     hit.addEventListener("mouseleave", function(){ hideSvgTip(t); });
     svg.appendChild(hit);
@@ -1982,7 +2003,6 @@ function screenProgress(){
     box.appendChild(thead);
     var tbody = document.createElement("tbody");
     recentS.forEach(function(x){
-      var modeLabel = (SCORING_MODES.filter(function(m){ return m.key === modeKeyOf(x); })[0] || {}).label || "";
       var got = sessionScore(x); var total = sessionTotalScore(x);
       var pctStr = total ? Math.round(got/total*100) + "%" : "—";
       var tr = document.createElement("tr");
@@ -2001,7 +2021,7 @@ function screenProgress(){
       tr.appendChild(td(dateStr, "sage"));
       var lenBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) });
       tr.appendChild(td(lenBadge, "", "text-align:center"));
-      var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabel });
+      var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabelOf(x) });
       tr.appendChild(td(modeBadge, "", "text-align:center"));
       tr.appendChild(td(x.found5 + "/" + x.total5, "", "text-align:right;padding-right:2px"));
       tr.appendChild(td("· " + (x.total5 ? Math.round(x.found5/x.total5*100) : 0) + "%", "sage", "text-align:left;padding-left:2px"));
@@ -2065,18 +2085,6 @@ function screenProgress(){
     return s.some(function(x){ return lenOf(x) === d; });
   });
 
-  /* scoring mode definitions */
-  var SCORING_MODES = [
-    { key: "standard", label: "Standard", zero3: false, zero4: false },
-    { key: "4plus",    label: "4L+ only",  zero3: true,  zero4: false },
-    { key: "5plus",    label: "5L+ only",  zero3: true,  zero4: true  }
-  ];
-  function modeKeyOf(x) {
-    var m = sessionMode(x);
-    if (m.zero3 && m.zero4) return "5plus";
-    if (m.zero3) return "4plus";
-    return "standard";
-  }
   var scoringLens = SCORING_MODES.filter(function(m){
     return s.some(function(x){ return modeKeyOf(x) === m.key; });
   });
@@ -2111,7 +2119,7 @@ function screenProgress(){
     var toggleRow = h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:10px" });
     var toggleBtn = h("button", {
       class: "mono eyebrow",
-      style: "color:var(--sage);letter-spacing:.06em;line-height:1;padding:0;margin:0;border:none;background:none;display:inline-flex;align-items:center",
+      style: "color:var(--sage);letter-spacing:.06em;line-height:1;padding:0 6px 0 0;margin:0;border:none;background:none;display:inline-flex;align-items:center",
       text: (S.filterMatrixOpen ? "▾ " : "▸ ") + "FILTER DATA BY GAME TYPE"
     });
     toggleRow.appendChild(toggleBtn);
