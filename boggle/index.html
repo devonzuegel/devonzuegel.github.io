@@ -2681,10 +2681,11 @@ function screenSettings(){
   };
 
   var refreshBtn = dbgBtn("Refresh app", "var(--sage)", function(){ window.location.reload(); });
-  wrap.appendChild(h("div", { style: "display:flex;align-items:center;gap:8px;margin-bottom:10px" }, [
-    h("span", { class: "mono sage", style: "font-size:11px", text: "Built " + buildFmt }),
-    h("span", { class: "filter-badge", style: "opacity:.55;font-size:9px", text: ago }),
-    refreshBtn
+  var refreshSpan = h("span", { class: "mono sage", style: "font-size:11px;white-space:nowrap", text: "Built " + buildFmt });
+  var agoBadge = h("span", { class: "filter-badge", style: "opacity:.55;font-size:9px;white-space:nowrap", text: ago });
+  refreshBtn.style.whiteSpace = "nowrap";
+  wrap.appendChild(h("div", { style: "display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px" }, [
+    refreshSpan, agoBadge, refreshBtn
   ]));
   wrap.appendChild(h("div", {}, [ advancedToggle, advancedBody ]));
   return wrap;
