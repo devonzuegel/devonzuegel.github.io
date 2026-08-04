@@ -111,17 +111,28 @@
   .btn.small{padding:6px 12px;font-size:13px}
   .chipbtn{font-family:var(--mono);font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
+  #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface2);color:var(--bone);font-family:var(--mono);font-size:13px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:100}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .filter-badge{font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid var(--amber);border-radius:4px;padding:3px 8px;opacity:.85;line-height:1;display:inline-flex;align-items:center}
+  .recent-table{width:100%;border-collapse:collapse;font-size:12px}
+  .recent-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);padding:0 8px 6px;font-weight:normal;white-space:nowrap;border-bottom:1px solid var(--line)}
+  .recent-table th:first-child{padding-left:0}
+  .recent-table th:last-child{padding-right:0}
+  .recent-table td{padding:5px 8px;border-top:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+  .recent-table td:first-child{padding-left:0}
+  .recent-table td:last-child{padding-right:0}
+  .recent-table tbody tr:first-child td{border-top:none}
+  .recent-table tbody tr:hover td{background:var(--surface2)}
   .filter-matrix-wrap{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .2s ease;padding-left:14px}
   .filter-matrix-wrap.open{max-height:400px;opacity:1;margin:10px 0 14px}
-  .filter-matrix{display:inline-grid;gap:4px}
+  .filter-matrix{display:inline-grid;border:1px solid var(--line);border-radius:10px;padding:15px 10px 5px 10px}
   .filter-matrix-row{display:contents}
   .filter-matrix-corner{} /* empty top-left cell */
   .filter-matrix-col-hdr{font-family:var(--mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 4px 2px}
   .filter-matrix-row-hdr{font-family:var(--mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;padding-right:6px;white-space:nowrap}
-  .filter-matrix-cell{border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center;cursor:pointer;background:var(--surface);transition:border-color .15s,color .15s}
-  .filter-matrix-cell:hover:not(.empty){border-color:var(--sage)}
-  .filter-matrix-cell.selected{border-color:var(--amber);background:var(--surface2)}
+  .filter-matrix-cell{padding:3px 10px;text-align:center;cursor:pointer;transition:color .15s,border-color .15s;border:1px solid transparent;border-radius:6px}
+  .filter-matrix-cell:hover:not(.empty){color:var(--bone)}
+  .filter-matrix-cell.selected{border-color:var(--amber)}
   .filter-matrix-cell.empty{opacity:.35;cursor:default}
   .filter-matrix-count{font-family:var(--mono);font-size:13px;color:var(--bone)}
   .filter-matrix-cell.selected .filter-matrix-count{color:var(--amber)}
@@ -567,7 +578,7 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, playerFilter: null,
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
   paused: false
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
@@ -1408,8 +1419,8 @@ function renderFooter(){
     var modeSc = data.scoring || {};
     var SCORE_OPTS2 = [
       { label: "Standard", zero3: false, zero4: false, vals: [1, 1, 2, 3, 5, 11] },
-      { label: "4+ only",  zero3: true,  zero4: false, vals: [0, 1, 2, 3, 5, 11] },
-      { label: "5+ only",  zero3: true,  zero4: true,  vals: [0, 0, 2, 3, 5, 11] }
+      { label: "4L+ only",  zero3: true,  zero4: false, vals: [0, 1, 2, 3, 5, 11] },
+      { label: "5L+ only",  zero3: true,  zero4: true,  vals: [0, 0, 2, 3, 5, 11] }
     ];
     var tbl = document.createElement("table");
     tbl.style.cssText = "border-collapse:collapse;font-family:var(--mono);font-size:12px;width:100%";
@@ -1485,8 +1496,8 @@ function screenIdle(){
   var sc = data.scoring;
   var SCORE_OPTS = [
     { label: "Standard", zero3: false, zero4: false, vals: [1, 1, 2, 3, 5, 11] },
-    { label: "4+ only",  zero3: true,  zero4: false, vals: [0, 1, 2, 3, 5, 11] },
-    { label: "5+ only",  zero3: true,  zero4: true,  vals: [0, 0, 2, 3, 5, 11] }
+    { label: "4L+ only",  zero3: true,  zero4: false, vals: [0, 1, 2, 3, 5, 11] },
+    { label: "5L+ only",  zero3: true,  zero4: true,  vals: [0, 0, 2, 3, 5, 11] }
   ];
   var SCORE_HDRS = ["3L", "4L", "5L", "6L", "7L", "8L+"];
   var tbl = document.createElement("table");
@@ -1953,30 +1964,77 @@ function screenProgress(){
     : data.sessions;
 
   var recentBlock = function(){
-    var recentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).filter(function(x){ return !actives || actives.indexOf(lenOf(x)) >= 0; }).slice(0, 10);
-    var box = h("div", {});
+    var allRecentS = (data.includeEarly ? allS : allS.filter(function(x){ return !x.early; })).filter(function(x){ return !actives || actives.indexOf(lenOf(x)) >= 0; });
+    var recentS = S.recentShowAll ? allRecentS : allRecentS.slice(0, 10);
+    var hiddenCount = allRecentS.length - recentS.length;
+    var box = document.createElement("table");
+    box.className = "recent-table mono";
+    var thead = document.createElement("thead");
+    var theadRow = document.createElement("tr");
+    [["date", 1, "left"], ["length", 1, "center"], ["scoring", 1, "center"], ["5+ words", 2, "center"], ["points", 2, "center"], ["", 1, "center"]].forEach(function(col) {
+      var th = document.createElement("th");
+      th.textContent = col[0];
+      if (col[1] > 1) th.colSpan = col[1];
+      th.style.textAlign = col[2];
+      theadRow.appendChild(th);
+    });
+    thead.appendChild(theadRow);
+    box.appendChild(thead);
+    var tbody = document.createElement("tbody");
     recentS.forEach(function(x){
       var modeLabel = (SCORING_MODES.filter(function(m){ return m.key === modeKeyOf(x); })[0] || {}).label || "";
-      var left = h("span", { class: "w sage", style: "display:flex;align-items:center;gap:6px;flex-wrap:wrap" });
-      left.appendChild(h("span", { text: new Date(x.ts).toLocaleDateString() }));
-      left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) }));
-      left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabel }));
-      if (x.replay) left.appendChild(h("span", { class: "filter-badge", style: "opacity:.6;color:var(--sage);border-color:var(--sage)", text: "replay" }));
-      if (x.early) left.appendChild(h("span", { class: "early", text: "⏸ ended early, " + fmt(x.left || 0) + " left" }));
-      var row = h("div", { class: "missrow mono", style: "font-size:12px;cursor:pointer" }, [
-        left,
-        (function(){ var got = sessionScore(x); var total = sessionTotalScore(x); var pctStr = total ? " (" + Math.round(got/total*100) + "%)" : ""; return h("span", { text: x.found5 + "/" + x.total5 + " at 5+ · " + got + "/" + (total || "?") + " pts" + pctStr }); })()
-      ]);
-      if (x.board) row.onclick = function(){ showSessionModal(x); };
-      box.appendChild(row);
+      var got = sessionScore(x); var total = sessionTotalScore(x);
+      var pctStr = total ? Math.round(got/total*100) + "%" : "—";
+      var tr = document.createElement("tr");
+      if (x.board) { tr.style.cursor = "pointer"; tr.onclick = function(){ showSessionModal(x); }; }
+      function td(content, cls, style) {
+        var cell = document.createElement("td");
+        if (cls) cell.className = cls;
+        if (style) cell.style.cssText = style;
+        if (typeof content === "string") cell.textContent = content;
+        else cell.appendChild(content);
+        return cell;
+      }
+      var d = new Date(x.ts);
+      var oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
+      var dateStr = d.toLocaleDateString("en-US", x.ts < oneYearAgo ? { month: "short", day: "numeric", year: "numeric" } : { month: "short", day: "numeric" });
+      tr.appendChild(td(dateStr, "sage"));
+      var lenBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) });
+      tr.appendChild(td(lenBadge, "", "text-align:center"));
+      var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabel });
+      tr.appendChild(td(modeBadge, "", "text-align:center"));
+      tr.appendChild(td(x.found5 + "/" + x.total5, "", "text-align:right;padding-right:2px"));
+      tr.appendChild(td("· " + (x.total5 ? Math.round(x.found5/x.total5*100) : 0) + "%", "sage", "text-align:left;padding-left:2px"));
+      tr.appendChild(td(got + "/" + (total || "?"), "", "text-align:right;padding-right:2px"));
+      tr.appendChild(td("· " + pctStr, "sage", "text-align:left;padding-left:2px"));
+      if (x.replay) {
+        var rb = h("span", { class: "filter-badge", style: "opacity:.6;color:var(--sage);border-color:var(--sage)", text: "replay" });
+        tr.appendChild(td(rb));
+      } else {
+        tr.appendChild(td(""));
+      }
+      tbody.appendChild(tr);
     });
-    var hdr = h("div", { class: "between", style: "align-items:center" }, [
-      h("div", { class: "eyebrow", style: "margin-bottom:6px" }, [h("span", { text: "recent rounds" })]),
-      earlyCount ? h("button", { class: "mono", style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
+    box.appendChild(tbody);
+    var hdr = h("div", { class: "eyebrow", style: "margin-bottom:12px", text: "recent rounds" });
+    var section = h("div", { class: "section" }, [hdr, box]);
+    var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:8px" });
+    if (hiddenCount > 0) {
+      btns.appendChild(h("button", {
+        class: "linkbtn",
+        text: "Show " + hiddenCount + " more…",
+        onclick: function(){ S.recentShowAll = true; render(); }
+      }));
+    }
+    if (earlyCount) {
+      btns.appendChild(h("button", {
+        class: "linkbtn" + (data.includeEarly ? " on" : ""),
         text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " ended early",
-        onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); } }) : null
-    ]);
-    return h("div", { class: "section" }, [hdr, box]);
+        onclick: function(){ data.includeEarly = !data.includeEarly; save(); render(); }
+      }));
+    }
+    if (btns.children.length) section.appendChild(btns);
+    return section;
   };
 
 
@@ -2010,8 +2068,8 @@ function screenProgress(){
   /* scoring mode definitions */
   var SCORING_MODES = [
     { key: "standard", label: "Standard", zero3: false, zero4: false },
-    { key: "4plus",    label: "4+ only",  zero3: true,  zero4: false },
-    { key: "5plus",    label: "5+ only",  zero3: true,  zero4: true  }
+    { key: "4plus",    label: "4L+ only",  zero3: true,  zero4: false },
+    { key: "5plus",    label: "5L+ only",  zero3: true,  zero4: true  }
   ];
   function modeKeyOf(x) {
     var m = sessionMode(x);
@@ -2084,14 +2142,10 @@ function screenProgress(){
         var cell = h("div", {
           class: "filter-matrix-cell" + (isSelected ? " selected" : "") + (isEmpty ? " empty" : "")
         });
-        cell.appendChild(h("span", { class: "filter-matrix-count", text: count + " game" + (count === 1 ? "" : "s") }));
-        if (!isEmpty) {
-          cell.onclick = function(){
-            S.trendLenFilter = String(d);
-            S.trendScoringFilter = m.key;
-            render();
-          };
-        }
+        cell.appendChild(h("span", { class: "filter-matrix-count", style: isEmpty ? "font-style:italic" : "", text: count + " game" + (count === 1 ? "" : "s") }));
+        cell.onclick = isEmpty
+          ? function(){ showToast("No games with " + lenName(d) + " + " + m.label + " yet — play one first!"); }
+          : function(){ S.trendLenFilter = String(d); S.trendScoringFilter = m.key; render(); };
         row.appendChild(cell);
       });
       table.appendChild(row);
@@ -2209,7 +2263,10 @@ function screenProgress(){
     vocabTabs.appendChild(h("button", { class: "chipbtn" + (showLearned === pair[1] ? " on" : ""), text: pair[0],
       onclick: function(){ showLearned = pair[1]; render(); } }));
   });
-  var vocabList = data.vocab.filter(function(v){ return showLearned ? v.learned : !v.learned; });
+  var allVocabList = data.vocab.filter(function(v){ return showLearned ? v.learned : !v.learned; });
+  var vocabLimit = 10;
+  var vocabList = S.vocabShowAll ? allVocabList : allVocabList.slice(0, vocabLimit);
+  var vocabHidden = allVocabList.length - vocabList.length;
   var vocabBox = h("div", {});
   if (!vocabList.length) vocabBox.appendChild(h("div", { class: "p", text: showLearned ? "Nothing learned yet." : "No unfamiliar words tagged yet." }));
   vocabList.forEach(function(v){
@@ -2219,17 +2276,38 @@ function screenProgress(){
         onclick: function(){ v.learned = !v.learned; save(); render(); } })
     ]));
   });
-  wrap.appendChild(h("div", { class: "section" }, [
+  var vocabSection = h("div", { class: "section" }, [
     h("div", { class: "eyebrow", text: "unfamiliar words" }),
     h("div", { class: "p", style: "margin-top:4px", text: "Words you marked unfamiliar during review. Path misses fix themselves from replaying — these are the real vocab gaps." }),
     vocabTabs,
     vocabBox
-  ]));
+  ]);
+  if (vocabHidden > 0) {
+    vocabSection.appendChild(h("button", {
+      class: "linkbtn",
+      style: "margin-top:8px",
+      text: "Show " + vocabHidden + " more…",
+      onclick: function(){ S.vocabShowAll = true; render(); }
+    }));
+  }
+  wrap.appendChild(vocabSection);
 
   return wrap;
 }
 
 var showLearned = false;
+
+/* ---------------- toast ---------------- */
+function showToast(msg) {
+  var existing = document.getElementById("toast");
+  if (existing) existing.remove();
+  var t = document.createElement("div");
+  t.id = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add("show"); });
+  setTimeout(function(){ t.classList.remove("show"); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+}
 
 /* ---------------- shell ---------------- */
 function render(){
