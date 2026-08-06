@@ -524,7 +524,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-06T23:41:03Z"; /* updated by deploy script */
+var BUILD = "2026-08-06T23:46:19Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -737,7 +737,8 @@ var S = {
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
   quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
   paused: false,
-  pendingCode: null, currentCode: null
+  pendingCode: null, currentCode: null,
+  idleToggles: { share: false, length: false, scoring: false }
 };
 var timer = null, dragPath = null, tileEls = [], traceEl = null, labelEl = null, boardEl = null;
 
@@ -1817,15 +1818,17 @@ function screenIdle(){
     S.pendingCode = null;
     startRound(board, code);
   });
-  function makeToggleBlock(label, innerNodes, maxH, badge) {
-    var open = false;
+  function makeToggleBlock(label, innerNodes, maxH, badge, key) {
+    var open = key ? !!S.idleToggles[key] : false;
     var arrowEl = h("span", { style: "display:inline-block;transition:transform 0.3s ease;font-size:9px;margin-right:6px", text: "▶" });
-    var inner = h("div", { style: "overflow:hidden;max-height:0;transition:max-height 0.35s ease,opacity 0.3s ease;opacity:0" }, innerNodes);
+    var inner = h("div", { style: "overflow:hidden;max-height:" + (open ? (maxH || "400px") : "0") + ";transition:max-height 0.35s ease,opacity 0.3s ease;opacity:" + (open ? "1" : "0") }, innerNodes);
+    arrowEl.style.transform = open ? "rotate(90deg)" : "rotate(0deg)";
     var toggleChildren = [arrowEl, h("span", { text: label })];
     if (badge) toggleChildren.push(badge);
     var toggle = h("div", { class: "eyebrow", style: "cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;margin-bottom:0" }, toggleChildren);
     toggle.addEventListener("click", function(){
       open = !open;
+      if (key) S.idleToggles[key] = open;
       if (open) {
         inner.style.maxHeight = (maxH || "400px");
         inner.style.opacity = "1";
@@ -1848,7 +1851,7 @@ function screenIdle(){
       h("div", { class: "eyebrow", style: "margin-bottom:8px", text: "or enter a friend's board code" }),
       h("div", { style: "display:flex;align-items:center;gap:8px" }, [friendInput, playFriendBtn])
     ])
-  ]);
+  ], null, null, "share");
   (function(){
     var canvas = document.createElement("canvas");
     var ctx = canvas.getContext("2d");
@@ -1867,10 +1870,10 @@ function screenIdle(){
   var scoreBadge = h("span", { style: "font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--sage);border:1px solid var(--line);border-radius:999px;padding:1px 7px;text-transform:uppercase;font-weight:normal" }, [h("span", { text: scoringLabel })]);
   right.appendChild(h("div", { style: "margin-top:24px" }, [makeToggleBlock("ROUND LENGTH", [
     h("div", { style: "padding-top:10px" }, [lens])
-  ], null, lenBadge)]));
+  ], null, lenBadge, "length")]));
   right.appendChild(h("div", { style: "margin-top:24px" }, [makeToggleBlock("SCORING", [
     h("div", { style: "padding-top:10px" }, [scoring])
-  ], null, scoreBadge)]));
+  ], null, scoreBadge, "scoring")]));
   if (due.length) right.appendChild(h("button", {
     class: "mono",
     style: "margin-top:32px;margin-bottom:24px;display:block;background:none;border:none;padding:0;cursor:pointer;color:var(--amber);font-size:13px;text-align:left",
