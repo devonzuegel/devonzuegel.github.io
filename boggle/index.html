@@ -525,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T01:40:00Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T01:55:23Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2181,25 +2181,31 @@ function trendChart(sessions, actives, allSessions, show){
     var pts = [];
     sessions.forEach(function(x, i){ if (lenOf(x) === d) pts.push({ x: xAt(i), y: yAt(x.pct), s: x }); });
     if (!pts.length) return;
-    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
+    var actualOp = (!show || show.actual) ? 1 : 0;
+    var avgOp = (!show || show.avg) ? 0.7 : 0;
+    var actualG = svgEl("g", { class: "actual-lines", style: "opacity:" + actualOp + ";transition:opacity .3s" });
+    var avgG = svgEl("g", { class: "avg-lines", style: "opacity:" + avgOp + ";transition:opacity .3s" });
+    if (pts.length > 1) actualG.appendChild(svgEl("polyline", {
       points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
       fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round"
     }));
-    if (!show || show.actual) pts.forEach(function(p){
-      svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
+    pts.forEach(function(p){
+      actualG.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
-    if (pts.length >= 2 && (!show || show.avg)) {
+    if (pts.length >= 2) {
       var maPts = pts.map(function(p, j){
         var win = pts.slice(Math.max(0, j - 4), j + 1);
         var avg = win.reduce(function(a, q){ return a + q.s.pct; }, 0) / win.length;
         return p.x + "," + yAt(avg);
       });
-      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
-      svg.appendChild(maEl);
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", "stroke-linejoin": "round", "stroke-linecap": "round" });
+      avgG.appendChild(maEl);
       addMaTooltip(svg, maEl, W, t);
     }
+    svg.appendChild(actualG);
+    svg.appendChild(avgG);
     allPts = allPts.concat(pts);
   });
   addDotTooltips(svg, allPts, W, H, function(x){ return x.pct + "%"; }, t);
@@ -2238,24 +2244,30 @@ function trend6Chart(sessions, actives, allSessions, show){
       if (v !== null) pts.push({ x: xAt(i), y: yAt(v), s: x, v: v });
     });
     if (!pts.length) return;
-    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
+    var actualOp = (!show || show.actual) ? 1 : 0;
+    var avgOp = (!show || show.avg) ? 0.7 : 0;
+    var actualG = svgEl("g", { class: "actual-lines", style: "opacity:" + actualOp + ";transition:opacity .3s" });
+    var avgG = svgEl("g", { class: "avg-lines", style: "opacity:" + avgOp + ";transition:opacity .3s" });
+    if (pts.length > 1) actualG.appendChild(svgEl("polyline", {
       points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
       fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round"
     }));
-    if (!show || show.actual) pts.forEach(function(p){
-      svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
+    pts.forEach(function(p){
+      actualG.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
-    if (pts.length >= 2 && (!show || show.avg)) {
+    if (pts.length >= 2) {
       var maPts = pts.map(function(p, j){
         var win = pts.slice(Math.max(0, j - 4), j + 1);
         var avg = win.reduce(function(a, q){ return a + q.v; }, 0) / win.length;
         return p.x + "," + yAt(avg);
       });
-      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
-      svg.appendChild(maEl);
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", "stroke-linejoin": "round", "stroke-linecap": "round" });
+      avgG.appendChild(maEl);
       addMaTooltip(svg, maEl, W, t);
     }
+    svg.appendChild(actualG);
+    svg.appendChild(avgG);
     allPts = allPts.concat(pts);
   });
   addDotTooltips(svg, allPts, W, H, function(x){ var v = pct6Of(x); return v !== null ? v + "%" : "?"; }, t);
@@ -2287,25 +2299,31 @@ function scorePctChart(sessions, actives, allSessions, show){
       if (v !== null) pts.push({ x: xAt(i), y: yAt(v), s: x, v: v });
     });
     if (!pts.length) return;
-    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
+    var actualOp = (!show || show.actual) ? 1 : 0;
+    var avgOp = (!show || show.avg) ? 0.7 : 0;
+    var actualG = svgEl("g", { class: "actual-lines", style: "opacity:" + actualOp + ";transition:opacity .3s" });
+    var avgG = svgEl("g", { class: "avg-lines", style: "opacity:" + avgOp + ";transition:opacity .3s" });
+    if (pts.length > 1) actualG.appendChild(svgEl("polyline", {
       points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
       fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round"
     }));
-    if (!show || show.actual) pts.forEach(function(p){
-      svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
+    pts.forEach(function(p){
+      actualG.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
-    if (pts.length >= 2 && (!show || show.avg)) {
+    if (pts.length >= 2) {
       var maPts = pts.map(function(p, j){
         var win = pts.slice(Math.max(0, j - 4), j + 1);
         var avg = win.reduce(function(a, q){ return a + q.v; }, 0) / win.length;
         return p.x + "," + yAt(avg);
       });
-      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
-      svg.appendChild(maEl);
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", "stroke-linejoin": "round", "stroke-linecap": "round" });
+      avgG.appendChild(maEl);
       addMaTooltip(svg, maEl, W, t);
     }
+    svg.appendChild(actualG);
+    svg.appendChild(avgG);
     allPts = allPts.concat(pts);
   });
   addDotTooltips(svg, allPts, W, H, function(x){ var v = sessionScorePct(x); return v !== null ? v + "%" : "?"; }, t);
@@ -2429,9 +2447,20 @@ function screenProgress(){
         tr.appendChild(td(""));
       }
       var codeCell = document.createElement("td");
-      codeCell.style.cssText = "font-family:var(--mono);font-size:9px;color:var(--sage);letter-spacing:.03em;white-space:nowrap;text-align:center";
+      codeCell.style.cssText = "font-family:var(--mono);font-size:9px;letter-spacing:.03em;white-space:nowrap;text-align:center;color:" + (x.code ? "#8CA598B3" : "#8CA5984D");
       codeCell.textContent = x.code || "n/a";
-      codeCell.style.opacity = x.code ? ".7" : ".3";
+      if (x.code) {
+        codeCell.style.cursor = "pointer";
+        codeCell.title = "Click to copy";
+        codeCell.addEventListener("click", function(e){
+          e.stopPropagation();
+          navigator.clipboard && navigator.clipboard.writeText(x.code).then(function(){
+            var orig = codeCell.textContent;
+            codeCell.textContent = "copied!";
+            setTimeout(function(){ codeCell.textContent = orig; }, 1400);
+          });
+        });
+      }
       tr.appendChild(codeCell);
       tbody.appendChild(tr);
     });
@@ -2653,10 +2682,18 @@ function screenProgress(){
   function windowSeg() {
     return makeSegCtrl(TREND_WINDOWS, function(){ return S.trendWindow; }, function(v){ S.trendWindow = v; });
   }
-  function legendRow(showState) {
+  function legendRow(showState, svg) {
     return h("div", { style: "display:flex;gap:2px;margin-top:6px;justify-content:flex-end" }, [
-      legendBtn("actual", false, showState.actual, function(){ showState.actual = !showState.actual; render(); }),
-      legendBtn("5-round avg", true, showState.avg, function(){ showState.avg = !showState.avg; render(); })
+      legendBtn("actual", false, showState.actual, function(){
+        showState.actual = !showState.actual;
+        if (svg) svg.querySelectorAll(".actual-lines").forEach(function(g){ g.style.opacity = showState.actual ? "1" : "0"; });
+        render();
+      }),
+      legendBtn("5-round avg", true, showState.avg, function(){
+        showState.avg = !showState.avg;
+        if (svg) svg.querySelectorAll(".avg-lines").forEach(function(g){ g.style.opacity = showState.avg ? "0.7" : "0"; });
+        render();
+      })
     ]);
   }
   function chartSection(title, chartEl, showState) {
@@ -2669,7 +2706,7 @@ function screenProgress(){
         seg
       ]),
       card,
-      legendRow(showState)
+      legendRow(showState, chartEl)
     ]);
   }
   wrap.appendChild(h("div", { style: "height:10px" }));
