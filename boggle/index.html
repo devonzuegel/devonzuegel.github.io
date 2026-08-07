@@ -525,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T01:35:03Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T01:40:00Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -774,13 +774,11 @@ function pct(){ var a = all5().length; return a ? Math.round(found5().length / a
 function startRound(existing, code){
   if (existing) {
     S.board = existing;
-    S.currentCode = code || null;
-  } else if (S.pendingCode) {
-    S.board = codeToBoard(S.pendingCode);
-    S.currentCode = S.pendingCode;
+    S.currentCode = code || generateCode();
   } else {
-    S.board = shakeTray();
-    S.currentCode = null;
+    var c = S.pendingCode || generateCode();
+    S.board = codeToBoard(c);
+    S.currentCode = c;
   }
   S.pendingCode = null;
   S.paths = solveBoard(S.board);
@@ -2413,7 +2411,7 @@ function screenProgress(){
       }
       var d = new Date(x.ts);
       var oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
-      var dateStr = d.toLocaleDateString("en-US", x.ts < oneYearAgo ? { month: "short", day: "numeric", year: "numeric" } : { month: "short", day: "numeric" });
+      var dateStr = d.toLocaleDateString("en-US", x.ts < oneYearAgo ? { month: "short", day: "numeric", year: "numeric" } : { month: "short", day: "numeric" }) + ", " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
       tr.appendChild(td(dateStr, "sage"));
       var lenBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) });
       tr.appendChild(td(lenBadge, "", "text-align:center"));
