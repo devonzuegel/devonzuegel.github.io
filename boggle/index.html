@@ -524,7 +524,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T00:42:24Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T00:57:58Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2535,41 +2535,51 @@ function screenProgress(){
     stat("games played", sa.length, "all time")
   ]));
 
-  var recent = sa.slice(0, 30).reverse();
   if (S.trendShow === null || S.trendShow === undefined) S.trendShow = { actual: true, avg: true };
   if (S.trendShowScoring === null || S.trendShowScoring === undefined) S.trendShowScoring = { actual: true, avg: true };
+  if (!S.trendWindow) S.trendWindow = 30;
+  var TREND_WINDOWS = [{ label: "10", val: 10 }, { label: "30", val: 30 }, { label: "90", val: 90 }, { label: "all", val: 0 }];
+  var windowedSa = S.trendWindow ? sa.slice(0, S.trendWindow) : sa;
+  var recent = windowedSa.slice().reverse();
   function legendBtn(label, dashed, active, onclick) {
     var line = h("span", { style: "display:inline-block;width:18px;height:2px;vertical-align:middle;margin-right:4px;border-radius:1px;background:" + (active ? "var(--sage)" : "var(--line)") + (dashed ? ";background-image:repeating-linear-gradient(90deg,var(" + (active ? "--sage" : "--line") + ") 0,var(" + (active ? "--sage" : "--line") + ") 5px,transparent 5px,transparent 8px);background-color:transparent" : "") });
     var btn = h("button", { style: "background:none;border:none;padding:2px 6px;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:" + (active ? "var(--sage)" : "var(--line)") + ";display:inline-flex;align-items:center;gap:0", onclick: onclick }, [line, h("span", { text: label })]);
     return btn;
   }
-  var trendCard = h("div", { class: "card" });
-  trendCard.appendChild(trendChart(recent, actives, sa, S.trendShow));
+  function windowSeg() {
+    var seg = h("div", { class: "seg-ctrl" });
+    TREND_WINDOWS.forEach(function(w){
+      seg.appendChild(h("button", {
+        class: S.trendWindow === w.val ? "on" : "",
+        text: w.label,
+        onclick: function(){ S.trendWindow = w.val; render(); }
+      }));
+    });
+    return seg;
+  }
+  function legendRow(showState) {
+    return h("div", { style: "display:flex;gap:2px;margin-top:6px;justify-content:flex-end" }, [
+      legendBtn("actual", false, showState.actual, function(){ showState.actual = !showState.actual; render(); }),
+      legendBtn("5-round avg", true, showState.avg, function(){ showState.avg = !showState.avg; render(); })
+    ]);
+  }
+  function chartSection(title, chartEl, showState) {
+    var seg = windowSeg();
+    var card = h("div", { class: "card", style: "border-radius:12px 0 12px 12px" });
+    card.appendChild(chartEl);
+    return h("div", { class: "section" }, [
+      h("div", { style: "display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0" }, [
+        h("div", { class: "eyebrow", style: "margin-bottom:6px" }, [h("span", { text: title })]),
+        seg
+      ]),
+      card,
+      legendRow(showState)
+    ]);
+  }
   wrap.appendChild(h("div", { style: "height:10px" }));
-  wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { style: "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:8px" }, [
-      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "share of 5+ letter words found" })]),
-      h("div", { style: "display:flex;gap:2px" }, [
-        legendBtn("actual", false, S.trendShow.actual, function(){ S.trendShow.actual = !S.trendShow.actual; render(); }),
-        legendBtn("5-round avg", true, S.trendShow.avg, function(){ S.trendShow.avg = !S.trendShow.avg; render(); })
-      ])
-    ]),
-    trendCard
-  ]));
+  wrap.appendChild(chartSection("share of 5+ letter words found", trendChart(recent, actives, sa, S.trendShow), S.trendShow));
   wrap.appendChild(h("div", { style: "height:10px" }));
-
-  var scorePctCard = h("div", { class: "card" });
-  scorePctCard.appendChild(scorePctChart(recent, actives, sa, S.trendShowScoring));
-  wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { style: "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:8px" }, [
-      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "share of total possible points" })]),
-      h("div", { style: "display:flex;gap:2px" }, [
-        legendBtn("actual", false, S.trendShowScoring.actual, function(){ S.trendShowScoring.actual = !S.trendShowScoring.actual; render(); }),
-        legendBtn("5-round avg", true, S.trendShowScoring.avg, function(){ S.trendShowScoring.avg = !S.trendShowScoring.avg; render(); })
-      ])
-    ]),
-    scorePctCard
-  ]));
+  wrap.appendChild(chartSection("share of total possible points", scorePctChart(recent, actives, sa, S.trendShowScoring), S.trendShowScoring));
 
 
   var heatCard = h("div", { class: "card" });
