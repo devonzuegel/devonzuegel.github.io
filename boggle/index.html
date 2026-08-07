@@ -524,7 +524,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T00:57:58Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T00:59:14Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2528,7 +2528,7 @@ function screenProgress(){
 
   var scorePcts = sa.filter(function(x){ return x.board; }).map(function(x){ return sessionScorePct(x); }).filter(function(v){ return v !== null; });
   var avgScorePct = scorePcts.length ? Math.round(scorePcts.reduce(function(a,v){ return a+v; }, 0) / scorePcts.length) : null;
-  wrap.appendChild(h("div", { class: "grid3", style: "margin-top:16px" }, [
+  wrap.appendChild(h("div", { style: "display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px" }, [
     stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : sa.length + " rounds"),
     stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
     stat("day streak", streak(), totalWords + " words found"),
