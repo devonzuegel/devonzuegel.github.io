@@ -525,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T01:20:44Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T01:35:03Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -736,7 +736,7 @@ var S = {
   tab: "play", phase: "idle", duration: 180, board: null, paths: null,
   found: [], left: 0, seed: 1, tags: {}, sel: null,
   showShort: false, showRare: false, typing: false, replay: false, flash: null,
-  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
+  quiz: true, challenge: null, confirm: null, revealed: {}, trendShow: null, trendShowScoring: null, trendShow6: null, trendLenFilter: null, trendScoringFilter: null, filterMatrixOpen: false, recentShowAll: false, vocabShowAll: false, playerFilter: null,
   paused: false,
   pendingCode: null, currentCode: null,
   idleToggles: { share: false, length: false, scoring: false }
@@ -2209,6 +2209,61 @@ function trendChart(sessions, actives, allSessions, show){
   return svg;
 }
 
+function pct6Of(x){
+  if (!x.board) return null;
+  var all6 = Array.from(solveBoard(x.board).keys()).filter(function(w){ return w.length >= 6; });
+  if (!all6.length) return null;
+  var found6 = (x.found || []).filter(function(w){ return w.length >= 6; }).length;
+  return Math.round(found6 / all6.length * 100);
+}
+function trend6Chart(sessions, actives, allSessions, show){
+  var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
+  var bottom = H - PADB, span = bottom - top;
+  var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:200px;overflow:visible" });
+  var t = makeSvgTip(svg, H);
+  var maxY = 100;
+  [0, maxY / 2, maxY].forEach(function(v){
+    var y = bottom - (v / maxY) * span;
+    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
+    var lab = svgEl("text", { x: 0, y: y + 3, fill: "#8CA598", "font-size": 9, "font-family": "ui-monospace, Menlo, monospace" });
+    lab.textContent = Math.round(v) + "%";
+    svg.appendChild(lab);
+  });
+  var xAt = function(i){ return PADL + (sessions.length > 1 ? i / (sessions.length - 1) : 0.5) * (W - PADL - 6); };
+  var yAt = function(v){ return bottom - (v / maxY) * span; };
+  var allPts = [];
+  actives.forEach(function(d){
+    var pts = [];
+    sessions.forEach(function(x, i){
+      if (lenOf(x) !== d || !x.board) return;
+      var v = pct6Of(x);
+      if (v !== null) pts.push({ x: xAt(i), y: yAt(v), s: x, v: v });
+    });
+    if (!pts.length) return;
+    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
+      points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
+      fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round"
+    }));
+    if (!show || show.actual) pts.forEach(function(p){
+      svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
+        fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
+    });
+    if (pts.length >= 2 && (!show || show.avg)) {
+      var maPts = pts.map(function(p, j){
+        var win = pts.slice(Math.max(0, j - 4), j + 1);
+        var avg = win.reduce(function(a, q){ return a + q.v; }, 0) / win.length;
+        return p.x + "," + yAt(avg);
+      });
+      var maEl = svgEl("polyline", { points: maPts.join(" "), fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2, "stroke-dasharray": "5 3", opacity: 0.7, "stroke-linejoin": "round", "stroke-linecap": "round" });
+      svg.appendChild(maEl);
+      addMaTooltip(svg, maEl, W, t);
+    }
+    allPts = allPts.concat(pts);
+  });
+  addDotTooltips(svg, allPts, W, H, function(x){ var v = pct6Of(x); return v !== null ? v + "%" : "?"; }, t);
+  t.attach();
+  return svg;
+}
 function scorePctChart(sessions, actives, allSessions, show){
   var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
   var bottom = H - PADB, span = bottom - top;
@@ -2530,7 +2585,23 @@ function screenProgress(){
   var scorePcts = sa.filter(function(x){ return x.board; }).map(function(x){ return sessionScorePct(x); }).filter(function(v){ return v !== null; });
   var avgScorePct = scorePcts.length ? Math.round(scorePcts.reduce(function(a,v){ return a+v; }, 0) / scorePcts.length) : null;
   wrap.appendChild(h("div", { style: "display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:16px" }, [
-    stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : sa.length + " rounds"),
+    (function(){
+      var subText = prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : sa.length + " rounds";
+      var tip = h("div", { style: "position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:10px;color:var(--sage);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99;font-family:var(--mono)" }, [h("span", { text: "Median 5L+ rate: last 5 games vs the 5 before that." })]);
+      var infoBtn = h("button", { style: "background:none;border:none;padding:0 0 0 4px;font-size:11px;opacity:1;cursor:pointer;color:inherit;line-height:1;vertical-align:middle;position:relative", text: "ⓘ" });
+      infoBtn.appendChild(tip);
+      infoBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var visible = tip.style.opacity === "1";
+        tip.style.opacity = visible ? "0" : "1";
+        if (!visible) { setTimeout(function(){ tip.style.opacity = "0"; }, 2500); }
+      });
+      return h("div", { class: "card stat", style: "overflow:visible" }, [
+        h("div", { class: "eyebrow", style: "display:flex;align-items:center" }, [h("span", { text: "5+ rate" }), infoBtn]),
+        h("div", { class: "v", text: last5 + "%" }),
+        h("div", { class: "s", text: subText })
+      ]);
+    })(),
     stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
     stat("day streak", streak(), totalWords + " words found"),
     stat("games played", sa.length, "all time")
@@ -2538,8 +2609,9 @@ function screenProgress(){
 
   if (S.trendShow === null || S.trendShow === undefined) S.trendShow = { actual: true, avg: true };
   if (S.trendShowScoring === null || S.trendShowScoring === undefined) S.trendShowScoring = { actual: true, avg: true };
+  if (!S.trendShow6) S.trendShow6 = { actual: true, avg: true };
   if (S.trendWindow === null || S.trendWindow === undefined) S.trendWindow = 0;
-  var TREND_WINDOWS = [{ label: "10", val: 10 }, { label: "30", val: 30 }, { label: "90", val: 90 }, { label: "all games", val: 0 }];
+  var TREND_WINDOWS = [{ label: "10", val: 10 }, { label: "30", val: 30 }, { label: "90", val: 90 }, { label: "all games", val: 0 }].filter(function(w){ return w.val === 0 || sa.length > w.val; });
   var windowedSa = S.trendWindow ? sa.slice(0, S.trendWindow) : sa;
   var recent = windowedSa.slice().reverse();
   function legendBtn(label, dashed, active, onclick) {
@@ -2604,6 +2676,8 @@ function screenProgress(){
   }
   wrap.appendChild(h("div", { style: "height:10px" }));
   wrap.appendChild(chartSection("percent of 5L+ words found", trendChart(recent, actives, sa, S.trendShow), S.trendShow));
+  wrap.appendChild(h("div", { style: "height:10px" }));
+  wrap.appendChild(chartSection("percent of 6L+ words found", trend6Chart(recent, actives, sa, S.trendShow6), S.trendShow6));
   wrap.appendChild(h("div", { style: "height:10px" }));
   wrap.appendChild(chartSection("percent of possible points", scorePctChart(recent, actives, sa, S.trendShowScoring), S.trendShowScoring));
 
