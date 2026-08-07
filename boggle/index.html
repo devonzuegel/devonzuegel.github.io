@@ -114,9 +114,10 @@
   .btn.small{padding:6px 12px;font-size:13px}
   .chipbtn{font-family:var(--mono);font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
-  .seg-ctrl{display:inline-flex;border:1px solid var(--line);border-radius:6px 6px 0 0;overflow:hidden;font-family:var(--mono);font-size:10px;margin-bottom:-1px}
-  .seg-ctrl button{background:none;border:none;padding:3px 8px;color:var(--sage);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em}
-  .seg-ctrl button.on{background:var(--amber);color:#0C1510;font-weight:600}
+  .seg-ctrl{display:inline-flex;border:1px solid var(--line);border-radius:6px 6px 0 0;overflow:hidden;font-family:var(--mono);font-size:10px;margin-bottom:-1px;position:relative}
+  .seg-ctrl button{background:none;border:none;padding:3px 8px;color:var(--sage);cursor:pointer;transition:color .2s;letter-spacing:.04em;position:relative;z-index:1}
+  .seg-ctrl button.on{color:#0C1510;font-weight:600}
+  .seg-ctrl-slider{position:absolute;top:0;bottom:0;background:var(--amber);border-radius:5px 5px 0 0;transition:left .2s cubic-bezier(.4,0,.2,1),width .2s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
   #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface2);color:var(--bone);font-family:var(--mono);font-size:13px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:100}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .filter-badge{font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid var(--amber);border-radius:4px;padding:3px 8px;opacity:.85;line-height:1;display:inline-flex;align-items:center}
@@ -524,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T00:59:14Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T01:07:34Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2537,8 +2538,8 @@ function screenProgress(){
 
   if (S.trendShow === null || S.trendShow === undefined) S.trendShow = { actual: true, avg: true };
   if (S.trendShowScoring === null || S.trendShowScoring === undefined) S.trendShowScoring = { actual: true, avg: true };
-  if (!S.trendWindow) S.trendWindow = 30;
-  var TREND_WINDOWS = [{ label: "10", val: 10 }, { label: "30", val: 30 }, { label: "90", val: 90 }, { label: "all", val: 0 }];
+  if (S.trendWindow === null || S.trendWindow === undefined) S.trendWindow = 0;
+  var TREND_WINDOWS = [{ label: "10", val: 10 }, { label: "30", val: 30 }, { label: "90", val: 90 }, { label: "all games", val: 0 }];
   var windowedSa = S.trendWindow ? sa.slice(0, S.trendWindow) : sa;
   var recent = windowedSa.slice().reverse();
   function legendBtn(label, dashed, active, onclick) {
@@ -2546,16 +2547,41 @@ function screenProgress(){
     var btn = h("button", { style: "background:none;border:none;padding:2px 6px;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:" + (active ? "var(--sage)" : "var(--line)") + ";display:inline-flex;align-items:center;gap:0", onclick: onclick }, [line, h("span", { text: label })]);
     return btn;
   }
-  function windowSeg() {
+  function makeSegCtrl(options, getVal, setVal) {
     var seg = h("div", { class: "seg-ctrl" });
-    TREND_WINDOWS.forEach(function(w){
-      seg.appendChild(h("button", {
-        class: S.trendWindow === w.val ? "on" : "",
-        text: w.label,
-        onclick: function(){ S.trendWindow = w.val; render(); }
-      }));
+    var slider = h("div", { class: "seg-ctrl-slider" });
+    seg.appendChild(slider);
+    var btnEls = [];
+    options.forEach(function(opt, i){
+      var btn = h("button", {
+        class: getVal() === opt.val ? "on" : "",
+        text: opt.label
+      });
+      btn.addEventListener("click", function(){
+        // slide immediately before re-render destroys DOM
+        btnEls.forEach(function(b){ b.className = ""; });
+        btn.className = "on";
+        slider.style.left = btn.offsetLeft + "px";
+        slider.style.width = btn.offsetWidth + "px";
+        setVal(opt.val);
+        setTimeout(render, 220);
+      });
+      seg.appendChild(btn);
+      btnEls.push(btn);
+    });
+    requestAnimationFrame(function(){
+      var idx = options.findIndex(function(o){ return o.val === getVal(); });
+      if (idx >= 0 && btnEls[idx]) {
+        slider.style.transition = "none";
+        slider.style.left = btnEls[idx].offsetLeft + "px";
+        slider.style.width = btnEls[idx].offsetWidth + "px";
+        requestAnimationFrame(function(){ slider.style.transition = ""; });
+      }
     });
     return seg;
+  }
+  function windowSeg() {
+    return makeSegCtrl(TREND_WINDOWS, function(){ return S.trendWindow; }, function(v){ S.trendWindow = v; });
   }
   function legendRow(showState) {
     return h("div", { style: "display:flex;gap:2px;margin-top:6px;justify-content:flex-end" }, [
@@ -2642,9 +2668,30 @@ function screenProgress(){
 
   /* vocab */
   var segCtrl = h("div", { class: "seg-ctrl" });
-  [["to learn", false], ["learned", true]].forEach(function(pair){
-    segCtrl.appendChild(h("button", { class: showLearned === pair[1] ? "on" : "", text: pair[0],
-      onclick: function(){ showLearned = pair[1]; render(); } }));
+  var segSlider = h("div", { class: "seg-ctrl-slider" });
+  segCtrl.appendChild(segSlider);
+  var vocabBtnEls = [];
+  [["to learn", false], ["learned", true]].forEach(function(pair, i){
+    var vbtn = h("button", { class: showLearned === pair[1] ? "on" : "", text: pair[0] });
+    vbtn.addEventListener("click", function(){
+      vocabBtnEls.forEach(function(b){ b.className = ""; });
+      vbtn.className = "on";
+      segSlider.style.left = vbtn.offsetLeft + "px";
+      segSlider.style.width = vbtn.offsetWidth + "px";
+      showLearned = pair[1];
+      setTimeout(render, 220);
+    });
+    segCtrl.appendChild(vbtn);
+    vocabBtnEls.push(vbtn);
+  });
+  requestAnimationFrame(function(){
+    var idx = showLearned ? 1 : 0;
+    if (vocabBtnEls[idx]) {
+      segSlider.style.transition = "none";
+      segSlider.style.left = vocabBtnEls[idx].offsetLeft + "px";
+      segSlider.style.width = vocabBtnEls[idx].offsetWidth + "px";
+      requestAnimationFrame(function(){ segSlider.style.transition = ""; });
+    }
   });
   var allVocabList = data.vocab.filter(function(v){ return showLearned ? v.learned : !v.learned; });
   var vocabLimit = 10;
@@ -2694,6 +2741,7 @@ function screenProgress(){
       onclick: function(){ S.vocabShowAll = true; render(); }
     }));
   }
+  wrap.appendChild(h("div", { style: "height:5px" }));
   wrap.appendChild(vocabSection);
 
   return wrap;
