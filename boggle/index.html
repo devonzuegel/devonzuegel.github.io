@@ -114,7 +114,7 @@
   .btn.small{padding:6px 12px;font-size:13px}
   .chipbtn{font-family:var(--mono);font-size:13px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--sage)}
   .chipbtn.on{border-color:var(--amber);color:var(--amber)}
-  .seg-ctrl{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:10px}
+  .seg-ctrl{display:inline-flex;border:1px solid var(--line);border-radius:6px 6px 0 0;overflow:hidden;font-family:var(--mono);font-size:10px;margin-bottom:-1px}
   .seg-ctrl button{background:none;border:none;padding:3px 8px;color:var(--sage);cursor:pointer;transition:background .15s,color .15s;letter-spacing:.04em}
   .seg-ctrl button.on{background:var(--amber);color:#0C1510;font-weight:600}
   #toast{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 70px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface2);color:var(--bone);font-family:var(--mono);font-size:13px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:100}
@@ -524,7 +524,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-06T23:46:19Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T00:42:24Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1273,7 +1273,8 @@ function saveSession(){
   data.queue = data.queue.filter(function(q){ return q.boardKey !== key; });
   if (attempts < 3) data.queue.push({
     boardKey: key, board: S.board.slice(), attempts: attempts, lastPct: pct(),
-    due: Date.now() + (attempts === 1 ? DAY : 7 * DAY)
+    due: Date.now() + (attempts === 1 ? DAY : 7 * DAY),
+    player: data.player || "Player"
   });
   S.replay = false;
   if (!data.events) data.events = [];
@@ -1704,7 +1705,8 @@ function renderFooter(){
 }
 
 function screenIdle(){
-  var due = data.queue.filter(function(q){ return q.due <= Date.now(); });
+  var idlePlayer = data.player || "Player";
+  var due = data.queue.filter(function(q){ return q.due <= Date.now() && (!q.player || q.player === idlePlayer); });
   var lens = h("div", { class: "row" });
   [60, 120, 180].forEach(function(d){
     lens.appendChild(h("button", {
@@ -1843,11 +1845,11 @@ function screenIdle(){
   }
 
   var shareBlock = makeToggleBlock("PLAY WITH FRIENDS", [
-    h("div", { style: "border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;overflow:hidden" }, [
+    h("div", { style: "font-size:11px;color:var(--sage);line-height:1.5;margin-top:10px;margin-bottom:12px;text-wrap:balance", text: "Share with a friend to play the same board. Timers start separately on each device." }),
+    h("div", { style: "border:1px solid var(--line);border-radius:12px;padding:14px;overflow:hidden" }, [
       h("div", { class: "eyebrow", style: "margin-bottom:8px", text: "your board code" }),
       h("div", { style: "display:flex;align-items:center;gap:10px;margin-bottom:6px" }, [codeDisplay, copyBtn]),
-      h("div", { style: "font-size:11px;color:var(--sage);line-height:1.5;margin-bottom:14px;text-wrap:balance", text: "Share with a friend to play the same board. Timers start separately on each device." }),
-      h("hr", { style: "border:none;border-top:1px solid var(--line);margin:0 -14px 14px -14px" }),
+      h("hr", { style: "border:none;border-top:1px solid var(--line);margin:8px -14px 14px -14px" }),
       h("div", { class: "eyebrow", style: "margin-bottom:8px", text: "or enter a friend's board code" }),
       h("div", { style: "display:flex;align-items:center;gap:8px" }, [friendInput, playFriendBtn])
     ])
@@ -2157,7 +2159,7 @@ function addMaTooltip(svg, maEl, W, t){
   maEl.parentNode.insertBefore(hitEl, maEl.nextSibling);
 }
 
-function trendChart(sessions, actives, allSessions){
+function trendChart(sessions, actives, allSessions, show){
   var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
   var bottom = H - PADB, span = bottom - top;
   var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:200px;overflow:visible" });
@@ -2180,16 +2182,16 @@ function trendChart(sessions, actives, allSessions){
     var pts = [];
     sessions.forEach(function(x, i){ if (lenOf(x) === d) pts.push({ x: xAt(i), y: yAt(x.pct), s: x }); });
     if (!pts.length) return;
-    if (pts.length > 1) svg.appendChild(svgEl("polyline", {
+    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
       points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
       fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round"
     }));
-    pts.forEach(function(p){
+    if (!show || show.actual) pts.forEach(function(p){
       svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
-    if (pts.length >= 2) {
+    if (pts.length >= 2 && (!show || show.avg)) {
       var maPts = pts.map(function(p, j){
         var win = pts.slice(Math.max(0, j - 4), j + 1);
         var avg = win.reduce(function(a, q){ return a + q.s.pct; }, 0) / win.length;
@@ -2206,7 +2208,7 @@ function trendChart(sessions, actives, allSessions){
   return svg;
 }
 
-function scorePctChart(sessions, actives, allSessions){
+function scorePctChart(sessions, actives, allSessions, show){
   var W = 320, H = 175, PADL = 26, PADB = 14, top = 8;
   var bottom = H - PADB, span = bottom - top;
   var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, preserveAspectRatio: "none", style: "width:100%;height:200px;overflow:visible" });
@@ -2231,16 +2233,16 @@ function scorePctChart(sessions, actives, allSessions){
       if (v !== null) pts.push({ x: xAt(i), y: yAt(v), s: x, v: v });
     });
     if (!pts.length) return;
-    if (pts.length > 1) svg.appendChild(svgEl("polyline", {
+    if (pts.length > 1 && (!show || show.actual)) svg.appendChild(svgEl("polyline", {
       points: pts.map(function(p){ return p.x + "," + p.y; }).join(" "),
       fill: "none", stroke: LEN_COLOR[d], "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round"
     }));
-    pts.forEach(function(p){
+    if (!show || show.actual) pts.forEach(function(p){
       svg.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: p.s.replay ? 3.5 : 2.6,
         fill: p.s.replay ? "#141F1A" : LEN_COLOR[d], stroke: LEN_COLOR[d], "stroke-width": p.s.replay ? 2 : 0 }));
     });
-    if (pts.length >= 2) {
+    if (pts.length >= 2 && (!show || show.avg)) {
       var maPts = pts.map(function(p, j){
         var win = pts.slice(Math.max(0, j - 4), j + 1);
         var avg = win.reduce(function(a, q){ return a + q.v; }, 0) / win.length;
@@ -2330,7 +2332,7 @@ function screenProgress(){
     box.className = "recent-table mono";
     var thead = document.createElement("thead");
     var theadRow = document.createElement("tr");
-    [["date", 1, "left"], ["length", 1, "center"], ["scoring", 1, "center"], ["5+ words", 2, "center"], ["points", 2, "center"], ["", 1, "center"], ["code", 1, "left"]].forEach(function(col) {
+    [["date", 1, "left"], ["length", 1, "center"], ["scoring", 1, "center"], ["5+ words", 2, "center"], ["points", 2, "center"], ["", 1, "center"], ["code", 1, "center"]].forEach(function(col) {
       var th = document.createElement("th");
       th.textContent = col[0];
       if (col[1] > 1) th.colSpan = col[1];
@@ -2359,7 +2361,8 @@ function screenProgress(){
       tr.appendChild(td(dateStr, "sage"));
       var lenBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: lenName(lenOf(x)) });
       tr.appendChild(td(lenBadge, "", "text-align:center"));
-      var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeLabelOf(x) });
+      var modeShort = modeKeyOf(x) === "standard" ? "Standard" : modeLabelOf(x);
+      var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeShort });
       tr.appendChild(td(modeBadge, "", "text-align:center"));
       tr.appendChild(td(x.found5 + "/" + x.total5, "", "text-align:right;padding-right:2px"));
       tr.appendChild(td("· " + (x.total5 ? Math.round(x.found5/x.total5*100) : 0) + "%", "sage", "text-align:left;padding-left:2px"));
@@ -2371,20 +2374,17 @@ function screenProgress(){
       } else {
         tr.appendChild(td(""));
       }
-      if (x.code) {
-        var codeCell = document.createElement("td");
-        codeCell.style.cssText = "font-family:var(--mono);font-size:9px;color:var(--sage);letter-spacing:.03em;opacity:.7;white-space:nowrap;padding-left:6px";
-        codeCell.textContent = x.code;
-        tr.appendChild(codeCell);
-      } else {
-        tr.appendChild(td(""));
-      }
+      var codeCell = document.createElement("td");
+      codeCell.style.cssText = "font-family:var(--mono);font-size:9px;color:var(--sage);letter-spacing:.03em;white-space:nowrap;text-align:center";
+      codeCell.textContent = x.code || "n/a";
+      codeCell.style.opacity = x.code ? ".7" : ".3";
+      tr.appendChild(codeCell);
       tbody.appendChild(tr);
     });
     box.appendChild(tbody);
     var hdr = h("div", { class: "eyebrow", style: "margin-bottom:12px", text: "recent rounds" });
-    var tableCard = h("div", { class: "card", style: "padding:12px 0" });
-    box.style.cssText = "margin:-12px 0";
+    var tableCard = h("div", { class: "card", style: "padding:12px 0;overflow-x:auto" });
+    box.style.cssText = "margin:-12px 0;min-width:max-content";
     tableCard.appendChild(box);
     var section = h("div", { class: "section" }, [hdr, tableCard]);
     var btns = h("div", { style: "display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;justify-content:flex-end" });
@@ -2531,26 +2531,44 @@ function screenProgress(){
   wrap.appendChild(h("div", { class: "grid3", style: "margin-top:16px" }, [
     stat("5+ rate", last5 + "%", prior ? (diff >= 0 ? "▲ " : "▼ ") + Math.abs(diff) + " vs before" : sa.length + " rounds"),
     stat("score %", avgScorePct !== null ? avgScorePct + "%" : "—", "avg of " + scorePcts.length + " rounds"),
-    stat("day streak", streak(), totalWords + " words found")
+    stat("day streak", streak(), totalWords + " words found"),
+    stat("games played", sa.length, "all time")
   ]));
 
   var recent = sa.slice(0, 30).reverse();
+  if (S.trendShow === null || S.trendShow === undefined) S.trendShow = { actual: true, avg: true };
+  if (S.trendShowScoring === null || S.trendShowScoring === undefined) S.trendShowScoring = { actual: true, avg: true };
+  function legendBtn(label, dashed, active, onclick) {
+    var line = h("span", { style: "display:inline-block;width:18px;height:2px;vertical-align:middle;margin-right:4px;border-radius:1px;background:" + (active ? "var(--sage)" : "var(--line)") + (dashed ? ";background-image:repeating-linear-gradient(90deg,var(" + (active ? "--sage" : "--line") + ") 0,var(" + (active ? "--sage" : "--line") + ") 5px,transparent 5px,transparent 8px);background-color:transparent" : "") });
+    var btn = h("button", { style: "background:none;border:none;padding:2px 6px;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:" + (active ? "var(--sage)" : "var(--line)") + ";display:inline-flex;align-items:center;gap:0", onclick: onclick }, [line, h("span", { text: label })]);
+    return btn;
+  }
   var trendCard = h("div", { class: "card" });
-  trendCard.appendChild(trendChart(recent, actives, sa));
-  trendCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
-    text: "last " + recent.length + " rounds, oldest left · hollow dot = replay" }));
+  trendCard.appendChild(trendChart(recent, actives, sa, S.trendShow));
   wrap.appendChild(h("div", { style: "height:10px" }));
   wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "share of 5+ letter words found" }), trendCard
+    h("div", { style: "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:8px" }, [
+      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "share of 5+ letter words found" })]),
+      h("div", { style: "display:flex;gap:2px" }, [
+        legendBtn("actual", false, S.trendShow.actual, function(){ S.trendShow.actual = !S.trendShow.actual; render(); }),
+        legendBtn("5-round avg", true, S.trendShow.avg, function(){ S.trendShow.avg = !S.trendShow.avg; render(); })
+      ])
+    ]),
+    trendCard
   ]));
   wrap.appendChild(h("div", { style: "height:10px" }));
 
   var scorePctCard = h("div", { class: "card" });
-  scorePctCard.appendChild(scorePctChart(recent, actives, sa));
-  scorePctCard.appendChild(h("div", { class: "mono sage", style: "font-size:10px;margin-top:2px",
-    text: "last " + recent.length + " rounds, oldest left · hollow dot = replay" }));
+  scorePctCard.appendChild(scorePctChart(recent, actives, sa, S.trendShowScoring));
   wrap.appendChild(h("div", { class: "section" }, [
-    h("div", { class: "eyebrow", text: "share of total possible points" }), scorePctCard
+    h("div", { style: "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:8px" }, [
+      h("div", { class: "eyebrow", style: "margin-bottom:0" }, [h("span", { text: "share of total possible points" })]),
+      h("div", { style: "display:flex;gap:2px" }, [
+        legendBtn("actual", false, S.trendShowScoring.actual, function(){ S.trendShowScoring.actual = !S.trendShowScoring.actual; render(); }),
+        legendBtn("5-round avg", true, S.trendShowScoring.avg, function(){ S.trendShowScoring.avg = !S.trendShowScoring.avg; render(); })
+      ])
+    ]),
+    scorePctCard
   ]));
 
 
@@ -2573,8 +2591,8 @@ function screenProgress(){
     wrap.appendChild(h("div", { class: "section" }, [h("div", { class: "eyebrow", text: "second looks at the same board" }), rbox]));
   }
 
-  var due = data.queue.filter(function(q){ return q.due <= Date.now(); });
-  var later = data.queue.filter(function(q){ return q.due > Date.now(); });
+  var due = data.queue.filter(function(q){ return q.due <= Date.now() && (!q.player || q.player === currentPlayer); });
+  var later = data.queue.filter(function(q){ return q.due > Date.now() && (!q.player || q.player === currentPlayer); });
   var dueBox = h("div", {});
   if (!due.length) dueBox.appendChild(h("div", { class: "p", text: "Nothing due. Boards return a day after you play them." }));
   var SHOW = 5;
@@ -2613,7 +2631,7 @@ function screenProgress(){
 
 
   /* vocab */
-  var segCtrl = h("div", { class: "seg-ctrl", style: "margin-bottom:4px" });
+  var segCtrl = h("div", { class: "seg-ctrl" });
   [["to learn", false], ["learned", true]].forEach(function(pair){
     segCtrl.appendChild(h("button", { class: showLearned === pair[1] ? "on" : "", text: pair[0],
       onclick: function(){ showLearned = pair[1]; render(); } }));
@@ -2646,7 +2664,7 @@ function screenProgress(){
       vtbody.appendChild(tr);
     });
     vtbl.appendChild(vtbody);
-    var vtblCard = h("div", { class: "card", style: "padding:12px 0" });
+    var vtblCard = h("div", { class: "card", style: "padding:12px 0;border-radius:12px 0 12px 12px" });
     vtbl.style.cssText = "margin:-12px 0";
     vtblCard.appendChild(vtbl);
     vocabBox.appendChild(vtblCard);
