@@ -525,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-07T02:00:07Z"; /* updated by deploy script */
+var BUILD = "2026-08-07T02:00:59Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2167,7 +2167,7 @@ function trendChart(sessions, actives, allSessions, show){
   var maxY = 100;
   [25, 75].forEach(function(v){
     var y = bottom - (v / maxY) * span;
-    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1, opacity: "0.4" }));
+    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
   });
   [0, maxY / 2, maxY].forEach(function(v){
     var y = bottom - (v / maxY) * span;
@@ -2232,7 +2232,7 @@ function trend6Chart(sessions, actives, allSessions, show){
   var maxY = 100;
   [25, 75].forEach(function(v){
     var y = bottom - (v / maxY) * span;
-    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1, opacity: "0.4" }));
+    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
   });
   [0, maxY / 2, maxY].forEach(function(v){
     var y = bottom - (v / maxY) * span;
@@ -2291,7 +2291,7 @@ function scorePctChart(sessions, actives, allSessions, show){
   var maxY = 100;
   [25, 75].forEach(function(v){
     var y = bottom - (v / maxY) * span;
-    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1, opacity: "0.4" }));
+    svg.appendChild(svgEl("line", { x1: PADL, y1: y, x2: W, y2: y, stroke: "#31463B", "stroke-width": 1 }));
   });
   [0, maxY / 2, maxY].forEach(function(v){
     var y = bottom - (v / maxY) * span;
