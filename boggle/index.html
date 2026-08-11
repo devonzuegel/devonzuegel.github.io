@@ -590,7 +590,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:15:44Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:18:10Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2013,10 +2013,19 @@ function screenRunning(){
         setTimeout(function(){ runCopyBtn.textContent = "Copy"; }, 1800);
       });
     });
-    right.appendChild(h("div", { style: "display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:20px;justify-content:center" }, [
-      h("span", { style: "font-size:10px;color:var(--sage);opacity:0.6;text-transform:uppercase;letter-spacing:.05em", text: "board code" }),
-      runCodeEl,
-      runCopyBtn
+    var sc = data.scoring || {};
+    var scoringLabel2 = (SCORE_OPTS.filter(function(o){ return !!sc.zero3 === !!o.zero3 && !!sc.zero4 === !!o.zero4; })[0] || { label: "Standard" }).label;
+    var modeDesc = scoringLabel2 + (data.stemming ? " · roots only" : "");
+    var modeExplain = data.stemming
+      ? "words scored by their root (CATS = CAT = 1pt)"
+      : "words scored by their full length";
+    right.appendChild(h("div", { style: "margin-top:auto;padding-top:20px;text-align:center" }, [
+      h("div", { style: "display:flex;align-items:center;gap:8px;justify-content:center" }, [
+        h("span", { style: "font-size:10px;color:var(--sage);opacity:0.6;text-transform:uppercase;letter-spacing:.05em", text: "board code" }),
+        runCodeEl,
+        runCopyBtn
+      ]),
+      h("div", { style: "font-family:var(--mono);font-size:10px;color:var(--sage);opacity:0.5;margin-top:5px;letter-spacing:.04em", text: modeDesc + " · " + modeExplain })
     ]));
   }
   layout.appendChild(right);
