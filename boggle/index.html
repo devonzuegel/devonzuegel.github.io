@@ -591,7 +591,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:32:20Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:32:49Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2053,7 +2053,11 @@ function screenRunning(){
         runCodeEl,
         runCopyBtn
       ]),
-      h("div", { style: "font-family:var(--mono);font-size:10px;color:var(--sage);opacity:0.5;margin-top:5px;letter-spacing:.04em", text: modeDesc + " · " + modeExplain })
+      h("div", { style: "font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:8px;letter-spacing:.04em;line-height:1.5" }, [
+        h("span", { text: modeDesc }),
+        h("br"),
+        h("span", { style: "opacity:0.55;font-size:10px", text: modeExplain })
+      ])
     ]));
   }
   layout.appendChild(right);
