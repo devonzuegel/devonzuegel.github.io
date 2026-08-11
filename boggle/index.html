@@ -591,7 +591,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:34:06Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:35:16Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1777,13 +1777,17 @@ function renderFooter(){
         if (data.stemming) {
           var root = stemOf(w);
           if (root !== w && w.startsWith(root)) {
-            wordEl.style.position = "relative";
             wordEl.appendChild(h("span", { text: root.toUpperCase() }));
             wordEl.appendChild(h("span", { style: "opacity:0.35", text: w.slice(root.length).toUpperCase() }));
-            var tip = h("div", { style: "display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:10px;color:var(--sage);white-space:nowrap;pointer-events:none;z-index:99;font-family:var(--mono);font-weight:normal;letter-spacing:.03em",
-              text: '"' + w.toUpperCase() + '" scored as ' + root.toUpperCase() + ' (' + root.length + 'L = ' + scoreOf(w) + 'pt)' });
-            wordEl.appendChild(tip);
-            wordEl.addEventListener("mouseenter", function(){ tip.style.display = "block"; });
+            var tipText = '"' + w.toUpperCase() + '" scored as ' + root.toUpperCase() + ' (' + root.length + 'L = ' + scoreOf(w) + 'pt)';
+            var tip = h("div", { style: "display:none;position:fixed;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:10px;color:var(--sage);white-space:nowrap;pointer-events:none;z-index:9999;font-family:var(--mono);font-weight:normal;letter-spacing:.03em", text: tipText });
+            document.body.appendChild(tip);
+            wordEl.addEventListener("mouseenter", function(){
+              var r = wordEl.getBoundingClientRect();
+              tip.style.display = "block";
+              tip.style.left = (r.left + r.width / 2 - tip.offsetWidth / 2) + "px";
+              tip.style.top = (r.top - tip.offsetHeight - 6) + "px";
+            });
             wordEl.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
           } else {
             wordEl.textContent = w;
