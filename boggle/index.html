@@ -590,7 +590,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:22:28Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:23:23Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1770,7 +1770,21 @@ function renderFooter(){
       ]);
       var zeroed = scoreOf(Array(len+1).join("a")) === 0;
       wrap.appendChild(hdr);
-      words.forEach(function(w){ wrap.appendChild(h("span", { class: "word" + (w.length >= 5 ? " big" : ""), style: zeroed ? "opacity:0.35;text-decoration:line-through" : "", text: w })); });
+      words.forEach(function(w){
+        var wordEl = h("span", { class: "word" + (w.length >= 5 ? " big" : ""), style: zeroed ? "opacity:0.35;text-decoration:line-through" : "" });
+        if (data.stemming) {
+          var root = stemOf(w);
+          if (root !== w && w.startsWith(root)) {
+            wordEl.appendChild(h("span", { text: root.toUpperCase() }));
+            wordEl.appendChild(h("span", { style: "opacity:0.35", text: w.slice(root.length).toUpperCase() }));
+          } else {
+            wordEl.textContent = w;
+          }
+        } else {
+          wordEl.textContent = w;
+        }
+        wrap.appendChild(wordEl);
+      });
     });
   }
   footerEl.appendChild(wrap);
