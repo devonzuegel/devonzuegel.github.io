@@ -454,79 +454,61 @@ function codeToBoard(code){
   }
   return d.map(function(x){ return x[Math.floor(rng() * 6)]; });
 }
-/* ---------------- Porter stemmer (Paice/Husk, adapted) ---------------- */
-function porterStem(w) {
+/* ---------------- Lemmatizer (compromise.js) ---------------- */
+var _nlp = null;          // set once compromise loads
+var _lemmaCache = {};     // word -> lemma, persists across rounds
+
+function _simpleLemma(w) {
+  // Minimal fallback used only before compromise loads
   w = w.toLowerCase();
-  if (w.length <= 2) return w;
-  function isVowel(c) { return "aeiou".indexOf(c) >= 0; }
-  function isVowelAt(s, i) { return i === 0 ? isVowel(s[0]) : (isVowel(s[i]) || (s[i] === 'y' && !isVowel(s[i-1]))); }
-  function measure(s) {
-    var m = 0, v = false;
-    for (var i = 0; i < s.length; i++) {
-      if (isVowelAt(s, i)) { v = true; }
-      else if (v) { m++; v = false; }
-    }
-    return m;
-  }
-  function hasVowel(s) { for (var i = 0; i < s.length; i++) if (isVowelAt(s, i)) return true; return false; }
-  function endsCVC(s) {
-    var n = s.length;
-    if (n < 3) return false;
-    return !isVowel(s[n-1]) && s[n-1] !== 'w' && s[n-1] !== 'x' && s[n-1] !== 'y' && isVowelAt(s, n-2) && !isVowelAt(s, n-3);
-  }
-  // Step 1a
-  if (w.endsWith("sses")) w = w.slice(0, -2);
-  else if (w.endsWith("ies")) w = w.slice(0, -2);
-  else if (w.endsWith("ss")) { /* no-op */ }
-  else if (w.endsWith("s") && w.length > 3) w = w.slice(0, -1);
-  // Step 1b
-  var step1b_extra = false;
-  if (w.endsWith("eed")) { if (measure(w.slice(0, -3)) > 0) w = w.slice(0, -1); }
-  else if (w.endsWith("ed") && hasVowel(w.slice(0, -2))) { w = w.slice(0, -2); step1b_extra = true; }
-  else if (w.endsWith("ing") && hasVowel(w.slice(0, -3))) { w = w.slice(0, -3); step1b_extra = true; }
-  if (step1b_extra) {
-    if (w.endsWith("at") || w.endsWith("bl") || w.endsWith("iz")) w += "e";
-    else if (w.length >= 2 && w[w.length-1] === w[w.length-2] && !isVowel(w[w.length-1]) && !"lsz".includes(w[w.length-1])) w = w.slice(0, -1);
-    else if (measure(w) === 1 && endsCVC(w)) w += "e";
-  }
-  // Step 1c
-  if (w.endsWith("y") && hasVowel(w.slice(0, -1))) w = w.slice(0, -1) + "i";
-  // Step 2
-  var s2 = [["ational","ate"],["tional","tion"],["enci","ence"],["anci","ance"],["izer","ize"],["abli","able"],["alli","al"],["entli","ent"],["eli","e"],["ousli","ous"],["ization","ize"],["ation","ate"],["ator","ate"],["alism","al"],["iveness","ive"],["fulness","ful"],["ousness","ous"],["aliti","al"],["iviti","ive"],["biliti","ble"]];
-  for (var i = 0; i < s2.length; i++) { if (w.endsWith(s2[i][0]) && measure(w.slice(0, -s2[i][0].length)) > 0) { w = w.slice(0, -s2[i][0].length) + s2[i][1]; break; } }
-  // Step 3
-  var s3 = [["icate","ic"],["ative",""],["alize","al"],["iciti","ic"],["ical","ic"],["ful",""],["ness",""]];
-  for (var i = 0; i < s3.length; i++) { if (w.endsWith(s3[i][0]) && measure(w.slice(0, -s3[i][0].length)) > 0) { w = w.slice(0, -s3[i][0].length) + s3[i][1]; break; } }
-  // Step 4
-  var s4 = ["al","ance","ence","er","ic","able","ible","ant","ement","ment","ent","ion","ou","ism","ate","iti","ous","ive","ize"];
-  for (var i = 0; i < s4.length; i++) {
-    if (w.endsWith(s4[i])) {
-      var stem = w.slice(0, -s4[i].length);
-      if (s4[i] === "ion" ? (measure(stem) > 1 && "st".includes(stem[stem.length-1])) : measure(stem) > 1) { w = stem; break; }
-    }
-  }
-  // Step 5a
-  if (w.endsWith("e")) { var st = w.slice(0, -1); if (measure(st) > 1 || (measure(st) === 1 && !endsCVC(st))) w = st; }
-  // Step 5b
-  if (w.length >= 2 && w[w.length-1] === 'l' && w[w.length-2] === 'l' && measure(w) > 1) w = w.slice(0, -1);
+  if (w.endsWith("sses")) return w.slice(0, -2);
+  if (w.endsWith("ies") && w.length > 4) return w.slice(0, -3) + "y";
+  if (w.endsWith("ss")) return w;
+  if (w.endsWith("s") && w.length > 3) return w.slice(0, -1);
+  if (w.endsWith("ing") && w.length > 5) return w.slice(0, -3);
+  if (w.endsWith("ed") && w.length > 4) return w.slice(0, -2);
   return w;
 }
-function stem(w) { return porterStem(w); }
-function stemOf(w) { return stem(w.toLowerCase()); }
-/* deduplicate an array of words by stem, returning one representative per stem (first seen) */
+
+function stemOf(w) {
+  w = w.toLowerCase();
+  if (_lemmaCache[w] !== undefined) return _lemmaCache[w];
+  var result = w;
+  if (_nlp) {
+    var doc = _nlp(w);
+    var noun = doc.nouns().toSingular().text();
+    if (noun && noun !== w) { result = noun; }
+    else {
+      var verb = doc.verbs().toInfinitive().text();
+      if (verb && verb !== w) { result = verb; }
+      else {
+        // force verb tag to catch -ing/-ed adjectives (e.g. "flowing", "rushing")
+        var forced = _nlp(w).tag('Verb').verbs().toInfinitive().text();
+        if (forced && forced !== w) result = forced;
+      }
+    }
+  } else {
+    result = _simpleLemma(w);
+  }
+  _lemmaCache[w] = result;
+  return result;
+}
+
+(function loadCompromise() {
+  var s = document.createElement("script");
+  s.src = "https://unpkg.com/compromise@14.16.0/builds/compromise.js";
+  s.onload = function() {
+    _nlp = window.nlp;
+    _lemmaCache = {}; // clear fallback cache so real lemmas replace simple ones
+  };
+  document.head.appendChild(s);
+})();
+
+/* deduplicate an array of words by lemma, keeping first seen per root */
 function dedupeByStems(words) {
   var seen = new Set(), out = [];
   words.forEach(function(w) { var s = stemOf(w); if (!seen.has(s)) { seen.add(s); out.push(w); } });
   return out;
-}
-/* return all board words, deduplicated by stem if stemming is on */
-function allWordsStemmed() {
-  var ws = Array.from(S.paths.keys());
-  return data.stemming ? dedupeByStems(ws) : ws;
-}
-/* return found words, deduplicated by stem if stemming is on */
-function foundWordsStemmed() {
-  return data.stemming ? dedupeByStems(S.found.slice()) : S.found;
 }
 
 function generateCode(){
@@ -563,9 +545,10 @@ function solveBoard(board){
 }
 function scoreOf(w, mode){
   var sc = mode || data.scoring || {};
-  if (w.length === 3) return sc.zero3 ? 0 : 1;
-  if (w.length === 4) return sc.zero4 ? 0 : 1;
-  return w.length === 5 ? 2 : w.length === 6 ? 3 : w.length === 7 ? 5 : 11;
+  var len = (data.stemming ? stemOf(w) : w).length;
+  if (len === 3) return sc.zero3 ? 0 : 1;
+  if (len === 4) return sc.zero4 ? 0 : 1;
+  return len === 5 ? 2 : len === 6 ? 3 : len === 7 ? 5 : 11;
 }
 function sumScore(ws, mode){ return ws.reduce(function(a, w){ return a + scoreOf(w, mode); }, 0); }
 function sessionMode(x){ return x.scoringMode || { zero3: false, zero4: false }; }
@@ -607,7 +590,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:05:19Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:14:24Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -1402,15 +1385,18 @@ function notify(msg, isErr){
 function celebrate(w){
   toastBox = toastBox || document.getElementById("toasts");
   var pts = scoreOf(w);
-  var tier = w.length >= 7 ? 3 : w.length >= 5 ? 2 : 1;
+  var lemma = data.stemming ? stemOf(w) : w;
+  var effLen = lemma.length;
+  var tier = effLen >= 7 ? 3 : effLen >= 5 ? 2 : 1;
   var sc = data.scoring || {};
-  var zeroed = pts === 0 && ((w.length === 3 && sc.zero3) || (w.length === 4 && sc.zero4));
+  var zeroed = pts === 0 && ((effLen === 3 && sc.zero3) || (effLen === 4 && sc.zero4));
+  var rootNote = (data.stemming && lemma !== w) ? " (" + lemma.toUpperCase() + ")" : "";
   var t = h("div", { class: "toast t" + tier }, [
-    h("span", { class: "tw", text: w.toUpperCase() }),
+    h("span", { class: "tw", text: w.toUpperCase() + rootNote }),
     zeroed
-      ? h("span", { class: "tp", style: "color:var(--sage);font-size:10px", text: "no pts (" + w.length + "L)" })
+      ? h("span", { class: "tp", style: "color:var(--sage);font-size:10px", text: "no pts (" + effLen + "L root)" })
       : h("span", { class: "tp", text: "+" + pts }),
-    tier === 3 ? h("span", { class: "tl", text: w.length + " LETTERS" }) : null
+    tier === 3 ? h("span", { class: "tl", text: effLen + "L root" }) : null
   ]);
   toastBox.appendChild(t);
   while (toastBox.children.length > 4) toastBox.removeChild(toastBox.firstChild);
