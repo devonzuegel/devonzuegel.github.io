@@ -279,7 +279,7 @@
 <div id="modal"></div>
 <nav id="nav"></nav>
 <script>
-var BOARD_WORDS = [
+var CODE_WORDS = [
   "ACORN","ALDER","ALGAE","AMBER","ANGEL","ASPEN","ATLAS","ATOLL","AURAS","AZURE",
   "BADGER","BASIN","BEACH","BEARS","BEECH","BIRCH","BISON","BLOOM","BLUFF","BOARS",
   "BOLES","BRANT","BROOK","BROOM","BRUSH","BUTTE","BREAM","BRIAR","BULBS","BUCKS",
@@ -455,16 +455,16 @@ function codeToBoard(code){
   return d.map(function(x){ return x[Math.floor(rng() * 6)]; });
 }
 function generateCode(){
-  var a = BOARD_WORDS[Math.floor(Math.random() * BOARD_WORDS.length)];
-  var b = BOARD_WORDS[Math.floor(Math.random() * BOARD_WORDS.length)];
-  var c = BOARD_WORDS[Math.floor(Math.random() * BOARD_WORDS.length)];
+  var a = CODE_WORDS[Math.floor(Math.random() * CODE_WORDS.length)];
+  var b = CODE_WORDS[Math.floor(Math.random() * CODE_WORDS.length)];
+  var c = CODE_WORDS[Math.floor(Math.random() * CODE_WORDS.length)];
   return a + "-" + b + "-" + c;
 }
 function parseCode(str){
   if (!str) return null;
   var parts = str.trim().toUpperCase().split("-");
   if (parts.length !== 3) return null;
-  var wordSet = new Set(BOARD_WORDS);
+  var wordSet = new Set(CODE_WORDS);
   if (!wordSet.has(parts[0]) || !wordSet.has(parts[1]) || !wordSet.has(parts[2])) return null;
   return parts.join("-");
 }
@@ -525,7 +525,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T06:37:07Z"; /* updated by deploy script */
+var BUILD = "2026-08-11T07:02:27Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
