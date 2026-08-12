@@ -5,3 +5,4 @@ node_modules/
 .lsp/
 # Don't commit API keys
 calendly-clone/dev/src/config.js
+boggle/compromise.js

@@ -2,6 +2,10 @@
 # Usage: ./boggle/deploy.sh "commit message"
 # Updates the BUILD timestamp in index.html, bumps the SW cache version, commits, and pushes.
 set -e
+
+# Run stemmer tests before deploying
+echo "Running stemmer tests…"
+node "$(dirname "$0")/stemmer.test.js" || { echo "Stemmer tests failed — aborting deploy."; exit 1; }
 DIR="$(cd "$(dirname "$0")" && pwd)"
 TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 VER=$(date -u +"%Y%m%d%H%M%S")
