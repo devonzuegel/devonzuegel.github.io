@@ -470,6 +470,31 @@ function _simpleLemma(w) {
   return w;
 }
 
+function _dictStem(w) {
+  // Fallback suffix-strip validated against Scrabble dictionary.
+  // Used when compromise returns the word unchanged despite recognizing it as inflected.
+  // Returns the longest valid candidate (most conservative strip).
+  var cands = [];
+  if (w.endsWith("ed")) {
+    cands.push(w.slice(0, -1));       // bared -> bare (drop just d)
+    cands.push(w.slice(0, -2));       // bared -> bar  (drop ed)
+  }
+  if (w.endsWith("ing")) {
+    cands.push(w.slice(0, -3) + "e"); // e.g. loping -> lop+e
+    cands.push(w.slice(0, -3));       // e.g. rushing -> rush
+  }
+  if (w.endsWith("er")) {
+    cands.push(w.slice(0, -2) + "e"); // e.g. loper -> lope
+    cands.push(w.slice(0, -2));       // e.g. runner -> run (approx)
+  }
+  if (w.endsWith("s") && !w.endsWith("ss")) {
+    cands.push(w.slice(0, -1));
+  }
+  // Prefer longest valid candidate (most conservative strip)
+  var valid = cands.filter(function(c) { return c.length >= 2 && c !== w && ALLSET.has(c); });
+  if (valid.length) return valid.reduce(function(a, b) { return a.length >= b.length ? a : b; });
+  return w;
+}
 function stemOf(w) {
   w = w.toLowerCase();
   if (_lemmaCache[w] !== undefined) return _lemmaCache[w];
@@ -485,7 +510,15 @@ function stemOf(w) {
         // force verb tag to catch -ing/-ed adjectives (e.g. "flowing", "rushing")
         // only accept the result if it's a real word in the dictionary
         var forced = _nlp(w).tag('Verb').verbs().toInfinitive().text();
-        if (forced && forced !== w && ALLSET.has(forced)) result = forced;
+        if (forced && forced !== w && ALLSET.has(forced)) { result = forced; }
+        else {
+          // compromise gap: tagged as inflected but toInfinitive() returned unchanged
+          // (e.g. BARED, EARED) — try suffix stripping against the dictionary
+          var tags = doc.json()[0] ? (doc.json()[0].terms[0] ? doc.json()[0].terms[0].tags : []) : [];
+          var isInflected = tags.indexOf('PastTense') >= 0 || tags.indexOf('Gerund') >= 0 ||
+                            tags.indexOf('PresentTense') >= 0 || tags.indexOf('Plural') >= 0;
+          if (isInflected) result = _dictStem(w);
+        }
       }
     }
   } else {
@@ -591,7 +624,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-11T07:39:06Z"; /* updated by deploy script */
+var BUILD = "2026-08-12T19:39:08Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;

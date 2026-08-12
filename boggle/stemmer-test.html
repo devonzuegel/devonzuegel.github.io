@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stemmer Tests</title>
+<style>
+  body { font-family: ui-monospace, Menlo, monospace; background: #141F1A; color: #F2EDDF; padding: 24px; font-size: 13px; }
+  h1 { color: #E9A83A; font-size: 16px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .subtitle { color: #8CA598; font-size: 11px; margin-bottom: 24px; }
+  table { border-collapse: collapse; width: 100%; max-width: 700px; }
+  th { text-align: left; color: #8CA598; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px 8px; border-bottom: 1px solid #31463B; }
+  td { padding: 6px 12px; border-bottom: 1px solid #1e2e28; }
+  tr.pass td:first-child::before { content: "✓ "; color: #4CAF50; }
+  tr.fail td:first-child::before { content: "✗ "; color: #E53935; }
+  tr.fail { background: rgba(229,57,53,.08); }
+  .word { color: #F2EDDF; }
+  .got { color: #E9A83A; }
+  .expected { color: #8CA598; }
+  .fail .got { color: #E53935; }
+  .note { color: #8CA598; font-size: 11px; }
+  #summary { margin: 16px 0; font-size: 13px; }
+  #summary .pass { color: #4CAF50; }
+  #summary .fail { color: #E53935; }
+  #loading { color: #8CA598; }
+  .section-hdr { color: #8CA598; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin: 20px 0 6px; border-bottom: 1px solid #31463B; padding-bottom: 4px; }
+</style>
+</head>
+<body>
+<h1>Boggle Stemmer Tests</h1>
+<p class="subtitle">Verifies that stemOf() returns the correct root and length for each word. Open this file in a browser to run.</p>
+<div id="loading">Loading compromise.js…</div>
+<div id="summary" style="display:none"></div>
+<table id="results" style="display:none">
+  <thead><tr><th>Input</th><th>Got stem</th><th>Got len</th><th>Expected stem</th><th>Expected len</th><th>Note</th></tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script>
+// ── test cases: [input, expectedStem, note] ──────────────────────────────────
+var TESTS = [
+  // Plurals
+  ["cats",    "cat",    "plural -s"],
+  ["foxes",   "fox",    "plural -es"],
+  ["toms",    "tom",    "plural -s"],
+  ["sows",    "sow",    "plural -s"],
+  ["rigs",    "rig",    "plural -s"],
+  ["cans",    "can",    "plural -s"],
+  ["oaks",    "oak",    "plural -s"],
+  ["geese",   "goose",  "irregular plural"],
+  ["groves",  "grove",  "plural -es (e-stem)"],
+  ["stones",  "stone",  "plural -es (e-stem)"],
+  ["reeds",   "reed",   "plural -s"],
+  ["cliffs",  "cliff",  "plural -s"],
+
+  // Past tense / past participle
+  ["walked",  "walk",   "-ed regular"],
+  ["drifted", "drift",  "-ed regular"],
+  ["bared",   "bare",   "-ed e-stem (compromise gap)"],
+  ["eared",   "ear",    "-ed e-stem (compromise gap)"],
+  ["cared",   "care",   "-ed e-stem"],
+  ["dared",   "dare",   "-ed e-stem"],
+  ["fared",   "fare",   "-ed e-stem"],
+  ["bleached","bleach", "-ed regular"],
+
+  // Gerunds / present participle
+  ["running",  "run",   "-ing double consonant"],
+  ["swimming", "swim",  "-ing double consonant"],
+  ["flowing",  "flow",  "-ing (adj, compromise gap)"],
+  ["rushing",  "rush",  "-ing (adj, compromise gap)"],
+  ["drifting", "drift", "-ing"],
+  ["wading",   "wade",  "-ing e-stem"],
+  ["blazing",  "blaze", "-ing e-stem"],
+  ["soaring",  "soar",  "-ing"],
+
+  // -er agent/comparative (should NOT stem if it's a real standalone word)
+  ["hunters",  "hunter", "plural of -er word"],
+  ["dater",    "dater",  "real standalone word, no stem"],
+  ["water",    "water",  "real standalone word, no stem"],
+  ["later",    "later",  "real standalone word, no stem"],
+
+  // Words that should NOT change
+  ["this",    "this",   "pronoun, no stem"],
+  ["oak",     "oak",    "already root"],
+  ["run",     "run",    "already root"],
+  ["cat",     "cat",    "already root"],
+  ["bare",    "bare",   "already root"],
+  ["ear",     "ear",    "already root"],
+
+  // Miscellaneous
+  ["sparrows","sparrow","plural -s"],
+  ["warblers","warbler","plural -s"],
+  ["beetles", "beetle", "plural -es (e-stem)"],
+  ["grasses", "grass",  "plural -es double s"],
+  ["rippling","ripple", "-ing e-stem"],
+  ["towering","tower",  "-ing"],
+];
+</script>
+
+<script src="https://unpkg.com/compromise@14.16.0/builds/compromise.js"></script>
+<script>
+// ── replicate stemOf() from index.html ──────────────────────────────────────
+// NOTE: ALLSET is not available here, so we fetch a word list approximation.
+// For test purposes we use a small hardcoded set of common roots.
+// To test against the real Scrabble dict, open index.html and run stemOf() in the console.
+var ALLSET = new Set([
+  "cat","fox","tom","sow","rig","can","oak","goose","grove","stone","reed","cliff",
+  "walk","drift","bare","ear","care","dare","fare","bleach","run","swim","flow","rush",
+  "wade","blaze","soar","hunter","dater","water","later","this","sparrow","warbler",
+  "beetle","grass","ripple","tower","gust","lodge","ridge","mole","vole","shrew",
+  "fern","thorn","root","hawk","owl","viper","tern","coot","smew","ouzel","murre",
+  "bear","deer","hare","mink","lynx","ibis","wren","swift","crane","egret","heron",
+  "otter","stoat","bison","moose","bison","raven","finch","thrush","swift","sora",
+  "loon","teal","snipe","rail","plover","coot","grebe","grouse","quail","pipit",
+  "lark","bunting","siskin","linnet","kite","kestrel","merlin","osprey","buzzard",
+  "bloom","frost","mist","rain","gale","snow","hail","sleet","dew","fog","brume",
+  "mere","fen","bog","moor","heath","dale","glen","vale","combe","coombe","dene",
+  "burn","rill","beck","ghyll","loch","tarn","mere","pool","ford","weir","sluice",
+]);
+
+function _dictStem(w) {
+  var cands = [];
+  if (w.endsWith("ed")) { cands.push(w.slice(0,-1)); cands.push(w.slice(0,-2)); }
+  if (w.endsWith("ing")) { cands.push(w.slice(0,-3)+"e"); cands.push(w.slice(0,-3)); }
+  if (w.endsWith("er")) { cands.push(w.slice(0,-2)+"e"); cands.push(w.slice(0,-2)); }
+  if (w.endsWith("s") && !w.endsWith("ss")) { cands.push(w.slice(0,-1)); }
+  var valid = cands.filter(function(c){ return c.length>=2 && c!==w && ALLSET.has(c); });
+  if (valid.length) return valid.reduce(function(a,b){ return a.length>=b.length?a:b; });
+  return w;
+}
+
+function stemOf(w) {
+  w = w.toLowerCase();
+  var doc = nlp(w);
+  var noun = doc.nouns().toSingular().text();
+  if (noun && noun !== w) return noun;
+  var verb = doc.verbs().toInfinitive().text();
+  if (verb && verb !== w) return verb;
+  var forced = nlp(w).tag("Verb").verbs().toInfinitive().text();
+  if (forced && forced !== w && ALLSET.has(forced)) return forced;
+  var tags = doc.json()[0] ? (doc.json()[0].terms[0] ? doc.json()[0].terms[0].tags : []) : [];
+  var isInflected = tags.indexOf("PastTense")>=0 || tags.indexOf("Gerund")>=0 ||
+                    tags.indexOf("PresentTense")>=0 || tags.indexOf("Plural")>=0;
+  if (isInflected) return _dictStem(w);
+  return w;
+}
+
+// ── run tests ────────────────────────────────────────────────────────────────
+document.getElementById("loading").style.display = "none";
+var tbody = document.getElementById("tbody");
+var pass = 0, fail = 0;
+
+TESTS.forEach(function(t) {
+  var input = t[0], expected = t[1], note = t[2];
+  var got = stemOf(input);
+  var ok = got === expected;
+  if (ok) pass++; else fail++;
+  var tr = document.createElement("tr");
+  tr.className = ok ? "pass" : "fail";
+  [
+    input,
+    got,
+    got.length + "L",
+    expected,
+    expected.length + "L",
+    note
+  ].forEach(function(val, i) {
+    var td = document.createElement("td");
+    td.textContent = val;
+    if (i === 0) td.className = "word";
+    if (i === 1) td.className = "got";
+    if (i === 3) td.className = "expected";
+    if (i === 5) td.className = "note";
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+
+var summary = document.getElementById("summary");
+summary.style.display = "block";
+summary.innerHTML = "<span class='pass'>" + pass + " passed</span>  <span class='fail'>" + fail + " failed</span>  of " + TESTS.length + " tests";
+document.getElementById("results").style.display = "table";
+</script>
+</body>
+</html>
