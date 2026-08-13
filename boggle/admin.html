@@ -222,7 +222,7 @@ function renderPlayers() {
 
   var sorted = allPlayers.slice().sort(function(a, b) {
     var da = a.fullData || {}, db = b.fullData || {};
-    if (playerSort === "joined") return (da.createdAt || 0) - (db.createdAt || 0);
+    if (playerSort === "joined") return (db.createdAt || 0) - (da.createdAt || 0);
     if (playerSort === "games") return (b.sessions || 0) - (a.sessions || 0);
     // lastGame
     var la = (da.sessions || []).reduce(function(m,s){ return s.ts>m?s.ts:m; }, 0);
