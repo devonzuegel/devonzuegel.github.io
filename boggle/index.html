@@ -624,7 +624,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-13T19:38:37Z"; /* updated by deploy script */
+var BUILD = "2026-08-13T19:40:45Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -735,8 +735,6 @@ function mergeData(remote){
   (remote.events || []).forEach(function(e){ if (!seenEv[e.type + ":" + e.ts]) { if (!data.events) data.events = []; data.events.push(e); } });
   if (data.events) data.events.sort(function(a,b){ return b.ts - a.ts; });
 
-  /* location: keep whichever exists */
-  if (!data.location && remote.location) data.location = remote.location;
 
   /* queue: keep local (device has fresher due-dates) unless empty */
   if (!data.queue.length && remote.queue) data.queue = remote.queue;
@@ -932,7 +930,6 @@ function endRound(early){
   showGameOver();
 }
 function getLocation(cb){
-  if (data.location) { cb(data.location, "granted"); return; }
   if (!navigator.geolocation) { cb(null, "unavailable"); return; }
   navigator.geolocation.getCurrentPosition(function(pos){
     var lat = pos.coords.latitude, lon = pos.coords.longitude;
@@ -970,8 +967,6 @@ function setPlayer(name, _skipDevonCheck){
   syncDown(function(){ render(); });
   /* grab location asynchronously and update if granted */
   getLocation(function(loc, perms){
-    if (loc && !data.location) data.location = loc;
-    /* update the signup event with location result */
     var signup = data.events.filter(function(e){ return e.type === "signup" && e.player === n; })[0];
     if (signup) { signup.loc = loc; signup.locationPerms = perms; }
     save();
