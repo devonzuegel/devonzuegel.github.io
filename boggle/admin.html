@@ -243,7 +243,7 @@ function makePlayerCard(p) {
   var lastTs = sessions.reduce(function(max, s){ return s.ts > max ? s.ts : max; }, 0);
   var lastPlayed = lastTs ? " · last played " + fmtDate(lastTs) : "";
   var meta = document.createElement("div"); meta.className = "player-meta";
-  meta.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + " · joined " + fmtDate(d.createdAt) + lastPlayed + loc + synced;
+  meta.textContent = p.sessions + " session" + (p.sessions !== 1 ? "s" : "") + lastPlayed + " · joined " + fmtDate(d.createdAt) + loc + synced;
   left.appendChild(nameEl); left.appendChild(meta);
 
   var right = document.createElement("div");
