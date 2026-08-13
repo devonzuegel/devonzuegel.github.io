@@ -196,11 +196,35 @@ function loadAll() {
 }
 
 /* ---- players tab ---- */
+var playerSort = "lastGame"; // "lastGame" | "joined" | "games"
 function renderPlayers() {
   var el = document.getElementById("tab-players");
   el.innerHTML = "";
   if (!allPlayers.length) { el.innerHTML = '<div class="empty">No players yet.</div>'; return; }
-  allPlayers.forEach(function(p) { el.appendChild(makePlayerCard(p)); });
+
+  // sort controls
+  var sortBar = document.createElement("div");
+  sortBar.style.cssText = "display:flex;gap:6px;align-items:center;margin-bottom:12px;font-family:monospace;font-size:11px;color:#8CA598";
+  sortBar.appendChild(Object.assign(document.createElement("span"), { textContent: "sort by:" }));
+  [["lastGame","last game"],["joined","date joined"],["games","# games"]].forEach(function(opt) {
+    var btn = document.createElement("button");
+    btn.textContent = opt[1];
+    btn.style.cssText = "font-family:monospace;font-size:11px;padding:2px 8px;border-radius:999px;cursor:pointer;border:1px solid " + (playerSort === opt[0] ? "#E9A83A" : "#31463B") + ";background:none;color:" + (playerSort === opt[0] ? "#E9A83A" : "#8CA598");
+    btn.onclick = function() { playerSort = opt[0]; renderPlayers(); };
+    sortBar.appendChild(btn);
+  });
+  el.appendChild(sortBar);
+
+  var sorted = allPlayers.slice().sort(function(a, b) {
+    var da = a.fullData || {}, db = b.fullData || {};
+    if (playerSort === "joined") return (da.createdAt || 0) - (db.createdAt || 0);
+    if (playerSort === "games") return (b.sessions || 0) - (a.sessions || 0);
+    // lastGame
+    var la = (da.sessions || []).reduce(function(m,s){ return s.ts>m?s.ts:m; }, 0);
+    var lb = (db.sessions || []).reduce(function(m,s){ return s.ts>m?s.ts:m; }, 0);
+    return lb - la;
+  });
+  sorted.forEach(function(p) { el.appendChild(makePlayerCard(p)); });
 }
 
 function makePlayerCard(p) {
