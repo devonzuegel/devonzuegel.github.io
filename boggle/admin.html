@@ -951,15 +951,19 @@ function renderStats() {
 
   // ── Chart F: Top countries ─────────────────────────────────────────────
   var countryMap = {};
+  var unknownCount = 0;
   players.forEach(function(p) {
     var loc = p.fullData && p.fullData.location;
     if (loc && loc.country) {
       countryMap[loc.country] = (countryMap[loc.country] || 0) + 1;
+    } else {
+      unknownCount++;
     }
   });
   var topCountries = Object.keys(countryMap).sort(function(a,b){ return countryMap[b] - countryMap[a]; }).slice(0, 8);
   var countryLabels = topCountries.map(function(c){ return (countryFlag(c) || "") + " " + c; });
   var countryValues = topCountries.map(function(c){ return countryMap[c]; });
+  if (unknownCount > 0) { countryLabels.push("? unknown"); countryValues.push(unknownCount); }
 
   var cF = makeChartCard("Players by country", "chart-countries", 180);
   grid1.appendChild(cF.card);
