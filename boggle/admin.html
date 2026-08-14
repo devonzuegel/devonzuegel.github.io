@@ -185,6 +185,7 @@ function showTab(name, btn) {
   document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("on"); });
   btn.classList.add("on");
   moveTabIndicator(btn);
+  location.hash = name;
   if (name === "map") initMap();
   if (name === "stats") renderStats();
 }
@@ -270,7 +271,9 @@ function loadAll() {
       renderPlayers();
       renderAudit();
       renderStats();
-      if (mapInstance) { mapInstance.remove(); mapInstance = null; }
+      var activeTab = location.hash.replace("#", "") || "players";
+      if (activeTab === "map") { if (mapInstance) { mapInstance.remove(); mapInstance = null; } initMap(); }
+      else if (mapInstance) { mapInstance.remove(); mapInstance = null; }
     })
     .catch(function(e) {
       stopSpinner("spinner-players");
@@ -1062,8 +1065,18 @@ function stopSpinner(id) {
   if (_spinnerStops[id]) { _spinnerStops[id](); delete _spinnerStops[id]; }
 }
 
-// Position indicator immediately (no animation on first paint)
+// Restore tab from URL hash, then position indicator (no animation on first paint)
 (function() {
+  var TABS = ["players","audit","stats","map"];
+  var hash = location.hash.replace("#", "");
+  if (hash && TABS.indexOf(hash) !== -1) {
+    var targetBtn = document.querySelector(".tab[onclick*=\"'" + hash + "'\"]");
+    if (targetBtn) {
+      TABS.forEach(function(t){ document.getElementById("tab-" + t).style.display = t === hash ? "" : "none"; });
+      document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("on"); });
+      targetBtn.classList.add("on");
+    }
+  }
   var indicator = document.getElementById("tab-indicator");
   if (indicator) indicator.style.transition = "none";
   moveTabIndicator(document.querySelector(".tab.on"));
