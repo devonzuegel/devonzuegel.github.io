@@ -58,10 +58,11 @@
     display: flex; align-items: center; justify-content: center; transition: border-color 150ms, color 150ms; }
   .boggle-spinner .tile.lit { border-color: var(--amber); color: var(--amber); }
   .err { color: var(--rust); font-family: var(--mono); font-size: 12px; margin-top: 8px; }
-  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 110px; }
+  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 110px; position: relative; }
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
   .refresh:disabled { opacity: 0.5; cursor: default; }
-  .refresh .spin-icon { display: inline-block; line-height: 1; vertical-align: middle; }
+  .refresh .spin-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); line-height: 1; }
+  .refresh:not(.loading) .spin-icon { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .refresh.loading .spin-icon { animation: spin 700ms linear infinite; }
   /* audit log */
@@ -97,7 +98,7 @@
       <h1 style="border:2px solid cyan">Admin</h1>
     </div>
     <div style="display:flex;gap:8px;align-items:center;align-self:center;height:32px;border:2px solid lime">
-      <button class="refresh" id="refresh-btn" onclick="loadAll()" style="height:32px;box-sizing:border-box;border:2px solid orange"><span class="spin-icon" id="refresh-icon" style="visibility:hidden;border:2px solid magenta">↻</span><span id="refresh-label" style="border:2px solid magenta">Refresh</span></button>
+      <button class="refresh" id="refresh-btn" onclick="loadAll()" style="height:32px;box-sizing:border-box;border:2px solid orange"><span class="spin-icon" id="refresh-icon" style="border:2px solid magenta">↻</span><span id="refresh-label" style="border:2px solid magenta">Refresh</span></button>
     </div>
   </div>
 
@@ -226,14 +227,12 @@ function loadAll() {
   if (refreshBtn) {
     refreshBtn.disabled = true;
     refreshBtn.classList.add("loading");
-    document.getElementById("refresh-icon").style.visibility = "visible";
     document.getElementById("refresh-label").textContent = "Refreshing…";
   }
   function doneRefreshing() {
     if (refreshBtn) {
       refreshBtn.disabled = false;
       refreshBtn.classList.remove("loading");
-      document.getElementById("refresh-icon").style.visibility = "hidden";
       document.getElementById("refresh-label").textContent = "Refresh";
     }
   }
