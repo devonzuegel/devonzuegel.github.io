@@ -623,7 +623,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:33:38Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:39:16Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2597,7 +2597,7 @@ function screenProgress(){
     box.className = "recent-table mono";
     var thead = document.createElement("thead");
     var theadRow = document.createElement("tr");
-    [["date", 1, "left"], ["length", 1, "center"], ["scoring", 1, "center"], ["5+ words", 2, "center"], ["points", 2, "center"], ["", 1, "center"], ["code", 1, "center"]].forEach(function(col) {
+    [["date", 1, "left"], ["length", 1, "center"], ["scoring", 1, "center"], ["stemming", 1, "center"], ["5+ words", 2, "center"], ["points", 2, "center"], ["", 1, "center"], ["code", 1, "center"]].forEach(function(col) {
       var th = document.createElement("th");
       th.textContent = col[0];
       if (col[1] > 1) th.colSpan = col[1];
@@ -2629,6 +2629,8 @@ function screenProgress(){
       var modeShort = modeKeyOf(x) === "standard" ? "Standard" : modeLabelOf(x);
       var modeBadge = h("span", { class: "filter-badge", style: "opacity:.6", text: modeShort });
       tr.appendChild(td(modeBadge, "", "text-align:center"));
+      var stemmingBadge = h("span", { class: "filter-badge", style: x.stemming ? "opacity:.6;color:var(--amber);border-color:var(--amber)" : "opacity:.4", text: x.stemming ? "on" : "off" });
+      tr.appendChild(td(stemmingBadge, "", "text-align:center"));
       tr.appendChild(td(x.found5 + "/" + x.total5, "", "text-align:right;padding-right:2px"));
       tr.appendChild(td("· " + (x.total5 ? Math.round(x.found5/x.total5*100) : 0) + "%", "sage", "text-align:left;padding-left:2px"));
       tr.appendChild(td(got + "/" + (total || "?"), "", "text-align:right;padding-right:2px"));
