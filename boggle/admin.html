@@ -508,6 +508,11 @@ function renderStats() {
   if (!el) return;
   el.innerHTML = "";
 
+  var note = document.createElement("div");
+  note.style.cssText = "font-family:var(--mono);font-size:11px;color:var(--sage);opacity:0.6;margin-bottom:16px";
+  note.textContent = "Excludes test players and unfinished games.";
+  el.appendChild(note);
+
   // Color constants (hex — canvas can't read CSS vars)
   var C = {
     amber: "#E9A83A",
