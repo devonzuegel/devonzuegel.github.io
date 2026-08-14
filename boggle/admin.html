@@ -750,8 +750,57 @@ function renderStats() {
       }
     });
 
-    // return point positions for hover
-    return { points: values.map(function(v, i) { return { x: xPos(i), y: yPos(v), label: labels[i], value: v }; }), pad: pad, chartH: chartH, W: W, H: H };
+    // return point positions + redraw fn for hover overlays
+    var pts = values.map(function(v, i) { return { x: xPos(i), y: yPos(v), label: labels[i], value: v }; });
+    return {
+      points: pts, pad: pad, chartH: chartH, W: W, H: H,
+      drawOverlay: function(closest) {
+        // redraw base chart then overlay
+        ctx.clearRect(0, 0, W * 2, H * 2);
+        // grid
+        ctx.strokeStyle = C.line; ctx.lineWidth = 0.5;
+        for (var gi = 0; gi <= ticks; gi++) {
+          var gy = pad.t + chartH - (gi / ticks) * chartH;
+          ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(pad.l + chartW, gy); ctx.stroke();
+          ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace"; ctx.textAlign = "right";
+          ctx.fillText(Math.round(min + gi / ticks * range), pad.l - 4, gy + 3);
+        }
+        // area
+        ctx.beginPath();
+        ctx.moveTo(xPos(0), pad.t + chartH);
+        values.forEach(function(v, i) { ctx.lineTo(xPos(i), yPos(v)); });
+        ctx.lineTo(xPos(values.length - 1), pad.t + chartH);
+        ctx.closePath(); ctx.fillStyle = (color || C.amber) + "26"; ctx.fill();
+        // line
+        ctx.beginPath();
+        values.forEach(function(v, i) { if (i===0) ctx.moveTo(xPos(i),yPos(v)); else ctx.lineTo(xPos(i),yPos(v)); });
+        ctx.strokeStyle = color || C.amber; ctx.lineWidth = 1.5; ctx.stroke();
+        // dots
+        values.forEach(function(v, i) {
+          ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 2.5, 0, Math.PI*2);
+          ctx.fillStyle = color || C.amber; ctx.fill();
+        });
+        // x labels
+        ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace"; ctx.textAlign = "center";
+        var step2 = Math.ceil(labels.length / 6);
+        labels.forEach(function(lbl, i) {
+          if (i % step2 === 0 || i === labels.length - 1) ctx.fillText(lbl, xPos(i), pad.t + chartH + 14);
+        });
+        // vertical dashed line
+        if (closest) {
+          ctx.save();
+          ctx.setLineDash([3, 3]);
+          ctx.strokeStyle = C.sage; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(closest.x, pad.t); ctx.lineTo(closest.x, pad.t + chartH);
+          ctx.stroke(); ctx.restore();
+          // highlighted dot
+          ctx.beginPath(); ctx.arc(closest.x, closest.y, 4, 0, Math.PI*2);
+          ctx.fillStyle = C.amber; ctx.fill();
+          ctx.beginPath(); ctx.arc(closest.x, closest.y, 4, 0, Math.PI*2);
+          ctx.strokeStyle = "#1D2C25"; ctx.lineWidth = 1.5; ctx.stroke();
+        }
+      }
+    };
   }
 
   function addLineChartHover(cv, chartData, formatTip) {
@@ -774,6 +823,7 @@ function renderStats() {
         if (dx < minDx) { minDx = dx; closest = p; }
       });
       if (closest && minDx < 40) {
+        chartData.drawOverlay(closest);
         // point position in container-relative px
         var px = cvRect.left - conRect.left + closest.x * scale;
         var py = cvRect.top  - conRect.top  + closest.y * scale;
@@ -784,10 +834,11 @@ function renderStats() {
         tip.style.left = tipLeft + "px";
         tip.style.top  = Math.max(py - 20, 2) + "px";
       } else {
+        chartData.drawOverlay(null);
         tip.style.display = "none";
       }
     });
-    cv.addEventListener("mouseleave", function() { tip.style.display = "none"; });
+    cv.addEventListener("mouseleave", function() { chartData.drawOverlay(null); tip.style.display = "none"; });
   }
 
   // ── Week helpers ────────────────────────────────────────────────────────
