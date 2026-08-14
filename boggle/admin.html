@@ -810,7 +810,7 @@ function renderStats() {
     return allSessions.filter(function(x){ return x.s.ts >= mon.getTime() && x.s.ts < end.getTime(); }).length;
   });
 
-  var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 160);
+  var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 190);
   grid1.appendChild(cB.card);
 
   // ── Chart C: Score distribution ────────────────────────────────────────
@@ -939,7 +939,7 @@ function renderStats() {
     }
 
     // B: Games per week
-    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, {});
+    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, { rotateLabels: true });
 
     // C: Score distribution
     drawBarChart(cC.canvas, scoreLabels, scoreDist, C.sage, { rotateLabels: true });
