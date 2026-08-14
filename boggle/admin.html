@@ -21,9 +21,11 @@
   .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; color: var(--sage); text-transform: uppercase; }
   .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
   /* tabs */
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-  .tab { font-family: var(--mono); font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--sage); cursor: pointer; background: none; }
-  .tab.on { border-color: var(--amber); color: var(--amber); }
+  .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--line); position: relative; }
+  .tab { font-family: var(--mono); font-size: 12px; padding: 8px 18px; border: none; border-bottom: 2px solid transparent; color: var(--sage); cursor: pointer; background: none; margin-bottom: -1px; transition: color 150ms; }
+  .tab:hover { color: var(--bone); }
+  .tab.on { color: var(--amber); }
+  .tab-indicator { position: absolute; bottom: -1px; height: 2px; background: var(--amber); transition: left 200ms ease, width 200ms ease; pointer-events: none; }
   /* cards */
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
   .player-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
@@ -41,10 +43,19 @@
   .btn-delete:hover { opacity: 1; }
   .btn-delete-player { font-family: var(--mono); font-size: 11px; color: var(--rust); border: 1px solid var(--rust); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
   .btn-delete-player:hover { background: var(--rust); color: var(--ink); }
+  .btn-test { font-family: var(--mono); font-size: 11px; border-radius: 999px; padding: 5px 12px; white-space: nowrap; border: 1px solid var(--line); color: var(--sage); }
+  .btn-test:hover { border-color: var(--sage); color: var(--bone); }
+  .btn-test.is-test { border-color: var(--sage); color: var(--sage); }
+  .test-badge { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--sage); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; margin-left: 8px; vertical-align: middle; }
   .chevron { font-size: 12px; color: var(--sage); transition: transform 200ms; display: inline-block; }
   .chevron.open { transform: rotate(90deg); }
   .empty { font-family: var(--mono); font-size: 12px; color: var(--sage); padding: 8px 0; }
-  .loading { font-family: var(--mono); font-size: 13px; color: var(--sage); margin-top: 40px; }
+  .loading { font-family: var(--mono); font-size: 13px; color: var(--sage); margin-top: 40px; display: flex; justify-content: center; }
+  .boggle-spinner { display: inline-flex; gap: 4px; margin-bottom: 16px; }
+  .boggle-spinner .tile { width: 28px; height: 28px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--line);
+    font-family: var(--display); font-size: 13px; font-weight: bold; color: var(--sage);
+    display: flex; align-items: center; justify-content: center; transition: border-color 150ms, color 150ms; }
+  .boggle-spinner .tile.lit { border-color: var(--amber); color: var(--amber); }
   .err { color: var(--rust); font-family: var(--mono); font-size: 12px; margin-top: 8px; }
   .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
@@ -94,14 +105,15 @@
     </div>
   </div>
 
-  <div class="tabs">
+  <div class="tabs" id="tabs">
     <button class="tab on" onclick="showTab('players', this)">Players</button>
     <button class="tab" onclick="showTab('audit', this)">Audit log</button>
     <button class="tab" onclick="showTab('map', this)">Map</button>
+    <div class="tab-indicator" id="tab-indicator"></div>
   </div>
 
-  <div id="tab-players"><div class="loading">Loading…</div></div>
-  <div id="tab-audit" style="display:none"><div class="loading">Loading…</div></div>
+  <div id="tab-players"><div class="loading" id="spinner-players"></div></div>
+  <div id="tab-audit" style="display:none"><div class="loading" id="spinner-audit"></div></div>
   <div id="tab-map" style="display:none">
     <div id="map"></div>
   </div>
@@ -110,7 +122,7 @@
 <div id="confirm-overlay" onclick="if(event.target===this)hideDeleteAll()">
   <div id="confirm-sheet">
     <h2>Delete everything?</h2>
-    <p>This will permanently erase all players, sessions, and events. There is no undo.</p>
+    <p>This will permanently erase all players, games, and events. There is no undo.</p>
     <div class="confirm-btns">
       <button class="btn-confirm-delete" onclick="confirmDeleteAll()">Yes, delete all history</button>
       <button class="btn-confirm-cancel" onclick="hideDeleteAll()">Cancel</button>
@@ -144,12 +156,23 @@ function apiFetch(url, opts){
 }
 var mapInstance = null;
 
+function moveTabIndicator(btn) {
+  var indicator = document.getElementById("tab-indicator");
+  var tabs = document.getElementById("tabs");
+  if (!indicator || !tabs || !btn) return;
+  var tabsRect = tabs.getBoundingClientRect();
+  var btnRect = btn.getBoundingClientRect();
+  indicator.style.left = (btnRect.left - tabsRect.left) + "px";
+  indicator.style.width = btnRect.width + "px";
+}
+
 function showTab(name, btn) {
   ["players","audit","map"].forEach(function(t){
     document.getElementById("tab-" + t).style.display = t === name ? "" : "none";
   });
   document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("on"); });
   btn.classList.add("on");
+  moveTabIndicator(btn);
   if (name === "map") initMap();
 }
 
@@ -166,13 +189,51 @@ function fmtDate(ts) {
   if (!isThisYear(ts)) opts.year = "numeric";
   return new Date(ts).toLocaleDateString(undefined, opts);
 }
+var COUNTRY_CODES = {
+  "Afghanistan":"AF","Albania":"AL","Algeria":"DZ","Argentina":"AR","Armenia":"AM",
+  "Australia":"AU","Austria":"AT","Azerbaijan":"AZ","Bahrain":"BH","Bangladesh":"BD",
+  "Belarus":"BY","Belgium":"BE","Bolivia":"BO","Bosnia and Herzegovina":"BA","Brazil":"BR",
+  "Bulgaria":"BG","Cambodia":"KH","Cameroon":"CM","Canada":"CA","Chile":"CL","China":"CN",
+  "Colombia":"CO","Costa Rica":"CR","Croatia":"HR","Cuba":"CU","Cyprus":"CY",
+  "Czech Republic":"CZ","Czechia":"CZ","Denmark":"DK","Dominican Republic":"DO",
+  "Ecuador":"EC","Egypt":"EG","El Salvador":"SV","Estonia":"EE","Ethiopia":"ET",
+  "Finland":"FI","France":"FR","Georgia":"GE","Germany":"DE","Ghana":"GH","Greece":"GR",
+  "Guatemala":"GT","Honduras":"HN","Hong Kong":"HK","Hungary":"HU","Iceland":"IS",
+  "India":"IN","Indonesia":"ID","Iran":"IR","Iraq":"IQ","Ireland":"IE","Israel":"IL",
+  "Italy":"IT","Jamaica":"JM","Japan":"JP","Jordan":"JO","Kazakhstan":"KZ","Kenya":"KE",
+  "Kuwait":"KW","Latvia":"LV","Lebanon":"LB","Lithuania":"LT","Luxembourg":"LU",
+  "Malaysia":"MY","Malta":"MT","Mexico":"MX","Moldova":"MD","Morocco":"MA",
+  "Netherlands":"NL","New Zealand":"NZ","Nicaragua":"NI","Nigeria":"NG","Norway":"NO",
+  "Pakistan":"PK","Panama":"PA","Paraguay":"PY","Peru":"PE","Philippines":"PH",
+  "Poland":"PL","Portugal":"PT","Puerto Rico":"PR","Qatar":"QA","Romania":"RO",
+  "Russia":"RU","Saudi Arabia":"SA","Senegal":"SN","Serbia":"RS","Singapore":"SG",
+  "Slovakia":"SK","Slovenia":"SI","South Africa":"ZA","South Korea":"KR","Spain":"ES",
+  "Sri Lanka":"LK","Sweden":"SE","Switzerland":"CH","Taiwan":"TW","Tanzania":"TZ",
+  "Thailand":"TH","Tunisia":"TN","Turkey":"TR","Türkiye":"TR","Uganda":"UG","Ukraine":"UA",
+  "United Arab Emirates":"AE","United Kingdom":"GB","United States":"US","United States of America":"US",
+  "Uruguay":"UY","Uzbekistan":"UZ","Venezuela":"VE","Vietnam":"VN","Yemen":"YE","Zimbabwe":"ZW"
+};
+function countryFlag(name) {
+  var code = COUNTRY_CODES[name];
+  if (!code) return null;
+  return String.fromCodePoint(
+    0x1F1E6 + code.charCodeAt(0) - 65,
+    0x1F1E6 + code.charCodeAt(1) - 65
+  );
+}
 function locStr(loc) {
   if (!loc) return "";
-  var parts = [loc.city, loc.country].filter(Boolean);
-  return parts.length ? parts.join(", ") : (loc.lat ? loc.lat.toFixed(2) + ", " + loc.lon.toFixed(2) : "");
+  if (loc.city || loc.country) {
+    var flag = loc.country ? countryFlag(loc.country) : null;
+    var parts = [loc.city, flag || loc.country].filter(Boolean);
+    return parts.join(" ");
+  }
+  return loc.lat ? loc.lat.toFixed(2) + ", " + loc.lon.toFixed(2) : "";
 }
 
 function loadAll() {
+  startSpinner("spinner-players");
+  startSpinner("spinner-audit");
   apiFetch(API + "/admin?action=list")
     .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function(players) {
@@ -191,39 +252,87 @@ function loadAll() {
         (p.fullData && p.fullData.events || []).forEach(function(e) { allEvents.push(e); });
       });
       allEvents.sort(function(a,b){ return b.ts - a.ts; });
+      stopSpinner("spinner-players");
+      stopSpinner("spinner-audit");
       renderPlayers();
       renderAudit();
       if (mapInstance) { mapInstance.remove(); mapInstance = null; }
     })
     .catch(function(e) {
+      stopSpinner("spinner-players");
+      stopSpinner("spinner-audit");
       document.getElementById("tab-players").innerHTML = '<div class="err">Error: ' + e + '</div>';
     });
 }
 
 /* ---- players tab ---- */
 var playerSort = "lastGame"; // "lastGame" | "joined" | "games"
+var playerFilter = "real"; // "real" | "all" | "test"
 function renderPlayers() {
   var el = document.getElementById("tab-players");
   el.innerHTML = "";
   if (!allPlayers.length) { el.innerHTML = '<div class="empty">No players yet.</div>'; return; }
 
+  // controls bar
+  var controlsBar = document.createElement("div");
+  controlsBar.style.cssText = "display:flex;gap:6px;align-items:center;margin-bottom:12px;font-family:monospace;font-size:11px;color:#8CA598;flex-wrap:wrap";
+
   // sort controls
-  var sortBar = document.createElement("div");
-  sortBar.style.cssText = "display:flex;gap:6px;align-items:center;margin-bottom:12px;font-family:monospace;font-size:11px;color:#8CA598";
-  sortBar.appendChild(Object.assign(document.createElement("span"), { textContent: "sort by:" }));
+  controlsBar.appendChild(Object.assign(document.createElement("span"), { textContent: "sort by:" }));
   [["lastGame","last game"],["joined","date joined"],["games","# games"]].forEach(function(opt) {
     var btn = document.createElement("button");
     btn.textContent = opt[1];
     btn.style.cssText = "font-family:monospace;font-size:11px;padding:2px 8px;border-radius:999px;cursor:pointer;border:1px solid " + (playerSort === opt[0] ? "#E9A83A" : "#31463B") + ";background:none;color:" + (playerSort === opt[0] ? "#E9A83A" : "#8CA598");
     btn.onclick = function() { playerSort = opt[0]; renderPlayers(); };
-    sortBar.appendChild(btn);
+    controlsBar.appendChild(btn);
   });
-  el.appendChild(sortBar);
 
-  var sorted = allPlayers.slice().sort(function(a, b) {
+  // spacer
+  var spacer = document.createElement("span");
+  spacer.style.cssText = "flex:1;min-width:8px";
+  controlsBar.appendChild(spacer);
+
+  // show filter
+  var testCount = allPlayers.filter(function(p){ return !!(p.fullData && p.fullData.isTest); }).length;
+  var realCount = allPlayers.length - testCount;
+  var counts = { real: realCount, all: allPlayers.length, test: testCount };
+  controlsBar.appendChild(Object.assign(document.createElement("span"), { textContent: "show:" }));
+  [["real","real"],["all","all"],["test","test"]].forEach(function(opt) {
+    var active = playerFilter === opt[0];
+    var btn = document.createElement("button");
+    btn.style.cssText = "font-family:monospace;font-size:11px;padding:2px 8px;border-radius:999px;cursor:pointer;border:1px solid " + (active ? "#E9A83A" : "#31463B") + ";background:none;color:" + (active ? "#E9A83A" : "#8CA598") + ";display:inline-flex;align-items:center;gap:5px";
+    var label = document.createElement("span"); label.textContent = opt[1];
+    var pill = document.createElement("span");
+    pill.textContent = counts[opt[0]];
+    pill.style.cssText = "font-size:10px;padding:1px 5px;border-radius:999px;background:" + (active ? "#E9A83A" : "#27392F") + ";color:" + (active ? "#141F1A" : "#8CA598") + ";font-weight:bold;line-height:1.4";
+    btn.appendChild(label); btn.appendChild(pill);
+    btn.onclick = function() { playerFilter = opt[0]; renderPlayers(); };
+    controlsBar.appendChild(btn);
+  });
+
+  el.appendChild(controlsBar);
+
+  var visible = allPlayers.filter(function(p) {
+    var isTest = !!(p.fullData && p.fullData.isTest);
+    if (playerFilter === "real") return !isTest;
+    if (playerFilter === "test") return isTest;
+    return true;
+  });
+
+  if (!visible.length) {
+    var msg = playerFilter === "test" ? "No test players." : playerFilter === "real" ? "No real players yet." : "No players yet.";
+    el.appendChild(Object.assign(document.createElement("div"), { className: "empty", textContent: msg }));
+    return;
+  }
+
+  var sorted = visible.slice().sort(function(a, b) {
     var da = a.fullData || {}, db = b.fullData || {};
     if (playerSort === "joined") return (db.createdAt || 0) - (da.createdAt || 0);
-    if (playerSort === "games") return (b.sessions || 0) - (a.sessions || 0);
+    if (playerSort === "games") {
+      var ca = (da.sessions || []).filter(function(s){ return !s.early; }).length;
+      var cb = (db.sessions || []).filter(function(s){ return !s.early; }).length;
+      return cb - ca;
+    }
     // lastGame
     var la = (da.sessions || []).reduce(function(m,s){ return s.ts>m?s.ts:m; }, 0);
     var lb = (db.sessions || []).reduce(function(m,s){ return s.ts>m?s.ts:m; }, 0);
@@ -241,11 +350,17 @@ function makePlayerCard(p) {
   header.className = "player-header";
 
   var left = document.createElement("div");
-  var nameEl = document.createElement("div"); nameEl.className = "player-name"; nameEl.textContent = p.player;
+  var nameEl = document.createElement("div"); nameEl.className = "player-name";
+  nameEl.appendChild(document.createTextNode(p.player));
+  if (d.isTest) {
+    var badge = document.createElement("span"); badge.className = "test-badge"; badge.textContent = "test";
+    nameEl.appendChild(badge);
+  }
   var loc = d.location ? " · " + locStr(d.location) : "";
   var synced = d.lastSyncedAt ? " · synced " + fmt(d.lastSyncedAt) : " · never synced";
   var sessions = (d.sessions || []);
   var lastTs = sessions.reduce(function(max, s){ return s.ts > max ? s.ts : max; }, 0);
+  var nonEarlyCount = sessions.filter(function(s){ return !s.early; }).length;
   var meta = document.createElement("div"); meta.className = "player-meta";
   function amberIf(cond, text) {
     var s = document.createElement("span");
@@ -253,7 +368,7 @@ function makePlayerCard(p) {
     if (cond) s.style.color = "#E9A83A";
     return s;
   }
-  meta.appendChild(amberIf(playerSort === "games", p.sessions + " session" + (p.sessions !== 1 ? "s" : "")));
+  meta.appendChild(amberIf(playerSort === "games", nonEarlyCount + " game" + (nonEarlyCount !== 1 ? "s" : "")));
   if (lastTs) { meta.appendChild(amberIf(playerSort === "lastGame", " · last played " + fmtDate(lastTs))); }
   meta.appendChild(amberIf(playerSort === "joined", " · joined " + fmtDate(d.createdAt)));
   meta.appendChild(document.createTextNode(loc + synced));
@@ -266,6 +381,36 @@ function makePlayerCard(p) {
   chevron.className = "chevron" + (expanded[p.player] ? " open" : "");
   chevron.textContent = "▶";
 
+  var testBtn = document.createElement("button");
+  testBtn.className = "btn-test" + (d.isTest ? " is-test" : "");
+  testBtn.textContent = d.isTest ? "Unmark test" : "Mark as test";
+  testBtn.onclick = function(e) {
+    e.stopPropagation();
+    var newVal = !d.isTest;
+    apiFetch(API + "/admin?action=set_flag&user=" + encodeURIComponent(p.player) + "&flag=isTest&value=" + newVal, { method: "POST" })
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function() {
+        d.isTest = newVal;
+        p.fullData.isTest = newVal;
+        // if marking as test while in "real" view, or unmarking while in "test" view — animate out
+        var willDisappear = (newVal && playerFilter === "real") || (!newVal && playerFilter === "test");
+        if (willDisappear) {
+          card.style.cssText += ";overflow:hidden;transition:max-height 300ms ease,opacity 300ms ease,margin-bottom 300ms ease,padding 300ms ease;max-height:" + card.offsetHeight + "px";
+          requestAnimationFrame(function() {
+            card.style.maxHeight = "0";
+            card.style.opacity = "0";
+            card.style.marginBottom = "0";
+            card.style.paddingTop = "0";
+            card.style.paddingBottom = "0";
+          });
+          setTimeout(function() { card.remove(); renderPlayers(); }, 320);
+        } else {
+          renderPlayers();
+        }
+      })
+      .catch(function(e) { alert("Error: " + e); });
+  };
+
   var delBtn = document.createElement("button");
   delBtn.className = "btn-delete-player"; delBtn.textContent = "Delete player";
   delBtn.onclick = function(e) {
@@ -277,7 +422,7 @@ function makePlayerCard(p) {
       .catch(function(e) { alert("Error: " + e); });
   };
 
-  right.appendChild(delBtn); right.appendChild(chevron);
+  right.appendChild(testBtn); right.appendChild(delBtn); right.appendChild(chevron);
   header.appendChild(left); header.appendChild(right);
   card.appendChild(header);
 
@@ -300,7 +445,7 @@ function renderSessions(p, container) {
   container.dataset.loaded = "1";
   container.innerHTML = "";
   var list = (p.fullData && p.fullData.sessions) || [];
-  if (!list.length) { container.innerHTML = '<div class="empty">No sessions.</div>'; return; }
+  if (!list.length) { container.innerHTML = '<div class="empty">No games.</div>'; return; }
   list.forEach(function(s) {
     var row = document.createElement("div"); row.className = "session-row";
     var info = document.createElement("div"); info.className = "session-info";
@@ -309,7 +454,7 @@ function renderSessions(p, container) {
     score.textContent = s.found5 + "/" + s.total5 + " at 5+ · " + s.score + " pts";
     var del = document.createElement("button"); del.className = "btn-delete"; del.textContent = "Delete";
     del.onclick = function() {
-      if (!confirm("Delete this session?")) return;
+      if (!confirm("Delete this game?")) return;
       apiFetch(API + "/admin?action=delete_session&user=" + encodeURIComponent(p.player) + "&id=" + encodeURIComponent(s.id), { method: "POST" })
         .then(function(r) { return r.ok ? Promise.resolve() : Promise.reject(r.status); })
         .then(function() { row.remove(); })
@@ -366,6 +511,57 @@ function initMap() {
 
   if (points.length) mapInstance.fitBounds(points, { padding: [40, 40], maxZoom: 8 });
 }
+
+/* ---- boggle spinner ---- */
+// makeBoggleSpinner(letters?) → { el, stop }
+// Returns a spinner element ready to append anywhere, plus a stop() to cancel it.
+// Default letters spell "LOADING..."
+var SPINNER_LETTERS = ["L","O","A","D","I","N","G","…"];
+function makeBoggleSpinner(letters) {
+  letters = letters || SPINNER_LETTERS;
+  var grid = document.createElement("div"); grid.className = "boggle-spinner";
+  var tiles = letters.map(function(ch) {
+    var t = document.createElement("div"); t.className = "tile"; t.textContent = ch;
+    if (ch === "…") t.style.fontSize = "9px";
+    grid.appendChild(t); return t;
+  });
+  var i = 0;
+  var timer = setInterval(function() {
+    tiles.forEach(function(t){ t.classList.remove("lit"); });
+    tiles[i % tiles.length].classList.add("lit");
+    i++;
+  }, 120);
+  return { el: grid, stop: function() { clearInterval(timer); } };
+}
+
+// Convenience: mount a spinner into a container element, replacing its contents.
+// Returns a stop() function.
+function showSpinnerIn(container) {
+  var spinner = makeBoggleSpinner();
+  container.innerHTML = "";
+  container.appendChild(spinner.el);
+  return spinner.stop;
+}
+
+var _spinnerStops = {};
+function startSpinner(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  _spinnerStops[id] = showSpinnerIn(el);
+}
+function stopSpinner(id) {
+  if (_spinnerStops[id]) { _spinnerStops[id](); delete _spinnerStops[id]; }
+}
+
+// Position indicator immediately (no animation on first paint)
+(function() {
+  var indicator = document.getElementById("tab-indicator");
+  if (indicator) indicator.style.transition = "none";
+  moveTabIndicator(document.querySelector(".tab.on"));
+  requestAnimationFrame(function() {
+    if (indicator) indicator.style.transition = "";
+  });
+})();
 
 loadAll();
 
