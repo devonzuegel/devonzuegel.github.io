@@ -623,7 +623,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:41:42Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:42:25Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2721,7 +2721,7 @@ function screenProgress(){
   if (true) {
     var filterSection = h("div", { class: "section" });
     var selectedLenLabel = lenName(parseInt(lenFilter));
-    var selectedModeLabel = (SCORING_MODES.filter(function(m){ return m.key === scoringFilter; })[0] || {}).label || "";
+    var selectedModeLabel = (SCORING_MODES.filter(function(m){ return m.key === scoringFilter; })[0] || {}).shortLabel || "";
     var selectedStemmingLabel = stemmingFilter === "on" ? "stemming ON" : stemmingFilter === "off" ? "stemming OFF" : null;
     var toggleRow = h("div", { style: "display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px" });
     var toggleBtn = h("button", {
