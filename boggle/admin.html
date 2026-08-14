@@ -746,6 +746,38 @@ function renderStats() {
         ctx.fillText(lbl, xPos(i), pad.t + chartH + 14);
       }
     });
+
+    // return point positions for hover
+    return { points: values.map(function(v, i) { return { x: xPos(i), y: yPos(v), label: labels[i], value: v }; }), pad: pad, chartH: chartH, W: W, H: H };
+  }
+
+  function addLineChartHover(cv, chartData, formatTip) {
+    if (!chartData) return;
+    var tip = document.createElement("div");
+    tip.style.cssText = "position:absolute;background:#1D2C25;border:1px solid #31463B;border-radius:6px;padding:4px 8px;font-family:monospace;font-size:11px;color:#F2EDDF;pointer-events:none;display:none;white-space:nowrap;z-index:10";
+    cv.parentElement.style.position = "relative";
+    cv.parentElement.appendChild(tip);
+
+    cv.addEventListener("mousemove", function(e) {
+      var rect = cv.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (cv.width / rect.width) / 2;
+      var closest = null, minDx = Infinity;
+      chartData.points.forEach(function(p) {
+        var dx = Math.abs(p.x - mx);
+        if (dx < minDx) { minDx = dx; closest = p; }
+      });
+      if (closest && minDx < 40) {
+        var px = closest.x / cv.width * cv.getBoundingClientRect().width;
+        var py = closest.y / cv.height * cv.getBoundingClientRect().height;
+        tip.textContent = formatTip ? formatTip(closest) : closest.label + ": " + closest.value;
+        tip.style.display = "block";
+        tip.style.left = Math.min(px + 8, cv.getBoundingClientRect().width - tip.offsetWidth - 4) + "px";
+        tip.style.top = Math.max(py - 28, 2) + "px";
+      } else {
+        tip.style.display = "none";
+      }
+    });
+    cv.addEventListener("mouseleave", function() { tip.style.display = "none"; });
   }
 
   // ── Week helpers ────────────────────────────────────────────────────────
@@ -930,7 +962,8 @@ function renderStats() {
   setTimeout(function() {
     // A: Cumulative signups
     if (cumValues.length) {
-      drawLineChart(cA.canvas, cumLabels, cumValues, C.amber, { zeroBase: true });
+      var cdA = drawLineChart(cA.canvas, cumLabels, cumValues, C.amber, { zeroBase: true });
+      addLineChartHover(cA.canvas, cdA, function(p) { return p.label + ": " + p.value + " player" + (p.value !== 1 ? "s" : ""); });
     } else {
       var ctx = cA.canvas.getContext("2d");
       setupCanvas(cA.canvas);
