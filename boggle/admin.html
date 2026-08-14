@@ -1041,7 +1041,8 @@ function renderStats() {
     drawBarChart(cD.canvas, gpDistLabels, gpDist, C.amber, {});
 
     // E: Avg score per week (line)
-    drawLineChart(cE.canvas, weeks12.map(weekLabel), avgScorePerWeek, C.sage, { zeroBase: true });
+    var cdE = drawLineChart(cE.canvas, weeks12.map(weekLabel), avgScorePerWeek, C.sage, { zeroBase: true });
+    addLineChartHover(cE.canvas, cdE, function(pt) { return "Week of " + pt.label + ": avg " + pt.value + " pts"; });
 
     // F: Top countries
     if (topCountries.length) {
