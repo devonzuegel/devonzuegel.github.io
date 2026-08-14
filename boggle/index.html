@@ -623,7 +623,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:32:45Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:33:16Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -941,17 +941,27 @@ function endRound(early){
   render();
   showGameOver();
 }
-function getLocation(cb){
+function getLocation(cb, onlyIfGranted){
   if (!navigator.geolocation) { cb(null, "unavailable"); return; }
-  navigator.geolocation.getCurrentPosition(function(pos){
-    var lat = pos.coords.latitude, lon = pos.coords.longitude;
-    fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon, {
-      headers: { "Accept-Language": "en", "User-Agent": "BoggleTrainer/1.0" }
-    }).then(function(r){ return r.json(); }).then(function(d){
-      var a = d.address || {};
-      cb({ lat: lat, lon: lon, city: a.city || a.town || a.village || a.county || "", country: a.country || "" }, "granted");
-    }).catch(function(){ cb({ lat: lat, lon: lon, city: "", country: "" }, "granted"); });
-  }, function(e){ cb(null, e.code === 1 ? "denied" : "unavailable"); }, { timeout: 5000 });
+  function doGet(){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat = pos.coords.latitude, lon = pos.coords.longitude;
+      fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon, {
+        headers: { "Accept-Language": "en", "User-Agent": "BoggleTrainer/1.0" }
+      }).then(function(r){ return r.json(); }).then(function(d){
+        var a = d.address || {};
+        cb({ lat: lat, lon: lon, city: a.city || a.town || a.village || a.county || "", country: a.country || "" }, "granted");
+      }).catch(function(){ cb({ lat: lat, lon: lon, city: "", country: "" }, "granted"); });
+    }, function(e){ cb(null, e.code === 1 ? "denied" : "unavailable"); }, { timeout: 5000 });
+  }
+  if (onlyIfGranted && navigator.permissions) {
+    navigator.permissions.query({ name: "geolocation" }).then(function(result){
+      if (result.state === "granted") doGet();
+      /* else silently skip — don't prompt */
+    }).catch(doGet);
+  } else {
+    doGet();
+  }
 }
 
 function setPlayer(name, _skipDevonCheck){
@@ -1388,13 +1398,13 @@ function saveSession(){
   if (!data.events) data.events = [];
   data.events.push({ type: "session", ts: session.ts, player: session.player, sessionId: session.id, score: session.score, loc: null, locationPerms: "pending" });
   save(); /* upload immediately */
-  /* attach location asynchronously */
+  /* attach location asynchronously — only if already granted, never re-prompt */
   getLocation(function(loc, perms){
     var ev = data.events.filter(function(e){ return e.type === "session" && e.sessionId === session.id; })[0];
     if (ev) { ev.loc = loc; ev.locationPerms = perms; }
     if (loc) session.loc = loc;
     save();
-  });
+  }, true);
 }
 function submitWord(rawWord){
   var w = String(rawWord).trim().toLowerCase();
