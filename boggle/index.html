@@ -611,12 +611,11 @@ function sessionScorePct(x){
 
 /* ---------------- storage ---------------- */
 var KEY = "boggle:trainer:v1", DAY = 86400000;
-var data = { sessions: [], queue: [], vocab: [], defs: {}, includeEarly: false, player: "", players: [], scoring: { zero3: false, zero4: false }, stemming: false, filterLen: "180", filterScoring: "5plus", filterStemming: "on" };
+var data = { sessions: [], queue: [], vocab: [], defs: {}, includeEarly: false, player: "", players: [], scoring: { zero3: true, zero4: true }, stemming: true, filterLen: "180", filterScoring: "5plus", filterStemming: "on" };
 var storageOk = true;
 try {
   var raw = localStorage.getItem(KEY);
   if (raw) data = Object.assign(data, JSON.parse(raw));
-  data.scoring = { zero3: false, zero4: false };
 } catch (e) { storageOk = false; }
 
 /* ---------------- cloud sync ---------------- */
@@ -624,7 +623,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:22:19Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:24:45Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -739,7 +738,13 @@ function mergeData(remote){
   /* queue: keep local (device has fresher due-dates) unless empty */
   if (!data.queue.length && remote.queue) data.queue = remote.queue;
 
-  /* scoring: always default to standard; do not inherit from remote */
+  /* preferences: take remote value (last device to save wins) */
+  if (remote.scoring) data.scoring = remote.scoring;
+  if (remote.stemming !== undefined) data.stemming = remote.stemming;
+  if (remote.filterLen !== undefined) data.filterLen = remote.filterLen;
+  if (remote.filterScoring !== undefined) data.filterScoring = remote.filterScoring;
+  if (remote.filterStemming !== undefined) data.filterStemming = remote.filterStemming;
+  if (remote.includeEarly !== undefined) data.includeEarly = remote.includeEarly;
 }
 
 function fmtAgo(ts){
