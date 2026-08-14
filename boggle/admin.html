@@ -68,6 +68,16 @@
   .event-loc { color: var(--sage); }
   .event-type.signup { color: var(--amber); }
   .event-type.session { color: var(--bone); }
+  /* stats tab */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .stats-grid.wide { grid-template-columns: 1fr; }
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+  .stat-card .stat-val { font-family: var(--display); font-size: 32px; color: var(--amber); }
+  .stat-card .stat-lbl { font-family: var(--mono); font-size: 10px; color: var(--sage); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .chart-card canvas { width: 100%; display: block; }
+  @media (max-width: 600px) { .stat-cards { grid-template-columns: repeat(2, 1fr); } .stats-grid { grid-template-columns: 1fr; } }
   /* map */
   #map { height: 480px; border-radius: 12px; border: 1px solid var(--line); margin-top: 4px; }
   .leaflet-container { background: #1D2C25; }
@@ -108,12 +118,14 @@
   <div class="tabs" id="tabs">
     <button class="tab on" onclick="showTab('players', this)">Players</button>
     <button class="tab" onclick="showTab('audit', this)">Audit log</button>
+    <button class="tab" onclick="showTab('stats', this)">Stats</button>
     <button class="tab" onclick="showTab('map', this)">Map</button>
     <div class="tab-indicator" id="tab-indicator"></div>
   </div>
 
   <div id="tab-players"><div class="loading" id="spinner-players"></div></div>
   <div id="tab-audit" style="display:none"><div class="loading" id="spinner-audit"></div></div>
+  <div id="tab-stats" style="display:none"></div>
   <div id="tab-map" style="display:none">
     <div id="map"></div>
   </div>
@@ -167,13 +179,14 @@ function moveTabIndicator(btn) {
 }
 
 function showTab(name, btn) {
-  ["players","audit","map"].forEach(function(t){
+  ["players","audit","stats","map"].forEach(function(t){
     document.getElementById("tab-" + t).style.display = t === name ? "" : "none";
   });
   document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("on"); });
   btn.classList.add("on");
   moveTabIndicator(btn);
   if (name === "map") initMap();
+  if (name === "stats") renderStats();
 }
 
 function isThisYear(ts) { return new Date(ts).getFullYear() === new Date().getFullYear(); }
@@ -256,6 +269,7 @@ function loadAll() {
       stopSpinner("spinner-audit");
       renderPlayers();
       renderAudit();
+      renderStats();
       if (mapInstance) { mapInstance.remove(); mapInstance = null; }
     })
     .catch(function(e) {
@@ -483,6 +497,455 @@ function renderAudit() {
     box.appendChild(row);
   });
   el.appendChild(box);
+}
+
+/* ---- stats tab ---- */
+function renderStats() {
+  var el = document.getElementById("tab-stats");
+  if (!el) return;
+  el.innerHTML = "";
+
+  // Color constants (hex — canvas can't read CSS vars)
+  var C = {
+    amber: "#E9A83A",
+    sage: "#8CA598",
+    bone: "#F2EDDF",
+    line: "#31463B",
+    surface2: "#27392F",
+    rust: "#C8593F",
+    bg: "#1D2C25"
+  };
+
+  // Real players only
+  var players = allPlayers.filter(function(p){ return !(p.fullData && p.fullData.isTest); });
+
+  // Flatten all non-early sessions from real players
+  var allSessions = [];
+  players.forEach(function(p) {
+    (p.fullData && p.fullData.sessions || []).forEach(function(s) {
+      if (!s.early) allSessions.push({ s: s, player: p.player });
+    });
+  });
+
+  var now = Date.now();
+
+  // ── 1. Summary stat cards ──────────────────────────────────────────────
+  var totalPlayers = players.length;
+  var totalGames = allSessions.length;
+  var avgScore = totalGames ? Math.round(allSessions.reduce(function(a, x){ return a + (x.s.score || 0); }, 0) / totalGames) : 0;
+  var total5plus = allSessions.reduce(function(a, x){ return a + (x.s.found5 || 0); }, 0);
+
+  var cardsRow = document.createElement("div");
+  cardsRow.className = "stat-cards";
+  [
+    [totalPlayers, "Total players"],
+    [totalGames, "Games played"],
+    [avgScore, "Avg score / game"],
+    [total5plus, "5+ letter words found"]
+  ].forEach(function(pair) {
+    var card = document.createElement("div"); card.className = "stat-card";
+    var val = document.createElement("div"); val.className = "stat-val"; val.textContent = pair[0].toLocaleString();
+    var lbl = document.createElement("div"); lbl.className = "stat-lbl"; lbl.textContent = pair[1];
+    card.appendChild(val); card.appendChild(lbl);
+    cardsRow.appendChild(card);
+  });
+  el.appendChild(cardsRow);
+
+  // ── Early-end rate & retention (inline stat cards) ──────────────────────
+  var allSessionsIncEarly = [];
+  players.forEach(function(p) {
+    (p.fullData && p.fullData.sessions || []).forEach(function(s) { allSessionsIncEarly.push(s); });
+  });
+  var earlyCount = allSessionsIncEarly.filter(function(s){ return s.early; }).length;
+  var earlyPct = allSessionsIncEarly.length ? Math.round(earlyCount / allSessionsIncEarly.length * 100) : 0;
+
+  // D7 retention: players signed up > 7 days ago who played a 2nd game within 7 days of signup
+  var D7_MS = 7 * 24 * 3600 * 1000;
+  var D30_MS = 30 * 24 * 3600 * 1000;
+  function retention(windowMs) {
+    var eligible = players.filter(function(p){ return p.fullData && p.fullData.createdAt && (now - p.fullData.createdAt) > windowMs; });
+    if (!eligible.length) return null;
+    var retained = eligible.filter(function(p) {
+      var signup = p.fullData.createdAt;
+      var sessions = (p.fullData.sessions || []).filter(function(s){ return !s.early; }).sort(function(a,b){ return a.ts - b.ts; });
+      // need at least 2 sessions, second session within windowMs of signup
+      return sessions.length >= 2 && (sessions[1].ts - signup) <= windowMs;
+    });
+    return Math.round(retained.length / eligible.length * 100);
+  }
+  var d7r = retention(D7_MS);
+  var d30r = retention(D30_MS);
+
+  // Recency buckets
+  var SOD = new Date(); SOD.setHours(0,0,0,0); var sodMs = SOD.getTime();
+  var SOW = new Date(SOD); SOW.setDate(SOD.getDate() - ((SOD.getDay() + 6) % 7)); var sowMs = SOW.getTime();
+  var SOM = new Date(SOD); SOM.setDate(1); var somMs = SOM.getTime();
+  var recency = { today: 0, week: 0, month: 0, dormant: 0 };
+  players.forEach(function(p) {
+    var sessions = (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; });
+    if (!sessions.length) { recency.dormant++; return; }
+    var last = sessions.reduce(function(m, s){ return s.ts > m ? s.ts : m; }, 0);
+    if (last >= sodMs) recency.today++;
+    else if (last >= sowMs) recency.week++;
+    else if (last >= somMs) recency.month++;
+    else recency.dormant++;
+  });
+
+  // Row of inline stats: early-end, D7, D30, recency
+  var inlineGrid = document.createElement("div");
+  inlineGrid.className = "stat-cards";
+  inlineGrid.style.gridTemplateColumns = "repeat(4,1fr)";
+
+  function makeInlineCard(val, lbl) {
+    var card = document.createElement("div"); card.className = "stat-card";
+    var v = document.createElement("div"); v.className = "stat-val"; v.style.fontSize = "28px"; v.textContent = val;
+    var l = document.createElement("div"); l.className = "stat-lbl"; l.textContent = lbl;
+    card.appendChild(v); card.appendChild(l);
+    return card;
+  }
+  inlineGrid.appendChild(makeInlineCard(earlyPct + "%", "Games abandoned"));
+  inlineGrid.appendChild(makeInlineCard(d7r !== null ? d7r + "%" : "—", "D7 retention"));
+  inlineGrid.appendChild(makeInlineCard(d30r !== null ? d30r + "%" : "—", "D30 retention"));
+  // Recency breakdown as text
+  var recCard = document.createElement("div"); recCard.className = "stat-card";
+  recCard.innerHTML = '<div class="stat-lbl" style="margin-bottom:8px">Player recency</div>' +
+    '<div style="font-family:var(--mono);font-size:11px;text-align:left;display:flex;flex-direction:column;gap:3px">' +
+    '<span style="color:#E9A83A">▸ <b>' + recency.today + '</b> today</span>' +
+    '<span style="color:#8CA598">▸ <b>' + recency.week + '</b> this week</span>' +
+    '<span style="color:#8CA598">▸ <b>' + recency.month + '</b> this month</span>' +
+    '<span style="color:#31463B">▸ <b>' + recency.dormant + '</b> dormant</span>' +
+    '</div>';
+  inlineGrid.appendChild(recCard);
+  el.appendChild(inlineGrid);
+
+  // ── Chart helpers ──────────────────────────────────────────────────────
+  function makeChartCard(label, canvasId, h) {
+    var card = document.createElement("div"); card.className = "chart-card";
+    var ey = document.createElement("div"); ey.className = "eyebrow"; ey.style.marginBottom = "10px"; ey.textContent = label;
+    var cv = document.createElement("canvas"); cv.id = canvasId; cv.style.height = (h || 160) + "px";
+    card.appendChild(ey); card.appendChild(cv);
+    return { card: card, canvas: cv };
+  }
+
+  function setupCanvas(cv) {
+    var w = cv.parentElement.clientWidth - 32; // card padding 16*2
+    var h = cv.offsetHeight || parseInt(cv.style.height, 10) || 160;
+    cv.width = w * 2; cv.height = h * 2;
+    cv.style.width = w + "px";
+    var ctx = cv.getContext("2d"); ctx.scale(2, 2);
+    return { ctx: ctx, w: w, h: h };
+  }
+
+  function drawBarChart(cv, labels, values, color, opts) {
+    opts = opts || {};
+    var d = setupCanvas(cv);
+    var ctx = d.ctx, W = d.w, H = d.h;
+    var pad = { t: 8, r: 8, b: opts.rotateLabels ? 56 : 28, l: 36 };
+    var chartW = W - pad.l - pad.r, chartH = H - pad.t - pad.b;
+    var max = Math.max.apply(null, values.concat([1]));
+
+    // grid
+    ctx.strokeStyle = C.line; ctx.lineWidth = 0.5;
+    var ticks = 4;
+    for (var i = 0; i <= ticks; i++) {
+      var y = pad.t + chartH - (i / ticks) * chartH;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + chartW, y); ctx.stroke();
+      ctx.fillStyle = C.sage; ctx.font = "9px " + "'SF Mono',monospace";
+      ctx.textAlign = "right"; ctx.fillText(Math.round(i / ticks * max), pad.l - 4, y + 3);
+    }
+
+    var n = values.length;
+    var barW = Math.max(2, (chartW / n) * 0.65);
+    var gap = chartW / n;
+
+    values.forEach(function(v, i) {
+      var x = pad.l + i * gap + (gap - barW) / 2;
+      var bH = (v / max) * chartH;
+      var y = pad.t + chartH - bH;
+      var r = Math.min(3, barW / 2);
+      // rounded top
+      ctx.fillStyle = color || C.amber;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, y + bH);
+      ctx.lineTo(x, y + bH);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath(); ctx.fill();
+
+      // label
+      ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace";
+      if (opts.rotateLabels) {
+        ctx.save();
+        ctx.translate(x + barW / 2, pad.t + chartH + 6);
+        ctx.rotate(-Math.PI / 4);
+        ctx.textAlign = "right";
+        ctx.fillText(labels[i], 0, 0);
+        ctx.restore();
+      } else {
+        ctx.textAlign = "center";
+        ctx.fillText(labels[i], x + barW / 2, pad.t + chartH + 12);
+      }
+    });
+  }
+
+  function drawLineChart(cv, labels, values, color, opts) {
+    opts = opts || {};
+    var d = setupCanvas(cv);
+    var ctx = d.ctx, W = d.w, H = d.h;
+    var pad = { t: 8, r: 8, b: 28, l: 36 };
+    var chartW = W - pad.l - pad.r, chartH = H - pad.t - pad.b;
+    var max = Math.max.apply(null, values.concat([1]));
+    var min = opts.zeroBase ? 0 : Math.min.apply(null, values.concat([0]));
+    var range = max - min || 1;
+
+    // grid
+    ctx.strokeStyle = C.line; ctx.lineWidth = 0.5;
+    var ticks = 4;
+    for (var i = 0; i <= ticks; i++) {
+      var yv = min + (i / ticks) * range;
+      var y = pad.t + chartH - ((yv - min) / range) * chartH;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + chartW, y); ctx.stroke();
+      ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace"; ctx.textAlign = "right";
+      ctx.fillText(Math.round(yv), pad.l - 4, y + 3);
+    }
+
+    function xPos(i) { return pad.l + (values.length > 1 ? i / (values.length - 1) * chartW : chartW / 2); }
+    function yPos(v) { return pad.t + chartH - ((v - min) / range) * chartH; }
+
+    // area fill
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), pad.t + chartH);
+    values.forEach(function(v, i) { ctx.lineTo(xPos(i), yPos(v)); });
+    ctx.lineTo(xPos(values.length - 1), pad.t + chartH);
+    ctx.closePath();
+    ctx.fillStyle = (color || C.amber) + "26"; // ~15% opacity
+    ctx.fill();
+
+    // line
+    ctx.beginPath();
+    values.forEach(function(v, i) {
+      if (i === 0) ctx.moveTo(xPos(i), yPos(v));
+      else ctx.lineTo(xPos(i), yPos(v));
+    });
+    ctx.strokeStyle = color || C.amber; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // dots
+    values.forEach(function(v, i) {
+      ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = color || C.amber; ctx.fill();
+    });
+
+    // x labels (subset to avoid crowding)
+    ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace"; ctx.textAlign = "center";
+    var step = Math.ceil(labels.length / 6);
+    labels.forEach(function(lbl, i) {
+      if (i % step === 0 || i === labels.length - 1) {
+        ctx.fillText(lbl, xPos(i), pad.t + chartH + 14);
+      }
+    });
+  }
+
+  // ── Week helpers ────────────────────────────────────────────────────────
+  function getMonday(date) {
+    var d = new Date(date);
+    var day = d.getDay();
+    var diff = (day === 0) ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  function weekLabel(monDate) {
+    return monDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  function last12Weeks() {
+    var weeks = [];
+    var monday = getMonday(new Date());
+    for (var i = 11; i >= 0; i--) {
+      var d = new Date(monday);
+      d.setDate(monday.getDate() - i * 7);
+      weeks.push(d);
+    }
+    return weeks;
+  }
+
+  // ── Build charts ──────────────────────────────────────────────────────
+  var grid1 = document.createElement("div"); grid1.className = "stats-grid";
+  var grid2 = document.createElement("div"); grid2.className = "stats-grid";
+  var wideDiv = document.createElement("div"); wideDiv.className = "stats-grid wide";
+
+  // ── Chart A: Cumulative signups ─────────────────────────────────────────
+  var signupTimes = players
+    .filter(function(p){ return p.fullData && p.fullData.createdAt; })
+    .map(function(p){ return p.fullData.createdAt; })
+    .sort(function(a,b){ return a - b; });
+
+  var cA = makeChartCard("Cumulative signups", "chart-signup", 160);
+  grid1.appendChild(cA.card);
+
+  // ── Chart B: Games per week ─────────────────────────────────────────────
+  var weeks12 = last12Weeks();
+  var gamesPerWeek = weeks12.map(function(mon) {
+    var end = new Date(mon); end.setDate(mon.getDate() + 7);
+    return allSessions.filter(function(x){ return x.s.ts >= mon.getTime() && x.s.ts < end.getTime(); }).length;
+  });
+
+  var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 160);
+  grid1.appendChild(cB.card);
+
+  // ── Chart C: Score distribution ────────────────────────────────────────
+  var buckets = [0,50,100,150,200,250,300,400,500];
+  var scoreDist = buckets.map(function(low, i) {
+    var high = buckets[i + 1] || Infinity;
+    return allSessions.filter(function(x){ var sc = x.s.score || 0; return sc >= low && sc < high; }).length;
+  });
+  var scoreLabels = buckets.map(function(low, i) {
+    return i === buckets.length - 1 ? low + "+" : low + "–" + buckets[i+1];
+  });
+
+  var cC = makeChartCard("Score distribution", "chart-scores", 160);
+  grid2.appendChild(cC.card);
+
+  // ── Chart D: Games per player distribution ─────────────────────────────
+  var gpPerPlayer = players.map(function(p) {
+    return (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; }).length;
+  });
+  var maxGP = Math.max.apply(null, gpPerPlayer.concat([1]));
+  var gpDist = [], gpDistLabels = [];
+  // bucket by 1 up to 10, then 11-20, 21+
+  for (var g = 0; g <= Math.min(maxGP, 10); g++) {
+    gpDist.push(gpPerPlayer.filter(function(v){ return v === g; }).length);
+    gpDistLabels.push(String(g));
+  }
+  if (maxGP > 10) {
+    gpDist.push(gpPerPlayer.filter(function(v){ return v > 10; }).length);
+    gpDistLabels.push("11+");
+  }
+
+  var cD = makeChartCard("Games per player", "chart-gpp", 160);
+  grid2.appendChild(cD.card);
+
+  // ── Chart E: Avg score per week ────────────────────────────────────────
+  var avgScorePerWeek = weeks12.map(function(mon) {
+    var end = new Date(mon); end.setDate(mon.getDate() + 7);
+    var ws = allSessions.filter(function(x){ return x.s.ts >= mon.getTime() && x.s.ts < end.getTime(); });
+    if (!ws.length) return 0;
+    return Math.round(ws.reduce(function(a, x){ return a + (x.s.score || 0); }, 0) / ws.length);
+  });
+
+  var cE = makeChartCard("Avg score per week", "chart-asw", 160);
+  wideDiv.appendChild(cE.card);
+
+  // ── Chart F: Top countries ─────────────────────────────────────────────
+  var countryMap = {};
+  players.forEach(function(p) {
+    var loc = p.fullData && p.fullData.location;
+    if (loc && loc.country) {
+      countryMap[loc.country] = (countryMap[loc.country] || 0) + 1;
+    }
+  });
+  var topCountries = Object.keys(countryMap).sort(function(a,b){ return countryMap[b] - countryMap[a]; }).slice(0, 8);
+  var countryLabels = topCountries.map(function(c){ return (countryFlag(c) || "") + " " + c; });
+  var countryValues = topCountries.map(function(c){ return countryMap[c]; });
+
+  var cF = makeChartCard("Players by country", "chart-countries", 180);
+  grid1.appendChild(cF.card);
+
+  // ── Top cities (list) ──────────────────────────────────────────────────
+  var cityMap = {};
+  players.forEach(function(p) {
+    var loc = p.fullData && p.fullData.location;
+    if (loc && loc.city) {
+      var key = loc.city + (loc.country ? ", " + loc.country : "");
+      cityMap[key] = (cityMap[key] || 0) + 1;
+    }
+  });
+  var topCities = Object.keys(cityMap).sort(function(a,b){ return cityMap[b] - cityMap[a]; }).slice(0, 8);
+
+  var citiesCard = document.createElement("div"); citiesCard.className = "chart-card";
+  var citiesEy = document.createElement("div"); citiesEy.className = "eyebrow"; citiesEy.style.marginBottom = "10px"; citiesEy.textContent = "Top cities";
+  citiesCard.appendChild(citiesEy);
+  if (topCities.length) {
+    topCities.forEach(function(city, i) {
+      var row = document.createElement("div");
+      row.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid " + C.line + ";font-family:monospace;font-size:12px";
+      if (i === topCities.length - 1) row.style.borderBottom = "none";
+      var left = document.createElement("span"); left.style.color = C.bone; left.textContent = (i + 1) + ". " + city;
+      var n = cityMap[city];
+      var right = document.createElement("span"); right.style.color = C.amber; right.textContent = n + " player" + (n !== 1 ? "s" : "");
+      row.appendChild(left); row.appendChild(right);
+      citiesCard.appendChild(row);
+    });
+  } else {
+    var emp = document.createElement("div"); emp.className = "empty"; emp.textContent = "No location data yet.";
+    citiesCard.appendChild(emp);
+  }
+  grid1.appendChild(citiesCard);
+
+  // ── At-risk players ────────────────────────────────────────────────────
+  var atRisk = players.filter(function(p) {
+    var sessions = (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; });
+    return sessions.length <= 1;
+  });
+  var atRiskCard = document.createElement("div"); atRiskCard.className = "chart-card";
+  var arEy = document.createElement("div"); arEy.className = "eyebrow"; arEy.style.marginBottom = "10px";
+  arEy.textContent = "At-risk players (0–1 completed games)";
+  atRiskCard.appendChild(arEy);
+  var arCount = document.createElement("div"); arCount.style.cssText = "font-family:var(--display);font-size:28px;color:" + C.rust + ";margin-bottom:8px";
+  arCount.textContent = atRisk.length + " of " + players.length;
+  atRiskCard.appendChild(arCount);
+  if (atRisk.length) {
+    var arNames = document.createElement("div"); arNames.style.cssText = "font-family:monospace;font-size:11px;color:" + C.sage + ";line-height:1.7";
+    arNames.textContent = atRisk.map(function(p){ return p.player; }).join(", ");
+    atRiskCard.appendChild(arNames);
+  }
+  grid2.appendChild(atRiskCard);
+
+  // ── Assemble layout ────────────────────────────────────────────────────
+  el.appendChild(grid1);
+  el.appendChild(grid2);
+  el.appendChild(wideDiv);
+
+  // ── Draw all charts after DOM is ready ────────────────────────────────
+  setTimeout(function() {
+    // A: Cumulative signups
+    if (signupTimes.length) {
+      var cumLabels = [], cumValues = [];
+      signupTimes.forEach(function(ts, i) {
+        cumLabels.push(fmtDate(ts));
+        cumValues.push(i + 1);
+      });
+      drawLineChart(cA.canvas, cumLabels, cumValues, C.amber, { zeroBase: true });
+    } else {
+      var ctx = cA.canvas.getContext("2d");
+      setupCanvas(cA.canvas);
+      ctx.fillStyle = C.sage; ctx.font = "12px monospace"; ctx.textAlign = "center";
+      ctx.fillText("No data yet", cA.canvas.width / 4, cA.canvas.height / 4);
+    }
+
+    // B: Games per week
+    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, {});
+
+    // C: Score distribution
+    drawBarChart(cC.canvas, scoreLabels, scoreDist, C.sage, { rotateLabels: true });
+
+    // D: Games per player
+    drawBarChart(cD.canvas, gpDistLabels, gpDist, C.amber, {});
+
+    // E: Avg score per week (line)
+    drawLineChart(cE.canvas, weeks12.map(weekLabel), avgScorePerWeek, C.sage, { zeroBase: true });
+
+    // F: Top countries
+    if (topCountries.length) {
+      drawBarChart(cF.canvas, countryLabels, countryValues, C.amber, { rotateLabels: true });
+    } else {
+      var d2 = setupCanvas(cF.canvas);
+      d2.ctx.fillStyle = C.sage; d2.ctx.font = "12px monospace"; d2.ctx.textAlign = "center";
+      d2.ctx.fillText("No location data yet", d2.w / 2, d2.h / 2);
+    }
+  }, 0);
 }
 
 /* ---- map tab ---- */
