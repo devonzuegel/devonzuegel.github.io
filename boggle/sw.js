@@ -2,7 +2,7 @@
    - Precaches app shell for full offline use
    - Queues failed POST /api/boggle calls in IndexedDB, retries on next fetch or sync event
 */
-const CACHE = "boggle-trainer-20260814234314";
+const CACHE = "boggle-trainer-20260814234340";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.svg", "./icon-512.svg"];
 const API_HOST = "boggle-api.vercel.app";
 const QUEUE_DB = "boggle-sync-queue";

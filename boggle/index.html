@@ -623,7 +623,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:43:14Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:43:40Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2688,11 +2688,21 @@ function screenProgress(){
      of the stats unless you ask for them */
   var earlyCount = allS.filter(function(x){ return x.early; }).length;
   var s = data.includeEarly ? allS : allS.filter(function(x){ return !x.early; });
-  var earlyToggle = earlyCount ? h("div", { style: "margin-top:8px" }, [
-    h("button", { class: "mono", style: "font-size:11px;color:" + (data.includeEarly ? "var(--amber)" : "var(--sage)"),
-      text: (data.includeEarly ? "✓ " : "") + "include " + earlyCount + " round" + (earlyCount === 1 ? "" : "s") + " ended early",
-      onclick: function(){ data.includeEarly = !data.includeEarly; savePref(); render(); } })
-  ]) : null;
+  var earlyToggle = earlyCount ? (function(){
+    var row = h("div", { style: "margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap" });
+    row.appendChild(h("span", { class: "mono", style: "font-size:11px;color:var(--sage)" }, [document.createTextNode("early rounds:")]));
+    ["exclude", "include"].forEach(function(v) {
+      var active = v === "include" ? data.includeEarly : !data.includeEarly;
+      var label = v === "exclude" ? "exclude" : "include (" + earlyCount + ")";
+      var btn = h("button", {
+        class: "mono",
+        style: "font-size:11px;border:1px solid " + (active ? "var(--amber)" : "var(--line)") + ";background:none;color:" + (active ? "var(--amber)" : "var(--sage)") + ";border-radius:4px;padding:2px 8px;cursor:" + (active ? "default" : "pointer")
+      }, [document.createTextNode(label)]);
+      if (!active) btn.onclick = function(){ data.includeEarly = (v === "include"); savePref(); render(); };
+      row.appendChild(btn);
+    });
+    return h("div", { style: "margin-top:8px" }, [row]);
+  })() : null;
 
   if (!s.length) {
     wrap.appendChild(h("p", { class: "p", text: "Every round so far was ended early, so the stats are empty. Turn them on below or play one to the buzzer." }));
