@@ -777,10 +777,28 @@ function renderStats() {
   var wideDiv = document.createElement("div"); wideDiv.className = "stats-grid wide";
 
   // ── Chart A: Cumulative signups ─────────────────────────────────────────
+  // Build week-by-week buckets from first signup to now so x-axis is time-proportional
   var signupTimes = players
     .filter(function(p){ return p.fullData && p.fullData.createdAt; })
     .map(function(p){ return p.fullData.createdAt; })
     .sort(function(a,b){ return a - b; });
+
+  var cumLabels = [], cumValues = [];
+  if (signupTimes.length) {
+    var firstWeek = getMonday(new Date(signupTimes[0]));
+    var curWeek = getMonday(new Date());
+    var w = new Date(firstWeek);
+    var running = 0;
+    while (w <= curWeek) {
+      var wEnd = new Date(w); wEnd.setDate(w.getDate() + 7);
+      signupTimes.forEach(function(ts) {
+        if (ts >= w.getTime() && ts < wEnd.getTime()) running++;
+      });
+      cumLabels.push(weekLabel(w));
+      cumValues.push(running);
+      w.setDate(w.getDate() + 7);
+    }
+  }
 
   var cA = makeChartCard("Cumulative signups", "chart-signup", 160);
   grid1.appendChild(cA.card);
@@ -911,12 +929,7 @@ function renderStats() {
   // ── Draw all charts after DOM is ready ────────────────────────────────
   setTimeout(function() {
     // A: Cumulative signups
-    if (signupTimes.length) {
-      var cumLabels = [], cumValues = [];
-      signupTimes.forEach(function(ts, i) {
-        cumLabels.push(fmtDate(ts));
-        cumValues.push(i + 1);
-      });
+    if (cumValues.length) {
       drawLineChart(cA.canvas, cumLabels, cumValues, C.amber, { zeroBase: true });
     } else {
       var ctx = cA.canvas.getContext("2d");
