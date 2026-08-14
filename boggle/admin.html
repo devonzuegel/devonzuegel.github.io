@@ -82,24 +82,6 @@
   #map { height: 480px; border-radius: 12px; border: 1px solid var(--line); margin-top: 4px; }
   .leaflet-container { background: #1D2C25; }
   .map-popup { font-family: var(--mono); font-size: 12px; color: var(--ink); }
-  /* delete-all confirm sheet */
-  #confirm-overlay { display:none; position:fixed; inset:0; z-index:100; background:rgba(9,15,12,.8);
-    align-items:flex-end; justify-content:center; padding:0; }
-  #confirm-overlay.on { display:flex; }
-  #confirm-sheet { background:var(--surface); border:1px solid var(--line); border-radius:20px 20px 0 0;
-    padding:28px 24px calc(env(safe-area-inset-bottom) + 28px); width:100%; max-width:520px;
-    box-shadow:0 -8px 40px rgba(0,0,0,.5); }
-  #confirm-sheet h2 { font-family:var(--display); font-size:22px; margin:0 0 8px; color:var(--rust); }
-  #confirm-sheet p { font-family:var(--mono); font-size:12px; color:var(--sage); margin:0 0 24px; }
-  .confirm-btns { display:flex; flex-direction:column; gap:10px; }
-  .btn-confirm-delete { font-family:var(--mono); font-size:14px; font-weight:bold;
-    background:var(--rust); color:#fff; border:none; border-radius:12px;
-    padding:16px; cursor:pointer; width:100%; }
-  .btn-confirm-delete:hover { opacity:.9; }
-  .btn-confirm-cancel { font-family:var(--mono); font-size:14px;
-    background:none; color:var(--sage); border:1px solid var(--line); border-radius:12px;
-    padding:16px; cursor:pointer; width:100%; }
-  .btn-confirm-cancel:hover { color:var(--bone); border-color:var(--bone); }
 </style>
 </head>
 <body>
@@ -111,7 +93,6 @@
     </div>
     <div style="display:flex;gap:8px">
       <button class="refresh" onclick="loadAll()">Refresh</button>
-      <button class="btn-delete-player" onclick="showDeleteAll()">Delete all</button>
     </div>
   </div>
 
@@ -131,16 +112,6 @@
   </div>
 </div>
 
-<div id="confirm-overlay" onclick="if(event.target===this)hideDeleteAll()">
-  <div id="confirm-sheet">
-    <h2>Delete everything?</h2>
-    <p>This will permanently erase all players, games, and events. There is no undo.</p>
-    <div class="confirm-btns">
-      <button class="btn-confirm-delete" onclick="confirmDeleteAll()">Yes, delete all history</button>
-      <button class="btn-confirm-cancel" onclick="hideDeleteAll()">Cancel</button>
-    </div>
-  </div>
-</div>
 
 <script>
 var API = "https://boggle-api.vercel.app/api";
@@ -1154,23 +1125,6 @@ function stopSpinner(id) {
 
 loadAll();
 
-function showDeleteAll() {
-  document.getElementById("confirm-overlay").classList.add("on");
-}
-function hideDeleteAll() {
-  document.getElementById("confirm-overlay").classList.remove("on");
-}
-function confirmDeleteAll() {
-  apiFetch(API + "/admin?action=delete_all", { method: "POST" })
-    .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function(d) {
-      hideDeleteAll();
-      allPlayers = []; allEvents = [];
-      renderPlayers(); renderAudit();
-      if (mapInstance) { mapInstance.remove(); mapInstance = null; }
-    })
-    .catch(function(e) { alert("Error: " + e); });
-}
 </script>
 </body>
 </html>
