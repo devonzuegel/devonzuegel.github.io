@@ -758,24 +758,31 @@ function renderStats() {
     if (!chartData) return;
     var tip = document.createElement("div");
     tip.style.cssText = "position:absolute;background:#1D2C25;border:1px solid #31463B;border-radius:6px;padding:4px 8px;font-family:monospace;font-size:11px;color:#F2EDDF;pointer-events:none;display:none;white-space:nowrap;z-index:10";
-    cv.parentElement.style.position = "relative";
-    cv.parentElement.appendChild(tip);
+    var container = cv.parentElement;
+    container.style.position = "relative";
+    container.appendChild(tip);
 
     cv.addEventListener("mousemove", function(e) {
-      var rect = cv.getBoundingClientRect();
-      var mx = (e.clientX - rect.left) * (cv.width / rect.width) / 2;
+      var cvRect = cv.getBoundingClientRect();
+      var conRect = container.getBoundingClientRect();
+      // canvas logical coords → screen px → container-relative px
+      var scale = cvRect.width / (cv.width / 2);
+      var mx = (e.clientX - cvRect.left) / scale;
       var closest = null, minDx = Infinity;
       chartData.points.forEach(function(p) {
         var dx = Math.abs(p.x - mx);
         if (dx < minDx) { minDx = dx; closest = p; }
       });
       if (closest && minDx < 40) {
-        var px = closest.x / cv.width * cv.getBoundingClientRect().width;
-        var py = closest.y / cv.height * cv.getBoundingClientRect().height;
+        // point position in container-relative px
+        var px = cvRect.left - conRect.left + closest.x * scale;
+        var py = cvRect.top  - conRect.top  + closest.y * scale;
         tip.textContent = formatTip ? formatTip(closest) : closest.label + ": " + closest.value;
         tip.style.display = "block";
-        tip.style.left = Math.min(px + 8, cv.getBoundingClientRect().width - tip.offsetWidth - 4) + "px";
-        tip.style.top = Math.max(py - 28, 2) + "px";
+        var tipLeft = px + 8;
+        if (tipLeft + tip.offsetWidth > conRect.width - 4) tipLeft = px - tip.offsetWidth - 8;
+        tip.style.left = tipLeft + "px";
+        tip.style.top  = Math.max(py - 20, 2) + "px";
       } else {
         tip.style.display = "none";
       }
