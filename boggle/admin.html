@@ -62,9 +62,9 @@
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
   .refresh:disabled { opacity: 0.5; cursor: default; }
   .refresh .spin-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); line-height: 1; }
-  .refresh:not(.loading) .spin-icon { display: none; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .refresh.loading .spin-icon { animation: spin 700ms linear infinite; }
+  .refresh.spinning .spin-icon { animation: spin 700ms linear infinite; }
+  .refresh:not(.spinning) .spin-icon { display: none; }
   /* audit log */
   .event-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
   .event-row:last-child { border-bottom: none; }
@@ -226,13 +226,13 @@ function loadAll() {
   var refreshBtn = document.getElementById("refresh-btn");
   if (refreshBtn) {
     refreshBtn.disabled = true;
-    refreshBtn.classList.add("loading");
+    refreshBtn.classList.add("spinning");
     document.getElementById("refresh-label").textContent = "Refreshing…";
   }
   function doneRefreshing() {
     if (refreshBtn) {
       refreshBtn.disabled = false;
-      refreshBtn.classList.remove("loading");
+      refreshBtn.classList.remove("spinning");
       document.getElementById("refresh-label").textContent = "Refresh";
     }
   }
