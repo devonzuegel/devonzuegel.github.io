@@ -57,8 +57,12 @@
     display: flex; align-items: center; justify-content: center; transition: border-color 150ms, color 150ms; }
   .boggle-spinner .tile.lit { border-color: var(--amber); color: var(--amber); }
   .err { color: var(--rust); font-family: var(--mono); font-size: 12px; margin-top: 8px; }
-  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; }
+  .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 6px; }
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
+  .refresh:disabled { opacity: 0.5; cursor: default; }
+  .refresh .spin-icon { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .refresh.loading .spin-icon { animation: spin 700ms linear infinite; }
   /* audit log */
   .event-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
   .event-row:last-child { border-bottom: none; }
@@ -92,7 +96,7 @@
       <h1>Admin</h1>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="refresh" onclick="loadAll()">Refresh</button>
+      <button class="refresh" id="refresh-btn" onclick="loadAll()">Refresh</button>
     </div>
   </div>
 
@@ -217,6 +221,19 @@ function locStr(loc) {
 }
 
 function loadAll() {
+  var refreshBtn = document.getElementById("refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.disabled = true;
+    refreshBtn.classList.add("loading");
+    refreshBtn.innerHTML = '<span class="spin-icon">↻</span> Refreshing…';
+  }
+  function doneRefreshing() {
+    if (refreshBtn) {
+      refreshBtn.disabled = false;
+      refreshBtn.classList.remove("loading");
+      refreshBtn.innerHTML = 'Refresh';
+    }
+  }
   startSpinner("spinner-players");
   startSpinner("spinner-audit");
   apiFetch(API + "/admin?action=list")
@@ -239,6 +256,7 @@ function loadAll() {
       allEvents.sort(function(a,b){ return b.ts - a.ts; });
       stopSpinner("spinner-players");
       stopSpinner("spinner-audit");
+      doneRefreshing();
       renderPlayers();
       renderAudit();
       renderStats();
@@ -249,6 +267,7 @@ function loadAll() {
     .catch(function(e) {
       stopSpinner("spinner-players");
       stopSpinner("spinner-audit");
+      doneRefreshing();
       document.getElementById("tab-players").innerHTML = '<div class="err">Error: ' + e + '</div>';
     });
 }
