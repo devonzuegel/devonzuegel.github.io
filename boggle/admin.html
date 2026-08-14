@@ -97,7 +97,7 @@
       <h1>Admin</h1>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="refresh" id="refresh-btn" onclick="loadAll()"><span class="spin-icon" id="refresh-icon" style="display:none">↻</span><span id="refresh-label">Refresh</span></button>
+      <button class="refresh" id="refresh-btn" onclick="loadAll()"><span class="spin-icon" id="refresh-icon" style="visibility:hidden">↻</span><span id="refresh-label">Refresh</span></button>
     </div>
   </div>
 
@@ -226,14 +226,14 @@ function loadAll() {
   if (refreshBtn) {
     refreshBtn.disabled = true;
     refreshBtn.classList.add("loading");
-    document.getElementById("refresh-icon").style.display = "";
+    document.getElementById("refresh-icon").style.visibility = "visible";
     document.getElementById("refresh-label").textContent = "Refreshing…";
   }
   function doneRefreshing() {
     if (refreshBtn) {
       refreshBtn.disabled = false;
       refreshBtn.classList.remove("loading");
-      document.getElementById("refresh-icon").style.display = "none";
+      document.getElementById("refresh-icon").style.visibility = "hidden";
       document.getElementById("refresh-label").textContent = "Refresh";
     }
   }
