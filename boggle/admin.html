@@ -176,6 +176,11 @@ function fmt(ts) {
 }
 function fmtDate(ts) {
   if (!ts) return "—";
+  var diffMs = Date.now() - new Date(ts).getTime();
+  var diffMins = Math.floor(diffMs / 60000);
+  var diffHours = Math.floor(diffMs / 3600000);
+  if (diffMins < 60) return diffMins <= 1 ? "just now" : diffMins + " min ago";
+  if (diffHours < 24) return diffHours + "h ago";
   var opts = { month: "short", day: "numeric" };
   if (!isThisYear(ts)) opts.year = "numeric";
   return new Date(ts).toLocaleDateString(undefined, opts);
