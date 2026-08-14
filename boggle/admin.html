@@ -1052,6 +1052,382 @@ function renderStats() {
       d2.ctx.fillText("No location data yet", d2.w / 2, d2.h / 2);
     }
   }, 0);
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GAME MODE ANALYTICS
+  // ═══════════════════════════════════════════════════════════════════
+
+  var modeHdr = document.createElement("div");
+  modeHdr.style.cssText = "font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);margin:24px 0 12px;padding-top:16px;border-top:1px solid #31463B";
+  modeHdr.textContent = "Game Mode Analytics";
+  el.appendChild(modeHdr);
+
+  // Helper: get scoring mode label from session
+  function getScoringModeLabel(s) {
+    var sm = s.scoringMode;
+    if (!sm) return "Standard";
+    if (sm.zero3 && sm.zero4) return "No 3 or 4-letter";
+    if (sm.zero3) return "No 3-letter";
+    if (sm.zero4) return "No 4-letter";
+    return "Standard";
+  }
+
+  var modeKeys = ["Standard", "No 3-letter", "No 4-letter", "No 3 or 4-letter"];
+  var modeColors = [C.amber, C.sage, C.bone, C.rust];
+
+  // Tally sessions by mode
+  var modeCounts = {}; modeKeys.forEach(function(k){ modeCounts[k] = 0; });
+  var modeScoreSums = {}; modeKeys.forEach(function(k){ modeScoreSums[k] = 0; });
+  allSessions.forEach(function(item) {
+    var lbl = getScoringModeLabel(item.s);
+    modeCounts[lbl] = (modeCounts[lbl] || 0) + 1;
+    modeScoreSums[lbl] = (modeScoreSums[lbl] || 0) + (item.s.score || 0);
+  });
+
+  // Stemming counts
+  var stemmingOn = 0, stemmingOff = 0;
+  allSessions.forEach(function(item) {
+    if (item.s.stemming) stemmingOn++; else stemmingOff++;
+  });
+  var stemmingTotal = stemmingOn + stemmingOff;
+  var pctOn = stemmingTotal ? Math.round(100 * stemmingOn / stemmingTotal) : 0;
+  var pctOff = stemmingTotal ? 100 - pctOn : 0;
+
+  // Stemming score sums
+  var stemmingOnScore = 0, stemmingOffScore = 0;
+  allSessions.forEach(function(item) {
+    if (item.s.stemming) stemmingOnScore += (item.s.score || 0);
+    else stemmingOffScore += (item.s.score || 0);
+  });
+  var avgScoreStemmingOn = stemmingOn ? Math.round(stemmingOnScore / stemmingOn) : null;
+  var avgScoreStemmingOff = stemmingOff ? Math.round(stemmingOffScore / stemmingOff) : null;
+
+  // Mode switching: per player
+  var alwaysSameMode = 0, varyMode = 0;
+  players.forEach(function(p) {
+    var ps = (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; });
+    if (!ps.length) return;
+    var modes = {};
+    ps.forEach(function(s) { var lbl = getScoringModeLabel(s); modes[lbl] = true; });
+    if (Object.keys(modes).length === 1) alwaysSameMode++; else varyMode++;
+  });
+  var modeSwitchTotal = alwaysSameMode + varyMode;
+  var pctAlwaysSame = modeSwitchTotal ? Math.round(100 * alwaysSameMode / modeSwitchTotal) : 0;
+
+  // ── Row 1: stat cards ─────────────────────────────────────────────
+  var modeRow1 = document.createElement("div"); modeRow1.className = "stat-cards";
+
+  // Stemming on/off cards + bar
+  var stemmingCard = document.createElement("div"); stemmingCard.className = "stat-card";
+  stemmingCard.style.cssText = "flex:2;min-width:180px";
+  var stLbl = document.createElement("div"); stLbl.className = "stat-lbl"; stLbl.textContent = "Stemming usage";
+  var stVals = document.createElement("div");
+  stVals.style.cssText = "display:flex;gap:16px;align-items:baseline;margin:6px 0 8px";
+  var stOn = document.createElement("span"); stOn.className = "stat-val"; stOn.style.color = C.amber;
+  stOn.textContent = stemmingTotal ? pctOn + "% on" : "—";
+  var stOff = document.createElement("span"); stOff.style.cssText = "font-family:var(--display);font-size:20px;color:" + C.sage;
+  stOff.textContent = stemmingTotal ? pctOff + "% off" : "—";
+  stVals.appendChild(stOn); stVals.appendChild(stOff);
+  var stBar = document.createElement("div");
+  stBar.style.cssText = "height:6px;border-radius:3px;background:" + C.sage + ";overflow:hidden;margin-top:4px";
+  var stBarFill = document.createElement("div");
+  stBarFill.style.cssText = "height:100%;width:" + pctOn + "%;background:" + C.amber + ";border-radius:3px";
+  stBar.appendChild(stBarFill);
+  stemmingCard.appendChild(stLbl); stemmingCard.appendChild(stVals); stemmingCard.appendChild(stBar);
+  modeRow1.appendChild(stemmingCard);
+
+  // Mode switching card
+  var switchCard = document.createElement("div"); switchCard.className = "stat-card";
+  var swLbl = document.createElement("div"); swLbl.className = "stat-lbl"; swLbl.textContent = "Mode consistency";
+  var swVal = document.createElement("div"); swVal.className = "stat-val";
+  swVal.textContent = modeSwitchTotal ? pctAlwaysSame + "%" : "—";
+  var swSub = document.createElement("div"); swSub.style.cssText = "font-family:var(--mono);font-size:10px;color:" + C.sage + ";margin-top:4px";
+  swSub.textContent = modeSwitchTotal ? ("always same mode / " + (100 - pctAlwaysSame) + "% vary") : "no data";
+  switchCard.appendChild(swLbl); switchCard.appendChild(swVal); switchCard.appendChild(swSub);
+  modeRow1.appendChild(switchCard);
+
+  // Stemming score effect cards
+  var stScoreCard = document.createElement("div"); stScoreCard.className = "stat-card";
+  stScoreCard.style.cssText = "flex:2;min-width:200px";
+  var ssLbl = document.createElement("div"); ssLbl.className = "stat-lbl"; ssLbl.textContent = "Avg score: stemming effect";
+  var ssVals = document.createElement("div");
+  ssVals.style.cssText = "display:flex;gap:20px;align-items:baseline;margin-top:6px";
+  var ssOnV = document.createElement("span");
+  var ssOffV = document.createElement("span");
+  var onHigher = avgScoreStemmingOn !== null && avgScoreStemmingOff !== null && avgScoreStemmingOn > avgScoreStemmingOff;
+  ssOnV.style.cssText = "font-family:var(--display);font-size:22px;color:" + (onHigher ? C.amber : C.bone);
+  ssOnV.innerHTML = "<span style='font-family:var(--mono);font-size:10px;color:" + C.sage + ";display:block'>ON</span>" + (avgScoreStemmingOn !== null ? avgScoreStemmingOn : "—");
+  ssOffV.style.cssText = "font-family:var(--display);font-size:22px;color:" + (!onHigher && avgScoreStemmingOff !== null ? C.amber : C.bone);
+  ssOffV.innerHTML = "<span style='font-family:var(--mono);font-size:10px;color:" + C.sage + ";display:block'>OFF</span>" + (avgScoreStemmingOff !== null ? avgScoreStemmingOff : "—");
+  ssVals.appendChild(ssOnV); ssVals.appendChild(ssOffV);
+  stScoreCard.appendChild(ssLbl); stScoreCard.appendChild(ssVals);
+  modeRow1.appendChild(stScoreCard);
+
+  el.appendChild(modeRow1);
+
+  // ── Row 2: 2-col grid — mode breakdown + avg score by mode ────────
+  var modeGrid2 = document.createElement("div"); modeGrid2.className = "stats-grid";
+  var cModeBreak = makeChartCard("Games per scoring mode", "chart-mode-breakdown", 180);
+  var cModeAvg = makeChartCard("Avg score by scoring mode", "chart-mode-avgscore", 180);
+  modeGrid2.appendChild(cModeBreak.card);
+  modeGrid2.appendChild(cModeAvg.card);
+  el.appendChild(modeGrid2);
+
+  // ── Row 3: wide — stemming adoption over time ─────────────────────
+  var modeWide3 = document.createElement("div"); modeWide3.className = "stats-grid wide";
+  var cStemmingTrend = makeChartCard("Stemming adoption over time (% of games with stemming ON per week)", "chart-stemming-trend", 180);
+  modeWide3.appendChild(cStemmingTrend.card);
+  el.appendChild(modeWide3);
+
+  // Build stemming trend data
+  var weeks12m = last12Weeks();
+  var stemmingOnPerWeek = [], stemmingTotalPerWeek = [];
+  weeks12m.forEach(function(mon) {
+    var weekEnd = new Date(mon.getTime() + 7 * 24 * 3600 * 1000);
+    var on = 0, tot = 0;
+    allSessions.forEach(function(item) {
+      var d = new Date(item.s.ts);
+      if (d >= mon && d < weekEnd) { tot++; if (item.s.stemming) on++; }
+    });
+    stemmingOnPerWeek.push(tot ? Math.round(100 * on / tot) : 0);
+    stemmingTotalPerWeek.push(tot);
+  });
+
+  // ── Row 4: wide — board completion rate ───────────────────────────
+  var modeWide4 = document.createElement("div"); modeWide4.className = "stats-grid wide";
+  var cCompletion = makeChartCard("Board completion rate over time (avg found5/total5 %)", "chart-completion", 180);
+  modeWide4.appendChild(cCompletion.card);
+  el.appendChild(modeWide4);
+
+  // Build completion rate data
+  var completionPerWeek = [];
+  weeks12m.forEach(function(mon) {
+    var weekEnd = new Date(mon.getTime() + 7 * 24 * 3600 * 1000);
+    var ratioSum = 0, ratioCount = 0;
+    allSessions.forEach(function(item) {
+      var d = new Date(item.s.ts);
+      if (d >= mon && d < weekEnd && item.s.total5 > 0) {
+        ratioSum += item.s.found5 / item.s.total5;
+        ratioCount++;
+      }
+    });
+    completionPerWeek.push(ratioCount ? Math.round(100 * ratioSum / ratioCount) : 0);
+  });
+
+  // ── Row 5: 2-col — score dist per mode + heatmap ──────────────────
+  var modeGrid5 = document.createElement("div"); modeGrid5.className = "stats-grid";
+  var cScoreDist = makeChartCard("Score distribution by mode", "chart-mode-scoredist", 200);
+  var cHeatmap = makeChartCard("Stemming × mode game count", "chart-mode-heatmap", 200);
+  modeGrid5.appendChild(cScoreDist.card);
+  modeGrid5.appendChild(cHeatmap.card);
+  el.appendChild(modeGrid5);
+
+  // Build score distribution data: buckets 0-50, 50-100, 100-150, 150-200, 200+
+  var scoreBuckets = ["0–50", "50–100", "100–150", "150–200", "200+"];
+  var scoreBucketEdges = [0, 50, 100, 150, 200, Infinity];
+  var scoreDistByMode = {};
+  modeKeys.forEach(function(k) {
+    scoreDistByMode[k] = [0, 0, 0, 0, 0];
+  });
+  allSessions.forEach(function(item) {
+    var lbl = getScoringModeLabel(item.s);
+    var sc = item.s.score || 0;
+    for (var bi = 0; bi < scoreBucketEdges.length - 1; bi++) {
+      if (sc >= scoreBucketEdges[bi] && sc < scoreBucketEdges[bi + 1]) {
+        scoreDistByMode[lbl][bi]++;
+        break;
+      }
+    }
+  });
+
+  // Build heatmap data: 2 rows (stemming on/off) × 4 cols (modes)
+  var heatmapData = {};
+  modeKeys.forEach(function(mk) { heatmapData[mk] = { on: 0, off: 0 }; });
+  allSessions.forEach(function(item) {
+    var lbl = getScoringModeLabel(item.s);
+    if (item.s.stemming) heatmapData[lbl].on++;
+    else heatmapData[lbl].off++;
+  });
+
+  // ── Row 6: player mode preferences ───────────────────────────────
+  var modeRow6 = document.createElement("div");
+  modeRow6.className = "chart-card";
+  modeRow6.style.marginTop = "0";
+  var r6Ey = document.createElement("div"); r6Ey.className = "eyebrow"; r6Ey.style.marginBottom = "12px";
+  r6Ey.textContent = "Player mode preferences";
+  modeRow6.appendChild(r6Ey);
+
+  var prefGrid = document.createElement("div");
+  prefGrid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px";
+
+  players.forEach(function(p) {
+    var ps = (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; });
+    if (!ps.length) return;
+
+    // Most common mode
+    var mCounts = {};
+    ps.forEach(function(s) { var lbl = getScoringModeLabel(s); mCounts[lbl] = (mCounts[lbl] || 0) + 1; });
+    var topMode = Object.keys(mCounts).sort(function(a, b) { return mCounts[b] - mCounts[a]; })[0];
+
+    // Stemming preference
+    var sOn = ps.filter(function(s){ return s.stemming; }).length;
+    var prefStemming = sOn > ps.length / 2;
+
+    var row = document.createElement("div");
+    row.style.cssText = "display:flex;align-items:center;gap:8px;padding:6px 8px;background:" + C.surface2 + ";border-radius:6px;font-family:var(--mono)";
+    var nameEl = document.createElement("span");
+    nameEl.style.cssText = "color:" + C.amber + ";font-size:11px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+    nameEl.textContent = p.player || "?";
+    var modeEl = document.createElement("span");
+    modeEl.style.cssText = "color:" + C.bone + ";font-size:10px;flex-shrink:0";
+    modeEl.textContent = topMode === "Standard" ? "Std" : topMode.replace("No ", "No\u00A0");
+    row.appendChild(nameEl);
+    row.appendChild(modeEl);
+    if (prefStemming) {
+      var stBadge = document.createElement("span");
+      stBadge.style.cssText = "background:" + C.amber + ";color:#1D2C25;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0";
+      stBadge.textContent = "STEM";
+      row.appendChild(stBadge);
+    }
+    prefGrid.appendChild(row);
+  });
+
+  if (!prefGrid.children.length) {
+    var empMsg = document.createElement("div"); empMsg.className = "empty"; empMsg.textContent = "No player data.";
+    prefGrid.appendChild(empMsg);
+  }
+  modeRow6.appendChild(prefGrid);
+  el.appendChild(modeRow6);
+
+  // ── Draw mode analytics charts ────────────────────────────────────
+  setTimeout(function() {
+    // 1. Scoring mode breakdown bar chart
+    drawBarChart(cModeBreak.canvas, modeKeys, modeKeys.map(function(k){ return modeCounts[k]; }), C.amber, { rotateLabels: true });
+
+    // 2. Avg score by mode bar chart
+    var modeAvgScores = modeKeys.map(function(k) {
+      return modeCounts[k] ? Math.round(modeScoreSums[k] / modeCounts[k]) : 0;
+    });
+    drawBarChart(cModeAvg.canvas, modeKeys, modeAvgScores, C.sage, { rotateLabels: true });
+
+    // 3. Stemming trend line chart
+    var cdStemTrend = drawLineChart(cStemmingTrend.canvas, weeks12m.map(weekLabel), stemmingOnPerWeek, C.sage, { zeroBase: true });
+    addLineChartHover(cStemmingTrend.canvas, cdStemTrend, function(pt) {
+      return pt.label + ": " + pt.value + "% stemming on";
+    });
+
+    // 4. Board completion line chart
+    var cdCompl = drawLineChart(cCompletion.canvas, weeks12m.map(weekLabel), completionPerWeek, C.amber, { zeroBase: true });
+    addLineChartHover(cCompletion.canvas, cdCompl, function(pt) {
+      return pt.label + ": " + pt.value + "% avg board completion";
+    });
+
+    // 5. Score distribution grouped bar chart
+    (function() {
+      var cv = cScoreDist.canvas;
+      var d = setupCanvas(cv);
+      var ctx = d.ctx, W = d.w, H = d.h;
+      var padL = 36, padR = 12, padT = 16, padB = 40;
+      var chartW = W - padL - padR;
+      var chartH = H - padT - padB;
+      var nBuckets = scoreBuckets.length;
+      var nModes = modeKeys.length;
+      var groupW = chartW / nBuckets;
+      var barW = groupW / (nModes + 1);
+
+      // Find max
+      var maxVal = 1;
+      modeKeys.forEach(function(mk) {
+        scoreDistByMode[mk].forEach(function(v) { if (v > maxVal) maxVal = v; });
+      });
+
+      // Draw axes
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + chartH); ctx.lineTo(padL + chartW, padT + chartH); ctx.stroke();
+
+      // Draw bars
+      for (var bi = 0; bi < nBuckets; bi++) {
+        for (var mi = 0; mi < nModes; mi++) {
+          var val = scoreDistByMode[modeKeys[mi]][bi];
+          var bh = val / maxVal * chartH;
+          var bx = padL + bi * groupW + (mi + 0.5) * barW;
+          var by = padT + chartH - bh;
+          ctx.fillStyle = modeColors[mi];
+          ctx.globalAlpha = 0.85;
+          ctx.fillRect(bx, by, barW * 0.85, bh);
+          ctx.globalAlpha = 1;
+        }
+        // Bucket label
+        ctx.fillStyle = C.sage; ctx.font = "9px monospace"; ctx.textAlign = "center";
+        ctx.fillText(scoreBuckets[bi], padL + (bi + 0.5) * groupW, padT + chartH + 14);
+      }
+
+      // Legend
+      var legX = padL;
+      modeKeys.forEach(function(mk, mi) {
+        ctx.fillStyle = modeColors[mi]; ctx.globalAlpha = 0.85;
+        ctx.fillRect(legX, padT + chartH + 26, 8, 8);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = C.bone; ctx.font = "8px monospace"; ctx.textAlign = "left";
+        var shortLabel = mk === "Standard" ? "Std" : mk === "No 3-letter" ? "No3" : mk === "No 4-letter" ? "No4" : "No3+4";
+        ctx.fillText(shortLabel, legX + 10, padT + chartH + 34);
+        legX += 38;
+      });
+    }());
+
+    // 6. Stemming × mode heatmap
+    (function() {
+      var cv = cHeatmap.canvas;
+      var d = setupCanvas(cv);
+      var ctx = d.ctx, W = d.w, H = d.h;
+      var rows = ["Stemming ON", "Stemming OFF"];
+      var padL = 90, padR = 16, padT = 36, padB = 64;
+      var cellW = (W - padL - padR) / modeKeys.length;
+      var cellH = (H - padT - padB) / rows.length;
+
+      // Find max for opacity scaling
+      var hmMax = 1;
+      modeKeys.forEach(function(mk) {
+        if (heatmapData[mk].on > hmMax) hmMax = heatmapData[mk].on;
+        if (heatmapData[mk].off > hmMax) hmMax = heatmapData[mk].off;
+      });
+
+      // Column headers (mode names)
+      ctx.fillStyle = C.sage; ctx.font = "9px monospace"; ctx.textAlign = "center";
+      modeKeys.forEach(function(mk, mi) {
+        var cx = padL + (mi + 0.5) * cellW;
+        var shortLbl = mk === "Standard" ? "Standard" : mk === "No 3-letter" ? "No 3-ltr" : mk === "No 4-letter" ? "No 4-ltr" : "No 3+4";
+        // Word-wrap: split at space
+        var words = shortLbl.split(" ");
+        if (words.length > 1) {
+          ctx.fillText(words[0], cx, padT - 18);
+          ctx.fillText(words.slice(1).join(" "), cx, padT - 7);
+        } else {
+          ctx.fillText(shortLbl, cx, padT - 10);
+        }
+      });
+
+      // Row labels + cells
+      rows.forEach(function(rowLbl, ri) {
+        ctx.fillStyle = C.sage; ctx.font = "9px monospace"; ctx.textAlign = "right";
+        ctx.fillText(rowLbl, padL - 6, padT + (ri + 0.5) * cellH + 4);
+        modeKeys.forEach(function(mk, mi) {
+          var val = ri === 0 ? heatmapData[mk].on : heatmapData[mk].off;
+          var opacity = hmMax > 0 ? 0.1 + 0.85 * (val / hmMax) : 0.1;
+          var cx = padL + mi * cellW;
+          var cy = padT + ri * cellH;
+          ctx.fillStyle = C.amber;
+          ctx.globalAlpha = val > 0 ? opacity : 0.05;
+          ctx.fillRect(cx + 2, cy + 2, cellW - 4, cellH - 4);
+          ctx.globalAlpha = 1;
+          // Count label
+          ctx.fillStyle = val > hmMax * 0.5 ? "#1D2C25" : C.bone;
+          ctx.font = "11px monospace"; ctx.textAlign = "center";
+          ctx.fillText(val > 0 ? val : "—", cx + cellW / 2, cy + cellH / 2 + 4);
+        });
+      });
+    }());
+  }, 0);
 }
 
 /* ---- map tab ---- */
