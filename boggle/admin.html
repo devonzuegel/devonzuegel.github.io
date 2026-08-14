@@ -60,7 +60,7 @@
   .refresh { font-family: var(--mono); font-size: 11px; color: var(--sage); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 110px; }
   .refresh:hover { color: var(--bone); border-color: var(--bone); }
   .refresh:disabled { opacity: 0.5; cursor: default; }
-  .refresh .spin-icon { display: inline-block; }
+  .refresh .spin-icon { display: inline-block; line-height: 1; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .refresh.loading .spin-icon { animation: spin 700ms linear infinite; }
   /* audit log */
@@ -96,7 +96,7 @@
       <h1>Admin</h1>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="refresh" id="refresh-btn" onclick="loadAll()">Refresh</button>
+      <button class="refresh" id="refresh-btn" onclick="loadAll()"><span class="spin-icon" id="refresh-icon" style="display:none">↻</span><span id="refresh-label">Refresh</span></button>
     </div>
   </div>
 
@@ -225,13 +225,15 @@ function loadAll() {
   if (refreshBtn) {
     refreshBtn.disabled = true;
     refreshBtn.classList.add("loading");
-    refreshBtn.innerHTML = '<span class="spin-icon">↻</span> Refreshing…';
+    document.getElementById("refresh-icon").style.display = "";
+    document.getElementById("refresh-label").textContent = "Refreshing…";
   }
   function doneRefreshing() {
     if (refreshBtn) {
       refreshBtn.disabled = false;
       refreshBtn.classList.remove("loading");
-      refreshBtn.innerHTML = 'Refresh';
+      document.getElementById("refresh-icon").style.display = "none";
+      document.getElementById("refresh-label").textContent = "Refresh";
     }
   }
   startSpinner("spinner-players");
