@@ -624,7 +624,7 @@ var API = "https://boggle-api.vercel.app/api/boggle";
 var DEVON_TOKEN_KEY = "boggle:devonToken";
 function getDevonToken(){ try { return localStorage.getItem(DEVON_TOKEN_KEY) || ""; } catch(e){ return ""; } }
 function setDevonToken(t){ try { localStorage.setItem(DEVON_TOKEN_KEY, t); } catch(e){} }
-var BUILD = "2026-08-14T23:21:52Z"; /* updated by deploy script */
+var BUILD = "2026-08-14T23:22:19Z"; /* updated by deploy script */
 var PENDING_KEY = "boggle:pendingSync";
 var syncState = { status: "idle", lastSync: null, error: null, pending: false, offline: !navigator.onLine };
 var syncDebounce = null;
@@ -2708,7 +2708,7 @@ function screenProgress(){
     toggleRow.appendChild(toggleBtn);
     toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap", text: selectedLenLabel }));
     toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap", text: selectedModeLabel }));
-    if (selectedStemmingLabel) toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap;color:var(--sage);border-color:var(--sage)", text: selectedStemmingLabel }));
+    if (selectedStemmingLabel) toggleRow.appendChild(h("span", { class: "filter-badge", style: "white-space:nowrap", text: selectedStemmingLabel }));
     filterSection.appendChild(toggleRow);
 
     /* always build the table; animate open/close via max-height */
