@@ -271,12 +271,28 @@
   }
   .result:hover{ background: #eef1ea; }
   .result-icon-btn{
-    background: none;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--paper-dim);
     border: none;
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--moss);
     cursor: pointer;
-    flex-shrink: 0;
-    margin-top: 2px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .result-icon-btn:hover{ background: var(--line); }
+  .result-icon-btn.is-loading{ animation: pulse 1.1s ease-in-out infinite; }
+  .result-icon-btn.is-active{ background: var(--moss); color: var(--paper); }
+  .result-icon-btn.is-paused{
+    background: var(--paper-dim);
+    color: var(--moss);
+    outline: 2px solid var(--moss);
+    outline-offset: -2px;
   }
   .result-expand{
     cursor: pointer;
@@ -285,29 +301,9 @@
   }
 
   .result-icon{
-    flex-shrink:0;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--paper-dim);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color: var(--moss);
-    transition: background .15s ease, color .15s ease;
-  }
-  .result-icon.is-loading{
-    animation: pulse 1.1s ease-in-out infinite;
-  }
-  .result-icon.is-active{
-    background: var(--moss);
-    color: var(--paper);
-  }
-  .result-icon.is-paused{
-    background: var(--paper-dim);
-    color: var(--moss);
-    outline: 2px solid var(--moss);
-    outline-offset: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   @keyframes pulse{
     0%, 100%{ opacity: 1; }
@@ -1043,9 +1039,10 @@ function clearActiveTrack(){
   if(openIdentifier){
     const prevGroup = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(openIdentifier)}"]`);
     if(prevGroup){
-      const prevIcon = prevGroup.querySelector('.result-icon');
+      const prevIcon = prevGroup.querySelector('.result-icon-btn');
       prevIcon.classList.remove('is-active', 'is-paused');
-      prevIcon.innerHTML = playIcon();
+      const prevInner = prevIcon.querySelector('.result-icon');
+      if(prevInner) prevInner.innerHTML = playIcon();
     }
     if(currentAudio){ currentAudio.pause(); currentAudio = null; }
     openIdentifier = null;
@@ -1056,7 +1053,7 @@ function clearActiveTrack(){
 async function playTrack(identifier){
   const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
   if(!group) return;
-  const iconEl = group.querySelector('.result-icon');
+  const iconEl = group.querySelector('.result-icon-btn');
 
   // Clicking play on the already-playing track stops it
   if(openIdentifier === identifier){
@@ -1209,15 +1206,16 @@ let   currentAudio   = null;
 function setIconState(identifier, playing){
   const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
   if(!group) return;
-  const iconEl = group.querySelector('.result-icon');
+  const iconEl = group.querySelector('.result-icon-btn');
+  const innerIcon = iconEl.querySelector('.result-icon');
   if(playing){
     iconEl.classList.add('is-active');
     iconEl.classList.remove('is-paused');
-    iconEl.innerHTML = pauseIcon();
+    if(innerIcon) innerIcon.innerHTML = pauseIcon();
   } else {
     iconEl.classList.remove('is-active');
     iconEl.classList.add('is-paused');
-    iconEl.innerHTML = playIcon();
+    if(innerIcon) innerIcon.innerHTML = playIcon();
   }
 }
 
