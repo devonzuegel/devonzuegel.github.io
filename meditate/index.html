@@ -475,6 +475,61 @@
   }
   .about-footer a{ color: var(--moss); }
 
+  /* ── Confirm modal ── */
+  .modal-backdrop{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28,35,33,.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-backdrop.is-open{ display: flex; }
+  .modal{
+    background: var(--card);
+    border-radius: 14px;
+    padding: 28px 24px 20px;
+    max-width: 320px;
+    width: calc(100% - 48px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  }
+  .modal p{
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+  .modal-actions{
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .modal-cancel{
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: none;
+    color: var(--moss-soft);
+    cursor: pointer;
+  }
+  .modal-cancel:hover{ border-color: var(--moss-soft); }
+  .modal-confirm{
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #8a4a3a;
+    color: #fff;
+    cursor: pointer;
+  }
+  .modal-confirm:hover{ background: #7a3a2a; }
+
   @media (prefers-reduced-motion: no-preference){
     .result{ transition: background .12s ease; }
   }
@@ -526,6 +581,16 @@
       <h1>Tranquila</h1>
       <p class="about-desc">Search audio meditations, mindfulness talks, and guided practices held in the Internet Archive.</p>
       <p class="about-footer">Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.</p>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal">
+      <p id="modal-message"></p>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" id="modal-cancel">Cancel</button>
+        <button type="button" class="modal-confirm" id="modal-confirm">Remove</button>
+      </div>
     </div>
   </div>
 
@@ -998,6 +1063,74 @@ document.querySelectorAll('.chip').forEach(chip => {
 });
 
 setSaved(getSaved()); // initialize the saved-count badge on load
+
+// ---------- Confirm modal ----------
+const modalBackdrop = document.getElementById('modal-backdrop');
+const modalMessage  = document.getElementById('modal-message');
+const modalCancel   = document.getElementById('modal-cancel');
+const modalConfirm  = document.getElementById('modal-confirm');
+
+function showConfirmModal(message){
+  return new Promise(resolve => {
+    modalMessage.textContent = message;
+    modalBackdrop.classList.add('is-open');
+    const cleanup = (result) => {
+      modalBackdrop.classList.remove('is-open');
+      modalCancel.removeEventListener('click', onCancel);
+      modalConfirm.removeEventListener('click', onConfirm);
+      modalBackdrop.removeEventListener('click', onBackdrop);
+      resolve(result);
+    };
+    const onCancel   = () => cleanup(false);
+    const onConfirm  = () => cleanup(true);
+    const onBackdrop = (e) => { if(e.target === modalBackdrop) cleanup(false); };
+    modalCancel.addEventListener('click', onCancel);
+    modalConfirm.addEventListener('click', onConfirm);
+    modalBackdrop.addEventListener('click', onBackdrop);
+  });
+}
+
+// ---------- Bookmark icon click on result rows ----------
+resultsEl.addEventListener('click', async (e) => {
+  const icon = e.target.closest('.result-saved-icon');
+  if(!icon) return;
+  e.stopPropagation();
+
+  const identifier = icon.dataset.id;
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+
+  if(icon.classList.contains('is-saved')){
+    const title = group?.dataset.title || 'this meditation';
+    const confirmed = await showConfirmModal(`Remove "${title}" from saved?`);
+    if(!confirmed) return;
+    await removeSaved(identifier);
+    icon.classList.remove('is-saved');
+    icon.innerHTML = bookmarkIcon(false);
+    // sync save-btn inside player if open
+    const saveBtn = group?.querySelector('.save-btn');
+    if(saveBtn){ saveBtn.classList.remove('is-saved'); saveBtn.innerHTML = `${bookmarkIcon(false)} <span class="save-label">Save offline</span>`; }
+  } else {
+    // Save immediately — need the audio URL
+    icon.style.opacity = '0.5';
+    try{
+      const { url, duration } = await fetchMeta(identifier);
+      if(!url){ icon.style.opacity = ''; return; }
+      await saveForOffline({
+        identifier,
+        title: group?.dataset.title || identifier,
+        creator: group?.dataset.creator || '',
+        runtime: duration || '',
+        audioUrl: url
+      });
+      icon.classList.add('is-saved');
+      icon.innerHTML = bookmarkIcon(true);
+      // sync save-btn inside player if open
+      const saveBtn = group?.querySelector('.save-btn');
+      if(saveBtn){ saveBtn.classList.add('is-saved'); saveBtn.innerHTML = `${bookmarkIcon(true)} <span class="save-label">Saved offline</span>`; }
+    } catch{ /* silently fail */ }
+    icon.style.opacity = '';
+  }
+});
 </script>
 </body>
 </html>
