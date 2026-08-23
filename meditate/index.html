@@ -499,11 +499,21 @@
     z-index: 150;
     background: var(--moss);
     color: var(--paper);
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 8px;
     padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
   }
   .now-playing-bar.is-visible{ display: flex; }
+  .npb-top{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  #npb-audio{
+    width: 100%;
+    height: 32px;
+    accent-color: var(--paper);
+  }
   .npb-play-btn{
     flex-shrink: 0;
     width: 36px;
@@ -663,12 +673,15 @@
   </div>
 
   <div class="now-playing-bar" id="now-playing-bar">
-    <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause"></button>
-    <div class="npb-info">
-      <span class="npb-title" id="npb-title"></span>
-      <span class="npb-creator" id="npb-creator"></span>
+    <div class="npb-top">
+      <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause"></button>
+      <div class="npb-info">
+        <span class="npb-title" id="npb-title"></span>
+        <span class="npb-creator" id="npb-creator"></span>
+      </div>
+      <button type="button" class="npb-save-btn" id="npb-save-btn" aria-label="Save offline"></button>
     </div>
-    <button type="button" class="npb-save-btn" id="npb-save-btn" aria-label="Save offline"></button>
+    <audio id="npb-audio" controls></audio>
   </div>
 
   <div class="modal-backdrop" id="modal-backdrop">
@@ -1044,7 +1057,7 @@ function clearActiveTrack(){
       const prevInner = prevIcon.querySelector('.result-icon');
       if(prevInner) prevInner.innerHTML = playIcon();
     }
-    if(currentAudio){ currentAudio.pause(); currentAudio = null; }
+    npbAudio.pause();
     openIdentifier = null;
   }
 }
@@ -1055,10 +1068,13 @@ async function playTrack(identifier){
   if(!group) return;
   const iconEl = group.querySelector('.result-icon-btn');
 
-  // Clicking play on the already-playing track stops it
+  // Clicking play on the current track toggles play/pause
   if(openIdentifier === identifier){
-    clearActiveTrack();
-    nowPlayingBar.classList.remove('is-visible');
+    if(npbAudio.paused){
+      npbAudio.play().catch(() => {});
+    } else {
+      npbAudio.pause();
+    }
     return;
   }
 
@@ -1080,11 +1096,9 @@ async function playTrack(identifier){
       return;
     }
 
-    // Create audio element (hidden) and attach to bar
-    const audio = document.createElement('audio');
-    audio.src = url;
-    audio.autoplay = true;
-    document.body.appendChild(audio);
+    npbAudio.src = url;
+    npbAudio.play().catch(() => {});
+    const audio = npbAudio;
 
     if('mediaSession' in navigator){
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -1201,7 +1215,8 @@ const npbPlayBtn     = document.getElementById('npb-play-btn');
 const npbTitle       = document.getElementById('npb-title');
 const npbCreator     = document.getElementById('npb-creator');
 const npbSaveBtn     = document.getElementById('npb-save-btn');
-let   currentAudio   = null;
+const npbAudio       = document.getElementById('npb-audio');
+let   currentAudio   = npbAudio;
 
 function setIconState(identifier, playing){
   const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
@@ -1220,9 +1235,6 @@ function setIconState(identifier, playing){
 }
 
 function setupNowPlaying(audio, identifier, group){
-  // Remove any previously appended hidden audio element
-  document.querySelectorAll('audio.npb-audio').forEach(el => el.remove());
-  audio.classList.add('npb-audio');
   currentAudio = audio;
 
   npbTitle.textContent   = group.dataset.title   || '';
@@ -1241,6 +1253,7 @@ function setupNowPlaying(audio, identifier, group){
   audio.addEventListener('ended', () => {
     npbPlayBtn.innerHTML = playIcon();
     setIconState(identifier, false);
+    // Keep the bar visible — track is done but still selected
   });
 
   // initial state
