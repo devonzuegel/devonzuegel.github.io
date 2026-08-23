@@ -34,7 +34,7 @@
   .wrap{
     max-width: 760px;
     margin: 0 auto;
-    padding: 72px 24px 0;
+    padding: 72px 24px 100px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -303,6 +303,12 @@
     background: var(--moss);
     color: var(--paper);
   }
+  .result-icon.is-paused{
+    background: var(--paper-dim);
+    color: var(--moss);
+    outline: 2px solid var(--moss);
+    outline-offset: -2px;
+  }
   @keyframes pulse{
     0%, 100%{ opacity: 1; }
     50%{ opacity: .45; }
@@ -487,6 +493,58 @@
   }
   .about-footer a{ color: var(--moss); }
 
+  /* ── Now playing bar ── */
+  .now-playing-bar{
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    background: var(--moss);
+    color: var(--paper);
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  }
+  .now-playing-bar.is-visible{ display: flex; }
+  .npb-play-btn{
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    border: none;
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .npb-play-btn:hover{ background: rgba(255,255,255,.25); }
+  .npb-info{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .npb-title{
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .npb-creator{
+    font-size: 11px;
+    opacity: .7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   /* ── Confirm modal ── */
   .modal-backdrop{
     display: none;
@@ -596,6 +654,14 @@
     </div>
   </div>
 
+  <div class="now-playing-bar" id="now-playing-bar">
+    <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause"></button>
+    <div class="npb-info">
+      <span class="npb-title" id="npb-title"></span>
+      <span class="npb-creator" id="npb-creator"></span>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
       <p id="modal-message"></p>
@@ -641,6 +707,9 @@ updateOfflineBanner();
 // ---------- Icons ----------
 function playIcon(){
   return `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+}
+function pauseIcon(){
+  return `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
 }
 function bookmarkIcon(filled){
   return `<svg width="13" height="13" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>`;
@@ -966,8 +1035,11 @@ async function togglePlayer(identifier, autoplay = false){
 
   if(openIdentifier === identifier){
     slot.innerHTML = '';
-    iconEl.classList.remove('is-active');
+    iconEl.classList.remove('is-active', 'is-paused');
+    iconEl.innerHTML = playIcon();
     if(chevron) chevron.classList.remove('is-open');
+    if(currentAudio){ currentAudio.pause(); currentAudio = null; }
+    nowPlayingBar.classList.remove('is-visible');
     openIdentifier = null;
     return;
   }
@@ -976,10 +1048,13 @@ async function togglePlayer(identifier, autoplay = false){
     const prevGroup = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(openIdentifier)}"]`);
     if(prevGroup){
       prevGroup.querySelector('.player-slot').innerHTML = '';
-      prevGroup.querySelector('.result-icon').classList.remove('is-active');
+      const prevIcon = prevGroup.querySelector('.result-icon');
+      prevIcon.classList.remove('is-active', 'is-paused');
+      prevIcon.innerHTML = playIcon();
       const prevChevron = getChevron(prevGroup);
       if(prevChevron) prevChevron.classList.remove('is-open');
     }
+    if(currentAudio){ currentAudio.pause(); currentAudio = null; }
   }
   if(chevron) chevron.classList.add('is-open');
 
@@ -1022,6 +1097,9 @@ async function togglePlayer(identifier, autoplay = false){
         artist: group.dataset.creator || 'Internet Archive',
       });
     }
+
+    const audio = slot.querySelector('audio');
+    setupNowPlaying(audio, identifier, group);
 
     const saveBtn = slot.querySelector('.save-btn');
     saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
@@ -1086,6 +1164,58 @@ document.querySelectorAll('.chip').forEach(chip => {
 });
 
 setSaved(getSaved()); // initialize the saved-count badge on load
+
+// ---------- Now playing bar ----------
+const nowPlayingBar  = document.getElementById('now-playing-bar');
+const npbPlayBtn     = document.getElementById('npb-play-btn');
+const npbTitle       = document.getElementById('npb-title');
+const npbCreator     = document.getElementById('npb-creator');
+let   currentAudio   = null;
+
+function setIconState(identifier, playing){
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  if(!group) return;
+  const iconEl = group.querySelector('.result-icon');
+  if(playing){
+    iconEl.classList.add('is-active');
+    iconEl.classList.remove('is-paused');
+    iconEl.innerHTML = pauseIcon();
+  } else {
+    iconEl.classList.remove('is-active');
+    iconEl.classList.add('is-paused');
+    iconEl.innerHTML = playIcon();
+  }
+}
+
+function setupNowPlaying(audio, identifier, group){
+  currentAudio = audio;
+
+  npbTitle.textContent   = group.dataset.title   || '';
+  npbCreator.textContent = group.dataset.creator  || '';
+  nowPlayingBar.classList.add('is-visible');
+  npbPlayBtn.innerHTML = pauseIcon();
+
+  audio.addEventListener('play', () => {
+    npbPlayBtn.innerHTML = pauseIcon();
+    setIconState(identifier, true);
+  });
+  audio.addEventListener('pause', () => {
+    npbPlayBtn.innerHTML = playIcon();
+    setIconState(identifier, false);
+  });
+  audio.addEventListener('ended', () => {
+    npbPlayBtn.innerHTML = playIcon();
+    setIconState(identifier, false);
+  });
+
+  // initial state
+  if(!audio.paused) setIconState(identifier, true);
+}
+
+npbPlayBtn.addEventListener('click', () => {
+  if(!currentAudio) return;
+  currentAudio.paused ? currentAudio.play() : currentAudio.pause();
+});
 
 // ---------- Confirm modal ----------
 const modalBackdrop = document.getElementById('modal-backdrop');
