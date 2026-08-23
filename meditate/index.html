@@ -694,6 +694,13 @@ async function togglePlayer(identifier){
       </div>
     `;
 
+    if('mediaSession' in navigator){
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: group.dataset.title || 'Meditation',
+        artist: group.dataset.creator || 'Internet Archive',
+      });
+    }
+
     const saveBtn = slot.querySelector('.save-btn');
     saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
   }catch(err){
