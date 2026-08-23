@@ -401,10 +401,22 @@
   .result-saved-icon{
     color: var(--line);
     line-height: 0;
+    cursor: pointer;
   }
   .result-saved-icon.is-saved{
     color: var(--moss);
   }
+  .result-expand-btn{
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--line);
+    cursor: pointer;
+    line-height: 0;
+    transition: transform .2s ease, color .15s ease;
+  }
+  .result-expand-btn:hover{ color: var(--moss-soft); }
+  .result-expand-btn.is-open{ transform: rotate(180deg); color: var(--moss-soft); }
 
   .result-title{
     font-family: 'Fraunces', serif;
@@ -632,6 +644,9 @@ function playIcon(){
 }
 function bookmarkIcon(filled){
   return `<svg width="13" height="13" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>`;
+}
+function chevronIcon(){
+  return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
 }
 function trashIcon(){
   return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/></svg>`;
@@ -884,12 +899,13 @@ function render(docs, query, page = 0){
       <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="">
         <div class="result" data-id="${escapeHtml(id)}">
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
-          <div class="result-body result-expand" data-id="${escapeHtml(id)}">
+          <div class="result-body">
             <div class="result-title-row">
               <p class="result-title">${escapeHtml(title)}</p>
               <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
+                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
               </div>
             </div>
             <div class="result-meta">${metaParts.join('')}</div>
@@ -929,25 +945,29 @@ function render(docs, query, page = 0){
       btn.addEventListener('click', () => togglePlayer(btn.dataset.id, true));
     }
   });
-  resultsEl.querySelectorAll('.result-expand').forEach(body => {
-    if(!body.dataset.bound){
-      body.dataset.bound = '1';
-      body.addEventListener('click', () => togglePlayer(body.dataset.id, false));
+  resultsEl.querySelectorAll('.result-expand-btn').forEach(btn => {
+    if(!btn.dataset.bound){
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => togglePlayer(btn.dataset.id, false));
     }
   });
 
   prefetchDurations(identifiers);
 }
 
+function getChevron(group){ return group.querySelector('.result-expand-btn'); }
+
 async function togglePlayer(identifier, autoplay = false){
   const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
   if(!group) return;
   const iconEl = group.querySelector('.result-icon');
   const slot = group.querySelector('.player-slot');
+  const chevron = getChevron(group);
 
   if(openIdentifier === identifier){
     slot.innerHTML = '';
     iconEl.classList.remove('is-active');
+    if(chevron) chevron.classList.remove('is-open');
     openIdentifier = null;
     return;
   }
@@ -957,8 +977,11 @@ async function togglePlayer(identifier, autoplay = false){
     if(prevGroup){
       prevGroup.querySelector('.player-slot').innerHTML = '';
       prevGroup.querySelector('.result-icon').classList.remove('is-active');
+      const prevChevron = getChevron(prevGroup);
+      if(prevChevron) prevChevron.classList.remove('is-open');
     }
   }
+  if(chevron) chevron.classList.add('is-open');
 
   openIdentifier = identifier;
   iconEl.classList.add('is-loading');
