@@ -1,6 +1,6 @@
 {
-  "name": "Meditation Search",
-  "short_name": "Meditations",
+  "name": "Tranquila",
+  "short_name": "Tranquila",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#eef0ec",
