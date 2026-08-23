@@ -4,5 +4,12 @@
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#eef0ec",
-  "theme_color": "#4b5d4c"
+  "theme_color": "#4b5d4c",
+  "icons": [
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
 }
