@@ -542,13 +542,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .npb-creator{
-    font-size: 11px;
-    opacity: .7;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
   }
   .npb-save-btn{
     flex-shrink: 0;
@@ -559,6 +554,8 @@
     padding: 4px;
     line-height: 0;
     transition: color .15s;
+    position: relative;
+    top: -2px;
   }
   .npb-save-btn:hover{ color: rgba(255,255,255,.9); }
   .npb-save-btn.is-saved{ color: #fff; }
@@ -735,10 +732,7 @@
 
   <div class="now-playing-bar" id="now-playing-bar">
     <div class="npb-top">
-      <div class="npb-info">
-        <span class="npb-title" id="npb-title"></span>
-        <span class="npb-creator" id="npb-creator"></span>
-      </div>
+      <span class="npb-title" id="npb-title"></span>
       <button type="button" class="npb-save-btn" id="npb-save-btn" aria-label="Save offline"></button>
     </div>
     <audio id="npb-audio" controls></audio>
@@ -1287,7 +1281,6 @@ setSaved(getSaved()); // initialize the saved-count badge on load
 // ---------- Now playing bar ----------
 const nowPlayingBar  = document.getElementById('now-playing-bar');
 const npbTitle       = document.getElementById('npb-title');
-const npbCreator     = document.getElementById('npb-creator');
 const npbSaveBtn     = document.getElementById('npb-save-btn');
 const npbAudio       = document.getElementById('npb-audio');
 let   currentAudio   = npbAudio;
@@ -1311,8 +1304,7 @@ function setIconState(identifier, playing){
 function setupNowPlaying(audio, identifier, group){
   currentAudio = audio;
 
-  npbTitle.textContent   = group.dataset.title   || '';
-  npbCreator.textContent = group.dataset.creator  || '';
+  npbTitle.textContent = group.dataset.title || '';
   nowPlayingBar.classList.add('is-visible');
 
   audio.addEventListener('play', () => {
