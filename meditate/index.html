@@ -34,7 +34,7 @@
   .wrap{
     max-width: 760px;
     margin: 0 auto;
-    padding: 32px 24px 0;
+    padding: 0 24px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -81,10 +81,21 @@
   }
   .offline-banner.is-visible{ display: flex; }
 
+  .tabs-outer{
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 24px;
+  }
   .tabs{
     display: flex;
-    margin-bottom: 24px;
+    justify-content: center;
     position: relative;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
   }
   .tab{
     font-family: 'Inter', sans-serif;
@@ -94,7 +105,6 @@
     text-transform: uppercase;
     background: none;
     border: none;
-    border-bottom: 2px solid var(--line);
     border-radius: 0;
     padding: 8px 20px;
     color: var(--moss-soft);
@@ -105,7 +115,7 @@
   .tab.is-active{ color: var(--moss); }
   .tab-indicator{
     position: absolute;
-    bottom: 0;
+    bottom: -2px;
     height: 2px;
     background: var(--moss);
     pointer-events: none;
@@ -408,11 +418,13 @@
   <div class="wrap">
     <div class="offline-banner" id="offline-banner">You're offline — search needs a connection, but anything you've saved will still play.</div>
 
-    <div class="tabs">
-      <button type="button" class="tab is-active" data-view="search">Search</button>
-      <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
-      <button type="button" class="tab" data-view="about">About</button>
-      <div class="tab-indicator" id="tab-indicator"></div>
+    <div class="tabs-outer">
+      <div class="tabs">
+        <button type="button" class="tab is-active" data-view="search">Search</button>
+        <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
+        <button type="button" class="tab" data-view="about">About</button>
+        <div class="tab-indicator" id="tab-indicator"></div>
+      </div>
     </div>
 
     <div class="view is-active" id="view-search">
