@@ -108,7 +108,13 @@
     line-height: 1;
     padding: 10px 0;
     user-select: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: none;
   }
+  .nav-logo:hover{ background: none; color: var(--moss); }
   .tabs{
     display: flex;
     position: relative;
@@ -669,9 +675,8 @@
 
     <div class="navbar">
       <div class="navbar-inner">
-        <span class="nav-logo">Tranquila</span>
+        <button type="button" class="nav-logo" id="nav-logo">Tranquila</button>
         <div class="tabs">
-          <button type="button" class="tab is-active" data-view="search">Search</button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
           <button type="button" class="tab" data-view="about">About</button>
           <div class="tab-indicator" id="tab-indicator"></div>
@@ -855,10 +860,21 @@ async function removeSaved(identifier){
 // ---------- Tabs ----------
 const tabIndicator = document.getElementById('tab-indicator');
 
+function showSearchView(){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+  document.getElementById('view-search').classList.add('is-active');
+  tabIndicator.style.opacity = '0';
+  input.focus();
+}
+
 function moveIndicator(tab) {
+  tabIndicator.style.opacity = '1';
   tabIndicator.style.left = tab.offsetLeft + 'px';
   tabIndicator.style.width = tab.offsetWidth + 'px';
 }
+
+document.getElementById('nav-logo').addEventListener('click', showSearchView);
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -868,19 +884,11 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById(`view-${tab.dataset.view}`).classList.add('is-active');
     moveIndicator(tab);
     if(tab.dataset.view === 'saved') renderSaved();
-    if(tab.dataset.view === 'search') input.focus();
   });
 });
 
-// Set indicator position on load without animation
-requestAnimationFrame(() => {
-  const activeTab = document.querySelector('.tab.is-active');
-  if(activeTab){
-    tabIndicator.style.transition = 'none';
-    moveIndicator(activeTab);
-    requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
-  }
-});
+// Search is the default view — indicator hidden on load
+tabIndicator.style.opacity = '0';
 
 function renderSaved(){
   const list = getSaved();
