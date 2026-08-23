@@ -103,9 +103,22 @@
     border-bottom: 2px solid var(--moss);
   }
   .tab .count{
-    color: var(--moss-soft);
-    font-weight: 400;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--moss-soft);
+    color: var(--paper);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0;
+    vertical-align: middle;
+    margin-left: 4px;
   }
+  .tab .count:empty{ display: none; }
 
   .view{ display: none; }
   .view.is-active{ display: block; }
@@ -449,7 +462,7 @@ function getSaved(){
 }
 function setSaved(list){
   localStorage.setItem(SAVED_KEY, JSON.stringify(list));
-  savedCountEl.textContent = list.length ? `(${list.length})` : '';
+  savedCountEl.textContent = list.length ? list.length : '';
 }
 function isSaved(identifier){
   return getSaved().some(item => item.identifier === identifier);
