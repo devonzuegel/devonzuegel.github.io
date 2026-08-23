@@ -34,7 +34,7 @@
   .wrap{
     max-width: 760px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 72px 24px 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -82,12 +82,14 @@
   .offline-banner.is-visible{ display: flex; }
 
   .navbar{
-    position: relative;
-    width: 100vw;
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--paper);
     border-bottom: 2px solid var(--line);
-    margin-bottom: 24px;
+    margin-bottom: 0;
   }
   .navbar-inner{
     display: flex;
@@ -97,6 +99,7 @@
     margin: 0 auto;
     padding: 0 24px;
   }
+
   .nav-logo{
     font-family: 'Fraunces', serif;
     font-weight: 500;
