@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4b5d4c">
+<link rel="manifest" href="./manifest.json">
+<title>Meditation Search</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #1c2321;
+    --paper: #eef0ec;
+    --paper-dim: #e2e5de;
+    --moss: #4b5d4c;
+    --moss-soft: #7c8c78;
+    --line: #cdd2c7;
+    --card: #f6f7f3;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+  }
+
+  header{
+    margin-bottom: 40px;
+  }
+
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--moss-soft);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: clamp(32px, 5vw, 44px);
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+
+  header p{
+    color: var(--moss-soft);
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  .offline-banner{
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #6b5a2e;
+    background: #f5edd9;
+    border: 1px solid #e3d3a3;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  .offline-banner.is-visible{ display: flex; }
+
+  .tabs{
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab{
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    padding: 10px 4px;
+    margin-right: 20px;
+    color: var(--moss-soft);
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+  }
+  .tab.is-active{
+    color: var(--ink);
+    border-bottom: 2px solid var(--moss);
+  }
+  .tab .count{
+    color: var(--moss-soft);
+    font-weight: 400;
+  }
+
+  .view{ display: none; }
+  .view.is-active{ display: block; }
+
+  form{
+    display:flex;
+    gap: 10px;
+    margin: 0 0 8px;
+  }
+
+  input[type="text"]{
+    flex:1;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  input[type="text"]::placeholder{ color: #9aa39a; }
+  input[type="text"]:focus{ border-color: var(--moss); }
+  input[type="text"]:focus-visible{ outline: 2px solid var(--moss); outline-offset: 2px; }
+
+  button{
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 8px;
+    background: var(--moss);
+    color: var(--paper);
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  button:hover{ background: #3d4c3e; }
+  button:focus-visible{ outline: 2px solid var(--ink); outline-offset: 2px; }
+  button:disabled{ background: var(--moss-soft); cursor: default; }
+
+  .chips{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 44px;
+  }
+  .chip{
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--moss);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+  .chip:hover{ border-color: var(--moss); background: var(--card); }
+
+  .status{
+    font-size: 14px;
+    color: var(--moss-soft);
+    min-height: 20px;
+    margin-bottom: 20px;
+  }
+
+  .results{
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .result-group{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .result{
+    background: var(--card);
+    padding: 18px 20px;
+    display:flex;
+    gap: 16px;
+    align-items: flex-start;
+    text-decoration: none;
+    color: inherit;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+  }
+  .result:hover{ background: #eef1ea; }
+  .result:focus-visible{ outline: 2px solid var(--moss); outline-offset: -2px; }
+
+  .result-icon{
+    flex-shrink:0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--paper-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: var(--moss);
+    margin-top: 2px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .result-icon.is-loading{
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+  .result-icon.is-active{
+    background: var(--moss);
+    color: var(--paper);
+  }
+  @keyframes pulse{
+    0%, 100%{ opacity: 1; }
+    50%{ opacity: .45; }
+  }
+
+  .player-row{
+    background: var(--paper-dim);
+    padding: 14px 20px 18px;
+  }
+  .player-row audio{
+    width: 100%;
+    height: 36px;
+  }
+  .player-meta{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--moss-soft);
+    margin-bottom: 8px;
+  }
+  .player-meta a{ color: var(--moss); }
+  .player-error{
+    font-size: 13px;
+    color: #8a4a3a;
+  }
+
+  .save-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    color: var(--moss);
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .save-btn:hover{ border-color: var(--moss); }
+  .save-btn.is-saved{
+    background: var(--moss);
+    color: var(--paper);
+    border-color: var(--moss);
+  }
+  .save-btn.is-busy{ opacity: .6; cursor: default; }
+
+  .saved-item{
+    background: var(--card);
+    padding: 18px 20px;
+  }
+  .saved-item .result-meta{ margin-bottom: 10px; }
+  .saved-item-controls{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .saved-item audio{
+    width: 100%;
+    height: 36px;
+    margin-top: 8px;
+  }
+  .remove-btn{
+    background: none;
+    border: none;
+    color: var(--moss-soft);
+    font-size: 12.5px;
+    cursor: pointer;
+    padding: 6px 4px;
+    text-decoration: underline;
+  }
+  .remove-btn:hover{ color: #8a4a3a; }
+
+  .result-body{ min-width:0; }
+
+  .result-title{
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  .result-meta{
+    font-size: 12.5px;
+    color: var(--moss-soft);
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .result-meta span:not(:last-child)::after{
+    content: "·";
+    margin-left: 8px;
+    color: var(--line);
+  }
+
+  .result-desc{
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #55605a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .empty, .error{
+    text-align:center;
+    padding: 48px 20px;
+    color: var(--moss-soft);
+    font-size: 14px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+  }
+  .error{ color: #8a4a3a; border-color: #d8c1b6; background: #f6ece7; }
+
+  footer{
+    margin-top: 40px;
+    font-size: 12.5px;
+    color: var(--moss-soft);
+    line-height: 1.6;
+  }
+  footer a{ color: var(--moss); }
+
+  @media (prefers-reduced-motion: no-preference){
+    .result{ transition: background .12s ease; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Prototype · Internet Archive</div>
+      <h1>Find a meditation</h1>
+      <p>Search audio meditations, mindfulness talks, and guided practices held in the Internet Archive — a waking-up practice, a walking meditation, a body scan, whatever fits the moment.</p>
+    </header>
+
+    <div class="offline-banner" id="offline-banner">You're offline — search needs a connection, but anything you've saved will still play.</div>
+
+    <div class="tabs">
+      <button type="button" class="tab is-active" data-view="search">Search</button>
+      <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
+    </div>
+
+    <div class="view is-active" id="view-search">
+      <form id="search-form">
+        <input type="text" id="query" placeholder="e.g. walking meditation, waking up, loving-kindness" autocomplete="off">
+        <button type="submit" id="search-btn">Search</button>
+      </form>
+
+      <div class="chips">
+        <button type="button" class="chip" data-q="walking meditation">Walking</button>
+        <button type="button" class="chip" data-q="waking up meditation">Waking up</button>
+        <button type="button" class="chip" data-q="body scan meditation">Body scan</button>
+        <button type="button" class="chip" data-q="loving kindness meditation">Loving-kindness</button>
+        <button type="button" class="chip" data-q="sleep meditation">Sleep</button>
+        <button type="button" class="chip" data-q="breathing meditation">Breathing</button>
+      </div>
+
+      <div class="status" id="status"></div>
+      <div id="results"></div>
+    </div>
+
+    <div class="view" id="view-saved">
+      <div class="status" id="saved-status"></div>
+      <div id="saved-results"></div>
+    </div>
+
+    <footer>
+      Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline. Licensing varies by item — check each item's page on archive.org before reuse.
+    </footer>
+  </div>
+
+<script>
+const form = document.getElementById('search-form');
+const input = document.getElementById('query');
+const statusEl = document.getElementById('status');
+const resultsEl = document.getElementById('results');
+const btn = document.getElementById('search-btn');
+const offlineBanner = document.getElementById('offline-banner');
+const savedResultsEl = document.getElementById('saved-results');
+const savedStatusEl = document.getElementById('saved-status');
+const savedCountEl = document.getElementById('saved-count');
+
+const AUDIO_CACHE = 'meditation-audio-v1';
+const SAVED_KEY = 'savedMeditations';
+
+// ---------- Service worker: makes the page itself (this HTML/CSS/JS) load offline ----------
+// Requires being served over http(s) — file:// and Claude's in-chat preview can't register one.
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {
+      // Silently ignore — offline shell just won't be available (e.g. opened via file://).
+    });
+  });
+}
+
+window.addEventListener('online', updateOfflineBanner);
+window.addEventListener('offline', updateOfflineBanner);
+function updateOfflineBanner(){
+  offlineBanner.classList.toggle('is-visible', !navigator.onLine);
+}
+updateOfflineBanner();
+
+// ---------- Icons ----------
+function playIcon(){
+  return `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+}
+function bookmarkIcon(filled){
+  return `<svg width="13" height="13" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>`;
+}
+function trashIcon(){
+  return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6"/></svg>`;
+}
+
+// ---------- Saved list (metadata in localStorage, audio bytes in Cache Storage) ----------
+function getSaved(){
+  try{ return JSON.parse(localStorage.getItem(SAVED_KEY)) || []; }
+  catch{ return []; }
+}
+function setSaved(list){
+  localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+  savedCountEl.textContent = list.length ? `(${list.length})` : '';
+}
+function isSaved(identifier){
+  return getSaved().some(item => item.identifier === identifier);
+}
+
+async function saveForOffline(item){
+  // Cache the actual audio bytes so it plays with no network at all.
+  // mode: 'no-cors' because archive.org download URLs don't always send CORS headers —
+  // the response comes back "opaque" (unreadable by JS) but is still fully cacheable
+  // and playable, since the browser's media layer doesn't need to read it in JS.
+  const res = await fetch(item.audioUrl, { mode: 'no-cors' });
+  const cache = await caches.open(AUDIO_CACHE);
+  await cache.put(item.audioUrl, res);
+
+  const list = getSaved();
+  if(!list.some(x => x.identifier === item.identifier)){
+    list.push(item);
+    setSaved(list);
+  }
+}
+
+async function removeSaved(identifier){
+  const list = getSaved();
+  const item = list.find(x => x.identifier === identifier);
+  if(item){
+    const cache = await caches.open(AUDIO_CACHE);
+    await cache.delete(item.audioUrl);
+  }
+  setSaved(list.filter(x => x.identifier !== identifier));
+  if(document.getElementById('view-saved').classList.contains('is-active')){
+    renderSaved();
+  }
+}
+
+// ---------- Tabs ----------
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+    tab.classList.add('is-active');
+    document.getElementById(`view-${tab.dataset.view}`).classList.add('is-active');
+    if(tab.dataset.view === 'saved') renderSaved();
+  });
+});
+
+function renderSaved(){
+  const list = getSaved();
+  if(list.length === 0){
+    savedStatusEl.textContent = '';
+    savedResultsEl.innerHTML = `<div class="empty">Nothing saved yet. Find a meditation in Search, expand its player, and tap "Save offline".</div>`;
+    return;
+  }
+  savedStatusEl.textContent = `${list.length} saved for offline`;
+  savedResultsEl.innerHTML = `<div class="results">${list.map(item => `
+    <div class="saved-item">
+      <p class="result-title">${escapeHtml(item.title)}</p>
+      <div class="result-meta">${item.creator ? `<span>${escapeHtml(item.creator)}</span>` : ''}${item.runtime ? `<span>${escapeHtml(item.runtime)}</span>` : ''}<span>saved offline</span></div>
+      <div class="saved-item-controls">
+        <button type="button" class="remove-btn" data-id="${escapeHtml(item.identifier)}">${trashIcon()} Remove</button>
+      </div>
+      <audio controls preload="none" src="${escapeHtml(item.audioUrl)}"></audio>
+    </div>
+  `).join('')}</div>`;
+
+  savedResultsEl.querySelectorAll('.remove-btn').forEach(b => {
+    b.addEventListener('click', () => removeSaved(b.dataset.id));
+  });
+}
+
+// ---------- Search ----------
+const audioUrlCache = new Map();
+let openIdentifier = null;
+
+async function resolvePlayableUrl(identifier){
+  if(audioUrlCache.has(identifier)) return audioUrlCache.get(identifier);
+
+  const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
+  if(!res.ok) throw new Error(`Metadata lookup failed (${res.status})`);
+  const meta = await res.json();
+  const files = meta?.files || [];
+
+  const preferredFormats = ['VBR MP3', 'MP3', 'Ogg Vorbis'];
+  let match = null;
+  for(const fmt of preferredFormats){
+    match = files.find(f => f.format === fmt);
+    if(match) break;
+  }
+  if(!match){
+    match = files.find(f => /\.(mp3|ogg)$/i.test(f.name || ''));
+  }
+
+  const url = match ? `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(match.name)}` : null;
+  audioUrlCache.set(identifier, url);
+  return url;
+}
+
+async function search(query){
+  if(!query || !query.trim()){
+    statusEl.textContent = '';
+    resultsEl.innerHTML = '';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.textContent = `Searching for “${query}”…`;
+  resultsEl.innerHTML = '';
+
+  const q = `(${query}) AND mediatype:(audio) AND (subject:(meditation) OR subject:(mindfulness) OR title:(meditation) OR title:(mindfulness))`;
+
+  const params = new URLSearchParams({
+    q,
+    fl: 'identifier,title,description,runtime,creator,licenseurl,downloads',
+    rows: '25',
+    sort: 'downloads desc',
+    output: 'json'
+  });
+
+  const url = `https://archive.org/advancedsearch.php?${params.toString()}`;
+
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error(`Archive.org returned ${res.status}`);
+    const data = await res.json();
+    const docs = data?.response?.docs || [];
+    render(docs, query);
+  }catch(err){
+    const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
+    resultsEl.innerHTML = `<div class="error">Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
+    statusEl.textContent = '';
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+function formatRuntime(runtime){
+  return runtime || null;
+}
+
+function render(docs, query){
+  if(docs.length === 0){
+    statusEl.textContent = `No results for “${query}”.`;
+    resultsEl.innerHTML = `<div class="empty">Nothing matched that search. Try a broader term — "sleep", "breathing", "gratitude" — or check spelling.</div>`;
+    return;
+  }
+
+  statusEl.textContent = `${docs.length} result${docs.length === 1 ? '' : 's'} for “${query}”`;
+
+  const html = docs.map(doc => {
+    const title = doc.title || doc.identifier;
+    const desc = Array.isArray(doc.description) ? doc.description.join(' ') : (doc.description || '');
+    const creator = Array.isArray(doc.creator) ? doc.creator.join(', ') : doc.creator;
+    const runtime = formatRuntime(doc.runtime);
+    const id = doc.identifier;
+
+    const metaParts = [];
+    if(creator) metaParts.push(`<span>${escapeHtml(creator)}</span>`);
+    if(runtime) metaParts.push(`<span>${escapeHtml(runtime)}</span>`);
+    metaParts.push(`<span>archive.org</span>`);
+
+    return `
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="${escapeHtml(runtime || '')}">
+        <button type="button" class="result" data-id="${escapeHtml(id)}">
+          <div class="result-icon">${playIcon()}</div>
+          <div class="result-body">
+            <p class="result-title">${escapeHtml(title)}</p>
+            <div class="result-meta">${metaParts.join('')}</div>
+            ${desc ? `<p class="result-desc">${escapeHtml(desc)}</p>` : ''}
+          </div>
+        </button>
+        <div class="player-slot"></div>
+      </div>
+    `;
+  }).join('');
+
+  resultsEl.innerHTML = `<div class="results">${html}</div>`;
+
+  resultsEl.querySelectorAll('.result').forEach(row => {
+    row.addEventListener('click', () => togglePlayer(row.dataset.id));
+  });
+}
+
+async function togglePlayer(identifier){
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  if(!group) return;
+  const iconEl = group.querySelector('.result-icon');
+  const slot = group.querySelector('.player-slot');
+
+  if(openIdentifier === identifier){
+    slot.innerHTML = '';
+    iconEl.classList.remove('is-active');
+    openIdentifier = null;
+    return;
+  }
+
+  if(openIdentifier){
+    const prevGroup = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(openIdentifier)}"]`);
+    if(prevGroup){
+      prevGroup.querySelector('.player-slot').innerHTML = '';
+      prevGroup.querySelector('.result-icon').classList.remove('is-active');
+    }
+  }
+
+  openIdentifier = identifier;
+  iconEl.classList.add('is-loading');
+  slot.innerHTML = '';
+
+  try{
+    const url = await resolvePlayableUrl(identifier);
+    iconEl.classList.remove('is-loading');
+
+    if(!url){
+      iconEl.classList.remove('is-active');
+      slot.innerHTML = `<div class="player-row"><p class="player-error">No directly playable audio file found for this item. <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View on archive.org</a> instead.</p></div>`;
+      openIdentifier = null;
+      return;
+    }
+
+    iconEl.classList.add('is-active');
+    const saved = isSaved(identifier);
+
+    slot.innerHTML = `
+      <div class="player-row">
+        <div class="player-meta">
+          <span>Streaming from archive.org</span>
+          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View item page</a>
+        </div>
+        <audio controls autoplay src="${url}"></audio>
+        <div style="margin-top:10px;">
+          <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
+            ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    const saveBtn = slot.querySelector('.save-btn');
+    saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
+  }catch(err){
+    iconEl.classList.remove('is-loading', 'is-active');
+    slot.innerHTML = `<div class="player-row"><p class="player-error">Couldn't load audio for this item. ${escapeHtml(err.message)}</p></div>`;
+    openIdentifier = null;
+  }
+}
+
+async function handleSaveClick(saveBtn, group){
+  const identifier = saveBtn.dataset.id;
+  const label = saveBtn.querySelector('.save-label');
+
+  if(saveBtn.classList.contains('is-saved')){
+    await removeSaved(identifier);
+    saveBtn.classList.remove('is-saved');
+    saveBtn.innerHTML = `${bookmarkIcon(false)} <span class="save-label">Save offline</span>`;
+    return;
+  }
+
+  saveBtn.classList.add('is-busy');
+  saveBtn.disabled = true;
+  label.textContent = 'Saving…';
+
+  try{
+    await saveForOffline({
+      identifier,
+      title: group.dataset.title,
+      creator: group.dataset.creator,
+      runtime: group.dataset.runtime,
+      audioUrl: saveBtn.dataset.url
+    });
+    saveBtn.classList.add('is-saved');
+    saveBtn.innerHTML = `${bookmarkIcon(true)} <span class="save-label">Saved offline</span>`;
+  }catch(err){
+    label.textContent = 'Save failed — try again';
+  }finally{
+    saveBtn.classList.remove('is-busy');
+    saveBtn.disabled = false;
+  }
+}
+
+function cssEscape(str){
+  return window.CSS && CSS.escape ? CSS.escape(str) : str.replace(/["\\]/g, '\\$&');
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  search(input.value);
+});
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    input.value = chip.dataset.q;
+    search(chip.dataset.q);
+  });
+});
+
+setSaved(getSaved()); // initialize the saved-count badge on load
+</script>
+</body>
+</html>

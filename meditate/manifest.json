@@ -1,0 +1,8 @@
+{
+  "name": "Meditation Search",
+  "short_name": "Meditations",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef0ec",
+  "theme_color": "#4b5d4c"
+}
