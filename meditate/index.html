@@ -372,7 +372,33 @@
   }
   .remove-btn:hover{ color: #8a4a3a; }
 
-  .result-body{ min-width:0; }
+  .result-body{ min-width:0; flex: 1; }
+
+  .result-title-row{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .result-badges{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .result-runtime{
+    font-size: 12px;
+    color: var(--moss-soft);
+    white-space: nowrap;
+  }
+  .result-saved-icon{
+    color: var(--line);
+    line-height: 0;
+  }
+  .result-saved-icon.is-saved{
+    color: var(--moss);
+  }
 
   .result-title{
     font-family: 'Fraunces', serif;
@@ -692,7 +718,18 @@ function escapeHtml(str){
 }
 
 function formatRuntime(runtime){
-  return runtime || null;
+  if(!runtime) return null;
+  // runtime from IA can be "HH:MM:SS" or "MM:SS" or plain seconds or a string like "12:34"
+  const parts = String(runtime).split(':').map(Number);
+  let totalSeconds;
+  if(parts.length === 3) totalSeconds = parts[0]*3600 + parts[1]*60 + parts[2];
+  else if(parts.length === 2) totalSeconds = parts[0]*60 + parts[1];
+  else totalSeconds = Number(runtime);
+  if(!isFinite(totalSeconds) || totalSeconds <= 0) return runtime;
+  const mins = Math.round(totalSeconds / 60);
+  if(mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return m ? `${h}h ${m}m` : `${h}h`;
 }
 
 function render(docs, query){
@@ -711,10 +748,10 @@ function render(docs, query){
     const creator = Array.isArray(doc.creator) ? doc.creator.join(', ') : doc.creator;
     const runtime = formatRuntime(doc.runtime);
     const id = doc.identifier;
+    const saved = isSaved(id);
 
     const metaParts = [];
     if(creator) metaParts.push(`<span>${escapeHtml(creator)}</span>`);
-    if(runtime) metaParts.push(`<span>${escapeHtml(runtime)}</span>`);
     metaParts.push(`<span>archive.org</span>`);
 
     return `
@@ -722,7 +759,13 @@ function render(docs, query){
         <button type="button" class="result" data-id="${escapeHtml(id)}">
           <div class="result-icon">${playIcon()}</div>
           <div class="result-body">
-            <p class="result-title">${escapeHtml(title)}</p>
+            <div class="result-title-row">
+              <p class="result-title">${escapeHtml(title)}</p>
+              <div class="result-badges">
+                ${runtime ? `<span class="result-runtime">${escapeHtml(runtime)}</span>` : ''}
+                <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
+              </div>
+            </div>
             <div class="result-meta">${metaParts.join('')}</div>
             ${desc ? `<p class="result-desc">${escapeHtml(desc)}</p>` : ''}
           </div>
@@ -818,6 +861,8 @@ async function handleSaveClick(saveBtn, group){
     await removeSaved(identifier);
     saveBtn.classList.remove('is-saved');
     saveBtn.innerHTML = `${bookmarkIcon(false)} <span class="save-label">Save offline</span>`;
+    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    if(rowIcon){ rowIcon.classList.remove('is-saved'); rowIcon.innerHTML = bookmarkIcon(false); }
     return;
   }
 
@@ -835,6 +880,8 @@ async function handleSaveClick(saveBtn, group){
     });
     saveBtn.classList.add('is-saved');
     saveBtn.innerHTML = `${bookmarkIcon(true)} <span class="save-label">Saved offline</span>`;
+    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    if(rowIcon){ rowIcon.classList.add('is-saved'); rowIcon.innerHTML = bookmarkIcon(true); }
   }catch(err){
     label.textContent = 'Save failed — try again';
   }finally{
