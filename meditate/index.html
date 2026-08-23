@@ -674,7 +674,6 @@
 
   <div class="now-playing-bar" id="now-playing-bar">
     <div class="npb-top">
-      <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause"></button>
       <div class="npb-info">
         <span class="npb-title" id="npb-title"></span>
         <span class="npb-creator" id="npb-creator"></span>
@@ -1211,7 +1210,6 @@ setSaved(getSaved()); // initialize the saved-count badge on load
 
 // ---------- Now playing bar ----------
 const nowPlayingBar  = document.getElementById('now-playing-bar');
-const npbPlayBtn     = document.getElementById('npb-play-btn');
 const npbTitle       = document.getElementById('npb-title');
 const npbCreator     = document.getElementById('npb-creator');
 const npbSaveBtn     = document.getElementById('npb-save-btn');
@@ -1240,18 +1238,14 @@ function setupNowPlaying(audio, identifier, group){
   npbTitle.textContent   = group.dataset.title   || '';
   npbCreator.textContent = group.dataset.creator  || '';
   nowPlayingBar.classList.add('is-visible');
-  npbPlayBtn.innerHTML = pauseIcon();
 
   audio.addEventListener('play', () => {
-    npbPlayBtn.innerHTML = pauseIcon();
     setIconState(identifier, true);
   });
   audio.addEventListener('pause', () => {
-    npbPlayBtn.innerHTML = playIcon();
     setIconState(identifier, false);
   });
   audio.addEventListener('ended', () => {
-    npbPlayBtn.innerHTML = playIcon();
     setIconState(identifier, false);
     // Keep the bar visible — track is done but still selected
   });
@@ -1259,11 +1253,6 @@ function setupNowPlaying(audio, identifier, group){
   // initial state
   if(!audio.paused) setIconState(identifier, true);
 }
-
-npbPlayBtn.addEventListener('click', () => {
-  if(!currentAudio) return;
-  currentAudio.paused ? currentAudio.play() : currentAudio.pause();
-});
 
 npbSaveBtn.addEventListener('click', async () => {
   const identifier = npbSaveBtn.dataset.id;
