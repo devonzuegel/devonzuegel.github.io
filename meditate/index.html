@@ -544,6 +544,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .npb-save-btn{
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,.5);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 0;
+    transition: color .15s;
+  }
+  .npb-save-btn:hover{ color: rgba(255,255,255,.9); }
+  .npb-save-btn.is-saved{ color: #fff; }
 
   /* ── Confirm modal ── */
   .modal-backdrop{
@@ -660,6 +672,7 @@
       <span class="npb-title" id="npb-title"></span>
       <span class="npb-creator" id="npb-creator"></span>
     </div>
+    <button type="button" class="npb-save-btn" id="npb-save-btn" aria-label="Save offline"></button>
   </div>
 
   <div class="modal-backdrop" id="modal-backdrop">
@@ -1011,13 +1024,13 @@ function render(docs, query, page = 0){
   resultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
     if(!btn.dataset.bound){
       btn.dataset.bound = '1';
-      btn.addEventListener('click', () => togglePlayer(btn.dataset.id, true));
+      btn.addEventListener('click', () => playTrack(btn.dataset.id));
     }
   });
   resultsEl.querySelectorAll('.result-expand-btn').forEach(btn => {
     if(!btn.dataset.bound){
       btn.dataset.bound = '1';
-      btn.addEventListener('click', () => togglePlayer(btn.dataset.id, false));
+      btn.addEventListener('click', () => toggleExpand(btn.dataset.id));
     }
   });
 
@@ -1026,41 +1039,35 @@ function render(docs, query, page = 0){
 
 function getChevron(group){ return group.querySelector('.result-expand-btn'); }
 
-async function togglePlayer(identifier, autoplay = false){
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
-  if(!group) return;
-  const iconEl = group.querySelector('.result-icon');
-  const slot = group.querySelector('.player-slot');
-  const chevron = getChevron(group);
-
-  if(openIdentifier === identifier){
-    slot.innerHTML = '';
-    iconEl.classList.remove('is-active', 'is-paused');
-    iconEl.innerHTML = playIcon();
-    if(chevron) chevron.classList.remove('is-open');
-    if(currentAudio){ currentAudio.pause(); currentAudio = null; }
-    nowPlayingBar.classList.remove('is-visible');
-    openIdentifier = null;
-    return;
-  }
-
+function clearActiveTrack(){
   if(openIdentifier){
     const prevGroup = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(openIdentifier)}"]`);
     if(prevGroup){
-      prevGroup.querySelector('.player-slot').innerHTML = '';
       const prevIcon = prevGroup.querySelector('.result-icon');
       prevIcon.classList.remove('is-active', 'is-paused');
       prevIcon.innerHTML = playIcon();
-      const prevChevron = getChevron(prevGroup);
-      if(prevChevron) prevChevron.classList.remove('is-open');
     }
     if(currentAudio){ currentAudio.pause(); currentAudio = null; }
+    openIdentifier = null;
   }
-  if(chevron) chevron.classList.add('is-open');
+}
 
+// Play button: load audio into the bar, don't expand the row
+async function playTrack(identifier){
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  if(!group) return;
+  const iconEl = group.querySelector('.result-icon');
+
+  // Clicking play on the already-playing track stops it
+  if(openIdentifier === identifier){
+    clearActiveTrack();
+    nowPlayingBar.classList.remove('is-visible');
+    return;
+  }
+
+  clearActiveTrack();
   openIdentifier = identifier;
   iconEl.classList.add('is-loading');
-  slot.innerHTML = '';
 
   try{
     const url = await resolvePlayableUrl(identifier);
@@ -1068,28 +1075,19 @@ async function togglePlayer(identifier, autoplay = false){
 
     if(!url){
       iconEl.classList.remove('is-active');
-      slot.innerHTML = `<div class="player-row"><p class="player-error">No directly playable audio file found for this item. <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View on archive.org</a> instead.</p></div>`;
       openIdentifier = null;
+      // Show error in bar
+      npbTitle.textContent = 'No audio found for this item';
+      npbCreator.textContent = '';
+      nowPlayingBar.classList.add('is-visible');
       return;
     }
 
-    iconEl.classList.add('is-active');
-    const saved = isSaved(identifier);
-
-    slot.innerHTML = `
-      <div class="player-row">
-        <div class="player-meta">
-          <span>Streaming from archive.org</span>
-          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View item page</a>
-        </div>
-        <audio controls ${autoplay ? 'autoplay' : ''} src="${url}"></audio>
-        <div style="margin-top:10px;">
-          <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
-            ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
-          </button>
-        </div>
-      </div>
-    `;
+    // Create audio element (hidden) and attach to bar
+    const audio = document.createElement('audio');
+    audio.src = url;
+    audio.autoplay = true;
+    document.body.appendChild(audio);
 
     if('mediaSession' in navigator){
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -1098,15 +1096,50 @@ async function togglePlayer(identifier, autoplay = false){
       });
     }
 
-    const audio = slot.querySelector('audio');
+    // Add save button to bar
+    const saved = isSaved(identifier);
+    npbSaveBtn.className = `npb-save-btn${saved ? ' is-saved' : ''}`;
+    npbSaveBtn.dataset.id = identifier;
+    npbSaveBtn.dataset.url = url;
+    npbSaveBtn.innerHTML = bookmarkIcon(saved);
+
     setupNowPlaying(audio, identifier, group);
 
-    const saveBtn = slot.querySelector('.save-btn');
-    saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
   }catch(err){
     iconEl.classList.remove('is-loading', 'is-active');
-    slot.innerHTML = `<div class="player-row"><p class="player-error">Couldn't load audio for this item. ${escapeHtml(err.message)}</p></div>`;
     openIdentifier = null;
+  }
+}
+
+// Chevron: toggle row expansion only (no audio)
+function toggleExpand(identifier){
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  if(!group) return;
+  const slot = group.querySelector('.player-slot');
+  const chevron = getChevron(group);
+  const isOpen = chevron && chevron.classList.contains('is-open');
+
+  if(isOpen){
+    slot.innerHTML = '';
+    if(chevron) chevron.classList.remove('is-open');
+  } else {
+    const saved = isSaved(identifier);
+    const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
+    slot.innerHTML = `
+      <div class="player-row">
+        <div class="player-meta">
+          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View on archive.org</a>
+        </div>
+        ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
+        <div style="margin-top:10px;">
+          <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
+            ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
+          </button>
+        </div>
+      </div>`;
+    if(chevron) chevron.classList.add('is-open');
+    const saveBtn = slot.querySelector('.save-btn');
+    if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
   }
 }
 
@@ -1170,6 +1203,7 @@ const nowPlayingBar  = document.getElementById('now-playing-bar');
 const npbPlayBtn     = document.getElementById('npb-play-btn');
 const npbTitle       = document.getElementById('npb-title');
 const npbCreator     = document.getElementById('npb-creator');
+const npbSaveBtn     = document.getElementById('npb-save-btn');
 let   currentAudio   = null;
 
 function setIconState(identifier, playing){
@@ -1188,6 +1222,9 @@ function setIconState(identifier, playing){
 }
 
 function setupNowPlaying(audio, identifier, group){
+  // Remove any previously appended hidden audio element
+  document.querySelectorAll('audio.npb-audio').forEach(el => el.remove());
+  audio.classList.add('npb-audio');
   currentAudio = audio;
 
   npbTitle.textContent   = group.dataset.title   || '';
@@ -1215,6 +1252,40 @@ function setupNowPlaying(audio, identifier, group){
 npbPlayBtn.addEventListener('click', () => {
   if(!currentAudio) return;
   currentAudio.paused ? currentAudio.play() : currentAudio.pause();
+});
+
+npbSaveBtn.addEventListener('click', async () => {
+  const identifier = npbSaveBtn.dataset.id;
+  const url = npbSaveBtn.dataset.url;
+  if(!identifier) return;
+  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+
+  if(npbSaveBtn.classList.contains('is-saved')){
+    const title = group?.dataset.title || 'this meditation';
+    const confirmed = await showConfirmModal(`Remove "${title}" from saved?`);
+    if(!confirmed) return;
+    await removeSaved(identifier);
+    npbSaveBtn.classList.remove('is-saved');
+    npbSaveBtn.innerHTML = bookmarkIcon(false);
+    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    if(rowIcon){ rowIcon.classList.remove('is-saved'); rowIcon.innerHTML = bookmarkIcon(false); }
+  } else {
+    npbSaveBtn.style.opacity = '0.5';
+    try{
+      await saveForOffline({
+        identifier,
+        title: group?.dataset.title || identifier,
+        creator: group?.dataset.creator || '',
+        runtime: group?.dataset.runtime || '',
+        audioUrl: url
+      });
+      npbSaveBtn.classList.add('is-saved');
+      npbSaveBtn.innerHTML = bookmarkIcon(true);
+      const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+      if(rowIcon){ rowIcon.classList.add('is-saved'); rowIcon.innerHTML = bookmarkIcon(true); }
+    } catch{ }
+    npbSaveBtn.style.opacity = '';
+  }
 });
 
 // ---------- Confirm modal ----------
