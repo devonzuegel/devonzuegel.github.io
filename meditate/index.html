@@ -646,10 +646,11 @@ function renderSaved(){
 
 // ---------- Search ----------
 const audioUrlCache = new Map();
+const metaCache = new Map(); // identifier -> {url, duration}
 let openIdentifier = null;
 
-async function resolvePlayableUrl(identifier){
-  if(audioUrlCache.has(identifier)) return audioUrlCache.get(identifier);
+async function fetchMeta(identifier){
+  if(metaCache.has(identifier)) return metaCache.get(identifier);
 
   const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
   if(!res.ok) throw new Error(`Metadata lookup failed (${res.status})`);
@@ -662,13 +663,44 @@ async function resolvePlayableUrl(identifier){
     match = files.find(f => f.format === fmt);
     if(match) break;
   }
-  if(!match){
-    match = files.find(f => /\.(mp3|ogg)$/i.test(f.name || ''));
-  }
+  if(!match) match = files.find(f => /\.(mp3|ogg)$/i.test(f.name || ''));
 
   const url = match ? `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(match.name)}` : null;
-  audioUrlCache.set(identifier, url);
+  const lengthSec = match?.length ? parseFloat(match.length) : null;
+  const duration = lengthSec && isFinite(lengthSec) && lengthSec > 0 ? formatDuration(lengthSec) : null;
+
+  const result = { url, duration };
+  metaCache.set(identifier, result);
+  return result;
+}
+
+async function resolvePlayableUrl(identifier){
+  const { url } = await fetchMeta(identifier);
   return url;
+}
+
+function formatDuration(seconds){
+  const mins = Math.round(seconds / 60);
+  if(mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return m ? `${h}h ${m}m` : `${h}h`;
+}
+
+async function prefetchDurations(identifiers){
+  // Fetch in small batches to avoid hammering IA
+  const BATCH = 4;
+  for(let i = 0; i < identifiers.length; i += BATCH){
+    const batch = identifiers.slice(i, i + BATCH);
+    await Promise.all(batch.map(async id => {
+      try{
+        const { duration } = await fetchMeta(id);
+        if(duration){
+          const el = resultsEl.querySelector(`.result-runtime[data-id="${id}"]`);
+          if(el) el.textContent = duration;
+        }
+      }catch{ /* silently skip */ }
+    }));
+  }
 }
 
 async function search(query){
@@ -717,20 +749,6 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-function formatRuntime(runtime){
-  if(!runtime) return null;
-  // runtime from IA can be "HH:MM:SS" or "MM:SS" or plain seconds or a string like "12:34"
-  const parts = String(runtime).split(':').map(Number);
-  let totalSeconds;
-  if(parts.length === 3) totalSeconds = parts[0]*3600 + parts[1]*60 + parts[2];
-  else if(parts.length === 2) totalSeconds = parts[0]*60 + parts[1];
-  else totalSeconds = Number(runtime);
-  if(!isFinite(totalSeconds) || totalSeconds <= 0) return runtime;
-  const mins = Math.round(totalSeconds / 60);
-  if(mins < 60) return `${mins} min`;
-  const h = Math.floor(mins / 60), m = mins % 60;
-  return m ? `${h}h ${m}m` : `${h}h`;
-}
 
 function render(docs, query){
   if(docs.length === 0){
@@ -742,27 +760,28 @@ function render(docs, query){
 
   statusEl.textContent = `${docs.length} result${docs.length === 1 ? '' : 's'} for “${query}”`;
 
+  const identifiers = [];
   const html = docs.map(doc => {
     const title = doc.title || doc.identifier;
     const desc = Array.isArray(doc.description) ? doc.description.join(' ') : (doc.description || '');
     const creator = Array.isArray(doc.creator) ? doc.creator.join(', ') : doc.creator;
-    const runtime = formatRuntime(doc.runtime);
     const id = doc.identifier;
     const saved = isSaved(id);
+    identifiers.push(id);
 
     const metaParts = [];
     if(creator) metaParts.push(`<span>${escapeHtml(creator)}</span>`);
     metaParts.push(`<span>archive.org</span>`);
 
     return `
-      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="${escapeHtml(runtime || '')}">
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="">
         <button type="button" class="result" data-id="${escapeHtml(id)}">
           <div class="result-icon">${playIcon()}</div>
           <div class="result-body">
             <div class="result-title-row">
               <p class="result-title">${escapeHtml(title)}</p>
               <div class="result-badges">
-                ${runtime ? `<span class="result-runtime">${escapeHtml(runtime)}</span>` : ''}
+                <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
               </div>
             </div>
@@ -781,6 +800,8 @@ function render(docs, query){
   resultsEl.querySelectorAll('.result').forEach(row => {
     row.addEventListener('click', () => togglePlayer(row.dataset.id));
   });
+
+  prefetchDurations(identifiers);
 }
 
 async function togglePlayer(identifier){
