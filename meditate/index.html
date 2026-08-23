@@ -437,18 +437,19 @@
     display: block;
     width: 100%;
     margin-top: 12px;
+    margin-bottom: 48px;
     padding: 12px;
-    background: none;
-    border: 1px solid var(--line);
+    background: var(--moss);
+    border: none;
     border-radius: 8px;
-    color: var(--moss);
-    font-size: 13px;
-    font-weight: 500;
+    color: var(--paper);
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background .15s ease, border-color .15s ease;
+    transition: background .15s ease;
   }
-  .load-more-btn:hover{ background: var(--card); border-color: var(--moss); }
-  .load-more-btn:disabled{ color: var(--moss-soft); cursor: default; }
+  .load-more-btn:hover{ background: #3d4c3e; }
+  .load-more-btn:disabled{ background: var(--moss-soft); cursor: default; }
 
   .empty, .error{
     text-align:center;
