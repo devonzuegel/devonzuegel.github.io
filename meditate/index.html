@@ -34,7 +34,10 @@
   .wrap{
     max-width: 760px;
     margin: 0 auto;
-    padding: 32px 24px 120px;
+    padding: 32px 24px 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .eyebrow{
@@ -127,7 +130,35 @@
   .tab .count:empty{ display: none; }
 
   .view{ display: none; }
-  .view.is-active{ display: block; }
+  .view.is-active{ display: block; flex: 1; }
+
+  #view-search{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 80px;
+  }
+  #view-search.has-results{
+    justify-content: flex-start;
+    padding-bottom: 80px;
+  }
+
+  .search-top{
+    transition: margin-top .4s cubic-bezier(.4,0,.2,1);
+  }
+  #view-search.has-results .search-top{
+    margin-top: 0;
+  }
+
+  #results{
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  #view-search.has-results #results{
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   form{
     display:flex;
@@ -390,21 +421,23 @@
     </div>
 
     <div class="view is-active" id="view-search">
-      <form id="search-form">
-        <input type="text" id="query" placeholder="e.g. walking meditation, waking up, loving-kindness" autocomplete="off">
-        <button type="submit" id="search-btn">Search</button>
-      </form>
+      <div class="search-top">
+        <form id="search-form">
+          <input type="text" id="query" placeholder="e.g. walking meditation, waking up, loving-kindness" autocomplete="off">
+          <button type="submit" id="search-btn">Search</button>
+        </form>
 
-      <div class="chips">
-        <button type="button" class="chip" data-q="walking meditation">Walking</button>
-        <button type="button" class="chip" data-q="waking up meditation">Waking up</button>
-        <button type="button" class="chip" data-q="body scan meditation">Body scan</button>
-        <button type="button" class="chip" data-q="loving kindness meditation">Loving-kindness</button>
-        <button type="button" class="chip" data-q="sleep meditation">Sleep</button>
-        <button type="button" class="chip" data-q="breathing meditation">Breathing</button>
+        <div class="chips">
+          <button type="button" class="chip" data-q="walking meditation">Walking</button>
+          <button type="button" class="chip" data-q="waking up meditation">Waking up</button>
+          <button type="button" class="chip" data-q="body scan meditation">Body scan</button>
+          <button type="button" class="chip" data-q="loving kindness meditation">Loving-kindness</button>
+          <button type="button" class="chip" data-q="sleep meditation">Sleep</button>
+          <button type="button" class="chip" data-q="breathing meditation">Breathing</button>
+        </div>
+
+        <div class="status" id="status"></div>
       </div>
-
-      <div class="status" id="status"></div>
       <div id="results"></div>
     </div>
 
@@ -424,6 +457,7 @@
 const form = document.getElementById('search-form');
 const input = document.getElementById('query');
 const statusEl = document.getElementById('status');
+const viewSearch = document.getElementById('view-search');
 const resultsEl = document.getElementById('results');
 const btn = document.getElementById('search-btn');
 const offlineBanner = document.getElementById('offline-banner');
@@ -589,6 +623,7 @@ async function search(query){
   if(!query || !query.trim()){
     statusEl.textContent = '';
     resultsEl.innerHTML = '';
+    viewSearch.classList.remove('has-results');
     return;
   }
 
@@ -618,6 +653,7 @@ async function search(query){
     const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
     resultsEl.innerHTML = `<div class="error">Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
     statusEl.textContent = '';
+    viewSearch.classList.add('has-results');
   }finally{
     btn.disabled = false;
   }
@@ -636,7 +672,8 @@ function formatRuntime(runtime){
 function render(docs, query){
   if(docs.length === 0){
     statusEl.textContent = `No results for “${query}”.`;
-    resultsEl.innerHTML = `<div class="empty">Nothing matched that search. Try a broader term — "sleep", "breathing", "gratitude" — or check spelling.</div>`;
+    resultsEl.innerHTML = `<div class=”empty”>Nothing matched that search. Try a broader term — “sleep”, “breathing”, “gratitude” — or check spelling.</div>`;
+    viewSearch.classList.add('has-results');
     return;
   }
 
@@ -670,6 +707,7 @@ function render(docs, query){
   }).join('');
 
   resultsEl.innerHTML = `<div class="results">${html}</div>`;
+  viewSearch.classList.add('has-results');
 
   resultsEl.querySelectorAll('.result').forEach(row => {
     row.addEventListener('click', () => togglePlayer(row.dataset.id));
