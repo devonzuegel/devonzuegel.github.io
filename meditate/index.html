@@ -81,6 +81,7 @@
   .tabs{
     display: flex;
     margin-bottom: 24px;
+    position: relative;
   }
   .tab{
     font-family: 'Inter', sans-serif;
@@ -95,12 +96,17 @@
     padding: 8px 20px;
     color: var(--moss-soft);
     cursor: pointer;
-    transition: none;
+    transition: color .2s ease;
   }
   .tab:hover{ background: none; }
-  .tab.is-active{
-    color: var(--moss);
-    border-bottom: 2px solid var(--moss);
+  .tab.is-active{ color: var(--moss); }
+  .tab-indicator{
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background: var(--moss);
+    pointer-events: none;
+    transition: left .2s cubic-bezier(.4,0,.2,1), width .2s cubic-bezier(.4,0,.2,1);
   }
   .tab .count{
     display: inline-flex;
@@ -380,6 +386,7 @@
       <button type="button" class="tab is-active" data-view="search">Search</button>
       <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
       <button type="button" class="tab" data-view="about">About</button>
+      <div class="tab-indicator" id="tab-indicator"></div>
     </div>
 
     <div class="view is-active" id="view-search">
@@ -498,15 +505,33 @@ async function removeSaved(identifier){
 }
 
 // ---------- Tabs ----------
+const tabIndicator = document.getElementById('tab-indicator');
+
+function moveIndicator(tab) {
+  tabIndicator.style.left = tab.offsetLeft + 'px';
+  tabIndicator.style.width = tab.offsetWidth + 'px';
+}
+
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
     document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
     tab.classList.add('is-active');
     document.getElementById(`view-${tab.dataset.view}`).classList.add('is-active');
+    moveIndicator(tab);
     if(tab.dataset.view === 'saved') renderSaved();
     if(tab.dataset.view === 'search') input.focus();
   });
+});
+
+// Set indicator position on load without animation
+requestAnimationFrame(() => {
+  const activeTab = document.querySelector('.tab.is-active');
+  if(activeTab){
+    tabIndicator.style.transition = 'none';
+    moveIndicator(activeTab);
+    requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
+  }
 });
 
 function renderSaved(){
