@@ -972,9 +972,9 @@ function render(docs, query, page = 0){
             <div class="result-title-row">
               <p class="result-title">${escapeHtml(title)}</p>
               <div class="result-badges">
+                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
                 <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
-                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
               </div>
             </div>
             <div class="result-meta">${metaParts.join('')}</div>
