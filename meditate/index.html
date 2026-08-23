@@ -81,7 +81,7 @@
   }
   .offline-banner.is-visible{ display: flex; }
 
-  .tabs-outer{
+  .navbar{
     position: relative;
     width: 100vw;
     left: 50%;
@@ -89,13 +89,26 @@
     border-bottom: 2px solid var(--line);
     margin-bottom: 24px;
   }
-  .tabs{
+  .navbar-inner{
     display: flex;
-    justify-content: center;
-    position: relative;
+    align-items: center;
+    justify-content: space-between;
     max-width: 760px;
     margin: 0 auto;
     padding: 0 24px;
+  }
+  .nav-logo{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--ink);
+    line-height: 1;
+    padding: 10px 0;
+    user-select: none;
+  }
+  .tabs{
+    display: flex;
+    position: relative;
   }
   .tab{
     font-family: 'Inter', sans-serif;
@@ -418,12 +431,15 @@
   <div class="wrap">
     <div class="offline-banner" id="offline-banner">You're offline — search needs a connection, but anything you've saved will still play.</div>
 
-    <div class="tabs-outer">
-      <div class="tabs">
-        <button type="button" class="tab is-active" data-view="search">Search</button>
-        <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
-        <button type="button" class="tab" data-view="about">About</button>
-        <div class="tab-indicator" id="tab-indicator"></div>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <span class="nav-logo">Tranquila</span>
+        <div class="tabs">
+          <button type="button" class="tab is-active" data-view="search">Search</button>
+          <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
+          <button type="button" class="tab" data-view="about">About</button>
+          <div class="tab-indicator" id="tab-indicator"></div>
+        </div>
       </div>
     </div>
 
