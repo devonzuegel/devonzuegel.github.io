@@ -32,11 +32,7 @@
   .wrap{
     max-width: 760px;
     margin: 0 auto;
-    padding: 64px 24px 120px;
-  }
-
-  header{
-    margin-bottom: 40px;
+    padding: 32px 24px 120px;
   }
 
   .eyebrow{
@@ -52,18 +48,18 @@
     font-family: 'Fraunces', serif;
     font-optical-sizing: auto;
     font-weight: 500;
-    font-size: clamp(32px, 5vw, 44px);
+    font-size: clamp(28px, 5vw, 40px);
     line-height: 1.1;
-    margin: 0 0 12px;
+    margin: 0 0 16px;
     color: var(--ink);
   }
 
-  header p{
+  .about-desc{
     color: var(--moss-soft);
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.6;
     max-width: 46ch;
-    margin: 0;
+    margin: 0 0 32px;
   }
 
   .offline-banner{
@@ -347,13 +343,13 @@
   }
   .error{ color: #8a4a3a; border-color: #d8c1b6; background: #f6ece7; }
 
-  footer{
+  .about-footer{
     margin-top: 40px;
     font-size: 12.5px;
     color: var(--moss-soft);
     line-height: 1.6;
   }
-  footer a{ color: var(--moss); }
+  .about-footer a{ color: var(--moss); }
 
   @media (prefers-reduced-motion: no-preference){
     .result{ transition: background .12s ease; }
@@ -362,16 +358,12 @@
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>Find a meditation</h1>
-      <p>Search audio meditations, mindfulness talks, and guided practices held in the Internet Archive.</p>
-    </header>
-
     <div class="offline-banner" id="offline-banner">You're offline — search needs a connection, but anything you've saved will still play.</div>
 
     <div class="tabs">
       <button type="button" class="tab is-active" data-view="search">Search</button>
       <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
+      <button type="button" class="tab" data-view="about">About</button>
     </div>
 
     <div class="view is-active" id="view-search">
@@ -398,9 +390,11 @@
       <div id="saved-results"></div>
     </div>
 
-    <footer>
-      Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.
-    </footer>
+    <div class="view" id="view-about">
+      <h1>Tranquila</h1>
+      <p class="about-desc">Search audio meditations, mindfulness talks, and guided practices held in the Internet Archive.</p>
+      <p class="about-footer">Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.</p>
+    </div>
   </div>
 
 <script>
@@ -495,6 +489,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.add('is-active');
     document.getElementById(`view-${tab.dataset.view}`).classList.add('is-active');
     if(tab.dataset.view === 'saved') renderSaved();
+    if(tab.dataset.view === 'search') input.focus();
   });
 });
 
