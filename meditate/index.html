@@ -621,6 +621,49 @@
   @media (prefers-reduced-motion: no-preference){
     .result{ transition: background .12s ease; }
   }
+
+  .about-section{
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .about-section-title{
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .about-section-desc{
+    font-size: 14px;
+    color: var(--moss-soft);
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+  .about-steps{
+    margin: 0 0 12px;
+    padding-left: 20px;
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--ink);
+  }
+  .about-steps strong{ color: var(--ink); }
+  .share-icon-inline{ font-style: normal; }
+  .about-section-note{
+    font-size: 13px;
+    color: var(--moss-soft);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .hard-refresh-btn{
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  .hard-refresh-btn:disabled{
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--moss);
+  }
 </style>
 </head>
 <body>
@@ -669,6 +712,24 @@
       <h1>Tranquila</h1>
       <p class="about-desc">Search audio meditations, mindfulness talks, and guided practices held in the Internet Archive.</p>
       <p class="about-footer">Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.</p>
+
+      <div class="about-section">
+        <h2 class="about-section-title">Install on your iPhone</h2>
+        <p class="about-section-desc">Add Tranquila to your Home Screen so it loads instantly and works offline, even after quitting the app.</p>
+        <ol class="about-steps">
+          <li>Open this page in <strong>Safari</strong></li>
+          <li>Tap the <strong>Share</strong> button <span class="share-icon-inline">&#x2BAD;&#xFE0E;</span> at the bottom of the screen</li>
+          <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+          <li>Tap <strong>Add</strong></li>
+        </ol>
+        <p class="about-section-note">Once installed, any meditations you save will play with no connection. The app shell itself is also cached, so it opens immediately offline.</p>
+      </div>
+
+      <div class="about-section">
+        <h2 class="about-section-title">Refresh app</h2>
+        <p class="about-section-desc">Force a fresh download of the app, clearing any cached version.</p>
+        <button type="button" class="hard-refresh-btn" id="hard-refresh-btn">Refresh now</button>
+      </div>
     </div>
   </div>
 
@@ -722,8 +783,23 @@ window.addEventListener('online', updateOfflineBanner);
 window.addEventListener('offline', updateOfflineBanner);
 function updateOfflineBanner(){
   offlineBanner.classList.toggle('is-visible', !navigator.onLine);
+  const refreshBtn = document.getElementById('hard-refresh-btn');
+  if(refreshBtn) refreshBtn.disabled = !navigator.onLine;
 }
 updateOfflineBanner();
+
+document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
+  if(!navigator.onLine) return;
+  // Delete the shell cache so the SW re-fetches everything on next install
+  const keys = await caches.keys();
+  await Promise.all(keys.filter(k => k !== AUDIO_CACHE).map(k => caches.delete(k)));
+  // Unregister the SW so the new one installs cleanly
+  if('serviceWorker' in navigator){
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+  }
+  window.location.reload(true);
+});
 
 // ---------- Icons ----------
 function playIcon(){
