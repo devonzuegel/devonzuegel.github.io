@@ -433,6 +433,23 @@
     overflow: hidden;
   }
 
+  .load-more-btn{
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--moss);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .load-more-btn:hover{ background: var(--card); border-color: var(--moss); }
+  .load-more-btn:disabled{ color: var(--moss-soft); cursor: default; }
+
   .empty, .error{
     text-align:center;
     padding: 48px 20px;
@@ -703,24 +720,40 @@ async function prefetchDurations(identifiers){
   }
 }
 
-async function search(query){
+const PAGE_SIZE = 10;
+let currentQuery = '';
+let currentPage = 0;
+let currentTotal = 0;
+
+async function search(query, page = 0){
   if(!query || !query.trim()){
     statusEl.textContent = '';
     resultsEl.innerHTML = '';
     viewSearch.classList.remove('has-results');
+    currentQuery = '';
     return;
   }
 
+  const isNewQuery = query !== currentQuery;
+  currentQuery = query;
+  currentPage = page;
+
   btn.disabled = true;
-  statusEl.textContent = `Searching for “${query}”…`;
-  resultsEl.innerHTML = '';
+  if(isNewQuery || page === 0){
+    statusEl.textContent = `Searching…`;
+    resultsEl.innerHTML = '';
+  } else {
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if(loadMoreBtn){ loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Loading…'; }
+  }
 
   const q = `(${query}) AND mediatype:(audio) AND (subject:(meditation) OR subject:(mindfulness) OR title:(meditation) OR title:(mindfulness))`;
 
   const params = new URLSearchParams({
     q,
     fl: 'identifier,title,description,runtime,creator,licenseurl,downloads',
-    rows: '25',
+    rows: String(PAGE_SIZE),
+    page: String(page + 1),
     sort: 'downloads desc',
     output: 'json'
   });
@@ -732,10 +765,11 @@ async function search(query){
     if(!res.ok) throw new Error(`Archive.org returned ${res.status}`);
     const data = await res.json();
     const docs = data?.response?.docs || [];
-    render(docs, query);
+    currentTotal = data?.response?.numFound || 0;
+    render(docs, query, page);
   }catch(err){
     const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
-    resultsEl.innerHTML = `<div class="error">Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
+    resultsEl.innerHTML = `<div class=”error”>Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
     statusEl.textContent = '';
     viewSearch.classList.add('has-results');
   }finally{
@@ -750,15 +784,16 @@ function escapeHtml(str){
 }
 
 
-function render(docs, query){
-  if(docs.length === 0){
+function render(docs, query, page = 0){
+  if(docs.length === 0 && page === 0){
     statusEl.textContent = `No results for “${query}”.`;
     resultsEl.innerHTML = `<div class=”empty”>Nothing matched that search. Try a broader term — “sleep”, “breathing”, “gratitude” — or check spelling.</div>`;
     viewSearch.classList.add('has-results');
     return;
   }
 
-  statusEl.textContent = `${docs.length} result${docs.length === 1 ? '' : 's'} for “${query}”`;
+  const shown = (page * PAGE_SIZE) + docs.length;
+  statusEl.textContent = `${shown.toLocaleString()} of ${currentTotal.toLocaleString()} results for “${query}”`;
 
   const identifiers = [];
   const html = docs.map(doc => {
@@ -794,11 +829,33 @@ function render(docs, query){
     `;
   }).join('');
 
-  resultsEl.innerHTML = `<div class="results">${html}</div>`;
+  const hasMore = (page + 1) * PAGE_SIZE < currentTotal;
+
+  if(page === 0){
+    resultsEl.innerHTML = `<div class="results" id="results-list">${html}</div>`;
+  } else {
+    const list = document.getElementById('results-list');
+    const oldBtn = document.getElementById('load-more-btn');
+    if(oldBtn) oldBtn.remove();
+    list.insertAdjacentHTML('beforeend', html);
+  }
+
+  if(hasMore){
+    const loadMore = document.createElement('button');
+    loadMore.id = 'load-more-btn';
+    loadMore.className = 'load-more-btn';
+    loadMore.textContent = 'Load more';
+    loadMore.addEventListener('click', () => search(currentQuery, currentPage + 1));
+    resultsEl.appendChild(loadMore);
+  }
+
   viewSearch.classList.add('has-results');
 
   resultsEl.querySelectorAll('.result').forEach(row => {
-    row.addEventListener('click', () => togglePlayer(row.dataset.id));
+    if(!row.dataset.bound){
+      row.dataset.bound = '1';
+      row.addEventListener('click', () => togglePlayer(row.dataset.id));
+    }
   });
 
   prefetchDurations(identifiers);
@@ -917,13 +974,13 @@ function cssEscape(str){
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  search(input.value);
+  search(input.value, 0);
 });
 
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
     input.value = chip.dataset.q;
-    search(chip.dataset.q);
+    search(chip.dataset.q, 0);
   });
 });
 
