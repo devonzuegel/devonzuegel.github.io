@@ -263,19 +263,26 @@
   .result{
     background: var(--card);
     padding: 18px 20px;
-    display:flex;
+    display: flex;
     gap: 16px;
     align-items: flex-start;
-    text-decoration: none;
     color: inherit;
-    border: none;
-    width: 100%;
-    text-align: left;
-    font: inherit;
-    cursor: pointer;
+    cursor: default;
   }
   .result:hover{ background: #eef1ea; }
-  .result:focus-visible{ outline: 2px solid var(--moss); outline-offset: -2px; }
+  .result-icon-btn{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .result-expand{
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+  }
 
   .result-icon{
     flex-shrink:0;
@@ -287,7 +294,6 @@
     align-items:center;
     justify-content:center;
     color: var(--moss);
-    margin-top: 2px;
     transition: background .15s ease, color .15s ease;
   }
   .result-icon.is-loading{
@@ -811,9 +817,9 @@ function render(docs, query, page = 0){
 
     return `
       <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="">
-        <button type="button" class="result" data-id="${escapeHtml(id)}">
-          <div class="result-icon">${playIcon()}</div>
-          <div class="result-body">
+        <div class="result" data-id="${escapeHtml(id)}">
+          <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
+          <div class="result-body result-expand" data-id="${escapeHtml(id)}">
             <div class="result-title-row">
               <p class="result-title">${escapeHtml(title)}</p>
               <div class="result-badges">
@@ -824,7 +830,7 @@ function render(docs, query, page = 0){
             <div class="result-meta">${metaParts.join('')}</div>
             ${desc ? `<p class="result-desc">${escapeHtml(desc)}</p>` : ''}
           </div>
-        </button>
+        </div>
         <div class="player-slot"></div>
       </div>
     `;
@@ -852,17 +858,23 @@ function render(docs, query, page = 0){
 
   viewSearch.classList.add('has-results');
 
-  resultsEl.querySelectorAll('.result').forEach(row => {
-    if(!row.dataset.bound){
-      row.dataset.bound = '1';
-      row.addEventListener('click', () => togglePlayer(row.dataset.id));
+  resultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
+    if(!btn.dataset.bound){
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => togglePlayer(btn.dataset.id, true));
+    }
+  });
+  resultsEl.querySelectorAll('.result-expand').forEach(body => {
+    if(!body.dataset.bound){
+      body.dataset.bound = '1';
+      body.addEventListener('click', () => togglePlayer(body.dataset.id, false));
     }
   });
 
   prefetchDurations(identifiers);
 }
 
-async function togglePlayer(identifier){
+async function togglePlayer(identifier, autoplay = false){
   const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
   if(!group) return;
   const iconEl = group.querySelector('.result-icon');
@@ -907,7 +919,7 @@ async function togglePlayer(identifier){
           <span>Streaming from archive.org</span>
           <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View item page</a>
         </div>
-        <audio controls autoplay src="${url}"></audio>
+        <audio controls ${autoplay ? 'autoplay' : ''} src="${url}"></audio>
         <div style="margin-top:10px;">
           <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
             ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
