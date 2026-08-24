@@ -775,7 +775,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:37:17Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:39:00Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -998,7 +998,7 @@ function renderSaved(){
     const title = item.title || id;
     const creator = item.creator || '';
     return `
-      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}">
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}" data-desc="${escapeHtml(item.description || '')}">
         <div class="result" data-id="${escapeHtml(id)}">
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
@@ -1010,6 +1010,7 @@ function renderSaved(){
                 <span class="result-saved-icon is-saved" data-id="${escapeHtml(id)}">${bookmarkIcon(true)}</span>
               </div>
             </div>
+            ${item.description ? `<p class="result-desc">${escapeHtml(item.description)}</p>` : ''}
           </div>
         </div>
         <div class="player-slot"></div>
@@ -1182,7 +1183,7 @@ function render(docs, query, page = 0){
     metaParts.push(`<span>archive.org</span>`);
 
     return `
-      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="">
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator || '')}" data-runtime="" data-desc="${escapeHtml(desc)}">
         <div class="result" data-id="${escapeHtml(id)}">
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
@@ -1377,6 +1378,7 @@ async function handleSaveClick(saveBtn, group){
       title: group.dataset.title,
       creator: group.dataset.creator,
       runtime: group.dataset.runtime,
+      description: group.dataset.desc || '',
       audioUrl: saveBtn.dataset.url
     });
     saveBtn.classList.add('is-saved');
@@ -1476,6 +1478,7 @@ npbSaveBtn.addEventListener('click', async () => {
         title: group?.dataset.title || identifier,
         creator: group?.dataset.creator || '',
         runtime: group?.dataset.runtime || '',
+        description: group?.dataset.desc || '',
         audioUrl: url
       });
       npbSaveBtn.classList.add('is-saved');
@@ -1541,6 +1544,7 @@ async function handleBookmarkClick(e){
         title: group?.dataset.title || identifier,
         creator: group?.dataset.creator || '',
         runtime: duration || '',
+        description: group?.dataset.desc || '',
         audioUrl: url
       });
       icon.classList.add('is-saved');
