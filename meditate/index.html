@@ -45,10 +45,15 @@
   body:not(.has-results) {
     height: 100dvh;
     overflow: hidden;
+    /* position:fixed prevents iOS from scrolling the document at all when
+       the keyboard opens, eliminating the navbar flicker entirely */
+    position: fixed;
+    width: 100%;
   }
   body.has-results {
     height: auto;
     overflow: auto;
+    position: static;
   }
 
   .eyebrow{
@@ -772,7 +777,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:28:48Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:29:43Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -844,7 +849,6 @@ function updateSearchCentering(){
 
 if(window.visualViewport){
   window.visualViewport.addEventListener('resize', updateSearchCentering);
-  window.visualViewport.addEventListener('scroll', () => window.scrollTo(0, 0));
 }
 // Initial centering on load
 updateSearchCentering();
