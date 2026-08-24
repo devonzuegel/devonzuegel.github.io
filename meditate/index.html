@@ -38,10 +38,12 @@
     display: flex;
     flex-direction: column;
   }
-  /* In the empty search state, lock page to viewport height so iOS Safari
-     can't scroll the navbar off-screen when the keyboard opens. */
+  /* In the empty search state, lock page to the true visible viewport height
+     so iOS Safari can't scroll the navbar off-screen when the keyboard opens.
+     dvh = dynamic viewport height (excludes browser chrome). Falls back to
+     100vh on older browsers. */
   body:not(.has-results) {
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
   }
   body.has-results {
