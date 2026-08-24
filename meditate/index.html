@@ -669,9 +669,15 @@
     line-height: 1.6;
     margin: 0;
   }
+  .refresh-row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
   .hard-refresh-btn{
     padding: 10px 20px;
     font-size: 14px;
+    flex-shrink: 0;
   }
   .hard-refresh-btn:disabled{
     opacity: 0.4;
@@ -727,8 +733,10 @@
       <div class="about-section">
         <h2 class="about-section-title">Refresh app</h2>
         <p class="about-section-desc">Force a fresh download of the app, clearing any cached version.</p>
-        <p class="about-section-note" id="build-age"></p>
-        <button type="button" class="hard-refresh-btn" id="hard-refresh-btn">Refresh now</button>
+        <div class="refresh-row">
+          <button type="button" class="hard-refresh-btn" id="hard-refresh-btn">Refresh now</button>
+          <span class="about-section-note" id="build-age"></span>
+        </div>
       </div>
 
       <div class="about-section">
@@ -764,7 +772,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:18:02Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:18:20Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
