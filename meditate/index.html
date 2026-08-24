@@ -772,7 +772,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:24:47Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:26:39Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -823,6 +823,12 @@ function updateOfflineBanner(){
   if(refreshBtn) refreshBtn.disabled = !navigator.onLine;
 }
 updateOfflineBanner();
+
+// On iOS, opening the keyboard shrinks the viewport and scrolls the page,
+// pushing the fixed navbar off screen. Snap scroll to 0 while input is focused.
+function snapScrollToTop(){ window.scrollTo(0, 0); }
+input.addEventListener('focus', () => document.addEventListener('scroll', snapScrollToTop));
+input.addEventListener('blur',  () => document.removeEventListener('scroll', snapScrollToTop));
 
 document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
   if(!navigator.onLine) return;
