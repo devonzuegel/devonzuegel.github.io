@@ -772,7 +772,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:19:18Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:21:04Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -856,7 +856,7 @@ document.getElementById('hard-refresh-btn').addEventListener('click', async () =
 
   btn.textContent = 'Reloading…';
   setTimeout(() => {
-    window.location.href = window.location.pathname + '?cb=' + Date.now();
+    window.location.href = window.location.pathname + '?cb=' + Date.now() + '#about';
   }, 400);
 });
 
