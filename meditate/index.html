@@ -335,6 +335,20 @@
     width: 100%;
     height: 36px;
   }
+  .player-full-title{
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+  .player-full-desc{
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #55605a;
+    margin: 0 0 12px;
+  }
   .player-meta{
     display:flex;
     justify-content: space-between;
@@ -1381,6 +1395,8 @@ function toggleExpand(identifier){
     const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
     slot.innerHTML = `
       <div class="player-row">
+        ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
+        ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
         <div class="player-meta">
           ${group.dataset.creator ? `<span>${escapeHtml(group.dataset.creator)}</span>` : ''}
           <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
