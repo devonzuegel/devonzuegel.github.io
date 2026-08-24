@@ -775,7 +775,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:33:25Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:34:43Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1168,7 +1168,6 @@ function render(docs, query, page = 0){
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
               </div>
             </div>
-            <div class="result-meta">${metaParts.join('')}</div>
             ${desc ? `<p class="result-desc">${escapeHtml(desc)}</p>` : ''}
           </div>
         </div>
@@ -1308,7 +1307,8 @@ function toggleExpand(identifier){
     slot.innerHTML = `
       <div class="player-row">
         <div class="player-meta">
-          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">View on archive.org</a>
+          ${group.dataset.creator ? `<span>${escapeHtml(group.dataset.creator)}</span>` : ''}
+          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
         </div>
         ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
         <div style="margin-top:10px;">
