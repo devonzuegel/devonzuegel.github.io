@@ -687,6 +687,21 @@
     cursor: not-allowed;
     background: var(--moss);
   }
+  .nav-refresh-btn{
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 8px 4px 8px 8px;
+    color: var(--moss-soft);
+    cursor: pointer;
+    line-height: 0;
+    transition: color .15s, transform .4s ease;
+    flex-shrink: 0;
+  }
+  .nav-refresh-btn:hover{ color: var(--moss); background: none; }
+  .nav-refresh-btn:disabled{ opacity: 0.4; cursor: not-allowed; }
+  .nav-refresh-btn.is-spinning svg{ animation: spin .7s linear infinite; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -701,6 +716,9 @@
           <button type="button" class="tab" data-view="about">About</button>
           <div class="tab-indicator" id="tab-indicator"></div>
         </div>
+        <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
       </div>
     </div>
 
@@ -775,7 +793,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:39:00Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:39:52Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -822,21 +840,18 @@ window.addEventListener('online', updateOfflineBanner);
 window.addEventListener('offline', updateOfflineBanner);
 function updateOfflineBanner(){
   offlineBanner.classList.toggle('is-visible', !navigator.onLine);
+  const offline = !navigator.onLine;
   const refreshBtn = document.getElementById('hard-refresh-btn');
-  if(refreshBtn) refreshBtn.disabled = !navigator.onLine;
+  if(refreshBtn) refreshBtn.disabled = offline;
+  const navRefreshBtn = document.getElementById('nav-refresh-btn');
+  if(navRefreshBtn) navRefreshBtn.disabled = offline;
 }
 updateOfflineBanner();
 
-document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
+async function doHardRefresh(){
   if(!navigator.onLine) return;
-  const btn = document.getElementById('hard-refresh-btn');
-  btn.textContent = 'Clearing cache…';
-  btn.disabled = true;
-
   const timeout = ms => new Promise(res => setTimeout(res, ms));
-
   try{
-    // Delete all caches except saved audio — bail after 3s if hung
     await Promise.race([
       (async () => {
         const keys = await caches.keys();
@@ -844,8 +859,6 @@ document.getElementById('hard-refresh-btn').addEventListener('click', async () =
       })(),
       timeout(3000)
     ]);
-
-    // Unregister SW — bail after 2s if hung
     if('serviceWorker' in navigator){
       await Promise.race([
         (async () => {
@@ -856,11 +869,26 @@ document.getElementById('hard-refresh-btn').addEventListener('click', async () =
       ]);
     }
   } catch(e){ /* ignore — still reload */ }
-
-  btn.textContent = 'Reloading…';
   setTimeout(() => {
     window.location.href = window.location.pathname + '?cb=' + Date.now() + '#about';
   }, 400);
+}
+
+document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
+  if(!navigator.onLine) return;
+  const btn = document.getElementById('hard-refresh-btn');
+  btn.textContent = 'Clearing cache…';
+  btn.disabled = true;
+  await doHardRefresh();
+  btn.textContent = 'Reloading…';
+});
+
+document.getElementById('nav-refresh-btn').addEventListener('click', async () => {
+  if(!navigator.onLine) return;
+  const btn = document.getElementById('nav-refresh-btn');
+  btn.disabled = true;
+  btn.classList.add('is-spinning');
+  await doHardRefresh();
 });
 
 // ---------- Icons ----------
