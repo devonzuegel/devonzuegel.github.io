@@ -594,6 +594,62 @@
   .npb-save-btn:hover{ color: rgba(255,255,255,.9); }
   .npb-save-btn.is-saved{ color: #fff; }
 
+  .npb-player{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .npb-play-btn{
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    border: none;
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .npb-play-btn:hover{ background: rgba(255,255,255,.28); }
+  .npb-time{
+    font-size: 11px;
+    opacity: .75;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .npb-scrubber{
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,.25);
+    outline: none;
+    cursor: pointer;
+    accent-color: var(--paper);
+  }
+  .npb-scrubber::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--paper);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  }
+  .npb-scrubber::-moz-range-thumb{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: none;
+    cursor: pointer;
+  }
+
   /* ── Confirm modal ── */
   .modal-backdrop{
     display: none;
@@ -805,7 +861,16 @@
       <span class="npb-title" id="npb-title"></span>
       <button type="button" class="npb-save-btn" id="npb-save-btn" aria-label="Save offline"></button>
     </div>
-    <audio id="npb-audio" controls></audio>
+    <audio id="npb-audio"></audio>
+    <div class="npb-player">
+      <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause">
+        <svg class="npb-icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="npb-icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <span class="npb-time" id="npb-current">0:00</span>
+      <input type="range" class="npb-scrubber" id="npb-scrubber" min="0" max="100" value="0" step="0.1">
+      <span class="npb-time" id="npb-duration">–:––</span>
+    </div>
   </div>
 
   <div class="modal-backdrop" id="modal-backdrop">
@@ -819,7 +884,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:43:43Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:45:46Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1475,7 +1540,48 @@ const nowPlayingBar  = document.getElementById('now-playing-bar');
 const npbTitle       = document.getElementById('npb-title');
 const npbSaveBtn     = document.getElementById('npb-save-btn');
 const npbAudio       = document.getElementById('npb-audio');
+const npbPlayBtn     = document.getElementById('npb-play-btn');
+const npbScrubber    = document.getElementById('npb-scrubber');
+const npbCurrent     = document.getElementById('npb-current');
+const npbDuration    = document.getElementById('npb-duration');
 let   currentAudio   = npbAudio;
+
+function fmtTime(s){
+  if(!isFinite(s)) return '–:––';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return `${m}:${String(sec).padStart(2, '0')}`;
+}
+
+npbPlayBtn.addEventListener('click', () => {
+  npbAudio.paused ? npbAudio.play() : npbAudio.pause();
+});
+
+npbAudio.addEventListener('play',  () => {
+  npbPlayBtn.querySelector('.npb-icon-play').style.display  = 'none';
+  npbPlayBtn.querySelector('.npb-icon-pause').style.display = '';
+});
+npbAudio.addEventListener('pause', () => {
+  npbPlayBtn.querySelector('.npb-icon-play').style.display  = '';
+  npbPlayBtn.querySelector('.npb-icon-pause').style.display = 'none';
+});
+npbAudio.addEventListener('ended', () => {
+  npbPlayBtn.querySelector('.npb-icon-play').style.display  = '';
+  npbPlayBtn.querySelector('.npb-icon-pause').style.display = 'none';
+  npbScrubber.value = 0;
+  npbCurrent.textContent = '0:00';
+});
+npbAudio.addEventListener('timeupdate', () => {
+  if(!npbAudio.duration) return;
+  npbScrubber.value = (npbAudio.currentTime / npbAudio.duration) * 100;
+  npbCurrent.textContent = fmtTime(npbAudio.currentTime);
+});
+npbAudio.addEventListener('durationchange', () => {
+  npbDuration.textContent = fmtTime(npbAudio.duration);
+});
+npbScrubber.addEventListener('input', () => {
+  if(!npbAudio.duration) return;
+  npbAudio.currentTime = (npbScrubber.value / 100) * npbAudio.duration;
+});
 
 function setIconState(identifier, playing){
   const group = findGroup(identifier);
