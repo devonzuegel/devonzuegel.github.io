@@ -24,8 +24,8 @@
     --ink: #e8ebe6;
     --paper: #000000;
     --paper-dim: #0f0f0f;
-    --moss: #7aaa7c;
-    --moss-soft: #5e7e60;
+    --moss: #5a9a9a;
+    --moss-soft: #3d7070;
     --line: #2a2a2a;
     --card: #111111;
   }
@@ -249,7 +249,7 @@
     display:flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 20px;
     margin-bottom: 44px;
   }
   .chip{
@@ -846,6 +846,40 @@
     line-height: 1.6;
     margin: 0;
   }
+  .color-swatches{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .color-swatch{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: border-color .15s ease, background .15s ease;
+    background: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .color-swatch:hover{ background: var(--paper-dim); }
+  .color-swatch.is-active{ border-color: var(--moss); }
+  .color-swatch-dot{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  .color-swatch-name{
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--moss-soft);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
   .refresh-row{
     display: flex;
     align-items: center;
@@ -940,6 +974,12 @@
     <div class="view" id="view-about">
       <p class="about-footer">Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.</p>
 
+      <div class="about-section" id="accent-section">
+        <h2 class="about-section-title">Accent color</h2>
+        <p class="about-section-desc">Choose an accent color for the app. In dark mode, this controls the active highlights, buttons, and tab indicator.</p>
+        <div class="color-swatches" id="color-swatches"></div>
+      </div>
+
       <div class="about-section">
         <h2 class="about-section-title">Refresh app</h2>
         <p class="about-section-desc">Force a fresh download of the app, clearing any cached version.</p>
@@ -1002,7 +1042,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T15:00:53Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T17:04:25Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1126,6 +1166,47 @@ themeBtn.addEventListener('click', () => {
   sunIcon.style.display  = isDark ? '' : 'none';
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
+
+// ---------- Accent color ----------
+const ACCENT_PALETTES = [
+  { id: 'teal',     name: 'Teal',     moss: '#5a9a9a', soft: '#3d7070' },
+  { id: 'green',    name: 'Green',    moss: '#7aaa7c', soft: '#5e7e60' },
+  { id: 'sage',     name: 'Sage',     moss: '#8fb88f', soft: '#6e9370' },
+  { id: 'blue',     name: 'Blue',     moss: '#6b8cba', soft: '#4e6a8e' },
+  { id: 'lavender', name: 'Lavender', moss: '#9b8fc4', soft: '#7a6fa0' },
+  { id: 'rose',     name: 'Rose',     moss: '#c47a7a', soft: '#9a5a5a' },
+  { id: 'amber',    name: 'Amber',    moss: '#c9a05a', soft: '#9e7a3e' },
+];
+
+function applyAccent(id){
+  const p = ACCENT_PALETTES.find(x => x.id === id) || ACCENT_PALETTES[0];
+  // Only override in dark mode; light mode uses its own fixed greens
+  document.documentElement.style.setProperty('--dark-moss', p.moss);
+  document.documentElement.style.setProperty('--dark-moss-soft', p.soft);
+  // Inject a dynamic style rule that wins over the static body.dark block
+  let el = document.getElementById('accent-override');
+  if(!el){ el = document.createElement('style'); el.id = 'accent-override'; document.head.appendChild(el); }
+  el.textContent = `body.dark{ --moss: ${p.moss}; --moss-soft: ${p.soft}; }`;
+  localStorage.setItem('accent', id);
+  // Update swatch active state
+  document.querySelectorAll('.color-swatch').forEach(btn => {
+    btn.classList.toggle('is-active', btn.dataset.accent === id);
+  });
+}
+
+// Build swatches
+const swatchContainer = document.getElementById('color-swatches');
+ACCENT_PALETTES.forEach(p => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'color-swatch';
+  btn.dataset.accent = p.id;
+  btn.innerHTML = `<span class="color-swatch-dot" style="background:${p.moss}"></span><span class="color-swatch-name">${p.name}</span>`;
+  btn.addEventListener('click', () => applyAccent(p.id));
+  swatchContainer.appendChild(btn);
+});
+
+applyAccent(localStorage.getItem('accent') || 'teal');
 
 // ---------- Icons ----------
 function playIcon(){
