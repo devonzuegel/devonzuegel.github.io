@@ -619,6 +619,17 @@
     transition: background .15s;
   }
   .npb-play-btn:hover{ background: rgba(255,255,255,.35); }
+  .npb-skip-btn{
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,.75);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 0;
+    transition: color .15s;
+  }
+  .npb-skip-btn:hover{ color: #fff; }
   .npb-time{
     font-size: 11px;
     opacity: .75;
@@ -873,9 +884,15 @@
     </div>
     <audio id="npb-audio"></audio>
     <div class="npb-player">
+      <button type="button" class="npb-skip-btn" id="npb-back-btn" aria-label="Back 15 seconds">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.63"/><text x="12" y="14" text-anchor="middle" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="bold">15</text></svg>
+      </button>
       <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause">
         <span class="npb-icon-play" style="padding-left:4px">▶</span>
         <span class="npb-icon-pause" style="display:none">⏸</span>
+      </button>
+      <button type="button" class="npb-skip-btn" id="npb-fwd-btn" aria-label="Forward 15 seconds">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.63"/><text x="12" y="14" text-anchor="middle" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="bold">15</text></svg>
       </button>
       <span class="npb-time" id="npb-current">0:00</span>
       <input type="range" class="npb-scrubber" id="npb-scrubber" min="0" max="100" value="0" step="0.1">
@@ -894,7 +911,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:18:11Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:18:57Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1607,6 +1624,13 @@ npbAudio.addEventListener('durationchange', () => {
 npbScrubber.addEventListener('input', () => {
   if(!npbAudio.duration) return;
   npbAudio.currentTime = (npbScrubber.value / 100) * npbAudio.duration;
+});
+
+document.getElementById('npb-back-btn').addEventListener('click', () => {
+  npbAudio.currentTime = Math.max(0, npbAudio.currentTime - 15);
+});
+document.getElementById('npb-fwd-btn').addEventListener('click', () => {
+  if(npbAudio.duration) npbAudio.currentTime = Math.min(npbAudio.duration, npbAudio.currentTime + 15);
 });
 
 function setIconState(identifier, playing){
