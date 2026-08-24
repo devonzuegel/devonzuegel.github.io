@@ -337,17 +337,28 @@
   }
   .player-full-title{
     font-family: 'Fraunces', serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--ink);
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     line-height: 1.3;
   }
   .player-full-desc{
-    font-size: 13.5px;
+    font-size: 12px;
     line-height: 1.5;
-    color: #55605a;
-    margin: 0 0 12px;
+    color: #7a8a7d;
+    margin: 0 0 10px;
+  }
+  .player-slot{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .25s ease;
+  }
+  .player-slot.is-open{
+    grid-template-rows: 1fr;
+  }
+  .player-slot > .player-row{
+    overflow: hidden;
   }
   .player-meta{
     display:flex;
@@ -847,7 +858,7 @@
     <audio id="npb-audio"></audio>
     <div class="npb-player">
       <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause">
-        <span class="npb-icon-play" style="padding-left:2px">▶</span>
+        <span class="npb-icon-play" style="padding-left:4px">▶</span>
         <span class="npb-icon-pause" style="display:none">⏸</span>
       </button>
       <span class="npb-time" id="npb-current">0:00</span>
@@ -867,7 +878,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:08:22Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:09:19Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1436,29 +1447,33 @@ function toggleExpand(identifier){
   const isOpen = chevron && chevron.classList.contains('is-open');
 
   if(isOpen){
-    slot.innerHTML = '';
+    slot.classList.remove('is-open');
     if(chevron) chevron.classList.remove('is-open');
   } else {
-    const saved = isSaved(identifier);
-    const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
-    slot.innerHTML = `
-      <div class="player-row">
-        ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
-        ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
-        <div class="player-meta">
-          ${group.dataset.creator ? `<span>${escapeHtml(group.dataset.creator)}</span>` : ''}
-          <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
-        </div>
-        ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
-        <div style="margin-top:10px;">
-          <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
-            ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
-          </button>
-        </div>
-      </div>`;
+    // Populate once, then animate open
+    if(!slot.querySelector('.player-row')){
+      const saved = isSaved(identifier);
+      const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
+      slot.innerHTML = `
+        <div class="player-row">
+          ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
+          ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
+          <div class="player-meta">
+            ${group.dataset.creator ? `<span>${escapeHtml(group.dataset.creator)}</span>` : ''}
+            <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
+          </div>
+          ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
+          <div style="margin-top:10px;">
+            <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
+              ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
+            </button>
+          </div>
+        </div>`;
+      const saveBtn = slot.querySelector('.save-btn');
+      if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
+    }
+    requestAnimationFrame(() => slot.classList.add('is-open'));
     if(chevron) chevron.classList.add('is-open');
-    const saveBtn = slot.querySelector('.save-btn');
-    if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
   }
 }
 
