@@ -585,16 +585,18 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255,255,255,.15);
-    border: none;
-    color: var(--paper);
+    background: rgba(255,255,255,.25);
+    border: 2px solid rgba(255,255,255,.6);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background .15s;
+    overflow: visible;
   }
-  .npb-play-btn:hover{ background: rgba(255,255,255,.28); }
+  .npb-play-btn svg{ color: #fff; fill: #fff; }
+  .npb-play-btn:hover{ background: rgba(255,255,255,.38); }
   .npb-time{
     font-size: 11px;
     opacity: .75;
@@ -865,7 +867,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T03:50:06Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T03:54:44Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
