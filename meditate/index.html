@@ -639,6 +639,13 @@
     .result{ transition: background .12s ease; }
   }
 
+  @media (max-width: 600px){
+    #results, #saved-results{
+      margin-left: -24px;
+      margin-right: -24px;
+    }
+  }
+
   .about-section{
     margin-top: 36px;
     padding-top: 28px;
@@ -793,7 +800,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:41:54Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:42:18Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
