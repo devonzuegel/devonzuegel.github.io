@@ -42,13 +42,13 @@
      so iOS Safari can't scroll the navbar off-screen when the keyboard opens.
      dvh = dynamic viewport height (excludes browser chrome). Falls back to
      100vh on older browsers. */
-  body:not(.has-results) {
-    height: 100dvh;
-    overflow: hidden;
-  }
-  body.has-results {
+  body {
     height: auto;
     overflow: auto;
+  }
+  body.search-empty {
+    height: 100dvh;
+    overflow: hidden;
   }
 
   .eyebrow{
@@ -977,7 +977,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:38:23Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:40:08Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1168,7 +1168,9 @@ function activateView(view, { push = true } = {}){
   if(view === 'search'){
     tabIndicator.style.opacity = '0';
     input.focus();
+    if(!viewSearch.classList.contains('has-results')) document.body.classList.add('search-empty');
   } else {
+    document.body.classList.remove('search-empty');
     const tab = document.querySelector(`.tab[data-view="${view}"]`);
     if(tab){ tab.classList.add('is-active'); moveIndicator(tab); }
   }
@@ -1325,7 +1327,7 @@ async function search(query, page = 0){
   if(!query || !query.trim()){
     statusEl.textContent = '';
     resultsEl.innerHTML = '';
-    viewSearch.classList.remove('has-results'); document.body.classList.remove('has-results');
+    viewSearch.classList.remove('has-results'); document.body.classList.remove('has-results'); document.body.classList.add('search-empty');
     currentQuery = '';
     return;
   }
@@ -1367,7 +1369,7 @@ async function search(query, page = 0){
     const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
     resultsEl.innerHTML = `<div class=”error”>Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
     statusEl.textContent = '';
-    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); document.body.classList.remove('search-empty');
   }finally{
     btn.disabled = false;
   }
@@ -1384,7 +1386,7 @@ function render(docs, query, page = 0){
   if(docs.length === 0 && page === 0){
     statusEl.textContent = `No results for “${query}”.`;
     resultsEl.innerHTML = `<div class=”empty”>Nothing matched that search. Try a broader term — “sleep”, “breathing”, “gratitude” — or check spelling.</div>`;
-    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); document.body.classList.remove('search-empty');
     return;
   }
 
@@ -1447,7 +1449,7 @@ function render(docs, query, page = 0){
     resultsEl.appendChild(loadMore);
   }
 
-  viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
+  viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); document.body.classList.remove('search-empty');
 
   resultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
     if(!btn.dataset.bound){
