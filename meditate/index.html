@@ -683,6 +683,44 @@
     cursor: pointer;
   }
 
+  /* ── Toast ── */
+  .toast{
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #3a2a28;
+    color: #f5ede9;
+    font-size: 13.5px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 300;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    transition: transform .25s ease, opacity .25s ease;
+    opacity: 0;
+    white-space: nowrap;
+    max-width: calc(100vw - 48px);
+  }
+  .toast.is-visible{
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  .toast-dismiss{
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: .7;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .toast-dismiss:hover{ opacity: 1; }
+
   /* ── Confirm modal ── */
   .modal-backdrop{
     display: none;
@@ -917,6 +955,11 @@
     </div>
   </div>
 
+  <div class="toast" id="toast">
+    <span id="toast-message"></span>
+    <button type="button" class="toast-dismiss" id="toast-dismiss" aria-label="Dismiss">✕</button>
+  </div>
+
   <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
       <p id="modal-message"></p>
@@ -928,7 +971,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:34:32Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:37:00Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1651,11 +1694,9 @@ npbAudio.addEventListener('error', () => {
       iconEl.querySelector('.result-icon').innerHTML = playIcon();
     }
   }
-  npbTitle.textContent = 'Could not load audio — try another track';
-  npbDuration.textContent = '–:––';
-  npbScrubber.value = 0;
-  npbCurrent.textContent = '0:00';
+  nowPlayingBar.classList.remove('is-visible');
   openIdentifier = null;
+  showToast('Could not load audio — try another track');
 });
 npbScrubber.addEventListener('input', () => {
   if(!npbAudio.duration) return;
@@ -1746,6 +1787,16 @@ const modalBackdrop = document.getElementById('modal-backdrop');
 const modalMessage  = document.getElementById('modal-message');
 const modalCancel   = document.getElementById('modal-cancel');
 const modalConfirm  = document.getElementById('modal-confirm');
+
+const toastEl = document.getElementById('toast');
+const toastMsg = document.getElementById('toast-message');
+document.getElementById('toast-dismiss').addEventListener('click', () => toastEl.classList.remove('is-visible'));
+let toastTimer = null;
+function showToast(message){
+  toastMsg.textContent = message;
+  toastEl.classList.add('is-visible');
+  clearTimeout(toastTimer);
+}
 
 function showConfirmModal(message){
   return new Promise(resolve => {
