@@ -772,7 +772,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:18:20Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:19:18Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -921,17 +921,16 @@ async function removeSaved(identifier){
 
 // ---------- Tabs ----------
 const tabIndicator = document.getElementById('tab-indicator');
-const BASE = '/meditate';
 
 const ROUTES = {
-  search: BASE + '/',
-  saved:  BASE + '/saved',
-  about:  BASE + '/about',
+  search: '#',
+  saved:  '#saved',
+  about:  '#about',
 };
 
-function viewFromPath(path){
-  if(path === ROUTES.saved)  return 'saved';
-  if(path === ROUTES.about)  return 'about';
+function viewFromHash(hash){
+  if(hash === '#saved') return 'saved';
+  if(hash === '#about') return 'about';
   return 'search';
 }
 
@@ -957,7 +956,8 @@ function activateView(view, { push = true } = {}){
   if(view === 'saved') renderSaved();
 
   if(push){
-    history.pushState({ view }, '', ROUTES[view]);
+    const hash = ROUTES[view];
+    history.pushState({ view }, '', hash === '#' ? location.pathname : hash);
   }
 }
 
@@ -969,12 +969,12 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // Handle browser back/forward
 window.addEventListener('popstate', (e) => {
-  const view = e.state?.view || viewFromPath(location.pathname);
+  const view = e.state?.view || viewFromHash(location.hash);
   activateView(view, { push: false });
 });
 
-// Set initial view from URL, without animation on indicator
-const initialView = viewFromPath(location.pathname);
+// Set initial view from URL hash, without animation on indicator
+const initialView = viewFromHash(location.hash);
 requestAnimationFrame(() => {
   tabIndicator.style.transition = 'none';
   activateView(initialView, { push: false });
