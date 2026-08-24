@@ -793,7 +793,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:39:52Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:40:26Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1061,6 +1061,9 @@ function renderSaved(){
   savedResultsEl.querySelectorAll('.result-expand-btn').forEach(btn => {
     btn.addEventListener('click', () => toggleExpand(btn.dataset.id));
   });
+
+  // Restore active icon state if a track is currently playing
+  if(openIdentifier) setIconState(openIdentifier, !npbAudio.paused);
 }
 
 // ---------- Search ----------
