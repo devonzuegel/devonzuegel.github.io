@@ -889,7 +889,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:12:03Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:16:06Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -944,7 +944,7 @@ function updateOfflineBanner(){
 }
 updateOfflineBanner();
 
-async function doHardRefresh(){
+async function doHardRefresh(hash = '#about'){
   if(!navigator.onLine) return;
   const timeout = ms => new Promise(res => setTimeout(res, ms));
   try{
@@ -966,7 +966,7 @@ async function doHardRefresh(){
     }
   } catch(e){ /* ignore — still reload */ }
   setTimeout(() => {
-    window.location.href = window.location.pathname + '?cb=' + Date.now() + '#about';
+    window.location.href = window.location.pathname + '?cb=' + Date.now() + hash;
   }, 400);
 }
 
@@ -984,7 +984,7 @@ document.getElementById('nav-refresh-btn').addEventListener('click', async () =>
   const btn = document.getElementById('nav-refresh-btn');
   btn.disabled = true;
   btn.classList.add('is-spinning');
-  await doHardRefresh();
+  await doHardRefresh(window.location.hash || '#');
 });
 
 // ---------- Icons ----------

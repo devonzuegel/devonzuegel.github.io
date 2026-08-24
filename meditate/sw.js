@@ -1,4 +1,4 @@
-const SHELL_CACHE = 'meditation-shell-20260824041203';
+const SHELL_CACHE = 'meditation-shell-20260824041606';
 const AUDIO_CACHE = 'meditation-audio-v1';
 const SHELL_URLS = ['./', './index.html', './manifest.json'];
 
