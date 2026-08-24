@@ -813,6 +813,103 @@
     }
   }
 
+  .history-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 10px;
+    min-height: 42px;
+  }
+  .history-status{
+    font-size: 13px;
+    color: var(--moss-soft);
+  }
+  .history-clear-btn{
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--moss-soft);
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .history-clear-btn:hover{ color: var(--ink); border-color: var(--moss-soft); }
+  .history-clear-btn:disabled{ opacity: 0.4; cursor: not-allowed; }
+  .history-list{
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .history-item{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: var(--paper);
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .history-item:hover{ background: var(--field); }
+  .history-item-header{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .history-item-title{
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-item-date{
+    font-size: 12px;
+    color: var(--moss-soft);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .history-item-meta{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--moss-soft);
+    flex-wrap: wrap;
+  }
+  .history-item-progress{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 80px;
+  }
+  .history-progress-bar{
+    flex: 1;
+    height: 3px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 80px;
+  }
+  .history-progress-fill{
+    height: 100%;
+    background: var(--moss-soft);
+    border-radius: 999px;
+  }
+  .history-empty{
+    padding: 48px 0;
+    text-align: center;
+    color: var(--moss-soft);
+    font-size: 14px;
+  }
+
   .about-section{
     margin-top: 36px;
     padding-top: 28px;
@@ -939,6 +1036,7 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
+          <button type="button" class="tab" data-view="history">History</button>
           <button type="button" class="tab" data-view="about">About</button>
           <div class="tab-indicator" id="tab-indicator"></div>
         </div>
@@ -969,6 +1067,14 @@
     <div class="view" id="view-saved">
       <div class="status" id="saved-status"></div>
       <div id="saved-results"></div>
+    </div>
+
+    <div class="view" id="view-history">
+      <div class="history-header">
+        <span class="history-status" id="history-status"></span>
+        <button type="button" class="history-clear-btn" id="history-clear-btn">Clear history</button>
+      </div>
+      <div id="history-results"></div>
     </div>
 
     <div class="view" id="view-about">
@@ -1042,7 +1148,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T18:03:37Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T18:07:54Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1071,9 +1177,13 @@ const offlineBanner = document.getElementById('offline-banner');
 const savedResultsEl = document.getElementById('saved-results');
 const savedStatusEl = document.getElementById('saved-status');
 const savedCountEl = document.getElementById('saved-count');
+const historyResultsEl = document.getElementById('history-results');
+const historyStatusEl = document.getElementById('history-status');
 
 const AUDIO_CACHE = 'meditation-audio-v1';
 const SAVED_KEY = 'savedMeditations';
+const HISTORY_KEY = 'playHistory';
+const HISTORY_MAX = 200; // max sessions to keep
 
 // ---------- Service worker: makes the page itself (this HTML/CSS/JS) load offline ----------
 // Requires being served over http(s) — file:// and Claude's in-chat preview can't register one.
@@ -1238,6 +1348,181 @@ function isSaved(identifier){
   return getSaved().some(item => item.identifier === identifier);
 }
 
+// ---------- Play history ----------
+function getHistory(){
+  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch{ return []; }
+}
+function setHistory(list){
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+}
+
+// Active session state
+let _historySession = null;
+
+function historyStartSession(identifier, title, creator){
+  // Finalize any open session first
+  historyEndSession();
+  _historySession = {
+    identifier,
+    title: title || identifier,
+    creator: creator || '',
+    startedAt: Date.now(),
+    durationSec: null,    // filled from audio.duration at end
+    listenedSec: 0,       // accumulated play time
+    completedFraction: 0, // 0-1
+    pauses: [],           // [{at, resumedAt}] — at/resumedAt are seconds into track
+    _lastPlayTime: null,  // wall-clock ms when play started (for accumulating listenedSec)
+    _lastPosition: 0,     // audio.currentTime when last seen playing
+  };
+}
+
+function historyOnPlay(audio){
+  if(!_historySession) return;
+  _historySession._lastPlayTime = Date.now();
+  _historySession._lastPosition = audio.currentTime;
+  if(_historySession.durationSec == null && isFinite(audio.duration) && audio.duration > 0){
+    _historySession.durationSec = audio.duration;
+  }
+}
+
+function historyOnPause(audio){
+  if(!_historySession) return;
+  if(_historySession._lastPlayTime != null){
+    const elapsed = (Date.now() - _historySession._lastPlayTime) / 1000;
+    _historySession.listenedSec += elapsed;
+    _historySession._lastPlayTime = null;
+  }
+  if(isFinite(audio.duration) && audio.duration > 0){
+    _historySession.durationSec = audio.duration;
+    _historySession.completedFraction = audio.currentTime / audio.duration;
+  }
+  _historySession.pauses.push({ at: Math.round(audio.currentTime) });
+}
+
+function historyOnResume(audio){
+  if(!_historySession) return;
+  // Fill resumedAt on the last open pause
+  const pauses = _historySession.pauses;
+  if(pauses.length > 0 && pauses[pauses.length - 1].resumedAt == null){
+    pauses[pauses.length - 1].resumedAt = Math.round(audio.currentTime);
+  }
+  _historySession._lastPlayTime = Date.now();
+  _historySession._lastPosition = audio.currentTime;
+}
+
+function historyOnTimeUpdate(audio){
+  if(!_historySession || _historySession._lastPlayTime == null) return;
+  if(isFinite(audio.duration) && audio.duration > 0){
+    _historySession.durationSec = audio.duration;
+    _historySession.completedFraction = audio.currentTime / audio.duration;
+  }
+}
+
+function historyEndSession(){
+  if(!_historySession) return;
+  // Flush any still-playing time
+  if(_historySession._lastPlayTime != null){
+    const elapsed = (Date.now() - _historySession._lastPlayTime) / 1000;
+    _historySession.listenedSec += elapsed;
+    _historySession._lastPlayTime = null;
+  }
+  // Only save if user actually listened for more than 3 seconds
+  if(_historySession.listenedSec < 3){ _historySession = null; return; }
+
+  const { _lastPlayTime, _lastPosition, ...record } = _historySession;
+  record.listenedSec = Math.round(record.listenedSec);
+  record.completedFraction = Math.round(record.completedFraction * 100) / 100;
+  record.pauses = record.pauses.filter(p => p.at != null); // clean up any null entries
+
+  const list = getHistory();
+  list.unshift(record); // newest first
+  if(list.length > HISTORY_MAX) list.length = HISTORY_MAX;
+  setHistory(list);
+  _historySession = null;
+}
+
+function fmtRelativeDate(ts){
+  const diff = Date.now() - ts;
+  const sec = Math.floor(diff / 1000);
+  const min = Math.floor(sec / 60);
+  const hr  = Math.floor(min / 60);
+  const day = Math.floor(hr / 24);
+  if(day >= 2) return `${day} days ago`;
+  if(day === 1) return 'Yesterday';
+  if(hr  >= 1) return `${hr}h ago`;
+  if(min >= 1) return `${min}m ago`;
+  return 'Just now';
+}
+
+function fmtSeconds(s){
+  if(!s || !isFinite(s)) return '';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+function renderHistory(){
+  const list = getHistory();
+  if(list.length === 0){
+    historyStatusEl.textContent = '';
+    document.getElementById('history-clear-btn').disabled = true;
+    historyResultsEl.innerHTML = `<div class="history-empty">No sessions yet — start playing a track to build your history.</div>`;
+    return;
+  }
+  historyStatusEl.textContent = `${list.length} session${list.length !== 1 ? 's' : ''}`;
+  document.getElementById('history-clear-btn').disabled = false;
+
+  const html = list.map(rec => {
+    const pct = Math.round((rec.completedFraction || 0) * 100);
+    const pauseCount = (rec.pauses || []).length;
+    const pauseLabel = pauseCount === 0 ? 'no pauses'
+                     : pauseCount === 1 ? '1 pause'
+                     : `${pauseCount} pauses`;
+    const listenedLabel = rec.listenedSec ? `${fmtSeconds(rec.listenedSec)} listened` : '';
+    const durationLabel = rec.durationSec ? `of ${fmtSeconds(rec.durationSec)}` : '';
+    return `
+      <div class="history-item" data-id="${escapeHtml(rec.identifier)}">
+        <div class="history-item-header">
+          <span class="history-item-title">${escapeHtml(rec.title)}</span>
+          <span class="history-item-date">${fmtRelativeDate(rec.startedAt)}</span>
+        </div>
+        <div class="history-item-meta">
+          <div class="history-item-progress">
+            <div class="history-progress-bar"><div class="history-progress-fill" style="width:${pct}%"></div></div>
+            <span>${pct}%</span>
+          </div>
+          ${listenedLabel ? `<span>${listenedLabel}${durationLabel ? ' ' + durationLabel : ''}</span>` : ''}
+          <span>${pauseLabel}</span>
+          ${rec.creator ? `<span>${escapeHtml(rec.creator)}</span>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  historyResultsEl.innerHTML = `<div class="history-list">${html}</div>`;
+
+  historyResultsEl.querySelectorAll('.history-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      if(!id) return;
+      // Find in saved list first so we can seed metaCache, then play
+      const savedList = getSaved();
+      const saved = savedList.find(x => x.identifier === id);
+      if(saved && !metaCache.has(id)){
+        metaCache.set(id, { url: saved.audioUrl, duration: saved.runtime || null });
+      }
+      activateView('search');
+      playTrack(id);
+    });
+  });
+}
+
+document.getElementById('history-clear-btn').addEventListener('click', async () => {
+  const confirmed = await showConfirmModal('Clear all play history?');
+  if(!confirmed) return;
+  setHistory([]);
+  renderHistory();
+});
+
 async function saveForOffline(item){
   // Cache the actual audio bytes so it plays with no network at all.
   // mode: 'no-cors' because archive.org download URLs don't always send CORS headers —
@@ -1271,14 +1556,16 @@ async function removeSaved(identifier){
 const tabIndicator = document.getElementById('tab-indicator');
 
 const ROUTES = {
-  search: '#',
-  saved:  '#saved',
-  about:  '#about',
+  search:  '#',
+  saved:   '#saved',
+  history: '#history',
+  about:   '#about',
 };
 
 function viewFromHash(hash){
-  if(hash === '#saved') return 'saved';
-  if(hash === '#about') return 'about';
+  if(hash === '#saved')   return 'saved';
+  if(hash === '#history') return 'history';
+  if(hash === '#about')   return 'about';
   return 'search';
 }
 
@@ -1303,7 +1590,8 @@ function activateView(view, { push = true } = {}){
     if(tab){ tab.classList.add('is-active'); moveIndicator(tab); }
   }
 
-  if(view === 'saved') renderSaved();
+  if(view === 'saved')   renderSaved();
+  if(view === 'history') renderHistory();
 
   if(push){
     const hash = ROUTES[view];
@@ -1604,6 +1892,7 @@ function findGroup(identifier){
 
 function clearActiveTrack(){
   if(openIdentifier){
+    historyEndSession(); // save history for the track we're leaving
     const prevGroup = findGroup(openIdentifier);
     if(prevGroup){
       const prevIcon = prevGroup.querySelector('.result-icon-btn');
@@ -1875,12 +2164,39 @@ function setupNowPlaying(audio, identifier, group){
   npbTitle.textContent = group.dataset.title || '';
   nowPlayingBar.classList.add('is-visible');
 
-  audio.addEventListener('play',  () => setIconState(identifier, true),  { signal });
-  audio.addEventListener('pause', () => setIconState(identifier, false), { signal });
-  audio.addEventListener('ended', () => setIconState(identifier, false), { signal });
+  // Start a new history session for this track
+  historyStartSession(identifier, group.dataset.title, group.dataset.creator);
+  let _wasPlaying = false;
+
+  audio.addEventListener('play', () => {
+    setIconState(identifier, true);
+    if(_wasPlaying){
+      historyOnResume(audio);
+    } else {
+      historyOnPlay(audio);
+      _wasPlaying = true;
+    }
+  }, { signal });
+
+  audio.addEventListener('pause', () => {
+    setIconState(identifier, false);
+    historyOnPause(audio);
+  }, { signal });
+
+  audio.addEventListener('ended', () => {
+    setIconState(identifier, false);
+    // Mark as fully complete then finalize
+    if(_historySession){
+      _historySession.completedFraction = 1;
+      _historySession.durationSec = isFinite(audio.duration) ? audio.duration : _historySession.durationSec;
+    }
+    historyEndSession();
+  }, { signal });
+
+  audio.addEventListener('timeupdate', () => historyOnTimeUpdate(audio), { signal });
 
   // initial state
-  if(!audio.paused) setIconState(identifier, true);
+  if(!audio.paused){ setIconState(identifier, true); historyOnPlay(audio); _wasPlaying = true; }
 }
 
 npbSaveBtn.addEventListener('click', async () => {
@@ -1995,6 +2311,12 @@ async function handleBookmarkClick(e){
 }
 resultsEl.addEventListener('click', handleBookmarkClick);
 savedResultsEl.addEventListener('click', handleBookmarkClick);
+
+// Save history session when page is closed/backgrounded
+window.addEventListener('pagehide', () => historyEndSession());
+window.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'hidden') historyEndSession();
+});
 </script>
 </body>
 </html>
