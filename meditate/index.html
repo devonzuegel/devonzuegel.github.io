@@ -824,19 +824,6 @@
     font-size: 13px;
     color: var(--moss-soft);
   }
-  .history-clear-btn{
-    font-size: 12px;
-    font-family: 'Inter', sans-serif;
-    background: none;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 5px 10px;
-    color: var(--moss-soft);
-    cursor: pointer;
-    transition: color .15s, border-color .15s;
-  }
-  .history-clear-btn:hover{ color: var(--ink); border-color: var(--moss-soft); }
-  .history-clear-btn:disabled{ opacity: 0.4; cursor: not-allowed; }
   .history-list{
     display: flex;
     flex-direction: column;
@@ -995,7 +982,7 @@
   .nav-theme-btn{
     background: none;
     border: none;
-    padding: 8px 8px 8px 4px;
+    padding: 12px 16px;
     color: var(--moss-soft);
     cursor: pointer;
     line-height: 0;
@@ -1007,7 +994,7 @@
     background: none;
     border: none;
     border-radius: 0;
-    padding: 8px 8px 8px 4px;
+    padding: 12px 16px;
     color: var(--moss-soft);
     cursor: pointer;
     line-height: 0;
@@ -1072,7 +1059,6 @@
     <div class="view" id="view-history">
       <div class="history-header">
         <span class="history-status" id="history-status"></span>
-        <button type="button" class="history-clear-btn" id="history-clear-btn">Clear history</button>
       </div>
       <div id="history-results"></div>
     </div>
@@ -1148,7 +1134,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T18:09:58Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T18:11:51Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1465,12 +1451,10 @@ function renderHistory(){
   const list = getHistory();
   if(list.length === 0){
     historyStatusEl.textContent = '';
-    document.getElementById('history-clear-btn').disabled = true;
     historyResultsEl.innerHTML = `<div class="history-empty">No sessions yet — start playing a track to build your history.</div>`;
     return;
   }
   historyStatusEl.textContent = `${list.length} session${list.length !== 1 ? 's' : ''}`;
-  document.getElementById('history-clear-btn').disabled = false;
 
   const html = list.map(rec => {
     const pct = Math.round((rec.completedFraction || 0) * 100);
@@ -1515,13 +1499,6 @@ function renderHistory(){
     });
   });
 }
-
-document.getElementById('history-clear-btn').addEventListener('click', async () => {
-  const confirmed = await showConfirmModal('Clear all play history?');
-  if(!confirmed) return;
-  setHistory([]);
-  renderHistory();
-});
 
 async function saveForOffline(item){
   // Cache the actual audio bytes so it plays with no network at all.
