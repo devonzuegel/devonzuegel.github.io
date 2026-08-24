@@ -695,7 +695,7 @@
       </div>
     </div>
 
-    <div class="view is-active" id="view-search">
+    <div class="view" id="view-search">
       <div class="search-top">
         <form id="search-form">
           <input type="text" id="query" placeholder="e.g. walking meditation, waking up, loving-kindness" autocomplete="off">
@@ -764,7 +764,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:17:12Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:18:02Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -913,36 +913,65 @@ async function removeSaved(identifier){
 
 // ---------- Tabs ----------
 const tabIndicator = document.getElementById('tab-indicator');
+const BASE = '/meditate';
 
-function showSearchView(){
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
-  document.getElementById('view-search').classList.add('is-active');
-  tabIndicator.style.opacity = '0';
-  input.focus();
+const ROUTES = {
+  search: BASE + '/',
+  saved:  BASE + '/saved',
+  about:  BASE + '/about',
+};
+
+function viewFromPath(path){
+  if(path === ROUTES.saved)  return 'saved';
+  if(path === ROUTES.about)  return 'about';
+  return 'search';
 }
 
-function moveIndicator(tab) {
+function moveIndicator(tab){
   tabIndicator.style.opacity = '1';
-  tabIndicator.style.left = tab.offsetLeft + 'px';
+  tabIndicator.style.left  = tab.offsetLeft + 'px';
   tabIndicator.style.width = tab.offsetWidth + 'px';
 }
 
-document.getElementById('nav-logo').addEventListener('click', showSearchView);
+function activateView(view, { push = true } = {}){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
+  document.getElementById(`view-${view}`).classList.add('is-active');
+
+  if(view === 'search'){
+    tabIndicator.style.opacity = '0';
+    input.focus();
+  } else {
+    const tab = document.querySelector(`.tab[data-view="${view}"]`);
+    if(tab){ tab.classList.add('is-active'); moveIndicator(tab); }
+  }
+
+  if(view === 'saved') renderSaved();
+
+  if(push){
+    history.pushState({ view }, '', ROUTES[view]);
+  }
+}
+
+document.getElementById('nav-logo').addEventListener('click', () => activateView('search'));
 
 document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('is-active'));
-    tab.classList.add('is-active');
-    document.getElementById(`view-${tab.dataset.view}`).classList.add('is-active');
-    moveIndicator(tab);
-    if(tab.dataset.view === 'saved') renderSaved();
-  });
+  tab.addEventListener('click', () => activateView(tab.dataset.view));
 });
 
-// Search is the default view — indicator hidden on load
-tabIndicator.style.opacity = '0';
+// Handle browser back/forward
+window.addEventListener('popstate', (e) => {
+  const view = e.state?.view || viewFromPath(location.pathname);
+  activateView(view, { push: false });
+});
+
+// Set initial view from URL, without animation on indicator
+const initialView = viewFromPath(location.pathname);
+requestAnimationFrame(() => {
+  tabIndicator.style.transition = 'none';
+  activateView(initialView, { push: false });
+  requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
+});
 
 function renderSaved(){
   const list = getSaved();
