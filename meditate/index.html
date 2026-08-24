@@ -796,15 +796,26 @@ updateOfflineBanner();
 
 document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
   if(!navigator.onLine) return;
-  // Delete the shell cache so the SW re-fetches everything on next install
+  const btn = document.getElementById('hard-refresh-btn');
+  btn.textContent = 'Clearing cache…';
+  btn.disabled = true;
+
+  // Delete all caches except saved audio
   const keys = await caches.keys();
   await Promise.all(keys.filter(k => k !== AUDIO_CACHE).map(k => caches.delete(k)));
-  // Unregister the SW so the new one installs cleanly
+
+  // Unregister SW so the new one installs cleanly on next load
   if('serviceWorker' in navigator){
     const regs = await navigator.serviceWorker.getRegistrations();
     await Promise.all(regs.map(r => r.unregister()));
   }
-  window.location.reload(true);
+
+  btn.textContent = 'Reloading…';
+  // Small delay so the user sees the message before the page disappears
+  setTimeout(() => {
+    // Append a cache-bust param so the browser fetches a fresh HTML even without SW
+    window.location.href = window.location.pathname + '?cb=' + Date.now();
+  }, 400);
 });
 
 // ---------- Icons ----------
