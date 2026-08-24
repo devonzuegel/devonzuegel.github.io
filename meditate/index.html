@@ -45,15 +45,10 @@
   body:not(.has-results) {
     height: 100dvh;
     overflow: hidden;
-    /* position:fixed prevents iOS from scrolling the document at all when
-       the keyboard opens, eliminating the navbar flicker entirely */
-    position: fixed;
-    width: 100%;
   }
   body.has-results {
     height: auto;
     overflow: auto;
-    position: static;
   }
 
   .eyebrow{
@@ -186,7 +181,7 @@
   }
 
   .search-top{
-    margin-top: 0;
+    margin-top: 30vh;
     transition: margin-top .45s cubic-bezier(.4,0,.2,1);
   }
   #view-search.has-results .search-top{
@@ -777,7 +772,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:30:56Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:24:47Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -828,32 +823,6 @@ function updateOfflineBanner(){
   if(refreshBtn) refreshBtn.disabled = !navigator.onLine;
 }
 updateOfflineBanner();
-
-// Use visualViewport to center the search box in the space between the navbar
-// and the top of the keyboard, and prevent the page from scrolling when the
-// keyboard opens on iOS.
-const NAVBAR_H = 48; // approximate navbar height in px
-
-function updateSearchCentering(){
-  const searchTop = document.querySelector('.search-top');
-  if(!searchTop) return;
-  if(viewSearch.classList.contains('has-results')){
-    searchTop.style.marginTop = '';
-    return;
-  }
-  const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const available = vvh - NAVBAR_H;
-  const searchH = searchTop.offsetHeight;
-  const mt = Math.max(0, Math.floor((available - searchH) / 2));
-  searchTop.style.marginTop = mt + 'px';
-}
-
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize', updateSearchCentering);
-}
-// Initial centering on load
-updateSearchCentering();
-window.addEventListener('resize', updateSearchCentering);
 
 document.getElementById('hard-refresh-btn').addEventListener('click', async () => {
   if(!navigator.onLine) return;
@@ -1104,7 +1073,7 @@ async function search(query, page = 0){
   if(!query || !query.trim()){
     statusEl.textContent = '';
     resultsEl.innerHTML = '';
-    viewSearch.classList.remove('has-results'); document.body.classList.remove('has-results'); updateSearchCentering();
+    viewSearch.classList.remove('has-results'); document.body.classList.remove('has-results');
     currentQuery = '';
     return;
   }
@@ -1146,7 +1115,7 @@ async function search(query, page = 0){
     const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
     resultsEl.innerHTML = `<div class=”error”>Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
     statusEl.textContent = '';
-    viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); updateSearchCentering();
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
   }finally{
     btn.disabled = false;
   }
@@ -1163,7 +1132,7 @@ function render(docs, query, page = 0){
   if(docs.length === 0 && page === 0){
     statusEl.textContent = `No results for “${query}”.`;
     resultsEl.innerHTML = `<div class=”empty”>Nothing matched that search. Try a broader term — “sleep”, “breathing”, “gratitude” — or check spelling.</div>`;
-    viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); updateSearchCentering();
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
     return;
   }
 
@@ -1225,7 +1194,7 @@ function render(docs, query, page = 0){
     resultsEl.appendChild(loadMore);
   }
 
-  viewSearch.classList.add('has-results'); document.body.classList.add('has-results'); updateSearchCentering();
+  viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
 
   resultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
     if(!btn.dataset.bound){
