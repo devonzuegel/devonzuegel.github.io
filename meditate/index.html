@@ -691,7 +691,7 @@
     background: none;
     border: none;
     border-radius: 0;
-    padding: 8px 4px 8px 8px;
+    padding: 8px 8px 8px 4px;
     color: var(--moss-soft);
     cursor: pointer;
     line-height: 0;
@@ -711,14 +711,14 @@
     <div class="navbar">
       <div class="navbar-inner">
         <button type="button" class="nav-logo" id="nav-logo">Tranquila</button>
+        <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
         <div class="tabs">
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
           <button type="button" class="tab" data-view="about">About</button>
           <div class="tab-indicator" id="tab-indicator"></div>
         </div>
-        <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        </button>
       </div>
     </div>
 
@@ -793,7 +793,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:40:26Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:41:06Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
