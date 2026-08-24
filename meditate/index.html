@@ -846,6 +846,7 @@
     color: var(--moss-soft);
     cursor: pointer;
     transition: color .15s, border-color .15s;
+    -webkit-tap-highlight-color: transparent;
   }
   .history-refresh-btn:hover{ color: var(--ink); border-color: var(--moss-soft); }
   .history-refresh-btn:active{ background: none; border-color: var(--ink); color: var(--ink); }
@@ -1168,7 +1169,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:07:09Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T21:07:43Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
