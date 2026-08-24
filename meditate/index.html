@@ -461,19 +461,17 @@
   .result-saved-icon.is-saved{
     color: var(--moss);
   }
-  .result-expand-btn{
-    background: none;
-    border: none;
+  .result-chevron-icon{
     padding: 0 0 0 4px;
     color: #a8b4a4;
-    cursor: pointer;
     line-height: 0;
     flex-shrink: 0;
     align-self: center;
     transition: transform .2s ease, color .15s ease;
+    display: inline-flex;
   }
-  .result-expand-btn:hover{ color: var(--moss); background: none; }
-  .result-expand-btn.is-open{ transform: rotate(180deg); color: var(--moss-soft); }
+  .result-expand-btn:hover .result-chevron-icon{ color: var(--moss); }
+  .result-expand-btn.is-open .result-chevron-icon{ transform: rotate(180deg); color: var(--moss-soft); }
 
   .result-title-with-chevron{
     display: flex;
@@ -481,6 +479,11 @@
     flex: 1;
     min-width: 0;
     overflow: hidden;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
   }
   .result-title{
     font-family: 'Fraunces', serif;
@@ -922,7 +925,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:29:21Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:30:03Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1165,10 +1168,10 @@ function renderSaved(){
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
             <div class="result-title-row">
-              <div class="result-title-with-chevron">
+              <button type="button" class="result-title-with-chevron result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">
                 <p class="result-title">${escapeHtml(title)}</p>
-                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
-              </div>
+                <span class="result-chevron-icon">${chevronIcon()}</span>
+              </button>
               <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}">${escapeHtml(item.runtime || '')}</span>
                 <span class="result-saved-icon is-saved" data-id="${escapeHtml(id)}">${bookmarkIcon(true)}</span>
@@ -1355,10 +1358,10 @@ function render(docs, query, page = 0){
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
             <div class="result-title-row">
-              <div class="result-title-with-chevron">
+              <button type="button" class="result-title-with-chevron result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">
                 <p class="result-title">${escapeHtml(title)}</p>
-                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
-              </div>
+                <span class="result-chevron-icon">${chevronIcon()}</span>
+              </button>
               <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
