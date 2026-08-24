@@ -777,7 +777,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:29:43Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:30:56Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -835,16 +835,17 @@ updateOfflineBanner();
 const NAVBAR_H = 48; // approximate navbar height in px
 
 function updateSearchCentering(){
-  if(viewSearch.classList.contains('has-results')) return;
   const searchTop = document.querySelector('.search-top');
   if(!searchTop) return;
+  if(viewSearch.classList.contains('has-results')){
+    searchTop.style.marginTop = '';
+    return;
+  }
   const vvh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
   const available = vvh - NAVBAR_H;
   const searchH = searchTop.offsetHeight;
   const mt = Math.max(0, Math.floor((available - searchH) / 2));
   searchTop.style.marginTop = mt + 'px';
-  // Prevent iOS from scrolling the page when keyboard opens
-  window.scrollTo(0, 0);
 }
 
 if(window.visualViewport){
