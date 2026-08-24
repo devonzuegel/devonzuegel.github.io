@@ -170,7 +170,7 @@
     height: 2px;
     background: var(--moss);
     pointer-events: none;
-    transition: left .2s cubic-bezier(.4,0,.2,1), width .2s cubic-bezier(.4,0,.2,1);
+    transition: left .2s cubic-bezier(.4,0,.2,1), width .2s cubic-bezier(.4,0,.2,1), opacity .3s ease;
   }
   .tab .count{
     display: inline-flex;
@@ -1146,7 +1146,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:01:22Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T21:02:26Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1273,6 +1273,14 @@ themeBtn.addEventListener('click', () => {
   moonIcon.style.display = isDark ? 'none' : '';
   sunIcon.style.display  = isDark ? '' : 'none';
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+  // Briefly flash the tab indicator under the theme button
+  moveIndicator(themeBtn);
+  tabIndicator.style.opacity = '1';
+  clearTimeout(themeBtn._indicatorTimer);
+  themeBtn._indicatorTimer = setTimeout(() => {
+    tabIndicator.style.opacity = '0';
+  }, 400);
 });
 
 // ---------- Accent color ----------
