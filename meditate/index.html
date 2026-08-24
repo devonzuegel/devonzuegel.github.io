@@ -911,7 +911,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:18:57Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:20:11Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1649,22 +1649,22 @@ function setIconState(identifier, playing){
   }
 }
 
+let nowPlayingAbortController = null;
+
 function setupNowPlaying(audio, identifier, group){
+  // Remove listeners from any previous track
+  if(nowPlayingAbortController) nowPlayingAbortController.abort();
+  nowPlayingAbortController = new AbortController();
+  const { signal } = nowPlayingAbortController;
+
   currentAudio = audio;
 
   npbTitle.textContent = group.dataset.title || '';
   nowPlayingBar.classList.add('is-visible');
 
-  audio.addEventListener('play', () => {
-    setIconState(identifier, true);
-  });
-  audio.addEventListener('pause', () => {
-    setIconState(identifier, false);
-  });
-  audio.addEventListener('ended', () => {
-    setIconState(identifier, false);
-    // Keep the bar visible — track is done but still selected
-  });
+  audio.addEventListener('play',  () => setIconState(identifier, true),  { signal });
+  audio.addEventListener('pause', () => setIconState(identifier, false), { signal });
+  audio.addEventListener('ended', () => setIconState(identifier, false), { signal });
 
   // initial state
   if(!audio.paused) setIconState(identifier, true);
