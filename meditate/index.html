@@ -848,7 +848,7 @@
     transition: color .15s, border-color .15s;
   }
   .history-refresh-btn:hover{ color: var(--ink); border-color: var(--moss-soft); }
-  .history-refresh-btn:active{ border-color: var(--ink); color: var(--ink); }
+  .history-refresh-btn:active{ background: none; border-color: var(--ink); color: var(--ink); }
   .history-refresh-btn.is-spinning{ pointer-events: none; border-color: var(--ink); color: var(--ink); }
   .history-refresh-btn.is-spinning svg{ animation: spin .7s linear infinite; }
   .history-list{
@@ -1168,7 +1168,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:06:46Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T21:07:09Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
