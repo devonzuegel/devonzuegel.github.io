@@ -470,6 +470,8 @@
     transition: transform .2s ease, color .15s ease;
     display: inline-flex;
   }
+  .result-expand-btn:hover{ background: none; }
+  .result-expand-btn:hover .result-title{ color: var(--moss); }
   .result-expand-btn:hover .result-chevron-icon{ color: var(--moss); }
   .result-expand-btn.is-open .result-chevron-icon{ transform: rotate(180deg); color: var(--moss-soft); }
 
@@ -925,7 +927,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:30:03Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:30:42Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
