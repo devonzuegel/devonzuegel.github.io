@@ -775,7 +775,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T01:34:43Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T01:37:17Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -988,23 +988,49 @@ function renderSaved(){
   const list = getSaved();
   if(list.length === 0){
     savedStatusEl.textContent = '';
-    savedResultsEl.innerHTML = `<div class="empty">Nothing saved yet. Find a meditation in Search, expand its player, and tap "Save offline".</div>`;
+    savedResultsEl.innerHTML = `<div class="empty">Nothing saved yet. Search for a meditation and tap the bookmark icon to save it offline.</div>`;
     return;
   }
   savedStatusEl.textContent = `${list.length} saved for offline`;
-  savedResultsEl.innerHTML = `<div class="results">${list.map(item => `
-    <div class="saved-item">
-      <p class="result-title">${escapeHtml(item.title)}</p>
-      <div class="result-meta">${item.creator ? `<span>${escapeHtml(item.creator)}</span>` : ''}${item.runtime ? `<span>${escapeHtml(item.runtime)}</span>` : ''}<span>saved offline</span></div>
-      <div class="saved-item-controls">
-        <button type="button" class="remove-btn" data-id="${escapeHtml(item.identifier)}">${trashIcon()} Remove</button>
-      </div>
-      <audio controls preload="none" src="${escapeHtml(item.audioUrl)}"></audio>
-    </div>
-  `).join('')}</div>`;
 
-  savedResultsEl.querySelectorAll('.remove-btn').forEach(b => {
-    b.addEventListener('click', () => removeSaved(b.dataset.id));
+  const html = list.map(item => {
+    const id = item.identifier;
+    const title = item.title || id;
+    const creator = item.creator || '';
+    return `
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}">
+        <div class="result" data-id="${escapeHtml(id)}">
+          <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
+          <div class="result-body">
+            <div class="result-title-row">
+              <p class="result-title">${escapeHtml(title)}</p>
+              <div class="result-badges">
+                <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
+                <span class="result-runtime" data-id="${escapeHtml(id)}">${escapeHtml(item.runtime || '')}</span>
+                <span class="result-saved-icon is-saved" data-id="${escapeHtml(id)}">${bookmarkIcon(true)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="player-slot"></div>
+      </div>
+    `;
+  }).join('');
+
+  savedResultsEl.innerHTML = `<div class="results">${html}</div>`;
+
+  savedResultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // For saved items we already know the URL — seed the metaCache so playTrack works offline
+      const item = list.find(x => x.identifier === btn.dataset.id);
+      if(item && !metaCache.has(item.identifier)){
+        metaCache.set(item.identifier, { url: item.audioUrl, duration: item.runtime || null });
+      }
+      playTrack(btn.dataset.id);
+    });
+  });
+  savedResultsEl.querySelectorAll('.result-expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleExpand(btn.dataset.id));
   });
 }
 
@@ -1216,9 +1242,14 @@ function render(docs, query, page = 0){
 
 function getChevron(group){ return group.querySelector('.result-expand-btn'); }
 
+function findGroup(identifier){
+  return resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`)
+      || savedResultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+}
+
 function clearActiveTrack(){
   if(openIdentifier){
-    const prevGroup = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(openIdentifier)}"]`);
+    const prevGroup = findGroup(openIdentifier);
     if(prevGroup){
       const prevIcon = prevGroup.querySelector('.result-icon-btn');
       prevIcon.classList.remove('is-active', 'is-paused');
@@ -1232,7 +1263,7 @@ function clearActiveTrack(){
 
 // Play button: load audio into the bar, don't expand the row
 async function playTrack(identifier){
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  const group = findGroup(identifier);
   if(!group) return;
   const iconEl = group.querySelector('.result-icon-btn');
 
@@ -1292,7 +1323,7 @@ async function playTrack(identifier){
 
 // Chevron: toggle row expansion only (no audio)
 function toggleExpand(identifier){
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  const group = findGroup(identifier);
   if(!group) return;
   const slot = group.querySelector('.player-slot');
   const chevron = getChevron(group);
@@ -1331,7 +1362,7 @@ async function handleSaveClick(saveBtn, group){
     await removeSaved(identifier);
     saveBtn.classList.remove('is-saved');
     saveBtn.innerHTML = `${bookmarkIcon(false)} <span class="save-label">Save offline</span>`;
-    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    const rowIcon = document.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
     if(rowIcon){ rowIcon.classList.remove('is-saved'); rowIcon.innerHTML = bookmarkIcon(false); }
     return;
   }
@@ -1350,7 +1381,7 @@ async function handleSaveClick(saveBtn, group){
     });
     saveBtn.classList.add('is-saved');
     saveBtn.innerHTML = `${bookmarkIcon(true)} <span class="save-label">Saved offline</span>`;
-    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    const rowIcon = document.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
     if(rowIcon){ rowIcon.classList.add('is-saved'); rowIcon.innerHTML = bookmarkIcon(true); }
   }catch(err){
     label.textContent = 'Save failed — try again';
@@ -1386,7 +1417,7 @@ const npbAudio       = document.getElementById('npb-audio');
 let   currentAudio   = npbAudio;
 
 function setIconState(identifier, playing){
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  const group = findGroup(identifier);
   if(!group) return;
   const iconEl = group.querySelector('.result-icon-btn');
   const innerIcon = iconEl.querySelector('.result-icon');
@@ -1426,7 +1457,7 @@ npbSaveBtn.addEventListener('click', async () => {
   const identifier = npbSaveBtn.dataset.id;
   const url = npbSaveBtn.dataset.url;
   if(!identifier) return;
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  const group = findGroup(identifier);
 
   if(npbSaveBtn.classList.contains('is-saved')){
     const title = group?.dataset.title || 'this meditation';
@@ -1435,7 +1466,7 @@ npbSaveBtn.addEventListener('click', async () => {
     await removeSaved(identifier);
     npbSaveBtn.classList.remove('is-saved');
     npbSaveBtn.innerHTML = bookmarkIcon(false);
-    const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+    const rowIcon = document.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
     if(rowIcon){ rowIcon.classList.remove('is-saved'); rowIcon.innerHTML = bookmarkIcon(false); }
   } else {
     npbSaveBtn.style.opacity = '0.5';
@@ -1449,7 +1480,7 @@ npbSaveBtn.addEventListener('click', async () => {
       });
       npbSaveBtn.classList.add('is-saved');
       npbSaveBtn.innerHTML = bookmarkIcon(true);
-      const rowIcon = resultsEl.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
+      const rowIcon = document.querySelector(`.result-saved-icon[data-id="${identifier}"]`);
       if(rowIcon){ rowIcon.classList.add('is-saved'); rowIcon.innerHTML = bookmarkIcon(true); }
     } catch{ }
     npbSaveBtn.style.opacity = '';
@@ -1483,13 +1514,13 @@ function showConfirmModal(message){
 }
 
 // ---------- Bookmark icon click on result rows ----------
-resultsEl.addEventListener('click', async (e) => {
+async function handleBookmarkClick(e){
   const icon = e.target.closest('.result-saved-icon');
   if(!icon) return;
   e.stopPropagation();
 
   const identifier = icon.dataset.id;
-  const group = resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
+  const group = findGroup(identifier);
 
   if(icon.classList.contains('is-saved')){
     const title = group?.dataset.title || 'this meditation';
@@ -1498,11 +1529,9 @@ resultsEl.addEventListener('click', async (e) => {
     await removeSaved(identifier);
     icon.classList.remove('is-saved');
     icon.innerHTML = bookmarkIcon(false);
-    // sync save-btn inside player if open
     const saveBtn = group?.querySelector('.save-btn');
     if(saveBtn){ saveBtn.classList.remove('is-saved'); saveBtn.innerHTML = `${bookmarkIcon(false)} <span class="save-label">Save offline</span>`; }
   } else {
-    // Save immediately — need the audio URL
     icon.style.opacity = '0.5';
     try{
       const { url, duration } = await fetchMeta(identifier);
@@ -1516,13 +1545,14 @@ resultsEl.addEventListener('click', async (e) => {
       });
       icon.classList.add('is-saved');
       icon.innerHTML = bookmarkIcon(true);
-      // sync save-btn inside player if open
       const saveBtn = group?.querySelector('.save-btn');
       if(saveBtn){ saveBtn.classList.add('is-saved'); saveBtn.innerHTML = `${bookmarkIcon(true)} <span class="save-label">Saved offline</span>`; }
     } catch{ /* silently fail */ }
     icon.style.opacity = '';
   }
-});
+}
+resultsEl.addEventListener('click', handleBookmarkClick);
+savedResultsEl.addEventListener('click', handleBookmarkClick);
 </script>
 </body>
 </html>
