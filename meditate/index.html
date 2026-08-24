@@ -799,7 +799,7 @@
       <div class="navbar-inner">
         <button type="button" class="nav-logo" id="nav-logo">Tranquila</button>
         <div class="tabs">
-          <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app">
+          <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app" style="display:none">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
@@ -889,7 +889,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:16:29Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:17:12Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -940,7 +940,12 @@ function updateOfflineBanner(){
   const refreshBtn = document.getElementById('hard-refresh-btn');
   if(refreshBtn) refreshBtn.disabled = offline;
   const navRefreshBtn = document.getElementById('nav-refresh-btn');
-  if(navRefreshBtn) navRefreshBtn.disabled = offline;
+  if(navRefreshBtn){
+    navRefreshBtn.disabled = offline;
+    if(location.hostname === 'localhost' || location.hostname === '127.0.0.1'){
+      navRefreshBtn.style.display = '';
+    }
+  }
 }
 updateOfflineBanner();
 
