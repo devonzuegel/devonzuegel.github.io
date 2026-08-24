@@ -928,7 +928,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:31:57Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:34:32Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1641,6 +1641,21 @@ npbAudio.addEventListener('timeupdate', () => {
 });
 npbAudio.addEventListener('durationchange', () => {
   npbDuration.textContent = fmtTime(npbAudio.duration);
+});
+npbAudio.addEventListener('error', () => {
+  if(openIdentifier){
+    const group = findGroup(openIdentifier);
+    if(group){
+      const iconEl = group.querySelector('.result-icon-btn');
+      iconEl.classList.remove('is-active', 'is-loading', 'is-paused');
+      iconEl.querySelector('.result-icon').innerHTML = playIcon();
+    }
+  }
+  npbTitle.textContent = 'Could not load audio — try another track';
+  npbDuration.textContent = '–:––';
+  npbScrubber.value = 0;
+  npbCurrent.textContent = '0:00';
+  openIdentifier = null;
 });
 npbScrubber.addEventListener('input', () => {
   if(!npbAudio.duration) return;
