@@ -35,15 +35,18 @@
     max-width: 760px;
     margin: 0 auto;
     padding: 72px 24px 100px;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
-  /* In the empty search state, don't let the page grow beyond the viewport —
-     prevents iOS Safari from scrolling the navbar off-screen on load. */
-  #view-search:not(.has-results){
-    height: calc(100vh - 72px);
+  /* In the empty search state, lock page to viewport height so iOS Safari
+     can't scroll the navbar off-screen when the keyboard opens. */
+  body:not(.has-results) {
+    height: 100vh;
     overflow: hidden;
+  }
+  body.has-results {
+    height: auto;
+    overflow: auto;
   }
 
   .eyebrow{
@@ -988,7 +991,7 @@ async function search(query, page = 0){
   if(!query || !query.trim()){
     statusEl.textContent = '';
     resultsEl.innerHTML = '';
-    viewSearch.classList.remove('has-results');
+    viewSearch.classList.remove('has-results'); document.body.classList.remove('has-results');
     currentQuery = '';
     return;
   }
@@ -1030,7 +1033,7 @@ async function search(query, page = 0){
     const offlineNote = !navigator.onLine ? ' You appear to be offline — check the Saved tab instead.' : '';
     resultsEl.innerHTML = `<div class=”error”>Couldn't reach the Internet Archive search API right now.${offlineNote}<br>${escapeHtml(err.message)}</div>`;
     statusEl.textContent = '';
-    viewSearch.classList.add('has-results');
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
   }finally{
     btn.disabled = false;
   }
@@ -1047,7 +1050,7 @@ function render(docs, query, page = 0){
   if(docs.length === 0 && page === 0){
     statusEl.textContent = `No results for “${query}”.`;
     resultsEl.innerHTML = `<div class=”empty”>Nothing matched that search. Try a broader term — “sleep”, “breathing”, “gratitude” — or check spelling.</div>`;
-    viewSearch.classList.add('has-results');
+    viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
     return;
   }
 
@@ -1109,7 +1112,7 @@ function render(docs, query, page = 0){
     resultsEl.appendChild(loadMore);
   }
 
-  viewSearch.classList.add('has-results');
+  viewSearch.classList.add('has-results'); document.body.classList.add('has-results');
 
   resultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
     if(!btn.dataset.bound){
