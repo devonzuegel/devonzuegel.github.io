@@ -836,6 +836,18 @@
     font-size: 13px;
     color: var(--moss-soft);
   }
+  .history-refresh-btn{
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--moss-soft);
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .history-refresh-btn:hover{ color: var(--ink); border-color: var(--moss-soft); }
   .history-list{
     display: flex;
     flex-direction: column;
@@ -1074,6 +1086,7 @@
     <div class="view" id="view-history">
       <div class="history-header">
         <span class="history-status" id="history-status"></span>
+        <button type="button" class="history-refresh-btn" id="history-refresh-btn">Refresh</button>
       </div>
       <div id="history-results"></div>
     </div>
@@ -1149,7 +1162,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:03:13Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T21:04:47Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1526,6 +1539,8 @@ function renderHistory(){
     });
   });
 }
+
+document.getElementById('history-refresh-btn').addEventListener('click', () => renderHistory());
 
 async function saveForOffline(item){
   // Cache the actual audio bytes so it plays with no network at all.
