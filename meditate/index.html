@@ -19,52 +19,15 @@
     --moss-soft: #7c8c78;
     --line: #cdd2c7;
     --card: #f6f7f3;
-    --placeholder: #9aa39a;
-    --result-hover: #eef1ea;
-    --warning-text: #6b5a2e;
-    --warning-bg: #f5edd9;
-    --warning-border: #e3d3a3;
-    --error-text: #8a4a3a;
-    --error-bg: #f6ece7;
-    --error-border: #d8c1b6;
-    --desc-text: #7a8a7d;
-    --meta-text: #55605a;
-    --chevron-default: #a8b4a4;
-    --search-btn-hover: #3d4c3e;
-    --load-more-hover: #3d4c3e;
-    --toast-bg: #3a2a28;
-    --toast-text: #f5ede9;
-    --modal-confirm-bg: #8a4a3a;
-    --modal-confirm-hover: #7a3a2a;
   }
-
-  @media (prefers-color-scheme: dark){
-    :root{
-      --ink: #e8ebe6;
-      --paper: #1a1f1a;
-      --paper-dim: #222722;
-      --moss: #7aaa7c;
-      --moss-soft: #5e7d60;
-      --line: #333d33;
-      --card: #1f251f;
-      --placeholder: #4d5e4d;
-      --result-hover: #222922;
-      --warning-text: #c9a84c;
-      --warning-bg: #2a2318;
-      --warning-border: #5a4a28;
-      --error-text: #c87a6a;
-      --error-bg: #2a1e1c;
-      --error-border: #5a3a34;
-      --desc-text: #7a8a7d;
-      --meta-text: #6a7a6d;
-      --chevron-default: #4a5a4a;
-      --search-btn-hover: #5a7a5c;
-      --load-more-hover: #5a7a5c;
-      --toast-bg: #2a1e1c;
-      --toast-text: #f5ede9;
-      --modal-confirm-bg: #7a3a2a;
-      --modal-confirm-hover: #6a2a1a;
-    }
+  body.dark{
+    --ink: #e8ebe6;
+    --paper: #000000;
+    --paper-dim: #0f0f0f;
+    --moss: #7aaa7c;
+    --moss-soft: #5e7e60;
+    --line: #2a2a2a;
+    --card: #111111;
   }
 
   *{ box-sizing: border-box; }
@@ -129,9 +92,9 @@
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    color: var(--warning-text);
-    background: var(--warning-bg);
-    border: 1px solid var(--warning-border);
+    color: #6b5a2e;
+    background: var(--card);
+    border: 1px solid #e3d3a3;
     padding: 10px 14px;
     border-radius: 8px;
     margin-bottom: 24px;
@@ -262,7 +225,7 @@
     outline: none;
     transition: border-color .15s ease;
   }
-  input[type="text"]::placeholder{ color: var(--placeholder); }
+  input[type="text"]::placeholder{ color: #9aa39a; }
   input[type="text"]:focus{ border-color: var(--moss); }
   input[type="text"]:focus-visible{ outline: 2px solid var(--moss); outline-offset: 2px; }
 
@@ -278,7 +241,7 @@
     cursor: pointer;
     transition: background .15s ease;
   }
-  button:hover{ background: var(--search-btn-hover); }
+  button:hover{ background: #3d4c3e; }
   button:focus-visible{ outline: 2px solid var(--ink); outline-offset: 2px; }
   button:disabled{ background: var(--moss-soft); cursor: default; }
 
@@ -332,7 +295,7 @@
     color: inherit;
     cursor: default;
   }
-  .result:hover{ background: var(--result-hover); }
+  .result:hover{ background: var(--paper-dim); }
   .result-icon-btn{
     flex-shrink: 0;
     width: 34px;
@@ -392,7 +355,7 @@
   .player-full-desc{
     font-size: 12px;
     line-height: 1.5;
-    color: var(--desc-text);
+    color: #7a8a7d;
     margin: 0 0 10px;
   }
   .player-slot{
@@ -428,7 +391,7 @@
   .creator-link:hover{ color: var(--ink); }
   .player-error{
     font-size: 13px;
-    color: var(--error-text);
+    color: #8a4a3a;
   }
 
   .save-btn{
@@ -477,7 +440,7 @@
     padding: 6px 4px;
     text-decoration: underline;
   }
-  .remove-btn:hover{ color: var(--error-text); }
+  .remove-btn:hover{ color: #8a4a3a; }
 
   .result-body{ min-width:0; flex: 1; }
 
@@ -510,7 +473,7 @@
   .result-chevron-icon{
     margin-left: 4px;
     padding: 0;
-    color: var(--chevron-default);
+    color: #a8b4a4;
     line-height: 0;
     flex-shrink: 0;
     align-self: center;
@@ -565,7 +528,7 @@
   .result-desc{
     font-size: 13.5px;
     line-height: 1.5;
-    color: var(--meta-text);
+    color: #55605a;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -587,7 +550,7 @@
     cursor: pointer;
     transition: background .15s ease;
   }
-  .load-more-btn:hover{ background: var(--search-btn-hover); }
+  .load-more-btn:hover{ background: #3d4c3e; }
   .load-more-btn:disabled{ background: var(--moss-soft); cursor: default; }
 
   .empty, .error{
@@ -598,7 +561,7 @@
     border: 1px dashed var(--line);
     border-radius: 10px;
   }
-  .error{ color: var(--error-text); border-color: #d8c1b6; background: #f6ece7; }
+  .error{ color: #8a4a3a; border-color: #d8c1b6; background: #f6ece7; }
 
   .about-footer{
     margin-top: 40px;
@@ -678,7 +641,7 @@
     border-radius: 50%;
     background: rgba(255,255,255,.2);
     border: none;
-    color: var(--paper);
+    color: #eef0ec;
     font-size: 16px;
     line-height: 1;
     display: flex;
@@ -741,8 +704,8 @@
     top: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(-80px);
-    background: var(--toast-bg);
-    color: var(--toast-text);
+    background: #3a2a28;
+    color: #f5ede9;
     font-size: 13.5px;
     padding: 12px 16px;
     border-radius: 8px;
@@ -822,11 +785,11 @@
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
-    background: var(--modal-confirm-bg);
+    background: #8a4a3a;
     color: #fff;
     cursor: pointer;
   }
-  .modal-confirm:hover{ background: var(--modal-confirm-hover); }
+  .modal-confirm:hover{ background: #7a3a2a; }
 
   @media (prefers-reduced-motion: no-preference){
     .result{ transition: background .12s ease; }
@@ -897,6 +860,17 @@
     cursor: not-allowed;
     background: var(--moss);
   }
+  .nav-theme-btn{
+    background: none;
+    border: none;
+    padding: 8px 8px 8px 4px;
+    color: var(--moss-soft);
+    cursor: pointer;
+    line-height: 0;
+    flex-shrink: 0;
+    transition: color .15s;
+  }
+  .nav-theme-btn:hover{ color: var(--moss); background: none; }
   .nav-refresh-btn{
     background: none;
     border: none;
@@ -922,6 +896,10 @@
       <div class="navbar-inner">
         <button type="button" class="nav-logo" id="nav-logo">Tranquila</button>
         <div class="tabs">
+          <button type="button" class="nav-theme-btn" id="nav-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
           <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app" style="display:none">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
@@ -1023,7 +1001,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T14:56:41Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T14:59:10Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1124,6 +1102,28 @@ document.getElementById('nav-refresh-btn').addEventListener('click', async () =>
   btn.disabled = true;
   btn.classList.add('is-spinning');
   await doHardRefresh(window.location.hash || '#');
+});
+
+// ---------- Dark mode ----------
+const themeBtn = document.getElementById('nav-theme-btn');
+const moonIcon = themeBtn.querySelector('.icon-moon');
+const sunIcon  = themeBtn.querySelector('.icon-sun');
+
+function applyTheme(dark){
+  document.body.classList.toggle('dark', dark);
+  moonIcon.style.display = dark ? 'none' : '';
+  sunIcon.style.display  = dark ? '' : 'none';
+}
+
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+
+themeBtn.addEventListener('click', () => {
+  const isDark = document.body.classList.toggle('dark');
+  moonIcon.style.display = isDark ? 'none' : '';
+  sunIcon.style.display  = isDark ? '' : 'none';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
 // ---------- Icons ----------
