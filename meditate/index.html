@@ -1169,7 +1169,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:15:56Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T21:18:58Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1400,6 +1400,7 @@ function historyStartSession(identifier, title, creator){
     listenedSec: 0,       // accumulated seconds of actual playback
     completedFraction: 0,
     pauses: [],           // [{at, resumedAt}] in track-seconds
+    seeks: [],            // [{from, to, type}] — type: 'scrub' | 'skip-back' | 'skip-fwd'
     _playStartPosition: null, // audio.currentTime when play began (for position-based elapsed)
   };
 }
@@ -1440,6 +1441,20 @@ function historyOnTimeUpdate(audio){
   if(!_historySession || _historySession._playStartPosition == null) return;
   if(isFinite(audio.duration) && audio.duration > 0){
     _historySession.durationSec = audio.duration;
+    _historySession.completedFraction = audio.currentTime / audio.duration;
+  }
+}
+
+function historyOnSeek(audio, fromSec, type){
+  if(!_historySession) return;
+  // Flush the play segment up to the seek point
+  if(_historySession._playStartPosition != null){
+    const delta = fromSec - _historySession._playStartPosition;
+    if(delta > 0) _historySession.listenedSec += delta;
+    _historySession._playStartPosition = audio.currentTime; // new position after seek
+  }
+  _historySession.seeks.push({ from: Math.round(fromSec), to: Math.round(audio.currentTime), type });
+  if(isFinite(audio.duration) && audio.duration > 0){
     _historySession.completedFraction = audio.currentTime / audio.duration;
   }
 }
@@ -1509,6 +1524,8 @@ function renderHistory(){
     const pauseLabel = pauseCount === 0 ? 'no pauses'
                      : pauseCount === 1 ? '1 pause'
                      : `${pauseCount} pauses`;
+    const seekCount = (rec.seeks || []).length;
+    const seekLabel = seekCount === 0 ? '' : seekCount === 1 ? '1 seek' : `${seekCount} seeks`;
     const listenedLabel = rec.listenedSec ? `${fmtSeconds(rec.listenedSec)} listened` : '';
     const durationLabel = rec.durationSec ? `of ${fmtSeconds(rec.durationSec)}` : '';
     return `
@@ -1524,6 +1541,7 @@ function renderHistory(){
           </div>
           ${listenedLabel ? `<span>${listenedLabel}${durationLabel ? ' ' + durationLabel : ''}</span>` : ''}
           <span>${pauseLabel}</span>
+          ${seekLabel ? `<span>${seekLabel}</span>` : ''}
           ${rec.creator ? `<span>${escapeHtml(rec.creator)}</span>` : ''}
         </div>
       </div>`;
@@ -2158,14 +2176,21 @@ npbAudio.addEventListener('error', () => {
 });
 npbScrubber.addEventListener('input', () => {
   if(!npbAudio.duration) return;
+  const fromSec = npbAudio.currentTime;
   npbAudio.currentTime = (npbScrubber.value / 100) * npbAudio.duration;
+  historyOnSeek(npbAudio, fromSec, 'scrub');
 });
 
 document.getElementById('npb-back-btn').addEventListener('click', () => {
-  npbAudio.currentTime = Math.max(0, npbAudio.currentTime - 15);
+  const fromSec = npbAudio.currentTime;
+  npbAudio.currentTime = Math.max(0, fromSec - 15);
+  historyOnSeek(npbAudio, fromSec, 'skip-back');
 });
 document.getElementById('npb-fwd-btn').addEventListener('click', () => {
-  if(npbAudio.duration) npbAudio.currentTime = Math.min(npbAudio.duration, npbAudio.currentTime + 15);
+  if(!npbAudio.duration) return;
+  const fromSec = npbAudio.currentTime;
+  npbAudio.currentTime = Math.min(npbAudio.duration, fromSec + 15);
+  historyOnSeek(npbAudio, fromSec, 'skip-fwd');
 });
 
 function setIconState(identifier, playing){
