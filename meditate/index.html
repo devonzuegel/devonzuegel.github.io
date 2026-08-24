@@ -922,7 +922,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:27:55Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:28:53Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1355,9 +1355,11 @@ function render(docs, query, page = 0){
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
             <div class="result-title-row">
-              <p class="result-title">${escapeHtml(title)}</p>
-              <div class="result-badges">
+              <div class="result-title-with-chevron">
+                <p class="result-title">${escapeHtml(title)}</p>
                 <button type="button" class="result-expand-btn" data-id="${escapeHtml(id)}" aria-label="Expand">${chevronIcon()}</button>
+              </div>
+              <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
               </div>
