@@ -369,6 +369,17 @@
     margin-bottom: 8px;
   }
   .player-meta a{ color: var(--moss); }
+  .creator-link{
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--moss);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .creator-link:hover{ color: var(--ink); }
   .player-error{
     font-size: 13px;
     color: #8a4a3a;
@@ -878,7 +889,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T04:10:11Z'; // updated by deploy
+const BUILD_TIME = '2026-08-24T04:12:03Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1459,7 +1470,7 @@ function toggleExpand(identifier){
           ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
           ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
           <div class="player-meta">
-            ${group.dataset.creator ? `<span>${escapeHtml(group.dataset.creator)}</span>` : ''}
+            ${group.dataset.creator ? `<button type="button" class="creator-link" data-creator="${escapeHtml(group.dataset.creator)}">${escapeHtml(group.dataset.creator)}</button>` : ''}
             <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
           </div>
           ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
@@ -1471,6 +1482,13 @@ function toggleExpand(identifier){
         </div>`;
       const saveBtn = slot.querySelector('.save-btn');
       if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
+      const creatorBtn = slot.querySelector('.creator-link');
+      if(creatorBtn) creatorBtn.addEventListener('click', () => {
+        const q = `creator:"${creatorBtn.dataset.creator}"`;
+        input.value = q;
+        activateView('search');
+        search(q, 0);
+      });
     }
     requestAnimationFrame(() => slot.classList.add('is-open'));
     if(chevron) chevron.classList.add('is-open');
