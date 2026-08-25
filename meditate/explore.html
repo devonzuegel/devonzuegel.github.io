@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Meditations — Tranquila</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #1c2321;
+    --paper: #eef0ec;
+    --paper-dim: #e2e5de;
+    --moss: #4b5d4c;
+    --moss-soft: #7c8c78;
+    --line: #cdd2c7;
+    --card: #f6f7f3;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 120px;
+  }
+  h1{
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 500;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .subtitle{
+    color: var(--moss-soft);
+    font-size: 14px;
+    margin: 0 0 40px;
+  }
+  .subtitle a{ color: var(--moss); }
+
+  .source-section{
+    margin-bottom: 40px;
+  }
+  .source-header{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .source-header:hover .source-title{ color: var(--moss); }
+  .source-fold-btn{
+    background: none;
+    border: none;
+    padding: 0;
+    color: #a8b4a4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: transform .2s ease, color .15s ease;
+    line-height: 0;
+  }
+  .source-header:hover .source-fold-btn{ color: var(--moss); }
+  .source-section.is-folded .source-fold-btn{ transform: rotate(-90deg); }
+  .source-title{
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0;
+    transition: color .15s ease;
+  }
+  .source-link{
+    font-size: 12px;
+    color: var(--moss-soft);
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .source-link:hover{ color: var(--moss); }
+  .source-body{
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows .25s ease;
+  }
+  .source-section.is-folded .source-body{
+    grid-template-rows: 0fr;
+  }
+  .source-body-inner{ min-height: 0; overflow: hidden; }
+  .source-desc{
+    font-size: 13px;
+    color: var(--moss-soft);
+    margin: 0 0 12px;
+  }
+
+  .results{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .result-group{
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+  .result-group:first-child{ border-top: none; }
+
+  .result{
+    background: var(--card);
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: default;
+  }
+  .result:hover{ background: var(--paper-dim); }
+
+  .result-icon-btn{
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--paper-dim);
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--moss);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .result-icon-btn:hover{ background: var(--line); }
+  .result-icon-btn.is-loading{ animation: pulse 1.1s ease-in-out infinite; }
+  .result-icon-btn.is-active{ background: var(--moss); color: var(--paper); }
+  .result-icon-btn.is-paused{
+    background: var(--paper-dim);
+    color: var(--moss);
+    outline: 2px solid var(--moss);
+    outline-offset: -2px;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.45} }
+
+  .result-body{ flex: 1; min-width: 0; }
+  .result-title-row{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .result-title{
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 4px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .result-badges{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .result-runtime{
+    font-size: 11px;
+    color: var(--moss-soft);
+    white-space: nowrap;
+  }
+  .source-badge{
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--moss-soft);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .result-meta{
+    font-size: 12px;
+    color: var(--moss-soft);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .result-meta span:not(:last-child)::after{
+    content: "·";
+    margin-left: 6px;
+    color: var(--line);
+  }
+  .result-desc{
+    font-size: 13px;
+    line-height: 1.5;
+    color: #55605a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Player slot */
+  .player-slot{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .25s ease;
+  }
+  .player-slot.is-open{ grid-template-rows: 1fr; }
+  .player-slot > .player-row{ overflow: hidden; }
+
+  .player-row{
+    background: var(--paper-dim);
+    padding: 12px 18px 16px;
+  }
+  .player-row audio{
+    width: 100%;
+    height: 36px;
+    margin-top: 8px;
+  }
+  .player-error{ font-size: 13px; color: #8a4a3a; }
+
+  /* Expand button */
+  .result-title-with-chevron{
+    display: flex;
+    align-items: baseline;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+  }
+  .result-title-with-chevron:hover .result-title{ color: var(--moss); }
+  .result-chevron-icon{
+    margin-left: 4px;
+    color: #a8b4a4;
+    line-height: 0;
+    flex-shrink: 0;
+    align-self: center;
+    display: inline-flex;
+    transition: transform .2s ease;
+  }
+  .result-title-with-chevron.is-open .result-chevron-icon{ transform: rotate(180deg); }
+
+  /* Loading skeleton */
+  .skeleton-item{
+    background: var(--card);
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border-top: 1px solid var(--line);
+  }
+  .skeleton-item:first-child{ border-top: none; }
+  .skeleton-circle{
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--paper-dim);
+    animation: shimmer 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .skeleton-body{ flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .skeleton-line{
+    height: 12px;
+    border-radius: 6px;
+    background: var(--paper-dim);
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  .skeleton-line.wide{ width: 70%; }
+  .skeleton-line.narrow{ width: 40%; }
+  @keyframes shimmer{ 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  .error-msg{
+    padding: 20px;
+    color: #8a4a3a;
+    font-size: 13px;
+    background: #f6ece7;
+    border: 1px dashed #d8c1b6;
+    border-radius: 8px;
+  }
+
+  /* Now playing bar */
+  .now-playing-bar{
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 150;
+    background: var(--moss);
+    color: var(--paper);
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 20px;
+    transform: translateY(100%);
+    transition: transform .3s ease;
+    pointer-events: none;
+  }
+  .now-playing-bar.is-visible{
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .npb-top{ display: flex; align-items: center; gap: 14px; }
+  #npb-audio{ display: none; }
+  .npb-info{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .npb-title{
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .npb-creator{
+    font-size: 11px;
+    opacity: .75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .npb-play-btn{
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    border: none;
+    color: var(--paper);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .npb-play-btn:hover{ background: rgba(255,255,255,.3); }
+  .npb-skip-btn{
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--paper);
+    cursor: pointer;
+    opacity: .8;
+    display: flex; align-items: center;
+  }
+  .npb-skip-btn:hover{ opacity: 1; }
+  .npb-player{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .npb-time{ font-size: 11px; opacity: .75; white-space: nowrap; }
+  .npb-scrubber{
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,.3);
+    outline: none;
+    cursor: pointer;
+  }
+  .npb-scrubber::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--paper);
+    cursor: pointer;
+  }
+
+  @media (max-width: 600px){
+    .results{ margin-left: -24px; margin-right: -24px; border-radius: 0; border-left: none; border-right: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p style="margin:0 0 20px"><a href="./index.html" style="color:var(--moss);font-size:13px">← Back to Tranquila</a></p>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px">
+    <h1 style="margin:0">Explore Sources</h1>
+    <button type="button" id="fold-all-btn" style="background:none;border:1px solid var(--line);border-radius:6px;padding:5px 11px;font-size:12px;font-family:inherit;color:var(--moss-soft);cursor:pointer;white-space:nowrap;flex-shrink:0">Fold all</button>
+  </div>
+  <p class="subtitle">A scratchpad for testing free meditation audio sources. <a href="./index.html">Main app</a> uses Internet Archive.</p>
+
+  <div id="sections"></div>
+</div>
+
+<div class="now-playing-bar" id="now-playing-bar">
+  <div class="npb-top">
+    <div class="npb-info">
+      <span class="npb-title" id="npb-title">—</span>
+      <span class="npb-creator" id="npb-creator"></span>
+    </div>
+  </div>
+  <audio id="npb-audio"></audio>
+  <div class="npb-player">
+    <button type="button" class="npb-skip-btn" id="npb-back-btn" aria-label="Back 15s">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.63"/><text x="12" y="14" text-anchor="middle" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="bold">15</text></svg>
+    </button>
+    <button type="button" class="npb-play-btn" id="npb-play-btn" aria-label="Play/pause">
+      <span id="npb-icon-play" style="padding-left:3px">▶</span>
+      <span id="npb-icon-pause" style="display:none">⏸</span>
+    </button>
+    <button type="button" class="npb-skip-btn" id="npb-fwd-btn" aria-label="Forward 15s">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-3.63"/><text x="12" y="14" text-anchor="middle" font-size="6" fill="currentColor" stroke="none" font-family="sans-serif" font-weight="bold">15</text></svg>
+    </button>
+    <span class="npb-time" id="npb-current">0:00</span>
+    <input type="range" class="npb-scrubber" id="npb-scrubber" min="0" max="100" value="0" step="0.1">
+    <span class="npb-time" id="npb-duration">–:––</span>
+  </div>
+</div>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str ?? '';
+  return d.innerHTML;
+}
+function playIcon(){ return `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`; }
+function pauseIcon(){ return `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`; }
+function chevronIcon(){ return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`; }
+function fmtTime(s){ const m=Math.floor(s/60),sec=Math.floor(s%60); return `${m}:${String(sec).padStart(2,'0')}`; }
+
+function fmtDuration(sec){
+  if(!sec || !isFinite(sec)) return '';
+  const m = Math.round(sec/60);
+  if(m < 60) return `${m} min`;
+  const h = Math.floor(m/60), rm = m%60;
+  return rm ? `${h}h ${rm}m` : `${h}h`;
+}
+
+function skeletons(n=5){
+  return Array.from({length:n}, () => `
+    <div class="skeleton-item">
+      <div class="skeleton-circle"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-line narrow"></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Now-playing bar ───────────────────────────────────────────────────────────
+const npbAudio    = document.getElementById('npb-audio');
+const npbBar      = document.getElementById('now-playing-bar');
+const npbTitle    = document.getElementById('npb-title');
+const npbCreator  = document.getElementById('npb-creator');
+const npbPlayBtn  = document.getElementById('npb-play-btn');
+const npbIconPlay = document.getElementById('npb-icon-play');
+const npbIconPause= document.getElementById('npb-icon-pause');
+const npbScrubber = document.getElementById('npb-scrubber');
+const npbCurrent  = document.getElementById('npb-current');
+const npbDuration = document.getElementById('npb-duration');
+const npbBackBtn  = document.getElementById('npb-back-btn');
+const npbFwdBtn   = document.getElementById('npb-fwd-btn');
+
+let openId = null;   // unique id of currently-open track
+
+function setBarPlayPause(playing){
+  npbIconPlay.style.display  = playing ? 'none' : '';
+  npbIconPause.style.display = playing ? '' : 'none';
+}
+
+npbPlayBtn.addEventListener('click', () => {
+  if(npbAudio.paused) npbAudio.play().catch(()=>{});
+  else npbAudio.pause();
+});
+npbBackBtn.addEventListener('click', () => { npbAudio.currentTime = Math.max(0, npbAudio.currentTime - 15); });
+npbFwdBtn.addEventListener('click',  () => { npbAudio.currentTime = Math.min(npbAudio.duration||0, npbAudio.currentTime + 15); });
+
+npbAudio.addEventListener('play',  () => { setBarPlayPause(true);  syncIconState(openId, true);  });
+npbAudio.addEventListener('pause', () => { setBarPlayPause(false); syncIconState(openId, false); });
+npbAudio.addEventListener('timeupdate', () => {
+  if(isFinite(npbAudio.duration) && npbAudio.duration > 0){
+    npbScrubber.value = (npbAudio.currentTime / npbAudio.duration) * 100;
+    npbCurrent.textContent = fmtTime(npbAudio.currentTime);
+  }
+});
+npbAudio.addEventListener('durationchange', () => {
+  if(isFinite(npbAudio.duration)) npbDuration.textContent = fmtTime(npbAudio.duration);
+});
+npbAudio.addEventListener('ended', () => { setBarPlayPause(false); syncIconState(openId, false); });
+
+let isScrubbing = false;
+npbScrubber.addEventListener('mousedown', () => { isScrubbing = true; });
+npbScrubber.addEventListener('input', () => {
+  if(isFinite(npbAudio.duration)) npbCurrent.textContent = fmtTime(npbAudio.currentTime);
+});
+npbScrubber.addEventListener('change', () => {
+  if(isFinite(npbAudio.duration)){
+    npbAudio.currentTime = (npbScrubber.value / 100) * npbAudio.duration;
+  }
+  isScrubbing = false;
+});
+
+// ── Icon state sync ───────────────────────────────────────────────────────────
+function syncIconState(id, playing){
+  if(!id) return;
+  const btn = document.querySelector(`.result-icon-btn[data-id="${CSS.escape(id)}"]`);
+  if(!btn) return;
+  btn.classList.toggle('is-active',  playing);
+  btn.classList.toggle('is-paused', !playing && openId === id);
+  btn.querySelector('.result-icon').innerHTML = playing ? pauseIcon() : playIcon();
+}
+
+function clearOpenTrack(){
+  if(openId){
+    const prev = document.querySelector(`.result-icon-btn[data-id="${CSS.escape(openId)}"]`);
+    if(prev){
+      prev.classList.remove('is-active','is-paused','is-loading');
+      prev.querySelector('.result-icon').innerHTML = playIcon();
+    }
+    npbAudio.pause();
+    openId = null;
+  }
+}
+
+// ── Play a track (direct URL) ─────────────────────────────────────────────────
+async function playTrack(id, audioUrl, title, creator, durationSec){
+  const btn = document.querySelector(`.result-icon-btn[data-id="${CSS.escape(id)}"]`);
+  if(!btn) return;
+
+  if(openId === id){
+    if(npbAudio.paused) npbAudio.play().catch(()=>{});
+    else npbAudio.pause();
+    return;
+  }
+
+  clearOpenTrack();
+  openId = id;
+  btn.classList.add('is-loading');
+  btn.querySelector('.result-icon').innerHTML = playIcon();
+
+  npbAudio.src = audioUrl;
+  npbTitle.textContent = title || '—';
+  npbCreator.textContent = creator || '';
+  npbDuration.textContent = durationSec ? fmtTime(durationSec) : '–:––';
+  npbScrubber.value = 0;
+  npbCurrent.textContent = '0:00';
+  npbBar.classList.add('is-visible');
+
+  try{
+    await npbAudio.play();
+    btn.classList.remove('is-loading');
+  }catch(e){
+    btn.classList.remove('is-loading');
+    console.warn('Play failed:', e);
+  }
+}
+
+// ── Expand/collapse slot ──────────────────────────────────────────────────────
+function toggleExpand(group){
+  const slot    = group.querySelector('.player-slot');
+  const chevBtn = group.querySelector('.result-title-with-chevron');
+  const isOpen  = slot.classList.contains('is-open');
+  if(isOpen){
+    slot.classList.remove('is-open');
+    chevBtn.classList.remove('is-open');
+  } else {
+    if(!slot.querySelector('.player-row')){
+      const url      = group.dataset.audiourl || '';
+      const creator  = group.dataset.creator  || '';
+      const sourceUrl= group.dataset.sourceurl || '';
+      slot.innerHTML = `
+        <div class="player-row">
+          ${creator ? `<div style="font-size:12px;color:var(--moss-soft);margin-bottom:8px">${escapeHtml(creator)}</div>` : ''}
+          ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : '<div class="player-error">No audio URL available</div>'}
+          ${sourceUrl ? `<div style="margin-top:8px;font-size:12px"><a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener" style="color:var(--moss)">View source ↗</a></div>` : ''}
+        </div>`;
+    }
+    slot.classList.add('is-open');
+    chevBtn.classList.add('is-open');
+  }
+}
+
+// ── Render a list of items ────────────────────────────────────────────────────
+// items: [{id, title, creator, description, audioUrl, duration, sourceLabel, sourceUrl}]
+function renderItems(items, container){
+  if(!items.length){
+    container.innerHTML = '<div class="error-msg">No items found.</div>';
+    return;
+  }
+  const html = items.map(item => {
+    const id = item.id;
+    return `
+      <div class="result-group"
+           data-id="${escapeHtml(id)}"
+           data-audiourl="${escapeHtml(item.audioUrl||'')}"
+           data-creator="${escapeHtml(item.creator||'')}"
+           data-sourceurl="${escapeHtml(item.sourceUrl||'')}">
+        <div class="result">
+          <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play">
+            <div class="result-icon">${playIcon()}</div>
+          </button>
+          <div class="result-body">
+            <div class="result-title-row">
+              <button type="button" class="result-title-with-chevron" aria-label="Expand">
+                <p class="result-title">${escapeHtml(item.title||id)}</p>
+                <span class="result-chevron-icon">${chevronIcon()}</span>
+              </button>
+              <div class="result-badges">
+                ${item.duration ? `<span class="result-runtime">${escapeHtml(item.duration)}</span>` : ''}
+                <span class="source-badge">${escapeHtml(item.sourceLabel||'')}</span>
+              </div>
+            </div>
+            ${item.creator ? `<div class="result-meta"><span>${escapeHtml(item.creator)}</span></div>` : ''}
+            ${item.description ? `<p class="result-desc">${escapeHtml(item.description)}</p>` : ''}
+          </div>
+        </div>
+        <div class="player-slot"></div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `<div class="results">${html}</div>`;
+
+  container.querySelectorAll('.result-icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.result-group');
+      playTrack(
+        btn.dataset.id,
+        group.dataset.audiourl,
+        group.querySelector('.result-title')?.textContent,
+        group.dataset.creator,
+      );
+    });
+  });
+
+  container.querySelectorAll('.result-title-with-chevron').forEach(chevBtn => {
+    chevBtn.addEventListener('click', () => {
+      const group = chevBtn.closest('.result-group');
+      toggleExpand(group);
+    });
+  });
+}
+
+// ── Section builder ───────────────────────────────────────────────────────────
+function chevronDownIcon(){ return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`; }
+
+function addSection(id, title, siteUrl, description){
+  const sectionsEl = document.getElementById('sections');
+  const section = document.createElement('div');
+  section.className = 'source-section';
+  section.id = `section-${id}`;
+  section.innerHTML = `
+    <div class="source-header">
+      <button type="button" class="source-fold-btn" aria-label="Toggle section">${chevronDownIcon()}</button>
+      <h2 class="source-title">${escapeHtml(title)}</h2>
+      <a class="source-link" href="${escapeHtml(siteUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escapeHtml(siteUrl.replace(/^https?:\/\//,''))} ↗</a>
+    </div>
+    <div class="source-body">
+      <div class="source-body-inner">
+        ${description ? `<p class="source-desc">${escapeHtml(description)}</p>` : ''}
+        <div class="results-container"><div class="results">${skeletons(4)}</div></div>
+      </div>
+    </div>`;
+  sectionsEl.appendChild(section);
+
+  section.querySelector('.source-header').addEventListener('click', () => toggleSection(section));
+
+  return section.querySelector('.results-container');
+}
+
+function toggleSection(section){
+  section.classList.toggle('is-folded');
+}
+
+// ── Fold all / Expand all ─────────────────────────────────────────────────────
+const foldAllBtn = document.getElementById('fold-all-btn');
+foldAllBtn.addEventListener('click', () => {
+  const sections = document.querySelectorAll('.source-section');
+  const anyExpanded = [...sections].some(s => !s.classList.contains('is-folded'));
+  sections.forEach(s => s.classList.toggle('is-folded', anyExpanded));
+  foldAllBtn.textContent = anyExpanded ? 'Expand all' : 'Fold all';
+});
+
+// Keep fold-all label in sync when individual sections are toggled
+document.getElementById('sections').addEventListener('click', () => {
+  requestAnimationFrame(() => {
+    const sections = document.querySelectorAll('.source-section');
+    const allFolded = [...sections].every(s => s.classList.contains('is-folded'));
+    foldAllBtn.textContent = allFolded ? 'Expand all' : 'Fold all';
+  });
+});
+
+// ── Source: Internet Archive ──────────────────────────────────────────────────
+async function loadArchiveOrg(){
+  const container = addSection('archive', 'Internet Archive', 'https://archive.org',
+    'Open audio library with CC/public domain meditations. No API key required.');
+
+  try{
+    const q = `subject:(mindfulness) AND subject:(meditation) AND mediatype:(audio) AND (title:(guided) OR title:(meditation) OR title:(mindfulness) OR title:(body scan) OR title:(breathing))`;
+    const params = new URLSearchParams({
+      q,
+      fl: 'identifier,title,description,runtime,creator',
+      rows: '8',
+      page: '1',
+      sort: 'downloads desc',
+      output: 'json'
+    });
+    const res = await fetch(`https://archive.org/advancedsearch.php?${params}`);
+    const data = await res.json();
+    const docs = data?.response?.docs || [];
+
+    const items = docs.map(doc => ({
+      id: `archive-${doc.identifier}`,
+      title: doc.title || doc.identifier,
+      creator: Array.isArray(doc.creator) ? doc.creator.join(', ') : (doc.creator || ''),
+      description: Array.isArray(doc.description) ? doc.description.join(' ') : (doc.description || ''),
+      audioUrl: '', // loaded lazily via fetchMeta
+      duration: doc.runtime || '',
+      sourceLabel: 'Archive.org',
+      sourceUrl: `https://archive.org/details/${doc.identifier}`,
+      _archiveId: doc.identifier,
+    }));
+
+    // Render first (URLs loaded lazily on click)
+    renderItems(items, container);
+
+    // Bind play with lazy URL resolution
+    container.querySelectorAll('.result-icon-btn').forEach((btn, i) => {
+      const item = items[i];
+      if(!item) return;
+      btn.replaceWith(btn.cloneNode(true)); // remove old listener
+    });
+    container.querySelectorAll('.result-icon-btn').forEach((btn, i) => {
+      const item = items[i];
+      if(!item) return;
+      btn.addEventListener('click', async () => {
+        const group = btn.closest('.result-group');
+        if(!group.dataset.audiourl){
+          btn.classList.add('is-loading');
+          try{
+            const meta = await fetchArchiveMeta(item._archiveId);
+            if(meta.url){
+              group.dataset.audiourl = meta.url;
+              if(meta.duration){
+                const runtime = group.querySelector('.result-runtime');
+                if(runtime) runtime.textContent = meta.duration;
+              }
+            }
+          }catch(e){ btn.classList.remove('is-loading'); return; }
+          btn.classList.remove('is-loading');
+        }
+        playTrack(
+          btn.dataset.id,
+          group.dataset.audiourl,
+          group.querySelector('.result-title')?.textContent,
+          group.dataset.creator,
+        );
+      });
+    });
+
+  }catch(e){
+    container.innerHTML = `<div class="error-msg">Failed to load: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+async function fetchArchiveMeta(identifier){
+  const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
+  if(!res.ok) throw new Error(`${res.status}`);
+  const meta = await res.json();
+  const files = meta?.files || [];
+  const preferredFormats = ['VBR MP3', 'MP3', 'Ogg Vorbis'];
+  let match = null;
+  for(const fmt of preferredFormats){
+    match = files.find(f => f.format === fmt);
+    if(match) break;
+  }
+  if(!match) match = files.find(f => /\.(mp3|ogg)$/i.test(f.name || ''));
+  const url = match ? `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(match.name)}` : null;
+  const lengthSec = match?.length ? parseFloat(match.length) : null;
+  const duration = lengthSec && isFinite(lengthSec) ? fmtDuration(lengthSec) : null;
+  return { url, duration };
+}
+
+// ── Source: Tara Brach (via rss2json) ────────────────────────────────────────
+async function loadTaraBrach(){
+  const container = addSection('tarabrach', 'Tara Brach', 'https://www.tarabrach.com',
+    'Weekly guided meditations & dharma talks by Tara Brach (mindfulness/Buddhist psychology). Via RSS.');
+
+  try{
+    const rssUrl = 'https://tarabrach.libsyn.com/rss';
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+    if(!res.ok) throw new Error(`rss2json ${res.status}`);
+    const data = await res.json();
+    if(data.status !== 'ok') throw new Error(data.message || 'RSS parse failed');
+
+    const items = (data.items || []).map((item, i) => {
+      const enc = item.enclosure || {};
+      const durationSec = enc.duration || 0;
+      return {
+        id: `tarabrach-${i}-${item.guid?.slice(0,8)||i}`,
+        title: item.title || '',
+        creator: 'Tara Brach',
+        description: stripHtml(item.description || ''),
+        audioUrl: enc.link || '',
+        duration: durationSec ? fmtDuration(durationSec) : '',
+        sourceLabel: 'Tara Brach',
+        sourceUrl: item.link || 'https://www.tarabrach.com/audio/',
+      };
+    });
+
+    renderItems(items, container);
+  }catch(e){
+    container.innerHTML = `<div class="error-msg">Failed to load: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+// ── Source: AudioDharma (via rss2json) ───────────────────────────────────────
+async function loadAudioDharma(){
+  const container = addSection('audiodharma', 'AudioDharma', 'https://www.audiodharma.org',
+    'Dharma talks by Gil Fronsdal & guests at Insight Meditation Center. CORS-safe MP3s. Via RSS.');
+
+  try{
+    const rssUrl = 'https://feeds.feedburner.com/audiodharma';
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+    if(!res.ok) throw new Error(`rss2json ${res.status}`);
+    const data = await res.json();
+    if(data.status !== 'ok') throw new Error(data.message || 'RSS parse failed');
+
+    const items = (data.items || []).map((item, i) => {
+      const enc = item.enclosure || {};
+      const durationSec = enc.duration || 0;
+      return {
+        id: `audiodharma-${i}-${item.guid?.slice(0,8)||i}`,
+        title: item.title || '',
+        creator: item.author || 'AudioDharma',
+        description: stripHtml(item.description || ''),
+        audioUrl: enc.link || '',
+        duration: durationSec ? fmtDuration(durationSec) : '',
+        sourceLabel: 'AudioDharma',
+        sourceUrl: item.link || 'https://www.audiodharma.org',
+      };
+    });
+
+    renderItems(items, container);
+  }catch(e){
+    container.innerHTML = `<div class="error-msg">Failed to load: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+// ── Source: Archive.org — ambient/soundscapes ────────────────────────────────
+async function loadAmbient(){
+  const container = addSection('ambient', 'Archive.org — Ambient & Soundscapes', 'https://archive.org',
+    'Nature sounds, binaural beats, and ambient music for meditation from the Internet Archive.');
+
+  try{
+    const q = `(subject:(binaural) OR subject:(nature sounds) OR title:(singing bowl) OR title:(binaural beats)) AND mediatype:(audio)`;
+    const params = new URLSearchParams({
+      q,
+      fl: 'identifier,title,description,runtime,creator',
+      rows: '8',
+      page: '1',
+      sort: 'downloads desc',
+      output: 'json'
+    });
+    const res = await fetch(`https://archive.org/advancedsearch.php?${params}`);
+    const data = await res.json();
+    const docs = data?.response?.docs || [];
+
+    const items = docs.map(doc => ({
+      id: `ambient-${doc.identifier}`,
+      title: doc.title || doc.identifier,
+      creator: Array.isArray(doc.creator) ? doc.creator.join(', ') : (doc.creator || ''),
+      description: Array.isArray(doc.description) ? doc.description.join(' ') : (doc.description || ''),
+      audioUrl: '',
+      duration: doc.runtime || '',
+      sourceLabel: 'Archive.org',
+      sourceUrl: `https://archive.org/details/${doc.identifier}`,
+      _archiveId: doc.identifier,
+    }));
+
+    renderItems(items, container);
+
+    // Lazy URL on click (same pattern as main archive section)
+    container.querySelectorAll('.result-icon-btn').forEach((btn, i) => {
+      const item = items[i];
+      if(!item) return;
+      btn.replaceWith(btn.cloneNode(true));
+    });
+    container.querySelectorAll('.result-icon-btn').forEach((btn, i) => {
+      const item = items[i];
+      if(!item) return;
+      btn.addEventListener('click', async () => {
+        const group = btn.closest('.result-group');
+        if(!group.dataset.audiourl){
+          btn.classList.add('is-loading');
+          try{
+            const meta = await fetchArchiveMeta(item._archiveId);
+            if(meta.url) group.dataset.audiourl = meta.url;
+            if(meta.duration){
+              const runtime = group.querySelector('.result-runtime');
+              if(runtime) runtime.textContent = meta.duration;
+            }
+          }catch(e){ btn.classList.remove('is-loading'); return; }
+          btn.classList.remove('is-loading');
+        }
+        playTrack(
+          btn.dataset.id,
+          group.dataset.audiourl,
+          group.querySelector('.result-title')?.textContent,
+          group.dataset.creator,
+        );
+      });
+    });
+
+  }catch(e){
+    container.innerHTML = `<div class="error-msg">Failed to load: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+// ── Util ──────────────────────────────────────────────────────────────────────
+function stripHtml(html){
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  return d.textContent || d.innerText || '';
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadArchiveOrg();
+loadTaraBrach();
+loadAudioDharma();
+loadAmbient();
+</script>
+</body>
+</html>
