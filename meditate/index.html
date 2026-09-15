@@ -283,6 +283,7 @@
     min-height: 20px;
     margin-bottom: 20px;
   }
+  .status a{ color: var(--moss); }
 
   .results{
     display: flex;
@@ -1053,6 +1054,7 @@
           <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app" style="display:none">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
+          <button type="button" class="tab" data-view="library">Library <span class="count">10</span></button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
           <button type="button" class="tab" data-view="history">History</button>
           <button type="button" class="tab" data-view="about">About</button>
@@ -1082,6 +1084,11 @@
       <div id="results"></div>
     </div>
 
+    <div class="view" id="view-library">
+      <div class="status" id="library-status"></div>
+      <div id="library-results"></div>
+    </div>
+
     <div class="view" id="view-saved">
       <div class="status" id="saved-status"></div>
       <div id="saved-results"></div>
@@ -1099,7 +1106,7 @@
     </div>
 
     <div class="view" id="view-about">
-      <p class="about-footer">Results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects. Tap a result to stream it in place, or save it for offline.</p>
+      <p class="about-footer">The built-in library includes ten guided practices from <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench</a> by Jonny Miller. Search results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects.</p>
 
       <div class="about-section">
         <h2 class="about-section-title">Refresh App</h2>
@@ -1169,7 +1176,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-08-24T21:18:58Z'; // updated by deploy
+const BUILD_TIME = '2026-09-15T23:44:38Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1195,6 +1202,8 @@ const viewSearch = document.getElementById('view-search');
 const resultsEl = document.getElementById('results');
 const btn = document.getElementById('search-btn');
 const offlineBanner = document.getElementById('offline-banner');
+const libraryResultsEl = document.getElementById('library-results');
+const libraryStatusEl = document.getElementById('library-status');
 const savedResultsEl = document.getElementById('saved-results');
 const savedStatusEl = document.getElementById('saved-status');
 const savedCountEl = document.getElementById('saved-count');
@@ -1205,6 +1214,89 @@ const AUDIO_CACHE = 'meditation-audio-v1';
 const SAVED_KEY = 'savedMeditations';
 const HISTORY_KEY = 'playHistory';
 const HISTORY_MAX = 200; // max sessions to keep
+
+const BUILTIN_TRACKS = [
+  {
+    identifier: 'unclench-progressive-muscle-relaxation',
+    title: 'Progressive Muscle Relaxation',
+    creator: 'Jonny Miller',
+    runtime: '4:41',
+    description: 'A physical relaxation technique to reduce tension through systematic muscle release.',
+    audioUrl: './audio/unclenching/progressive-muscle-relaxation.mp3'
+  },
+  {
+    identifier: 'unclench-non-sleep-deep-rest',
+    title: 'Non-Sleep Deep Rest (NSDR)',
+    creator: 'Jonny Miller',
+    runtime: '17:48',
+    description: 'A guided relaxation practice, also known as Yoga Nidra, for deep restoration while remaining conscious.',
+    audioUrl: './audio/unclenching/non-sleep-deep-rest.mp3'
+  },
+  {
+    identifier: 'unclench-somatic-surfing',
+    title: 'Somatic Surfing',
+    creator: 'Jonny Miller',
+    runtime: '23:41',
+    description: 'An exercise to build resilience through gentle somatic exploration of challenging emotions.',
+    audioUrl: './audio/unclenching/somatic-surfing.mp3'
+  },
+  {
+    identifier: 'unclench-reparenting-protocol',
+    title: 'Reparenting Protocol',
+    creator: 'Jonny Miller',
+    runtime: '10:38',
+    description: 'A guided inner-child practice for meeting your emotional needs with compassion and building secure attachment from within.',
+    audioUrl: './audio/unclenching/reparenting-protocol.mp3'
+  },
+  {
+    identifier: 'unclench-amplify-joy',
+    title: 'Amplify Joy',
+    creator: 'Jonny Miller',
+    runtime: '9:31',
+    description: 'A visualization exercise to intensify and anchor positive emotions in the body.',
+    audioUrl: './audio/unclenching/amplify-joy.mp3'
+  },
+  {
+    identifier: 'unclench-one-tenth-the-effort',
+    title: '1/10th the Effort',
+    creator: 'Jonny Miller',
+    runtime: '4:13',
+    description: 'A body-mind exercise to reduce tension by finding the minimum effort you need for daily tasks.',
+    audioUrl: './audio/unclenching/one-tenth-the-effort.mp3'
+  },
+  {
+    identifier: 'unclench-i-am-willing',
+    title: '“I Am Willing”',
+    creator: 'Jonny Miller',
+    runtime: '5:15',
+    description: 'A mindfulness practice to cultivate acceptance of difficult emotions through gentle self-permission.',
+    audioUrl: './audio/unclenching/i-am-willing.mp3'
+  },
+  {
+    identifier: 'unclench-expanding-awareness',
+    title: 'Expanding Awareness',
+    creator: 'Jonny Miller',
+    runtime: '4:26',
+    description: 'A meditation to create calm and spaciousness by connecting to the six directions around you.',
+    audioUrl: './audio/unclenching/expanding-awareness.mp3'
+  },
+  {
+    identifier: 'unclench-single-breath-hum',
+    title: 'Single-Breath Hum',
+    creator: 'Jonny Miller',
+    runtime: '3:20',
+    description: 'A simple breathing technique to release tension using a two-part humming exhale.',
+    audioUrl: './audio/unclenching/single-breath-hum.mp3'
+  },
+  {
+    identifier: 'unclench-welcome-everything',
+    title: 'Welcome Everything',
+    creator: 'Jonny Miller',
+    runtime: '4:05',
+    description: 'A gentle practice to help you access your inner wisdom and guidance.',
+    audioUrl: './audio/unclenching/welcome-everything.mp3'
+  }
+];
 
 // ---------- Service worker: makes the page itself (this HTML/CSS/JS) load offline ----------
 // Requires being served over http(s) — file:// and Claude's in-chat preview can't register one.
@@ -1559,7 +1651,11 @@ function renderHistory(){
       if(saved && !metaCache.has(id)){
         metaCache.set(id, { url: saved.audioUrl, duration: saved.runtime || null });
       }
-      activateView('search');
+      const builtin = BUILTIN_TRACKS.find(x => x.identifier === id);
+      if(builtin && !metaCache.has(id)){
+        metaCache.set(id, { url: builtin.audioUrl, duration: builtin.runtime });
+      }
+      activateView(builtin ? 'library' : 'search');
       playTrack(id);
     });
   });
@@ -1608,12 +1704,14 @@ const tabIndicator = document.getElementById('tab-indicator');
 
 const ROUTES = {
   search:  '#',
+  library: '#library',
   saved:   '#saved',
   history: '#history',
   about:   '#about',
 };
 
 function viewFromHash(hash){
+  if(hash === '#library') return 'library';
   if(hash === '#saved')   return 'saved';
   if(hash === '#history') return 'history';
   if(hash === '#about')   return 'about';
@@ -1641,6 +1739,7 @@ function activateView(view, { push = true } = {}){
     if(tab){ tab.classList.add('is-active'); moveIndicator(tab); }
   }
 
+  if(view === 'library') renderLibrary();
   if(view === 'saved')   renderSaved();
   if(view === 'history') renderHistory();
 
@@ -1669,6 +1768,46 @@ requestAnimationFrame(() => {
   activateView(initialView, { push: false });
   requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
 });
+
+function renderLibrary(){
+  libraryStatusEl.innerHTML = `10 guided practices · <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench ↗</a>`;
+
+  const html = BUILTIN_TRACKS.map(item => `
+    <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-builtin="true" data-source-url="https://howtounclench.com/#the-unclenching-library">
+      <div class="result" data-id="${escapeHtml(item.identifier)}">
+        <button type="button" class="result-icon-btn" data-id="${escapeHtml(item.identifier)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
+        <div class="result-body">
+          <div class="result-title-row">
+            <button type="button" class="result-title-with-chevron result-expand-btn" data-id="${escapeHtml(item.identifier)}" aria-label="Expand">
+              <p class="result-title">${escapeHtml(item.title)}</p>
+              <span class="result-chevron-icon">${chevronIcon()}</span>
+            </button>
+            <div class="result-badges">
+              <span class="result-runtime">${escapeHtml(item.runtime)} · Built in</span>
+            </div>
+          </div>
+          <p class="result-desc">${escapeHtml(item.description)}</p>
+        </div>
+      </div>
+      <div class="player-slot"></div>
+    </div>
+  `).join('');
+
+  libraryResultsEl.innerHTML = `<div class="results">${html}</div>`;
+
+  libraryResultsEl.querySelectorAll('.result-icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = BUILTIN_TRACKS.find(x => x.identifier === btn.dataset.id);
+      if(item) metaCache.set(item.identifier, { url: item.audioUrl, duration: item.runtime });
+      playTrack(btn.dataset.id);
+    });
+  });
+  libraryResultsEl.querySelectorAll('.result-expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleExpand(btn.dataset.id));
+  });
+
+  if(openIdentifier) setIconState(openIdentifier, !npbAudio.paused);
+}
 
 function renderSaved(){
   const list = getSaved();
@@ -1938,6 +2077,7 @@ function getChevron(group){ return group.querySelector('.result-expand-btn'); }
 
 function findGroup(identifier){
   return resultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`)
+      || libraryResultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`)
       || savedResultsEl.querySelector(`.result-group[data-identifier="${cssEscape(identifier)}"]`);
 }
 
@@ -2001,12 +2141,16 @@ async function playTrack(identifier){
       });
     }
 
-    // Add save button to bar
-    const saved = isSaved(identifier);
-    npbSaveBtn.className = `npb-save-btn${saved ? ' is-saved' : ''}`;
-    npbSaveBtn.dataset.id = identifier;
-    npbSaveBtn.dataset.url = url;
-    npbSaveBtn.innerHTML = bookmarkIcon(saved);
+    // Built-in tracks already ship with Tranquila; searched tracks can be saved offline.
+    const isBuiltin = group.dataset.builtin === 'true';
+    npbSaveBtn.hidden = isBuiltin;
+    if(!isBuiltin){
+      const saved = isSaved(identifier);
+      npbSaveBtn.className = `npb-save-btn${saved ? ' is-saved' : ''}`;
+      npbSaveBtn.dataset.id = identifier;
+      npbSaveBtn.dataset.url = url;
+      npbSaveBtn.innerHTML = bookmarkIcon(saved);
+    }
 
     setupNowPlaying(audio, identifier, group);
 
@@ -2030,22 +2174,24 @@ function toggleExpand(identifier){
   } else {
     // Populate once, then animate open
     if(!slot.querySelector('.player-row')){
+      const isBuiltin = group.dataset.builtin === 'true';
       const saved = isSaved(identifier);
       const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
+      const sourceUrl = group.dataset.sourceUrl || `https://archive.org/details/${encodeURIComponent(identifier)}`;
       slot.innerHTML = `
         <div class="player-row">
           ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
           ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
           <div class="player-meta">
-            ${group.dataset.creator ? `<button type="button" class="creator-link" data-creator="${escapeHtml(group.dataset.creator)}">${escapeHtml(group.dataset.creator)}</button>` : ''}
-            <a href="https://archive.org/details/${encodeURIComponent(identifier)}" target="_blank" rel="noopener">archive.org</a>
+            ${group.dataset.creator ? (isBuiltin ? `<span>${escapeHtml(group.dataset.creator)}</span>` : `<button type="button" class="creator-link" data-creator="${escapeHtml(group.dataset.creator)}">${escapeHtml(group.dataset.creator)}</button>`) : ''}
+            <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${isBuiltin ? 'How to Unclench' : 'archive.org'}</a>
           </div>
           ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
-          <div style="margin-top:10px;">
+          ${isBuiltin ? '' : `<div style="margin-top:10px;">
             <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
               ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
             </button>
-          </div>
+          </div>`}
         </div>`;
       const saveBtn = slot.querySelector('.save-btn');
       if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
@@ -2368,6 +2514,7 @@ async function handleBookmarkClick(e){
   }
 }
 resultsEl.addEventListener('click', handleBookmarkClick);
+libraryResultsEl.addEventListener('click', handleBookmarkClick);
 savedResultsEl.addEventListener('click', handleBookmarkClick);
 
 // Save history session when page is closed/backgrounded

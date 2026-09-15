@@ -2,6 +2,8 @@
 
 Meditation audio search app backed by the Internet Archive.
 
+The app also includes a built-in ten-track collection from Jonny Miller's [How to Unclench library](https://howtounclench.com/#the-unclenching-library). The audio files and their provenance notes live in [`audio/unclenching/`](./audio/unclenching/).
+
 ## Testing on iPhone
 
 ### Over local WiFi (no deploy needed)
