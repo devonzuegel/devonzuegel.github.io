@@ -43,7 +43,7 @@ The daily `concerts-catalog.yml` workflow starts after these files reach the rep
 
 ## Publish the backend and connect GitHub Pages
 
-The static app is published at `https://devonzuegel.com/concerts/` through GitHub Pages. The API runs at `https://concerts-api-six.vercel.app/api/concerts`. Cloud storage is not connected yet, so the published app currently keeps a browser-local notebook. Local preview notebooks in `.data/` are separate from the published site and are not uploaded by deployment.
+The static app is published at `https://devonzuegel.com/concerts/` through GitHub Pages. The API runs at `https://concerts-api-six.vercel.app/api/concerts`. Signed-in notebooks persist in the dedicated `concerts` Upstash Redis database on the Free plan in AWS us-east-1. Database credentials are stored as Vercel production secrets. Guest notebooks and offline queues stay in browser localStorage. Local preview notebooks in `.data/` are separate from the published site and are not uploaded by deployment.
 
 1. Create a separate Vercel project with `concerts` as its root. Its `vercel.json` builds the static preview and serves `/api/concerts`. This does not replace the existing website.
 2. Connect a dedicated free-tier Redis instance supporting the Upstash REST protocol. Set `KV_REST_API_URL` and `KV_REST_API_TOKEN` (or the corresponding `UPSTASH_REDIS_REST_*` variables). Serverless deployments deliberately refuse to save profiles without durable storage. Alternatively, run `npm start` on a persistent Node host and back up `.data/`.

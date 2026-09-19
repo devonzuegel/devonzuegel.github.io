@@ -18,6 +18,9 @@ async function command(args) {
     },
     body: JSON.stringify(args),
     signal: AbortSignal.timeout(10000),
+  }).catch(() => {
+    // Network/header errors can include credentials; never return them to clients.
+    throw new Error("Sync storage is temporarily unavailable.");
   });
   if (!r.ok) throw new Error("Sync storage is temporarily unavailable.");
   const d = await r.json();
