@@ -37,7 +37,7 @@ export const DEFAULT_CITIES = [
     region:
       "NYC, Long Island, northern NJ, Westchester/Rockland & southwest CT",
     boxes: [[40.42, -74.55, 41.35, -71.85]],
-    enabled: true,
+    enabled: false,
   },
 ];
 export const SIZE_BUCKETS = [

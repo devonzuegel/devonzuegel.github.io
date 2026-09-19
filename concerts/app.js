@@ -23,7 +23,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=next-weekend";
+} from "./shared/core.js?v=sf-miami-defaults";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 const config = window.CONCERTS_CONFIG || {},

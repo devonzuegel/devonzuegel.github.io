@@ -47,7 +47,7 @@ const concert = (extra = {}) => ({
   ...extra,
 });
 const filters = {
-  cities: DEFAULT_CITIES,
+  cities: DEFAULT_CITIES.map((c) => ({ ...c, enabled: true })),
   from: "2026-09-19",
   to: "2026-11-18",
   tab: "discover",
