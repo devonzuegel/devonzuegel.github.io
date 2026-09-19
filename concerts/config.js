@@ -1,7 +1,9 @@
 // Set apiBase to the deployed API URL when publishing the static GitHub Pages app.
 // Public configuration only. API keys and profile data do not belong in this file.
 window.CONCERTS_CONFIG = {
-  apiBase: "/api/concerts",
+  apiBase: /^(localhost|127\.0\.0\.1|192\.168\.)/.test(location.hostname)
+    ? "/api/concerts"
+    : "https://concerts-api-six.vercel.app/api/concerts",
   // The daily workflow updates this public file independently of website builds.
   catalogURL: /^(localhost|127\.0\.0\.1|192\.168\.)/.test(location.hostname)
     ? "./data/events.json"
