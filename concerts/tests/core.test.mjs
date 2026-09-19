@@ -10,7 +10,20 @@ import {
   mergeEvents,
   allEvents,
   savedCounts,
+  dateRange,
 } from "../shared/core.js";
+test("next weekend is Friday through Sunday after this weekend, including across years", () => {
+  for (let day = 14; day <= 20; day++) {
+    assert.deepEqual(dateRange("next-weekend", new Date(2026, 8, day, 12)), {
+      from: "2026-09-25",
+      to: "2026-09-27",
+    });
+  }
+  assert.deepEqual(dateRange("next-weekend", new Date(2026, 11, 27, 12)), {
+    from: "2027-01-01",
+    to: "2027-01-03",
+  });
+});
 const concert = (extra = {}) => ({
   id: "show-1",
   title: "Björk, live; acoustic",

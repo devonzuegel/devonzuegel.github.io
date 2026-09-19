@@ -95,6 +95,10 @@ export function addDays(day, n) {
 }
 export function dateRange(preset = "60", now = new Date()) {
   const from = dayInZone(now);
+  if (preset === "next-weekend") {
+    const thisSunday = dateRange("weekend", now).to;
+    return { from: addDays(thisSunday, 5), to: addDays(thisSunday, 7) };
+  }
   if (preset === "weekend") {
     let n = (5 - new Date(from + "T12:00:00Z").getUTCDay() + 7) % 7;
     if ([0, 6].includes(new Date(from + "T12:00:00Z").getUTCDay())) n = 0;

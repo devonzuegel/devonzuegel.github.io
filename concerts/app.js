@@ -23,7 +23,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js";
+} from "./shared/core.js?v=next-weekend";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 const config = window.CONCERTS_CONFIG || {},
@@ -260,6 +260,7 @@ function renderControls() {
   $("#controls").innerHTML =
     `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your listening")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><span class="date-label">${icon("calendar")}When</span><div class="date-chips">${[
       ["weekend", "This weekend"],
+      ["next-weekend", "Next weekend"],
       ["30", "30 days"],
       ["60", "60 days"],
       ["90", "90 days"],
