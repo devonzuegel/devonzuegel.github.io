@@ -200,9 +200,8 @@ function icoButton(action, name, label, attrs = "", cls = "icon-btn") {
 }
 function shell() {
   $("#app").innerHTML =
-    `<div class="layout"><aside class="sidebar" aria-label="Concert notebook navigation"><a class="wordmark" href="./">encore<span>✳</span></a><div class="tagline">A concert notebook</div><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div class="topline"><span class="today-label">${dateLabel(dayInZone(), { weekday: "long", month: "long", day: "numeric" })}</span><div class="utility">${button("sources", icon("info") + " Sources", "text-button")}${button("refresh", icon("refresh") + " Refresh", "text-button")}</div></div><div id="hero"></div><div id="controls"></div><div id="results"></div></main></div>`;
+    `<div class="layout"><aside class="sidebar" aria-label="Concert notebook navigation"><a class="wordmark" href="./">encore<span>✳</span></a><div class="tagline">A concert notebook</div><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div class="topline"><span class="today-label">${dateLabel(dayInZone(), { weekday: "long", month: "long", day: "numeric" })}</span><div class="utility">${button("sources", icon("info") + " Sources", "text-button")}${button("refresh", icon("refresh") + " Refresh", "text-button")}</div></div><div id="controls"></div><div id="results"></div></main></div>`;
   renderChrome();
-  renderHero();
   renderControls();
   renderResults();
 }
@@ -232,11 +231,6 @@ function renderChrome() {
     `${button("profile", `<span class="avatar">${esc((store.profile || "D").slice(0, 1).toUpperCase())}</span><span class="profile-text"><strong>${esc(store.profile || "Your notebook")}</strong><small title="${esc(store.lastError)}">${esc(store.status)}</small></span>${icon("down")}`, "profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
   $("#mobile-header").innerHTML =
     `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">encore<span>✳</span></a>${account}</div>${navMarkup(true)}</div>`;
-}
-function renderHero() {
-  const isSaved = state.tab === "saved";
-  $("#hero").innerHTML =
-    `<div class="hero"><div><div class="eyebrow">${isSaved ? "Keep the nights that matter" : "Less searching. More live music."}</div><h1>${isSaved ? "Your <em>good nights.</em>" : "Good nights <em>ahead.</em>"}</h1><p>${isSaved ? "Your shortlist, listening notes, and a few nights worth making plans for." : "Find a show. Get a feel for the music. Be there when it happens."}</p></div><div class="hero-art" aria-hidden="true"><div class="ticket-art back"></div><div class="ticket-art">${icon("music")}</div></div></div>`;
 }
 function renderControls() {
   const cs = cities(),
@@ -1014,14 +1008,12 @@ document.addEventListener("click", async (e) => {
         state.tab = el.dataset.tab;
         state.sort = "date";
         renderChrome();
-        renderHero();
         renderControls();
         renderResults();
         break;
       case "discover":
         state.tab = "discover";
         renderChrome();
-        renderHero();
         renderControls();
         renderResults();
         break;
