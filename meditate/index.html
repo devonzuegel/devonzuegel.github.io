@@ -115,6 +115,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
     max-width: 760px;
     margin: 0 auto;
     padding: 0 24px;
@@ -139,17 +140,17 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
   }
   .nav-logo:hover{ background: none; color: var(--moss); }
   .nav-logo-icon{ display: none; flex-shrink: 0; }
   .nav-logo-text{ display: block; }
-  @media (max-width: 480px){
-    .nav-logo-icon{ display: block; }
-    .nav-logo-text{ display: none; }
-  }
+  .navbar.is-collapsed .nav-logo-icon{ display: block; }
+  .navbar.is-collapsed .nav-logo-text{ display: none; }
   .tabs{
     display: flex;
     position: relative;
+    flex-shrink: 0;
   }
   .tab{
     font-family: 'Inter', sans-serif;
@@ -164,6 +165,7 @@
     color: var(--moss-soft);
     cursor: pointer;
     transition: color .2s ease;
+    white-space: nowrap;
   }
   .tab:hover{ background: none; }
   .tab.is-active{ color: var(--moss); }
@@ -192,6 +194,88 @@
     margin-left: 4px;
   }
   .tab .count:empty{ display: none; }
+
+  .nav-menu-toggle{
+    display: none;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: var(--moss-soft);
+    cursor: pointer;
+  }
+  .nav-menu-toggle:hover{ background: none; color: var(--moss); }
+  .nav-menu-icon{
+    width: 18px;
+    height: 14px;
+    position: relative;
+    display: block;
+  }
+  .nav-menu-icon span{
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 1.5px;
+    border-radius: 999px;
+    background: currentColor;
+    transition: transform .2s ease, opacity .2s ease, top .2s ease;
+  }
+  .nav-menu-icon span:nth-child(1){ top: 0; }
+  .nav-menu-icon span:nth-child(2){ top: 6px; }
+  .nav-menu-icon span:nth-child(3){ top: 12px; }
+  .nav-action-label{ display: none; margin-left: 10px; }
+
+  .navbar.is-collapsed .nav-menu-toggle{ display: flex; }
+  .navbar.is-collapsed .tabs{
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    padding: 8px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 12px 28px rgba(28,35,33,.12);
+  }
+  .navbar.is-collapsed.is-menu-open .tabs{ display: flex; }
+  .navbar.is-collapsed .tab,
+  .navbar.is-collapsed .nav-theme-btn,
+  .navbar.is-collapsed .nav-refresh-btn{
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 14px;
+    border-radius: 7px;
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .navbar.is-collapsed .nav-theme-btn,
+  .navbar.is-collapsed .nav-refresh-btn{
+    display: flex;
+    align-items: center;
+  }
+  .navbar.is-collapsed .nav-action-label{
+    display: inline;
+    font: 600 11px/1 'Inter', sans-serif;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .navbar.is-collapsed .tab:hover,
+  .navbar.is-collapsed .tab.is-active,
+  .navbar.is-collapsed .nav-theme-btn:hover,
+  .navbar.is-collapsed .nav-refresh-btn:hover{
+    background: var(--paper-dim);
+  }
+  .navbar.is-collapsed .tab-indicator{ display: none; }
+  .navbar.is-menu-open .nav-menu-icon span:nth-child(1){ top: 6px; transform: rotate(45deg); }
+  .navbar.is-menu-open .nav-menu-icon span:nth-child(2){ opacity: 0; }
+  .navbar.is-menu-open .nav-menu-icon span:nth-child(3){ top: 6px; transform: rotate(-45deg); }
 
   .view{ display: none; }
   .view.is-active{ display: block; flex: 1; }
@@ -1046,13 +1130,18 @@
           <svg class="nav-logo-icon" width="22" height="22" viewBox="4.5 4.5 23 23" aria-hidden="true"><path d="M16.00,17.00 L16.00,16.96 L16.01,16.93 L16.01,16.89 L16.02,16.86 L16.04,16.82 L16.05,16.79 L16.07,16.75 L16.10,16.72 L16.12,16.69 L16.15,16.67 L16.18,16.64 L16.21,16.61 L16.25,16.59 L16.28,16.57 L16.32,16.56 L16.36,16.54 L16.41,16.53 L16.45,16.52 L16.50,16.51 L16.54,16.51 L16.59,16.51 L16.64,16.51 L16.69,16.52 L16.74,16.53 L16.79,16.54 L16.84,16.56 L16.90,16.58 L16.95,16.60 L17.00,16.63 L17.05,16.66 L17.09,16.69 L17.14,16.73 L17.19,16.77 L17.23,16.82 L17.28,16.87 L17.32,16.92 L17.36,16.97 L17.39,17.03 L17.43,17.09 L17.46,17.15 L17.49,17.22 L17.51,17.29 L17.54,17.36 L17.55,17.43 L17.57,17.51 L17.58,17.59 L17.59,17.67 L17.59,17.75 L17.59,17.83 L17.59,17.92 L17.58,18.00 L17.57,18.09 L17.55,18.17 L17.53,18.26 L17.50,18.35 L17.47,18.44 L17.43,18.52 L17.39,18.61 L17.34,18.70 L17.29,18.78 L17.24,18.86 L17.18,18.94 L17.11,19.02 L17.04,19.10 L16.97,19.18 L16.89,19.25 L16.81,19.32 L16.72,19.39 L16.63,19.45 L16.53,19.51 L16.43,19.57 L16.33,19.62 L16.22,19.67 L16.11,19.71 L16.00,19.75 L15.88,19.78 L15.76,19.81 L15.64,19.84 L15.52,19.86 L15.39,19.87 L15.26,19.88 L15.13,19.88 L15.00,19.87 L14.87,19.86 L14.73,19.85 L14.60,19.82 L14.46,19.80 L14.33,19.76 L14.19,19.72 L14.06,19.67 L13.93,19.61 L13.80,19.55 L13.67,19.49 L13.54,19.41 L13.41,19.33 L13.29,19.24 L13.17,19.15 L13.05,19.05 L12.94,18.95 L12.82,18.83 L12.72,18.72 L12.62,18.59 L12.52,18.46 L12.43,18.33 L12.34,18.19 L12.26,18.05 L12.18,17.90 L12.11,17.74 L12.05,17.58 L11.99,17.42 L11.94,17.26 L11.89,17.09 L11.86,16.91 L11.83,16.74 L11.81,16.56 L11.79,16.38 L11.79,16.20 L11.79,16.01 L11.80,15.83 L11.82,15.64 L11.84,15.45 L11.88,15.27 L11.92,15.08 L11.97,14.89 L12.03,14.71 L12.10,14.52 L12.18,14.34 L12.26,14.16 L12.36,13.98 L12.46,13.81 L12.57,13.64 L12.69,13.47 L12.81,13.31 L12.95,13.15 L13.09,13.00 L13.24,12.85 L13.40,12.70 L13.56,12.57 L13.73,12.43 L13.91,12.31 L14.10,12.19 L14.29,12.08 L14.48,11.98 L14.69,11.89 L14.89,11.80 L15.11,11.72 L15.32,11.65 L15.55,11.59 L15.77,11.54 L16.00,11.50 L16.23,11.47 L16.47,11.45 L16.70,11.43 L16.94,11.43 L17.18,11.44 L17.42,11.46 L17.66,11.49 L17.91,11.53 L18.15,11.58 L18.39,11.64 L18.62,11.71 L18.86,11.79 L19.10,11.89 L19.33,11.99 L19.56,12.11 L19.78,12.23 L20.00,12.36 L20.22,12.51 L20.43,12.66 L20.63,12.83 L20.83,13.00 L21.02,13.19 L21.21,13.38 L21.39,13.58 L21.56,13.79 L21.72,14.01 L21.87,14.24 L22.02,14.47 L22.15,14.71 L22.28,14.96 L22.39,15.22 L22.50,15.48 L22.59,15.74 L22.67,16.01 L22.75,16.29 L22.81,16.57 L22.86,16.86 L22.89,17.14 L22.92,17.44 L22.93,17.73 L22.93,18.02 L22.92,18.32 L22.89,18.62 L22.85,18.91 L22.80,19.21 L22.74,19.51 L22.66,19.80 L22.57,20.09 L22.47,20.38 L22.35,20.67 L22.22,20.95 L22.08,21.23 L21.93,21.50 L21.76,21.77 L21.59,22.03 L21.40,22.28 L21.20,22.53 L20.98,22.77 L20.76,23.01 L20.53,23.23 L20.28,23.44 L20.03,23.65 L19.76,23.84 L19.49,24.03 L19.21,24.20 L18.92,24.36 L18.62,24.51 L18.31,24.65 L18.00,24.78 L17.68,24.89 L17.35,24.99 L17.02,25.08 L16.68,25.15 L16.34,25.21 L16.00,25.25 L15.65,25.28 L15.30,25.29 L14.95,25.29 L14.60,25.28 L14.25,25.25 L13.89,25.20 L13.54,25.14 L13.19,25.07 L12.84,24.98 L12.50,24.87 L12.15,24.75 L11.81,24.62 L11.48,24.46 L11.15,24.30 L10.83,24.12 L10.51,23.93 L10.20,23.72 L9.90,23.50 L9.61,23.26 L9.32,23.01 L9.05,22.75 L8.79,22.48 L8.53,22.19 L8.29,21.89 L8.06,21.58 L7.84,21.26 L7.64,20.93 L7.45,20.59 L7.27,20.25 L7.11,19.89 L6.96,19.52 L6.83,19.15 L6.71,18.77 L6.61,18.39 L6.52,18.00 L6.45,17.60 L6.40,17.20 L6.36,16.80 L6.34,16.39 L6.34,15.98 L6.35,15.58 L6.38,15.17 L6.43,14.76 L6.50,14.35 L6.58,13.94 L6.69,13.54 L6.81,13.14 L6.94,12.74 L7.10,12.35 L7.27,11.96 L7.46,11.58 L7.66,11.20 L7.88,10.84 L8.12,10.48 L8.37,10.13 L8.64,9.79 L8.92,9.46 L9.22,9.14 L9.53,8.84 L9.86,8.55 L10.20,8.27 L10.55,8.00 L10.91,7.75 L11.29,7.51 L11.68,7.29 L12.07,7.08 L12.48,6.89 L12.89,6.72 L13.32,6.56 L13.75,6.42 L14.19,6.30 L14.64,6.20 L15.09,6.11 L15.54,6.05 L16.00,6.00" fill="none" stroke="var(--moss)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="nav-logo-text">Tranquila</span>
         </button>
-        <div class="tabs">
+        <button type="button" class="nav-menu-toggle" id="nav-menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-menu">
+          <span class="nav-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+        <div class="tabs" id="nav-menu">
           <button type="button" class="nav-theme-btn" id="nav-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
             <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span class="nav-action-label">Theme</span>
           </button>
           <button type="button" class="nav-refresh-btn" id="nav-refresh-btn" aria-label="Refresh app" title="Refresh app" style="display:none">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span class="nav-action-label">Refresh</span>
           </button>
           <button type="button" class="tab" data-view="library">Library <span class="count">10</span></button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
@@ -1176,7 +1265,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-15T23:44:38Z'; // updated by deploy
+const BUILD_TIME = '2026-09-19T07:01:16Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1464,6 +1553,7 @@ function getSaved(){
 function setSaved(list){
   localStorage.setItem(SAVED_KEY, JSON.stringify(list));
   savedCountEl.textContent = list.length ? list.length : '';
+  updateNavLayout();
 }
 function isSaved(identifier){
   return getSaved().some(item => item.identifier === identifier);
@@ -1701,6 +1791,64 @@ async function removeSaved(identifier){
 
 // ---------- Tabs ----------
 const tabIndicator = document.getElementById('tab-indicator');
+const navbarEl = document.querySelector('.navbar');
+const navbarInnerEl = document.querySelector('.navbar-inner');
+const navLogoEl = document.getElementById('nav-logo');
+const navMenuEl = document.getElementById('nav-menu');
+const navMenuToggle = document.getElementById('nav-menu-toggle');
+
+function setNavMenuOpen(open){
+  const shouldOpen = Boolean(open && navbarEl.classList.contains('is-collapsed'));
+  const returnFocus = !shouldOpen
+    && getComputedStyle(navMenuToggle).display !== 'none'
+    && navMenuEl.contains(document.activeElement);
+  navbarEl.classList.toggle('is-menu-open', shouldOpen);
+  navMenuToggle.setAttribute('aria-expanded', String(shouldOpen));
+  navMenuToggle.setAttribute('aria-label', shouldOpen ? 'Close navigation' : 'Open navigation');
+  if(returnFocus) navMenuToggle.focus();
+}
+
+let navLayoutFrame = null;
+function updateNavLayout(){
+  cancelAnimationFrame(navLayoutFrame);
+  navLayoutFrame = requestAnimationFrame(() => {
+    // Measure the full, single-line navigation before deciding whether to collapse it.
+    navbarEl.classList.remove('is-collapsed');
+    const styles = getComputedStyle(navbarInnerEl);
+    const available = navbarInnerEl.clientWidth
+      - parseFloat(styles.paddingLeft)
+      - parseFloat(styles.paddingRight);
+    const required = navLogoEl.getBoundingClientRect().width
+      + navMenuEl.getBoundingClientRect().width;
+    const shouldCollapse = required > available;
+
+    navbarEl.classList.toggle('is-collapsed', shouldCollapse);
+    if(!shouldCollapse){
+      setNavMenuOpen(false);
+      const activeTab = navMenuEl.querySelector('.tab.is-active');
+      if(activeTab) moveIndicator(activeTab);
+    }
+  });
+}
+
+navMenuToggle.addEventListener('click', () => {
+  setNavMenuOpen(!navbarEl.classList.contains('is-menu-open'));
+});
+document.addEventListener('click', (event) => {
+  if(navbarEl.classList.contains('is-menu-open') && !navbarInnerEl.contains(event.target)){
+    setNavMenuOpen(false);
+  }
+});
+document.addEventListener('keydown', (event) => {
+  if(event.key === 'Escape') setNavMenuOpen(false);
+});
+window.addEventListener('resize', updateNavLayout);
+if('ResizeObserver' in window){
+  new ResizeObserver(updateNavLayout).observe(navbarInnerEl);
+}
+if(document.fonts?.ready){
+  document.fonts.ready.then(updateNavLayout);
+}
 
 const ROUTES = {
   search:  '#',
@@ -1749,10 +1897,16 @@ function activateView(view, { push = true } = {}){
   }
 }
 
-document.getElementById('nav-logo').addEventListener('click', () => activateView('search'));
+navLogoEl.addEventListener('click', () => {
+  setNavMenuOpen(false);
+  activateView('search');
+});
 
 document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => activateView(tab.dataset.view));
+  tab.addEventListener('click', () => {
+    setNavMenuOpen(false);
+    activateView(tab.dataset.view);
+  });
 });
 
 // Handle browser back/forward
@@ -1763,6 +1917,7 @@ window.addEventListener('popstate', (e) => {
 
 // Set initial view from URL hash, without animation on indicator
 const initialView = viewFromHash(location.hash);
+updateNavLayout();
 requestAnimationFrame(() => {
   tabIndicator.style.transition = 'none';
   activateView(initialView, { push: false });
@@ -1772,7 +1927,9 @@ requestAnimationFrame(() => {
 function renderLibrary(){
   libraryStatusEl.innerHTML = `10 guided practices · <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench ↗</a>`;
 
-  const html = BUILTIN_TRACKS.map(item => `
+  const html = BUILTIN_TRACKS.map(item => {
+    const saved = isSaved(item.identifier);
+    return `
     <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-builtin="true" data-source-url="https://howtounclench.com/#the-unclenching-library">
       <div class="result" data-id="${escapeHtml(item.identifier)}">
         <button type="button" class="result-icon-btn" data-id="${escapeHtml(item.identifier)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
@@ -1784,6 +1941,7 @@ function renderLibrary(){
             </button>
             <div class="result-badges">
               <span class="result-runtime">${escapeHtml(item.runtime)} · Built in</span>
+              <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(item.identifier)}">${bookmarkIcon(saved)}</span>
             </div>
           </div>
           <p class="result-desc">${escapeHtml(item.description)}</p>
@@ -1791,7 +1949,8 @@ function renderLibrary(){
       </div>
       <div class="player-slot"></div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   libraryResultsEl.innerHTML = `<div class="results">${html}</div>`;
 
@@ -1822,8 +1981,12 @@ function renderSaved(){
     const id = item.identifier;
     const title = item.title || id;
     const creator = item.creator || '';
+    const builtin = BUILTIN_TRACKS.find(track => track.identifier === id);
+    const builtinAttrs = builtin
+      ? ' data-builtin="true" data-source-url="https://howtounclench.com/#the-unclenching-library"'
+      : '';
     return `
-      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}" data-desc="${escapeHtml(item.description || '')}">
+      <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}" data-desc="${escapeHtml(item.description || '')}"${builtinAttrs}>
         <div class="result" data-id="${escapeHtml(id)}">
           <button type="button" class="result-icon-btn" data-id="${escapeHtml(id)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
           <div class="result-body">
@@ -2141,16 +2304,12 @@ async function playTrack(identifier){
       });
     }
 
-    // Built-in tracks already ship with Tranquila; searched tracks can be saved offline.
-    const isBuiltin = group.dataset.builtin === 'true';
-    npbSaveBtn.hidden = isBuiltin;
-    if(!isBuiltin){
-      const saved = isSaved(identifier);
-      npbSaveBtn.className = `npb-save-btn${saved ? ' is-saved' : ''}`;
-      npbSaveBtn.dataset.id = identifier;
-      npbSaveBtn.dataset.url = url;
-      npbSaveBtn.innerHTML = bookmarkIcon(saved);
-    }
+    const saved = isSaved(identifier);
+    npbSaveBtn.hidden = false;
+    npbSaveBtn.className = `npb-save-btn${saved ? ' is-saved' : ''}`;
+    npbSaveBtn.dataset.id = identifier;
+    npbSaveBtn.dataset.url = url;
+    npbSaveBtn.innerHTML = bookmarkIcon(saved);
 
     setupNowPlaying(audio, identifier, group);
 
@@ -2176,7 +2335,11 @@ function toggleExpand(identifier){
     if(!slot.querySelector('.player-row')){
       const isBuiltin = group.dataset.builtin === 'true';
       const saved = isSaved(identifier);
-      const url = openIdentifier === identifier && currentAudio ? currentAudio.src : '';
+      const builtinTrack = isBuiltin
+        ? BUILTIN_TRACKS.find(item => item.identifier === identifier)
+        : null;
+      const url = builtinTrack?.audioUrl
+        || (openIdentifier === identifier && currentAudio ? currentAudio.src : '');
       const sourceUrl = group.dataset.sourceUrl || `https://archive.org/details/${encodeURIComponent(identifier)}`;
       slot.innerHTML = `
         <div class="player-row">
@@ -2187,11 +2350,11 @@ function toggleExpand(identifier){
             <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${isBuiltin ? 'How to Unclench' : 'archive.org'}</a>
           </div>
           ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
-          ${isBuiltin ? '' : `<div style="margin-top:10px;">
+          <div style="margin-top:10px;">
             <button type="button" class="save-btn ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(identifier)}" data-url="${escapeHtml(url)}">
               ${bookmarkIcon(saved)} <span class="save-label">${saved ? 'Saved offline' : 'Save offline'}</span>
             </button>
-          </div>`}
+          </div>
         </div>`;
       const saveBtn = slot.querySelector('.save-btn');
       if(saveBtn) saveBtn.addEventListener('click', () => handleSaveClick(saveBtn, group));
@@ -2495,7 +2658,10 @@ async function handleBookmarkClick(e){
   } else {
     icon.style.opacity = '0.5';
     try{
-      const { url, duration } = await fetchMeta(identifier);
+      const builtin = BUILTIN_TRACKS.find(item => item.identifier === identifier);
+      const { url, duration } = builtin
+        ? { url: builtin.audioUrl, duration: builtin.runtime }
+        : await fetchMeta(identifier);
       if(!url){ icon.style.opacity = ''; return; }
       await saveForOffline({
         identifier,

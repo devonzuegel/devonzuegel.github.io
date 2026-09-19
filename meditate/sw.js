@@ -1,4 +1,4 @@
-const SHELL_CACHE = 'meditation-shell-20260915234438';
+const SHELL_CACHE = 'meditation-shell-20260919070116';
 const AUDIO_CACHE = 'meditation-audio-v1';
 const SHELL_URLS = ['./', './index.html', './manifest.json'];
 
@@ -30,10 +30,14 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // Archive.org audio files: check the saved-audio cache first. If the user
-  // saved this track for offline, it plays with zero network trip. Otherwise
-  // fall through to a normal network fetch (e.g. live streaming during search).
-  if(url.hostname.endsWith('archive.org') && /\.(mp3|ogg)$/i.test(url.pathname)){
+  // Audio from Archive.org or Tranquila's built-in library: check the
+  // saved-audio cache first. If the user saved this track for offline, it
+  // plays with zero network trip. Otherwise fall through to a normal fetch.
+  const isArchiveAudio = url.hostname.endsWith('archive.org')
+    && /\.(mp3|ogg)$/i.test(url.pathname);
+  const isBuiltinAudio = url.origin === self.location.origin
+    && /\/audio\/unclenching\/[^/]+\.(mp3|ogg)$/i.test(url.pathname);
+  if(isArchiveAudio || isBuiltinAudio){
     event.respondWith(
       caches.open(AUDIO_CACHE).then((cache) =>
         cache.match(req).then((cached) => cached || fetch(req))
