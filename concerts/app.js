@@ -1,3 +1,4 @@
+import { mountVenueMaps, disposeVenueMaps } from "./shared/venue-maps.js";
 import {
   DEFAULT_CITIES,
   SIZE_BUCKETS,
@@ -309,6 +310,27 @@ function saveBtn(e) {
     `save-btn ${saved ? "saved" : ""}`,
   );
 }
+function venueMapMarkup(e, expanded = false) {
+  const v = e.venue,
+    city = cityFor(e.metro);
+  if (!Number.isFinite(v.lat) || !Number.isFinite(v.lng))
+    return '<small class="map-location-unknown">Map location unavailable</small>';
+  const canvas = `<div class="${expanded ? "expanded-venue-map" : "mini-venue-map"}" data-venue-map data-lat="${v.lat}" data-lng="${v.lng}" data-city-lat="${city.lat || v.lat}" data-city-lng="${city.lng || v.lng}" aria-label="Map of ${esc(v.name)}"></div>`;
+  return expanded
+    ? canvas
+    : `<div class="venue-map-preview">${canvas}${button("venue-map", icon("map") + " Expand map", "expand-venue-map", `data-id="${esc(e.id)}" aria-label="Expand map for ${esc(v.name)}"`)}</div>`;
+}
+function venueLocationModal(id) {
+  const e = eventFor(id);
+  if (!e) return;
+  const v = e.venue;
+  openModal(
+    v.name,
+    `${venueMapMarkup(e, true)}<p><strong>${esc(v.locality || cityFor(e.metro).name)}</strong><br>${esc(v.address || "Street address unavailable")}</p><p>${esc(capacityLabel(v))}${v.capacity ? " people" : ""}${v.room ? " · " + esc(v.room) : ""}</p><a class="secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name + " " + (v.address || v.locality || ""))}">Open directions ↗</a>`,
+    true,
+  );
+  mountVenueMaps($("#modal-root"), config, true).catch(() => {});
+}
 function row(e) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
@@ -327,7 +349,7 @@ function row(e) {
       ?.slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || '<span class="genre-tag">Genre unknown</span>'
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(match.name + ": " + match.reason)}">${icon("spotify")}You listen to this</span>` : ""}</div></div></div><div class="event-location"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div></div><div class="event-actions">${saveBtn(e)}${icoButton("listen", "play", "Sample " + e.artists?.[0]?.name, `data-id="${esc(e.id)}"`, "listen-btn")}</div>${
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(match.name + ": " + match.reason)}">${icon("spotify")}You listen to this</span>` : ""}</div></div></div><div class="event-location"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("listen", "play", "Sample " + e.artists?.[0]?.name, `data-id="${esc(e.id)}"`, "listen-btn")}</div>${
     state.tab === "saved" && (a.notes || a.music || a.venue || a.visuals)
       ? `<div class="inline-assessment">${["music", "venue", "visuals"]
           .filter((k) => a[k])
@@ -383,6 +405,7 @@ function feedNote() {
   return `<div class="feed-note"><span class="status-dot"></span><span>Official venue calendars${updated ? " · updated " + new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(updated) : ""} · Coverage is partial. ${button("sources", "See sources and gaps", "")}${age > 36 ? " · Listings may be out of date." : ""}</span></div>${state.feed.sourceError ? `<div class="banner">${esc(state.feed.sourceError)}</div>` : ""}${store.data.conflicts?.length ? `<div class="banner">A note was edited on two devices. ${button("conflicts", "Review both versions", "text-button")}</div>` : ""}${state.matches && !Object.keys(listening() || {}).length ? `<div class="banner">Add your listening history to find familiar artists. ${button("listening", "Import Spotify history", "text-button")}</div>` : ""}${state.unmapped ? `<div class="banner">Showing concerts without a verified map location. ${button("clear-unmapped", "Show all concerts", "text-button")}</div>` : ""}`;
 }
 function renderResults() {
+  disposeVenueMaps($("#results"));
   if (map) {
     state.mapPosition = { center: map.getCenter(), zoom: map.getZoom() };
     map.remove();
@@ -429,6 +452,7 @@ function renderResults() {
   else if (state.view === "venue") body = venueView(list);
   else body = mapView(list);
   root.innerHTML = resultsBar(list) + feedNote() + body;
+  if (state.view === "list") mountVenueMaps(root, config).catch(() => {});
   if (state.view === "map" && list.length)
     requestAnimationFrame(() => initializeMap(list));
   persistUI();
@@ -861,6 +885,7 @@ function playRecording(index) {
   renderMedia();
 }
 function openModal(title, body, wide = false) {
+  disposeVenueMaps($("#modal-root"));
   $("#app").inert = true;
   $("#detail-root").inert = true;
   modalReturnFocus = document.activeElement;
@@ -873,6 +898,7 @@ function openModal(title, body, wide = false) {
   );
 }
 function closeModal() {
+  disposeVenueMaps($("#modal-root"));
   $("#app").inert = !!state.selected;
   $("#detail-root").inert = false;
   $("#modal-root").innerHTML = "";
@@ -1036,6 +1062,9 @@ document.addEventListener("click", async (e) => {
     id = el.dataset.id;
   try {
     switch (action) {
+      case "venue-map":
+        venueLocationModal(id);
+        break;
       case "tab":
         state.tab = el.dataset.tab;
         state.sort = "date";

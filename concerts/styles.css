@@ -2667,3 +2667,59 @@ small {
     color: #d4e5c7;
   }
 }
+
+.venue-map-preview {
+  position: relative;
+  isolation: isolate;
+  margin-top: 10px;
+  max-width: 260px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.mini-venue-map {
+  height: 112px;
+  width: 100%;
+  background: var(--sidebar);
+}
+.mini-venue-map .leaflet-control-attribution {
+  font-size: 8px !important;
+  line-height: 12px;
+}
+.mini-venue-map .map-provider-logo {
+  margin: 4px;
+  padding: 2px;
+}
+.expand-venue-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  font-size: 10px;
+  padding: 6px;
+  background: var(--white);
+  color: var(--ink);
+}
+.expand-venue-map::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 44px;
+  z-index: 450;
+}
+.expand-venue-map .icon {
+  width: 12px;
+  height: 12px;
+}
+.expanded-venue-map {
+  height: min(50vh, 440px);
+  min-height: 260px;
+  border-radius: 10px;
+  background: var(--sidebar);
+}
+.map-location-unknown {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 10px;
+}
