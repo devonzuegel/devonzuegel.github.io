@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#f7f5ef"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#191e1b"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="description"
+      content="A personal concert notebook. Find shows, watch live performances, and keep the nights you don’t want to miss."
+    />
+    <title>Encore — your concert notebook</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./vendor/leaflet.css" />
+    <link rel="stylesheet" href="./vendor/MarkerCluster.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./config.js"></script>
+    <script defer src="./vendor/leaflet.js"></script>
+    <script defer src="./vendor/leaflet.markercluster.js"></script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to concerts</a>
+    <div id="app">
+      <div class="initial-loading">
+        <span class="wordmark">encore<span>✳</span></span>
+        <p>Finding good nights.</p>
+      </div>
+    </div>
+    <div id="detail-root"></div>
+    <div id="modal-root"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <noscript
+      >This concert notebook needs JavaScript to search, play recordings, and
+      save concerts.</noscript
+    >
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "concerts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server/dev.mjs",
+    "start": "node server/dev.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "refresh": "node --env-file-if-exists=.env scripts/refresh.mjs",
+    "vendor": "node scripts/vendor.mjs",
+    "build": "node scripts/build.mjs",
+    "format": "prettier --write app.js styles.css index.html config.js shared server api scripts tests README.md"
+  },
+  "dependencies": {
+    "cheerio": "1.0.0",
+    "leaflet": "1.9.4",
+    "leaflet.markercluster": "1.5.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}

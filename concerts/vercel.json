@@ -1,0 +1,7 @@
+{
+  "buildCommand": "node scripts/build.mjs",
+  "outputDirectory": "public",
+  "functions": { "api/concerts.mjs": { "maxDuration": 60, "includeFiles": "data/**" } },
+  "headers": [{ "source": "/concerts/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] }],
+  "rewrites": [{"source":"/concerts", "destination":"/concerts/index.html"}]
+}
