@@ -8,7 +8,8 @@ window.CONCERTS_CONFIG = {
   catalogURL: /^(localhost|127\.0\.0\.1|192\.168\.)/.test(location.hostname)
     ? "./data/events.json"
     : "https://raw.githubusercontent.com/devonzuegel/devonzuegel.github.io/master/concerts/data/events.json",
-  mapTileURL: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  mapStyleLight: "https://styles.maptoolkit.org/light.json",
+  mapStyleDark: "https://styles.maptoolkit.org/dark.json",
   mapAttribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+    '<a href="https://www.maptoolkit.com/copyright/" target="_blank" rel="noopener">© Maptoolkit</a> <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© Openstreetmap</a>',
 };

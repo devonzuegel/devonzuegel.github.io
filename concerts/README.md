@@ -23,10 +23,10 @@ npm run format
 
 ## What works without accounts or keys
 
-The interface automatically follows the device’s light/dark appearance, including changes while open. Night mode also covers dialogs, calendar, map tiles/controls and native inputs.
+The interface automatically follows the device’s light/dark appearance, including changes while open. Night mode also covers dialogs, calendar, native light/dark basemaps and controls and native inputs.
 
 - SF Bay Area, Miami metro and NYC metro are followed by default. Add/remove cities, toggle them, and adjust custom-city radii. City search uses Open-Meteo/GeoNames.
-- Chronological list, month calendar, venue view and clustered OpenStreetMap map share filters. The initial range is 60 days; presets extend to a year. Venue capacity comes from cited sources, including specific rooms when known. Unknown capacities/coordinates stay unknown.
+- Chronological list, month calendar, venue view and clustered MapLibre vector map share filters. The initial range is 60 days; presets extend to a year. Venue capacity comes from cited sources, including specific rooms when known. Unknown capacities/coordinates stay unknown.
 - One saved list with upcoming/past/all, global counts, notes, and separate music, expected venue and visuals ratings. Notes and ratings automatically save a show. Removed feed items remain in the notebook; unsaving retains the notes.
 - Internet Archive video and audio samples, with videos first, artist switching, search and pagination. A recording only plays on request. Paste a YouTube video URL into the recording search box to play it here without an API key. Availability and embedding depend on the source.
 - Import Spotify streaming-history JSON, including extended-history exports. Raw history is parsed in the browser; only artist play/minute totals are saved or synced. Matches use the lineup's artist names or Spotify IDs, not inferred taste. No recommendations or artist-following system.
@@ -80,3 +80,5 @@ Map tiles are requested only for the visible map, with OpenStreetMap attribution
 ## Verification completed
 
 On September 19, 2026: the build and 26 automated tests passed. Browser checks covered desktop and 390-pixel phone layouts, all four views, map clustering and venue selection, artist filtering, adding/removing a city, automatic saving, independent ratings, note persistence after reload, and creating/reopening a username notebook. An Internet Archive performance played in the embedded player; its media element reported active playback with no error, and ratings did not replace the player. Temporary test notes/ratings/bookmarks were cleared. Cloud Redis, live Spotify OAuth, and credential-dependent Ticketmaster/YouTube searches remain unverified.
+
+Map rendering uses MapLibre GL JS with the Leaflet adapter, keeping venue clustering and selection. Maptoolkit Community light/dark styles require no API key for this personal site. Keep the Maptoolkit logo and copyright links visible; see https://docs.maptoolkit.org/attribution/. Map resources load only when Map view is opened.

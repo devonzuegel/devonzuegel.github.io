@@ -13,9 +13,11 @@
     "format": "prettier --write app.js styles.css index.html config.js shared server api scripts tests README.md"
   },
   "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "0.1.4",
     "cheerio": "1.0.0",
     "leaflet": "1.9.4",
-    "leaflet.markercluster": "1.5.3"
+    "leaflet.markercluster": "1.5.3",
+    "maplibre-gl": "6.10.0"
   },
   "engines": {
     "node": ">=22"

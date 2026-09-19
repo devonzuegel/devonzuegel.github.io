@@ -1321,8 +1321,23 @@ small {
 .leaflet-control-attribution {
   font-size: 9px !important;
 }
-.leaflet-tile {
-  filter: saturate(0.45);
+.leaflet-container .leaflet-control-attribution {
+  background: var(--white);
+  color: var(--ink);
+}
+.leaflet-container .leaflet-control-attribution a {
+  color: var(--ink);
+}
+.map-provider-logo {
+  display: block;
+  background: #fff;
+  border-radius: 4px;
+  padding: 4px;
+}
+.map-provider-logo img {
+  display: block;
+  height: 24px;
+  width: auto;
 }
 .map-error {
   padding: 12px;
@@ -2629,11 +2644,6 @@ small {
   #concert-map,
   .leaflet-container {
     background: #242c28;
-  }
-  /* Apply the map treatment only to tiles, never to artist art or recordings. */
-  .leaflet-tile {
-    filter: invert(1) hue-rotate(180deg) saturate(0.45) brightness(0.85)
-      contrast(0.9);
   }
   .leaflet-bar a,
   .leaflet-control-attribution {

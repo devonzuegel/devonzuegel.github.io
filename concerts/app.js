@@ -509,29 +509,60 @@ function renderMapSelection(list) {
   const { venue: v, events: ev } = group;
   el.innerHTML = `<span class="eyebrow">${esc(v.locality)}</span><h3 style="margin:12px 0">${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}</div><p style="margin-top:10px">${esc(v.address)}</p>${ev.map((e) => button("open", `<small>${dateLabel(e.date)} · ${esc(timeLabel(e))}</small><b>${esc(e.title)} ${assessment(store.fields, e.id).saved ? "★" : ""}</b>`, "event-snippet", `data-id="${esc(e.id)}"`)).join("")}`;
 }
-function initializeMap(list) {
+async function initializeMap(list) {
   if (!$("#concert-map")) return;
   if (!window.L) {
     $("#concert-map").innerHTML =
       '<p class="map-error">The map could not load. Your concerts are still available in List view.</p>';
     return;
   }
-  map = L.map("concert-map", { scrollWheelZoom: false, zoomControl: true });
-  const tiles = L.tileLayer(
-    config.mapTileURL || "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution: config.mapAttribution || "© OpenStreetMap contributors",
-      maxZoom: 19,
+  let maplibreGL;
+  try {
+    ({ maplibreGL } = await import("./vendor/leaflet-maplibre-gl.mjs"));
+  } catch {
+    toast("The map could not load. Please try again.");
+    return;
+  }
+  if (!$("#concert-map") || map) return;
+  map = L.map("concert-map", {
+    scrollWheelZoom: false,
+    zoomControl: true,
+    minZoom: 2,
+    maxZoom: 19,
+  }).setView([39, -98], 4);
+  const activeMap = map;
+  const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+  const styleURL = () =>
+    scheme.matches ? config.mapStyleDark : config.mapStyleLight;
+  const basemap = maplibreGL({
+    style: styleURL(),
+    attribution: config.mapAttribution,
+    attributionControl: {
+      customAttribution: config.mapAttribution,
+      compact: false,
     },
-  );
-  tiles.addTo(map);
-  let tileErrors = 0;
-  tiles.on("tileerror", () => {
-    if (++tileErrors === 4)
-      toast(
-        "Some map tiles could not load. Venue pins and the list remain available.",
-      );
+  }).addTo(map);
+  const onTheme = () => basemap.getMaplibreMap().setStyle(styleURL());
+  scheme.addEventListener("change", onTheme);
+  activeMap.once("unload", () => scheme.removeEventListener("change", onTheme));
+  let reportedMapError = false;
+  basemap.getMaplibreMap().on("error", () => {
+    if (!reportedMapError)
+      toast("Some map details could not load. Venue pins remain available.");
+    reportedMapError = true;
   });
+  const logo = L.control({ position: "bottomleft" });
+  logo.onAdd = () => {
+    const el = L.DomUtil.create("a", "map-provider-logo");
+    el.href = "https://www.maptoolkit.org/";
+    el.target = "_blank";
+    el.rel = "noopener";
+    el.innerHTML =
+      '<img src="./vendor/maptoolkit-attribution.png" alt="Maptoolkit" width="76" height="24">';
+    L.DomEvent.disableClickPropagation(el);
+    return el;
+  };
+  logo.addTo(map);
   markerGroup = L.markerClusterGroup({
     maxClusterRadius: 45,
     showCoverageOnHover: false,
@@ -906,7 +937,7 @@ function sourcesModal() {
   }));
   openModal(
     "The picture so far.",
-    `<p>These are real listings from official venue calendars. This is a growing, partial catalog—not every show in the metro. A failed calendar is a gap, not an empty concert schedule.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster is connected for supported metros." : "Ticketmaster is not connected. It can expand city coverage once a free developer API key is configured."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube search is connected, with Internet Archive as a fallback." : "Internet Archive works without keys. YouTube search needs a free developer API key."}</p><p><strong>Maps:</strong> OpenStreetMap contributors. Venue positions are verified source coordinates or matched venue addresses. Capacity figures cite their sources in concert details; unknown sizes are left blank.</p>`,
+    `<p>These are real listings from official venue calendars. This is a growing, partial catalog—not every show in the metro. A failed calendar is a gap, not an empty concert schedule.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster is connected for supported metros." : "Ticketmaster is not connected. It can expand city coverage once a free developer API key is configured."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube search is connected, with Internet Archive as a fallback." : "Internet Archive works without keys. YouTube search needs a free developer API key."}</p><p><strong>Maps:</strong> MapLibre rendering with Maptoolkit basemaps and OpenStreetMap data. Venue positions are verified source coordinates or matched venue addresses. Capacity figures cite their sources in concert details; unknown sizes are left blank.</p>`,
     true,
   );
 }
