@@ -24,7 +24,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=sf-miami-defaults";
+} from "./shared/core.js?v=weekend-labels";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 const config = window.CONCERTS_CONFIG || {},
@@ -233,6 +233,21 @@ function renderChrome() {
   $("#mobile-header").innerHTML =
     `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">encore<span>✳</span></a>${account}</div>${navMarkup(true)}</div>`;
 }
+function weekendLabel(preset, label) {
+  const { from, to } = dateRange(preset);
+  const format = (day) => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    }).formatToParts(new Date(day + "T12:00:00Z"));
+    return ["weekday", "day", "month"]
+      .map((type) => parts.find((p) => p.type === type).value)
+      .join("-");
+  };
+  return `${label} · ${format(from)} → ${format(to)}`;
+}
 function renderControls() {
   const cs = cities(),
     all = events(),
@@ -260,8 +275,8 @@ function renderControls() {
       .join("");
   $("#controls").innerHTML =
     `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your listening")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><span class="date-label">${icon("calendar")}When</span><div class="date-chips">${[
-      ["weekend", "This weekend"],
-      ["next-weekend", "Next weekend"],
+      ["weekend", weekendLabel("weekend", "This weekend")],
+      ["next-weekend", weekendLabel("next-weekend", "Next weekend")],
       ["30", "30 days"],
       ["60", "60 days"],
       ["90", "90 days"],

@@ -12,6 +12,14 @@ import {
   savedCounts,
   dateRange,
 } from "../shared/core.js";
+test("this weekend includes its Friday even on Saturday or Sunday", () => {
+  for (const day of [18, 19, 20]) {
+    assert.deepEqual(dateRange("weekend", new Date(2026, 8, day, 12)), {
+      from: "2026-09-18",
+      to: "2026-09-20",
+    });
+  }
+});
 test("next weekend is Friday through Sunday after this weekend, including across years", () => {
   for (let day = 14; day <= 20; day++) {
     assert.deepEqual(dateRange("next-weekend", new Date(2026, 8, day, 12)), {

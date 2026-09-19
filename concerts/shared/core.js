@@ -101,7 +101,9 @@ export function dateRange(preset = "60", now = new Date()) {
   }
   if (preset === "weekend") {
     let n = (5 - new Date(from + "T12:00:00Z").getUTCDay() + 7) % 7;
-    if ([0, 6].includes(new Date(from + "T12:00:00Z").getUTCDay())) n = 0;
+    const weekday = new Date(from + "T12:00:00Z").getUTCDay();
+    if (weekday === 6) n = -1;
+    if (weekday === 0) n = -2;
     const start = addDays(from, n);
     return {
       from: start,
