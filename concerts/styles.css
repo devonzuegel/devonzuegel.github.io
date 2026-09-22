@@ -2890,3 +2890,23 @@ small {
     color: #192018;
   }
 }
+
+.concert-notes > summary {
+  cursor: pointer;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.concert-notes > summary::before {
+  content: "›";
+  font-size: 18px;
+  transition: transform 0.15s;
+}
+.concert-notes[open] > summary::before {
+  transform: rotate(90deg);
+}
+.concert-notes > summary::-webkit-details-marker {
+  display: none;
+}
+.concert-notes > summary small {
+  margin-left: auto;
+}
