@@ -1,5 +1,5 @@
 import { openRangePicker } from "./shared/range-picker.js";
-import { mountVenueMaps, disposeVenueMaps } from "./shared/venue-maps.js";
+import { mountVenueMaps, disposeVenueMaps } from "./shared/venue-maps.js?v=20260921-static-camera";
 import {
   DEFAULT_CITIES,
   SIZE_BUCKETS,

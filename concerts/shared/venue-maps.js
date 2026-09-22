@@ -31,9 +31,21 @@ export async function mountVenueMaps(root, config, expanded = false) {
         scrollWheelZoom: false,
         keyboard: expanded,
         boxZoom: expanded,
+        zoomAnimation: expanded,
+        fadeAnimation: expanded,
         minZoom: 2,
         maxZoom: 19,
       }).setView([lat, lng], expanded ? 12 : 10);
+      // Set the final thumbnail camera before attaching the renderer so lazy
+      // initialization never animates from the venue out to the city bounds.
+      if (!expanded)
+        map.fitBounds(
+          [
+            [lat, lng],
+            [Number(el.dataset.cityLat), Number(el.dataset.cityLng)],
+          ],
+          { padding: [15, 15], maxZoom: 10, animate: false },
+        );
       map.attributionControl.setPrefix(false);
       const layer = maplibreGL({
         style: style(),
@@ -58,14 +70,6 @@ export async function mountVenueMaps(root, config, expanded = false) {
       };
       logo.addTo(map);
       group.maps.set(el, { map, layer });
-      if (!expanded)
-        map.fitBounds(
-          [
-            [lat, lng],
-            [Number(el.dataset.cityLat), Number(el.dataset.cityLng)],
-          ],
-          { padding: [15, 15], maxZoom: 10 },
-        );
     } catch {
       map?.remove();
       el.textContent = "Map unavailable — open location details";
