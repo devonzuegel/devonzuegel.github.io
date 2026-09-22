@@ -1,3 +1,4 @@
+import { openRangePicker } from "./shared/range-picker.js";
 import { mountVenueMaps, disposeVenueMaps } from "./shared/venue-maps.js";
 import {
   DEFAULT_CITIES,
@@ -299,7 +300,7 @@ function renderControls() {
       })
       .join(
         "",
-      )}</div><div class="date-range"><input type="date" id="date-from" aria-label="From date" value="${state.from}"><span>—</span><input type="date" id="date-to" aria-label="To date" value="${state.to}"></div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
+      )}</div><div class="date-range">${button("date-range", icon("calendar") + `${dateLabel(state.from)} → ${dateLabel(state.to)}` + icon("down"), "range-trigger", 'aria-label="Choose date range" aria-haspopup="dialog" aria-expanded="false"')}</div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
       SIZE_BUCKETS.map((x) => [x[0], x[1]]),
       state.size,
     )}</select></label></div>`;
@@ -1144,6 +1145,20 @@ document.addEventListener("click", async (e) => {
         );
         break;
       }
+      case "date-range":
+        openRangePicker(
+          el,
+          { from: state.from, to: state.to },
+          ({ from, to }) => {
+            state.from = from;
+            state.to = to;
+            state.preset = "custom";
+            state.calendarMonth = from.slice(0, 7);
+            filtersChanged(true);
+            document.querySelector('[data-action="date-range"]')?.focus();
+          },
+        );
+        break;
       case "date-preset":
         openWeekendTooltip = el.dataset.preset;
         state.preset = el.dataset.preset;
@@ -1418,24 +1433,6 @@ document.addEventListener("change", async (e) => {
   if (el.id === "sort") {
     state.sort = el.value;
     renderResults();
-  }
-  if (el.id === "date-from" || el.id === "date-to") {
-    const from = $("#date-from").value,
-      to = $("#date-to").value;
-    if (
-      !from ||
-      !to ||
-      to < from ||
-      Date.parse(to) - Date.parse(from) > 366 * 86400000
-    ) {
-      toast("Choose a valid range of one year or less.");
-      return;
-    }
-    state.from = from;
-    state.to = to;
-    state.preset = "custom";
-    state.calendarMonth = from.slice(0, 7);
-    filtersChanged(true);
   }
   if (el.dataset.radiusCity) {
     const c = cities().find((c) => c.id === el.dataset.radiusCity),

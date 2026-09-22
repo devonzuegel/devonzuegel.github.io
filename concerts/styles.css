@@ -2749,3 +2749,144 @@ small {
   visibility: visible;
   opacity: 1;
 }
+
+.range-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.range-trigger .icon {
+  width: 15px;
+  height: 15px;
+}
+.range-picker {
+  position: fixed;
+  margin: 0;
+  padding: 20px;
+  width: min(880px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 14px 60px #0004;
+  font-family: var(--sans);
+}
+.range-picker::backdrop {
+  background: transparent;
+}
+.range-picker-header,
+.range-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.range-picker-header > div,
+.range-picker-footer > div {
+  display: flex;
+  gap: 8px;
+}
+.range-picker-header button {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 21px;
+}
+.range-instruction {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 8px 0 20px;
+}
+.range-months {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.range-month h3 {
+  font: 600 13px var(--sans);
+  margin: 0 0 15px;
+  text-align: center;
+}
+.range-weekdays,
+.range-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+  gap: 3px 0;
+}
+.range-weekdays {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.range-day {
+  min-height: 34px;
+  border-radius: 5px;
+  color: var(--ink);
+  font-size: 12px;
+}
+.range-day.range-between {
+  background: var(--green-soft);
+  border-radius: 0;
+}
+.range-day.range-endpoint {
+  background: var(--green);
+  color: var(--white);
+  border-radius: 6px;
+  font-weight: 700;
+}
+.range-day[aria-current="date"] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.range-day:hover {
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+.range-day:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.range-picker-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+.range-picker button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+@media (max-width: 640px) {
+  .range-picker {
+    padding: 16px;
+  }
+  .range-months {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .range-day {
+    min-height: 38px;
+  }
+  .range-picker-footer {
+    position: sticky;
+    bottom: -16px;
+    background: var(--white);
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .range-day.range-endpoint {
+    color: #192018;
+  }
+}
