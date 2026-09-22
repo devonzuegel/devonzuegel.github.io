@@ -787,6 +787,10 @@ small {
   padding-left: 65px;
 }
 .month-heading {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--paper);
   display: flex;
   align-items: center;
   gap: 14px;

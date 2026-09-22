@@ -462,11 +462,13 @@ function renderResults() {
     for (const e of list.slice(0, state.limit)) {
       const m = e.date?.slice(0, 7) || "tba";
       if (m !== month) {
+        if (month) body += "</section>";
         month = m;
-        body += `<div class="month-heading">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></div>`;
+        body += `<section class="month-group"><div class="month-heading">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></div>`;
       }
       body += row(e);
     }
+    if (month) body += "</section>";
     if (list.length > state.limit)
       body += button(
         "more-events",
