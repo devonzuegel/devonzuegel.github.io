@@ -203,7 +203,7 @@ function icoButton(action, name, label, attrs = "", cls = "icon-btn") {
 }
 function shell() {
   $("#app").innerHTML =
-    `<div class="layout"><aside class="sidebar" aria-label="Concert navigation"><a class="wordmark" href="./">encore<span>✳</span></a><div class="tagline">Your concert shortlist</div><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div class="topline"><span class="today-label">${dateLabel(dayInZone(), { weekday: "long", month: "long", day: "numeric" })}</span><div class="utility">${button("sources", icon("info") + " Sources", "text-button")}${button("refresh", icon("refresh") + " Refresh", "text-button")}</div></div><div id="controls"></div><div id="results"></div></main></div>`;
+    `<div class="layout"><aside class="sidebar" aria-label="Concert navigation"><a class="wordmark" href="./">encore<span>✳</span></a><div class="tagline">Your concert shortlist</div><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div class="topline"><span class="today-label">Today: ${dateLabel(dayInZone(), { weekday: "short", month: "short", day: "numeric" }).replace(/\bSep\b/, "Sept")}</span><div class="utility">${button("sources", icon("info") + " Sources", "text-button")}${button("refresh", icon("refresh") + " Refresh", "text-button")}</div></div><div id="controls"></div><div id="results"></div></main></div>`;
   renderChrome();
   renderControls();
   renderResults();
