@@ -1,8 +1,9 @@
+import { addMapboxBasemap } from "./shared/mapbox-basemap.js";
 import { openRangePicker } from "./shared/range-picker.js";
 import {
   mountVenueMaps,
   disposeVenueMaps,
-} from "./shared/venue-maps.js?v=20260921-static-camera";
+} from "./shared/venue-maps.js?v=20260922-mapbox";
 import {
   DEFAULT_CITIES,
   SIZE_BUCKETS,
@@ -79,6 +80,7 @@ let savedUI = {};
 try {
   savedUI = JSON.parse(localStorage.getItem("encore.ui.v1")) || {};
 } catch {}
+const collapsedMonths = new Set();
 const state = {
   tab: "discover",
   view: "list",
@@ -462,13 +464,13 @@ function renderResults() {
     for (const e of list.slice(0, state.limit)) {
       const m = e.date?.slice(0, 7) || "tba";
       if (m !== month) {
-        if (month) body += "</section>";
+        if (month) body += "</details>";
         month = m;
-        body += `<section class="month-group"><div class="month-heading">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></div>`;
+        body += `<details class="month-group" data-month="${m}" ${collapsedMonths.has(m) ? "" : "open"}><summary class="month-heading" title="Collapse or expand this month">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></summary>`;
       }
       body += row(e);
     }
-    if (month) body += "</section>";
+    if (month) body += "</details>";
     if (list.length > state.limit)
       body += button(
         "more-events",
@@ -567,13 +569,6 @@ async function initializeMap(list) {
       '<p class="map-error">The map could not load. Your concerts are still available in List view.</p>';
     return;
   }
-  let maplibreGL;
-  try {
-    ({ maplibreGL } = await import("./vendor/leaflet-maplibre-gl.mjs"));
-  } catch {
-    toast("The map could not load. Please try again.");
-    return;
-  }
   if (!$("#concert-map") || map) return;
   map = L.map("concert-map", {
     scrollWheelZoom: false,
@@ -581,39 +576,13 @@ async function initializeMap(list) {
     minZoom: 2,
     maxZoom: 19,
   }).setView([39, -98], 4);
-  const activeMap = map;
-  const scheme = window.matchMedia("(prefers-color-scheme: dark)");
-  const styleURL = () =>
-    scheme.matches ? config.mapStyleDark : config.mapStyleLight;
-  const basemap = maplibreGL({
-    style: styleURL(),
-    attribution: config.mapAttribution,
-    attributionControl: {
-      customAttribution: config.mapAttribution,
-      compact: false,
-    },
-  }).addTo(map);
-  const onTheme = () => basemap.getMaplibreMap().setStyle(styleURL());
-  scheme.addEventListener("change", onTheme);
-  activeMap.once("unload", () => scheme.removeEventListener("change", onTheme));
+  const basemap = addMapboxBasemap(map, config);
   let reportedMapError = false;
-  basemap.getMaplibreMap().on("error", () => {
+  basemap.on("tileerror", () => {
     if (!reportedMapError)
       toast("Some map details could not load. Venue pins remain available.");
     reportedMapError = true;
   });
-  const logo = L.control({ position: "bottomleft" });
-  logo.onAdd = () => {
-    const el = L.DomUtil.create("a", "map-provider-logo");
-    el.href = "https://www.maptoolkit.org/";
-    el.target = "_blank";
-    el.rel = "noopener";
-    el.innerHTML =
-      '<img src="./vendor/maptoolkit-attribution.png" alt="Maptoolkit" width="76" height="24">';
-    L.DomEvent.disableClickPropagation(el);
-    return el;
-  };
-  logo.addTo(map);
   markerGroup = L.markerClusterGroup({
     maxClusterRadius: 45,
     showCoverageOnHover: false,
@@ -798,6 +767,7 @@ function openDetail(id, listen = false) {
       .join(
         "",
       )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section><section class="detail-section"><div class="section-title"><h3>Your take.</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "How it sounds to you")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes to future you <small>Private to you</small></summary><textarea aria-label="Notes to future you" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="What caught your ear? What’s the room like?">${esc(a.notes)}</textarea></details><p class="media-notice">Notes and ratings save this concert automatically. Your impressions can change; come back and edit anytime.</p></section><section class="detail-section"><div class="section-title"><h3>The room matters.</h3></div><div class="venue-facts"><strong>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " people" : ""}</strong><p>${esc(e.venue.capacity?.configuration || e.venue.layout || "Room configuration not published.")}</p>${e.venue.capacity ? `<a class="source-link" href="${esc(safeURL(e.venue.capacity.source))}" target="_blank" rel="noopener">Capacity source · checked ${esc(e.venue.capacity.verifiedAt)}</a>` : "<p>We haven’t verified this venue’s capacity yet.</p>"}</div><p class="detail-address">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}<br>${esc(e.venue.address)}</p><a class="secondary" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue.name + " " + e.venue.address)}" target="_blank" rel="noopener">${icon("map")}Open directions ${icon("external")}</a></section><section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">From the source</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div><p class="media-notice">Schedules can change. Confirm details with the venue before heading out.</p></section></div></section>`;
+  animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
   $(".detail-top button").focus();
@@ -833,13 +803,55 @@ function updateDetailMeta() {
     el.setAttribute("aria-pressed", chosen);
   }
 }
-function closeDetail() {
+function animateDetail(closing) {
+  const panel = $(".detail-panel"),
+    scrim = $("#detail-root .scrim");
+  if (
+    !panel ||
+    !scrim ||
+    matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return Promise.resolve();
+  const transform = getComputedStyle(panel).transform;
+  const opacity = getComputedStyle(scrim).opacity;
+  for (const el of [panel, scrim])
+    el.getAnimations().forEach((a) => a.cancel());
+  const options = {
+    duration: closing ? 240 : 320,
+    easing: closing
+      ? "cubic-bezier(.4, 0, 1, 1)"
+      : "cubic-bezier(.22, 1, .36, 1)",
+    fill: "forwards",
+  };
+  scrim.animate(
+    [{ opacity: closing ? opacity : 0 }, { opacity: closing ? 0 : 1 }],
+    options,
+  );
+  return panel
+    .animate(
+      [
+        { transform: closing ? transform : "translateX(100%)" },
+        { transform: closing ? "translateX(100%)" : "translateX(0)" },
+      ],
+      options,
+    )
+    .finished.catch(() => {});
+}
+async function closeDetail() {
+  const panel = $(".detail-panel");
+  if (!panel || panel.dataset.closing) return;
+  panel.dataset.closing = "true";
+  mediaRequest++;
+  // Stop playback immediately while the panel finishes its exit.
+  $("#player")?.replaceChildren();
+  await animateDetail(true);
+  if (!panel.isConnected) return;
   $("#app").inert = false;
   state.selected = null;
-  mediaRequest++;
   $("#detail-root").innerHTML = "";
   document.body.style.overflow = "";
-  if (detailReturnFocus?.isConnected) detailReturnFocus.focus();
+  if (detailReturnFocus?.isConnected)
+    detailReturnFocus.focus({ preventScroll: true });
 }
 function renderMedia() {
   const m = state.media,
@@ -990,7 +1002,7 @@ function sourcesModal() {
   }));
   openModal(
     "The picture so far.",
-    `<p>These are real listings from official venue calendars. This is a growing, partial catalog—not every show in the metro. A failed calendar is a gap, not an empty concert schedule.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster is connected for supported metros." : "Ticketmaster is not connected. It can expand city coverage once a free developer API key is configured."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube search is connected, with Internet Archive as a fallback." : "Internet Archive works without keys. YouTube search needs a free developer API key."}</p><p><strong>Maps:</strong> MapLibre rendering with Maptoolkit basemaps and OpenStreetMap data. Venue positions are verified source coordinates or matched venue addresses. Capacity figures cite their sources in concert details; unknown sizes are left blank.</p>`,
+    `<p>These are real listings from official venue calendars. This is a growing, partial catalog—not every show in the metro. A failed calendar is a gap, not an empty concert schedule.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster is connected for supported metros." : "Ticketmaster is not connected. It can expand city coverage once a free developer API key is configured."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube search is connected, with Internet Archive as a fallback." : "Internet Archive works without keys. YouTube search needs a free developer API key."}</p><p><strong>Maps:</strong> Mapbox basemaps with OpenStreetMap data. Venue positions are verified source coordinates or matched venue addresses. Capacity figures cite their sources in concert details; unknown sizes are left blank.</p>`,
     true,
   );
 }
@@ -1661,3 +1673,16 @@ for (const event of ["pointerover", "focusin"])
     if (wrap && !wrap.contains(e.relatedTarget))
       wrap.classList.remove("tooltip-dismissed");
   });
+
+// Native disclosure controls retain keyboard support and preserve their state
+// when filters, saves, or additional results rerender the list.
+document.addEventListener(
+  "toggle",
+  (event) => {
+    const group = event.target;
+    if (!group.matches?.("details.month-group")) return;
+    if (group.open) collapsedMonths.delete(group.dataset.month);
+    else collapsedMonths.add(group.dataset.month);
+  },
+  true,
+);

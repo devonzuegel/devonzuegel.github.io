@@ -2914,3 +2914,36 @@ small {
 .concert-notes > summary small {
   margin-left: auto;
 }
+
+summary.month-heading {
+  cursor: pointer;
+  list-style: none;
+}
+summary.month-heading::-webkit-details-marker {
+  display: none;
+}
+summary.month-heading::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg);
+  flex-shrink: 0;
+}
+.month-group[open] > summary.month-heading::before {
+  transform: rotate(45deg);
+}
+summary.month-heading:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+.mapbox-provider-logo {
+  display: block;
+}
+.mapbox-provider-logo img {
+  display: block;
+  width: 88px;
+  height: 23px;
+}

@@ -1,6 +1,6 @@
-// Only visible thumbnails own WebGL contexts; dispose them as rows leave the viewport.
+import { addMapboxBasemap } from "./mapbox-basemap.js";
+// Only visible thumbnails load maps; dispose them as rows leave the viewport.
 const groups = new Map();
-const theme = matchMedia("(prefers-color-scheme: dark)");
 export function disposeVenueMaps(root) {
   const group = groups.get(root);
   if (!group) return;
@@ -12,10 +12,7 @@ export async function mountVenueMaps(root, config, expanded = false) {
   disposeVenueMaps(root);
   const group = { maps: new Map(), observer: null };
   groups.set(root, group);
-  const { maplibreGL } = await import("../vendor/leaflet-maplibre-gl.mjs");
   if (groups.get(root) !== group || !root.isConnected) return;
-  const style = () =>
-    theme.matches ? config.mapStyleDark : config.mapStyleLight;
   function create(el) {
     if (group.maps.has(el)) return;
     const lat = Number(el.dataset.lat),
@@ -46,11 +43,7 @@ export async function mountVenueMaps(root, config, expanded = false) {
           ],
           { padding: [15, 15], maxZoom: 10, animate: false },
         );
-      map.attributionControl.setPrefix(false);
-      const layer = maplibreGL({
-        style: style(),
-        attributionControl: { customAttribution: config.mapAttribution },
-      }).addTo(map);
+      const layer = addMapboxBasemap(map, config, !expanded);
       L.circleMarker([lat, lng], {
         radius: expanded ? 9 : 6,
         color: "#fff",
@@ -58,17 +51,6 @@ export async function mountVenueMaps(root, config, expanded = false) {
         fillColor: "#b54f30",
         fillOpacity: 1,
       }).addTo(map);
-      const logo = L.control({ position: "topleft" });
-      logo.onAdd = () => {
-        const a = L.DomUtil.create("a", "map-provider-logo");
-        a.href = "https://www.maptoolkit.org/";
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.innerHTML =
-          '<img src="./vendor/maptoolkit-attribution.png" alt="Maptoolkit" width="76" height="24">';
-        return a;
-      };
-      logo.addTo(map);
       group.maps.set(el, { map, layer });
     } catch {
       map?.remove();
@@ -91,11 +73,3 @@ export async function mountVenueMaps(root, config, expanded = false) {
   });
   els.forEach((el) => group.observer.observe(el));
 }
-theme.addEventListener("change", () => {
-  const config = window.CONCERTS_CONFIG;
-  for (const group of groups.values())
-    for (const { layer } of group.maps.values())
-      layer
-        .getMaplibreMap()
-        .setStyle(theme.matches ? config.mapStyleDark : config.mapStyleLight);
-});
