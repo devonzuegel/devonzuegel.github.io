@@ -8,6 +8,18 @@
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>Tranquila</title>
+<script>
+  // Match Encore's violet development marker so local tabs are unmistakable.
+  const localPreview = location.protocol === 'file:' ||
+    /^(localhost|.*\.localhost|127(?:\.\d{1,3}){3}|\[::1\]|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})$/.test(location.hostname);
+  if(localPreview){
+    document.querySelector('link[rel="icon"]').href =
+      'data:image/svg+xml,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="16" fill="#7c3aed"/><path d="M16 5.5C9.3 5.5 4.8 10.4 4.8 16.4 4.8 23 9.9 27.2 16 27.2c6.1 0 10.6-4.1 10.6-9.5 0-4.9-3.8-8.2-8.4-8.2-4.3 0-7.4 2.9-7.4 6.8 0 3.5 2.6 5.8 5.7 5.8 3 0 5-2 5-4.6 0-2.3-1.7-3.8-3.8-3.8-1.9 0-3.2 1.2-3.2 2.8 0 1.3 1 2.3 2.3 2.3" fill="none" stroke="#eef0ec" stroke-width="2.5" stroke-linecap="round"/></svg>'
+      );
+    document.title = '[DEV] ' + document.title;
+  }
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
@@ -167,6 +179,13 @@
     transition: color .2s ease;
     white-space: nowrap;
   }
+  .tab-label{ display: inline-block; }
+  .tab-icon{
+    display: none;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
   .tab:hover{ background: none; }
   .tab.is-active{ color: var(--moss); }
   .tab-indicator{
@@ -195,77 +214,70 @@
   }
   .tab .count:empty{ display: none; }
 
-  .nav-menu-toggle{
-    display: none;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    border-radius: 0;
-    color: var(--moss-soft);
-    cursor: pointer;
-  }
-  .nav-menu-toggle:hover{ background: none; color: var(--moss); }
-  .nav-menu-icon{
-    width: 18px;
-    height: 14px;
-    position: relative;
-    display: block;
-  }
-  .nav-menu-icon span{
-    position: absolute;
-    left: 0;
-    width: 18px;
-    height: 1.5px;
-    border-radius: 999px;
-    background: currentColor;
-    transition: transform .2s ease, opacity .2s ease, top .2s ease;
-  }
-  .nav-menu-icon span:nth-child(1){ top: 0; }
-  .nav-menu-icon span:nth-child(2){ top: 6px; }
-  .nav-menu-icon span:nth-child(3){ top: 12px; }
   .nav-action-label{ display: none; margin-left: 10px; }
 
-  .navbar.is-collapsed .nav-menu-toggle{ display: flex; }
+  /* Compact navigation keeps every destination in the top bar. The active
+     destination expands its label while the others remain icon-only. */
   .navbar.is-collapsed .tabs{
-    display: none;
-    position: absolute;
-    top: calc(100% + 2px);
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    padding: 8px;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 12px 28px rgba(28,35,33,.12);
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    gap: 1px;
+    min-width: 0;
   }
-  .navbar.is-collapsed.is-menu-open .tabs{ display: flex; }
   .navbar.is-collapsed .tab,
   .navbar.is-collapsed .nav-theme-btn,
   .navbar.is-collapsed .nav-refresh-btn{
-    width: 100%;
-    min-height: 44px;
-    padding: 12px 14px;
-    border-radius: 7px;
-    text-align: left;
-    justify-content: flex-start;
+    width: auto;
+    min-width: 36px;
+    min-height: 40px;
+    padding: 0 8px;
+    border-radius: 999px;
+    justify-content: center;
+  }
+  .navbar.is-collapsed .tab{
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+    transition: color .2s ease, background .2s ease, padding .25s ease;
+  }
+  .navbar.is-collapsed .tab-icon{ display: block; }
+  .navbar.is-collapsed .tab-label{
+    max-width: 0;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width .28s cubic-bezier(.4,0,.2,1), margin-left .28s cubic-bezier(.4,0,.2,1), opacity .18s ease;
+  }
+  .navbar.is-collapsed .tab.is-active .tab-label{
+    max-width: 72px;
+    margin-left: 6px;
+    opacity: 1;
+  }
+  .navbar.is-collapsed .tab .count{
+    min-width: 0;
+    max-width: 0;
+    padding: 0;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width .25s ease, min-width .25s ease, padding .25s ease, margin-left .25s ease, opacity .18s ease;
+  }
+  .navbar.is-collapsed .tab.is-active .count:not(:empty){
+    min-width: 16px;
+    max-width: 32px;
+    padding: 0 4px;
+    margin-left: 4px;
+    opacity: 1;
   }
   .navbar.is-collapsed .nav-theme-btn,
   .navbar.is-collapsed .nav-refresh-btn{
     display: flex;
     align-items: center;
   }
-  .navbar.is-collapsed .nav-action-label{
-    display: inline;
-    font: 600 11px/1 'Inter', sans-serif;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-  }
+  .navbar.is-collapsed .nav-action-label{ display: none; }
   .navbar.is-collapsed .tab:hover,
   .navbar.is-collapsed .tab.is-active,
   .navbar.is-collapsed .nav-theme-btn:hover,
@@ -273,9 +285,6 @@
     background: var(--paper-dim);
   }
   .navbar.is-collapsed .tab-indicator{ display: none; }
-  .navbar.is-menu-open .nav-menu-icon span:nth-child(1){ top: 6px; transform: rotate(45deg); }
-  .navbar.is-menu-open .nav-menu-icon span:nth-child(2){ opacity: 0; }
-  .navbar.is-menu-open .nav-menu-icon span:nth-child(3){ top: 6px; transform: rotate(-45deg); }
 
   .view{ display: none; }
   .view.is-active{ display: block; flex: 1; }
@@ -365,7 +374,26 @@
     background: var(--moss);
     color: var(--paper);
   }
-  .library-chips{ margin: 14px 0 18px; }
+  .library-controls{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 14px 0 18px;
+  }
+  .library-chips{ margin: 0; }
+  .library-sort{
+    min-width: 142px;
+    height: 32px;
+    padding: 0 28px 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--moss);
+    font: 500 12px/1 'Inter', sans-serif;
+    cursor: pointer;
+  }
+  .library-sort:focus-visible{ outline: 2px solid var(--ink); outline-offset: 2px; }
 
   .status{
     font-size: 14px;
@@ -477,6 +505,8 @@
     display:flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
     font-size: 12px;
     color: var(--moss-soft);
     margin-bottom: 8px;
@@ -562,6 +592,11 @@
     padding-top: 2px;
   }
   .result-runtime{
+    font-size: 12px;
+    color: var(--moss-soft);
+    white-space: nowrap;
+  }
+  .result-play-count{
     font-size: 12px;
     color: var(--moss-soft);
     white-space: nowrap;
@@ -983,6 +1018,8 @@
       gap: 6px;
       margin: 8px 0 12px;
     }
+    .library-controls{ align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+    .library-sort{ min-width: 132px; }
     #results, #saved-results, #library-results{
       margin-left: -4px;
       margin-right: -4px;
@@ -1025,6 +1062,7 @@
     .result-runtime{
       font-size: 11.5px;
     }
+    .result-play-count{ font-size: 11.5px; }
     .result-desc{
       font-size: 12.5px;
       line-height: 1.4;
@@ -1256,9 +1294,6 @@
           <svg class="nav-logo-icon" width="22" height="22" viewBox="4.5 4.5 23 23" aria-hidden="true"><path d="M16.00,17.00 L16.00,16.96 L16.01,16.93 L16.01,16.89 L16.02,16.86 L16.04,16.82 L16.05,16.79 L16.07,16.75 L16.10,16.72 L16.12,16.69 L16.15,16.67 L16.18,16.64 L16.21,16.61 L16.25,16.59 L16.28,16.57 L16.32,16.56 L16.36,16.54 L16.41,16.53 L16.45,16.52 L16.50,16.51 L16.54,16.51 L16.59,16.51 L16.64,16.51 L16.69,16.52 L16.74,16.53 L16.79,16.54 L16.84,16.56 L16.90,16.58 L16.95,16.60 L17.00,16.63 L17.05,16.66 L17.09,16.69 L17.14,16.73 L17.19,16.77 L17.23,16.82 L17.28,16.87 L17.32,16.92 L17.36,16.97 L17.39,17.03 L17.43,17.09 L17.46,17.15 L17.49,17.22 L17.51,17.29 L17.54,17.36 L17.55,17.43 L17.57,17.51 L17.58,17.59 L17.59,17.67 L17.59,17.75 L17.59,17.83 L17.59,17.92 L17.58,18.00 L17.57,18.09 L17.55,18.17 L17.53,18.26 L17.50,18.35 L17.47,18.44 L17.43,18.52 L17.39,18.61 L17.34,18.70 L17.29,18.78 L17.24,18.86 L17.18,18.94 L17.11,19.02 L17.04,19.10 L16.97,19.18 L16.89,19.25 L16.81,19.32 L16.72,19.39 L16.63,19.45 L16.53,19.51 L16.43,19.57 L16.33,19.62 L16.22,19.67 L16.11,19.71 L16.00,19.75 L15.88,19.78 L15.76,19.81 L15.64,19.84 L15.52,19.86 L15.39,19.87 L15.26,19.88 L15.13,19.88 L15.00,19.87 L14.87,19.86 L14.73,19.85 L14.60,19.82 L14.46,19.80 L14.33,19.76 L14.19,19.72 L14.06,19.67 L13.93,19.61 L13.80,19.55 L13.67,19.49 L13.54,19.41 L13.41,19.33 L13.29,19.24 L13.17,19.15 L13.05,19.05 L12.94,18.95 L12.82,18.83 L12.72,18.72 L12.62,18.59 L12.52,18.46 L12.43,18.33 L12.34,18.19 L12.26,18.05 L12.18,17.90 L12.11,17.74 L12.05,17.58 L11.99,17.42 L11.94,17.26 L11.89,17.09 L11.86,16.91 L11.83,16.74 L11.81,16.56 L11.79,16.38 L11.79,16.20 L11.79,16.01 L11.80,15.83 L11.82,15.64 L11.84,15.45 L11.88,15.27 L11.92,15.08 L11.97,14.89 L12.03,14.71 L12.10,14.52 L12.18,14.34 L12.26,14.16 L12.36,13.98 L12.46,13.81 L12.57,13.64 L12.69,13.47 L12.81,13.31 L12.95,13.15 L13.09,13.00 L13.24,12.85 L13.40,12.70 L13.56,12.57 L13.73,12.43 L13.91,12.31 L14.10,12.19 L14.29,12.08 L14.48,11.98 L14.69,11.89 L14.89,11.80 L15.11,11.72 L15.32,11.65 L15.55,11.59 L15.77,11.54 L16.00,11.50 L16.23,11.47 L16.47,11.45 L16.70,11.43 L16.94,11.43 L17.18,11.44 L17.42,11.46 L17.66,11.49 L17.91,11.53 L18.15,11.58 L18.39,11.64 L18.62,11.71 L18.86,11.79 L19.10,11.89 L19.33,11.99 L19.56,12.11 L19.78,12.23 L20.00,12.36 L20.22,12.51 L20.43,12.66 L20.63,12.83 L20.83,13.00 L21.02,13.19 L21.21,13.38 L21.39,13.58 L21.56,13.79 L21.72,14.01 L21.87,14.24 L22.02,14.47 L22.15,14.71 L22.28,14.96 L22.39,15.22 L22.50,15.48 L22.59,15.74 L22.67,16.01 L22.75,16.29 L22.81,16.57 L22.86,16.86 L22.89,17.14 L22.92,17.44 L22.93,17.73 L22.93,18.02 L22.92,18.32 L22.89,18.62 L22.85,18.91 L22.80,19.21 L22.74,19.51 L22.66,19.80 L22.57,20.09 L22.47,20.38 L22.35,20.67 L22.22,20.95 L22.08,21.23 L21.93,21.50 L21.76,21.77 L21.59,22.03 L21.40,22.28 L21.20,22.53 L20.98,22.77 L20.76,23.01 L20.53,23.23 L20.28,23.44 L20.03,23.65 L19.76,23.84 L19.49,24.03 L19.21,24.20 L18.92,24.36 L18.62,24.51 L18.31,24.65 L18.00,24.78 L17.68,24.89 L17.35,24.99 L17.02,25.08 L16.68,25.15 L16.34,25.21 L16.00,25.25 L15.65,25.28 L15.30,25.29 L14.95,25.29 L14.60,25.28 L14.25,25.25 L13.89,25.20 L13.54,25.14 L13.19,25.07 L12.84,24.98 L12.50,24.87 L12.15,24.75 L11.81,24.62 L11.48,24.46 L11.15,24.30 L10.83,24.12 L10.51,23.93 L10.20,23.72 L9.90,23.50 L9.61,23.26 L9.32,23.01 L9.05,22.75 L8.79,22.48 L8.53,22.19 L8.29,21.89 L8.06,21.58 L7.84,21.26 L7.64,20.93 L7.45,20.59 L7.27,20.25 L7.11,19.89 L6.96,19.52 L6.83,19.15 L6.71,18.77 L6.61,18.39 L6.52,18.00 L6.45,17.60 L6.40,17.20 L6.36,16.80 L6.34,16.39 L6.34,15.98 L6.35,15.58 L6.38,15.17 L6.43,14.76 L6.50,14.35 L6.58,13.94 L6.69,13.54 L6.81,13.14 L6.94,12.74 L7.10,12.35 L7.27,11.96 L7.46,11.58 L7.66,11.20 L7.88,10.84 L8.12,10.48 L8.37,10.13 L8.64,9.79 L8.92,9.46 L9.22,9.14 L9.53,8.84 L9.86,8.55 L10.20,8.27 L10.55,8.00 L10.91,7.75 L11.29,7.51 L11.68,7.29 L12.07,7.08 L12.48,6.89 L12.89,6.72 L13.32,6.56 L13.75,6.42 L14.19,6.30 L14.64,6.20 L15.09,6.11 L15.54,6.05 L16.00,6.00" fill="none" stroke="var(--moss)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="nav-logo-text">Tranquila</span>
         </button>
-        <button type="button" class="nav-menu-toggle" id="nav-menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-menu">
-          <span class="nav-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-        </button>
         <div class="tabs" id="nav-menu">
           <button type="button" class="nav-theme-btn" id="nav-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
             <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1269,10 +1304,22 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             <span class="nav-action-label">Refresh</span>
           </button>
-          <button type="button" class="tab" data-view="library">Library <span class="count" id="library-count">24</span></button>
-          <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
-          <button type="button" class="tab" data-view="history">History</button>
-          <button type="button" class="tab" data-view="about">About</button>
+          <button type="button" class="tab" data-view="library">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            <span class="tab-label">Library</span><span class="count" id="library-count">24</span>
+          </button>
+          <button type="button" class="tab" data-view="saved">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>
+            <span class="tab-label">Saved</span><span class="count" id="saved-count"></span>
+          </button>
+          <button type="button" class="tab" data-view="history">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span class="tab-label">History</span>
+          </button>
+          <button type="button" class="tab" data-view="about">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+            <span class="tab-label">About</span>
+          </button>
           <div class="tab-indicator" id="tab-indicator"></div>
         </div>
       </div>
@@ -1302,10 +1349,17 @@
 
     <div class="view" id="view-library">
       <div class="status" id="library-status"></div>
-      <div class="chips library-chips" id="library-chips">
-        <button type="button" class="chip is-active" data-library-category="all">All</button>
-        <button type="button" class="chip" data-library-category="unclenching">Unclenching</button>
-        <button type="button" class="chip" data-library-category="stretch-yoga">Stretch &amp; yoga</button>
+      <div class="library-controls">
+        <div class="chips library-chips" id="library-chips">
+          <button type="button" class="chip is-active" data-library-category="all">All</button>
+          <button type="button" class="chip" data-library-category="unclenching">Unclenching</button>
+          <button type="button" class="chip" data-library-category="stretch-yoga">Stretch &amp; yoga</button>
+        </div>
+        <select class="library-sort" id="library-sort" aria-label="Sort library tracks">
+          <option value="newest">Newest added</option>
+          <option value="oldest">Oldest added</option>
+          <option value="default">Library order</option>
+        </select>
       </div>
       <div id="library-results"></div>
     </div>
@@ -1401,7 +1455,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-22T16:38:52Z'; // updated by deploy
+const BUILD_TIME = '2026-09-22T18:36:36Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1429,6 +1483,7 @@ const btn = document.getElementById('search-btn');
 const offlineBanner = document.getElementById('offline-banner');
 const libraryResultsEl = document.getElementById('library-results');
 const libraryStatusEl = document.getElementById('library-status');
+const librarySortEl = document.getElementById('library-sort');
 const savedResultsEl = document.getElementById('saved-results');
 const savedStatusEl = document.getElementById('saved-status');
 const savedCountEl = document.getElementById('saved-count');
@@ -1438,11 +1493,16 @@ const historyStatusEl = document.getElementById('history-status');
 const AUDIO_CACHE = 'meditation-audio-v1';
 const SAVED_KEY = 'savedMeditations';
 const HISTORY_KEY = 'playHistory';
+const PLAY_COUNTS_KEY = 'trackPlayCountsV1';
+const LIBRARY_SORT_KEY = 'librarySort';
 const HISTORY_MAX = 200; // max sessions to keep
 
+// Every built-in track must include dateAdded (YYYY-MM-DD) so the library can
+// reliably sort new additions without depending on array position.
 const BUILTIN_TRACKS = [
   {
     identifier: 'unclench-progressive-muscle-relaxation',
+    dateAdded: '2026-09-15',
     title: 'Progressive Muscle Relaxation',
     creator: 'Jonny Miller',
     runtime: '4:41',
@@ -1451,6 +1511,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-non-sleep-deep-rest',
+    dateAdded: '2026-09-15',
     title: 'Non-Sleep Deep Rest (NSDR)',
     creator: 'Jonny Miller',
     runtime: '17:48',
@@ -1459,6 +1520,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-somatic-surfing',
+    dateAdded: '2026-09-15',
     title: 'Somatic Surfing',
     creator: 'Jonny Miller',
     runtime: '23:41',
@@ -1467,6 +1529,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-reparenting-protocol',
+    dateAdded: '2026-09-15',
     title: 'Reparenting Protocol',
     creator: 'Jonny Miller',
     runtime: '10:38',
@@ -1475,6 +1538,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-amplify-joy',
+    dateAdded: '2026-09-15',
     title: 'Amplify Joy',
     creator: 'Jonny Miller',
     runtime: '9:31',
@@ -1483,6 +1547,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-one-tenth-the-effort',
+    dateAdded: '2026-09-15',
     title: '1/10th the Effort',
     creator: 'Jonny Miller',
     runtime: '4:13',
@@ -1491,6 +1556,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-i-am-willing',
+    dateAdded: '2026-09-15',
     title: '“I Am Willing”',
     creator: 'Jonny Miller',
     runtime: '5:15',
@@ -1499,6 +1565,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-expanding-awareness',
+    dateAdded: '2026-09-15',
     title: 'Expanding Awareness',
     creator: 'Jonny Miller',
     runtime: '4:26',
@@ -1507,6 +1574,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-single-breath-hum',
+    dateAdded: '2026-09-15',
     title: 'Single-Breath Hum',
     creator: 'Jonny Miller',
     runtime: '3:20',
@@ -1515,6 +1583,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'unclench-welcome-everything',
+    dateAdded: '2026-09-15',
     title: 'Welcome Everything',
     creator: 'Jonny Miller',
     runtime: '4:05',
@@ -1523,6 +1592,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-yoga-meditation',
+    dateAdded: '2026-09-22',
     title: 'Yoga Meditation',
     creator: 'Yogi Nils',
     runtime: '7:50',
@@ -1536,6 +1606,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-computer-yoga',
+    dateAdded: '2026-09-22',
     title: 'Computer Yoga',
     creator: 'Yogi Nils',
     runtime: '8:53',
@@ -1549,6 +1620,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-move-more-fluidly',
+    dateAdded: '2026-09-22',
     title: 'Move More Fluidly',
     creator: 'GeeArtriasRose',
     runtime: '6:27',
@@ -1562,6 +1634,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-grounding-movement-meditation',
+    dateAdded: '2026-09-22',
     title: 'Grounding Movement & Meditation',
     creator: 'Jen McCarron',
     runtime: '23:57',
@@ -1575,6 +1648,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-gentle-inner-light',
+    dateAdded: '2026-09-22',
     title: 'Gentle Inner Light',
     creator: 'Jen McCarron',
     runtime: '1:05:03',
@@ -1588,6 +1662,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-om-gentle-vinyasa',
+    dateAdded: '2026-09-22',
     title: 'OM Meditation & Gentle Vinyasa',
     creator: 'Jen McCarron',
     runtime: '53:12',
@@ -1601,6 +1676,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-gentle-back-legs-hips',
+    dateAdded: '2026-09-22',
     title: 'Gentle Yoga for Back, Legs & Hips',
     creator: 'Jen McCarron',
     runtime: '1:13:18',
@@ -1614,6 +1690,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-level-one-vinyasa',
+    dateAdded: '2026-09-22',
     title: 'Level 1 Vinyasa Flow',
     creator: 'Jen McCarron',
     runtime: '44:57',
@@ -1627,6 +1704,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-gentle-yoga-33',
+    dateAdded: '2026-09-22',
     title: 'Gentle Yoga — 33 Minutes',
     creator: 'Lisa Simchison',
     runtime: '32:47',
@@ -1640,6 +1718,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-gentle-yoga-75',
+    dateAdded: '2026-09-22',
     title: 'Gentle Yoga — 75 Minutes',
     creator: 'Lisa Simchison',
     runtime: '1:15:13',
@@ -1653,6 +1732,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-yoga-nidra-chakras',
+    dateAdded: '2026-09-22',
     title: 'Yoga Nidra: Walk Through the Chakras',
     creator: 'AMYcarrhiltonRMT',
     runtime: '33:30',
@@ -1666,6 +1746,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-yoga-nidra-short',
+    dateAdded: '2026-09-22',
     title: 'Yoga Nidra: Short Practice',
     creator: 'Tim Rowe',
     runtime: '18:26',
@@ -1679,6 +1760,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-yoga-nidra-welcoming',
+    dateAdded: '2026-09-22',
     title: 'Welcoming & Acceptance',
     creator: 'Tim Rowe',
     runtime: '6:48',
@@ -1692,6 +1774,7 @@ const BUILTIN_TRACKS = [
   },
   {
     identifier: 'stretch-yoga-nidra-full',
+    dateAdded: '2026-09-22',
     title: 'Yoga Nidra: Full Practice',
     creator: 'Tim Rowe',
     runtime: '43:22',
@@ -1886,6 +1969,69 @@ function getHistory(){
 }
 function setHistory(list){
   localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+}
+
+function getPlayCounts(){
+  try{
+    const stored = localStorage.getItem(PLAY_COUNTS_KEY);
+    if(stored) return JSON.parse(stored) || {};
+  }catch{ /* fall through to history migration */ }
+
+  // Preserve as much existing usage as possible when upgrading: every saved
+  // history session represents one prior play.
+  const migrated = {};
+  getHistory().forEach(session => {
+    const id = session.identifier;
+    if(!id) return;
+    if(!migrated[id]){
+      migrated[id] = {
+        count: 0,
+        title: session.title || id,
+        creator: session.creator || '',
+        firstPlayedAt: session.startedAt || Date.now(),
+        lastPlayedAt: session.startedAt || Date.now()
+      };
+    }
+    migrated[id].count += 1;
+    migrated[id].firstPlayedAt = Math.min(migrated[id].firstPlayedAt, session.startedAt || Date.now());
+    migrated[id].lastPlayedAt = Math.max(migrated[id].lastPlayedAt, session.startedAt || 0);
+  });
+  localStorage.setItem(PLAY_COUNTS_KEY, JSON.stringify(migrated));
+  return migrated;
+}
+
+let playCounts = getPlayCounts();
+
+function playCountFor(identifier){
+  const entry = playCounts[identifier];
+  return typeof entry === 'number' ? entry : (entry?.count || 0);
+}
+
+function formatPlayCount(identifier){
+  const count = playCountFor(identifier);
+  return `${count.toLocaleString()} play${count === 1 ? '' : 's'}`;
+}
+
+function updatePlayCountDisplays(identifier){
+  document.querySelectorAll(`.track-play-count[data-id="${cssEscape(identifier)}"]`).forEach(el => {
+    el.textContent = formatPlayCount(identifier);
+  });
+}
+
+function recordTrackPlay(identifier, group){
+  const now = Date.now();
+  const previous = playCounts[identifier];
+  const previousCount = typeof previous === 'number' ? previous : (previous?.count || 0);
+  playCounts[identifier] = {
+    count: previousCount + 1,
+    title: group?.dataset.title || previous?.title || identifier,
+    creator: group?.dataset.creator || previous?.creator || '',
+    firstPlayedAt: previous?.firstPlayedAt || now,
+    lastPlayedAt: now,
+    builtIn: group?.dataset.builtin === 'true'
+  };
+  localStorage.setItem(PLAY_COUNTS_KEY, JSON.stringify(playCounts));
+  updatePlayCountDisplays(identifier);
 }
 
 // Active session state
@@ -2116,18 +2262,6 @@ const navbarEl = document.querySelector('.navbar');
 const navbarInnerEl = document.querySelector('.navbar-inner');
 const navLogoEl = document.getElementById('nav-logo');
 const navMenuEl = document.getElementById('nav-menu');
-const navMenuToggle = document.getElementById('nav-menu-toggle');
-
-function setNavMenuOpen(open){
-  const shouldOpen = Boolean(open && navbarEl.classList.contains('is-collapsed'));
-  const returnFocus = !shouldOpen
-    && getComputedStyle(navMenuToggle).display !== 'none'
-    && navMenuEl.contains(document.activeElement);
-  navbarEl.classList.toggle('is-menu-open', shouldOpen);
-  navMenuToggle.setAttribute('aria-expanded', String(shouldOpen));
-  navMenuToggle.setAttribute('aria-label', shouldOpen ? 'Close navigation' : 'Open navigation');
-  if(returnFocus) navMenuToggle.focus();
-}
 
 let navLayoutFrame = null;
 function updateNavLayout(){
@@ -2145,24 +2279,12 @@ function updateNavLayout(){
 
     navbarEl.classList.toggle('is-collapsed', shouldCollapse);
     if(!shouldCollapse){
-      setNavMenuOpen(false);
       const activeTab = navMenuEl.querySelector('.tab.is-active');
       if(activeTab) moveIndicator(activeTab);
     }
   });
 }
 
-navMenuToggle.addEventListener('click', () => {
-  setNavMenuOpen(!navbarEl.classList.contains('is-menu-open'));
-});
-document.addEventListener('click', (event) => {
-  if(navbarEl.classList.contains('is-menu-open') && !navbarInnerEl.contains(event.target)){
-    setNavMenuOpen(false);
-  }
-});
-document.addEventListener('keydown', (event) => {
-  if(event.key === 'Escape') setNavMenuOpen(false);
-});
 window.addEventListener('resize', updateNavLayout);
 if('ResizeObserver' in window){
   new ResizeObserver(updateNavLayout).observe(navbarInnerEl);
@@ -2219,13 +2341,11 @@ function activateView(view, { push = true } = {}){
 }
 
 navLogoEl.addEventListener('click', () => {
-  setNavMenuOpen(false);
   activateView('search');
 });
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    setNavMenuOpen(false);
     if(tab.dataset.view === 'library') activeLibraryCategory = 'all';
     activateView(tab.dataset.view);
   });
@@ -2247,12 +2367,30 @@ requestAnimationFrame(() => {
 });
 
 let activeLibraryCategory = 'all';
+let activeLibrarySort = localStorage.getItem(LIBRARY_SORT_KEY) || 'newest';
+if(!['default', 'newest', 'oldest'].includes(activeLibrarySort)) activeLibrarySort = 'newest';
+librarySortEl.value = activeLibrarySort;
+
+function formatDateAdded(dateString){
+  if(!dateString) return '';
+  const date = new Date(`${dateString}T00:00:00`);
+  return Number.isNaN(date.getTime())
+    ? dateString
+    : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
 
 function renderLibrary(category = activeLibraryCategory){
   activeLibraryCategory = category;
-  const items = category === 'all'
+  const filteredItems = category === 'all'
     ? BUILTIN_TRACKS
     : BUILTIN_TRACKS.filter(item => (item.category || 'unclenching') === category);
+  const items = [...filteredItems];
+  if(activeLibrarySort !== 'default'){
+    items.sort((a, b) => {
+      const comparison = (a.dateAdded || '').localeCompare(b.dateAdded || '');
+      return activeLibrarySort === 'newest' ? -comparison : comparison;
+    });
+  }
   const categoryLabel = category === 'stretch-yoga' ? 'Stretch & yoga' : 'Unclenching';
   libraryStatusEl.textContent = category === 'all'
     ? `${BUILTIN_TRACKS.length} guided practices · 2 collections`
@@ -2270,7 +2408,7 @@ function renderLibrary(category = activeLibraryCategory){
     const licenseLabel = item.licenseLabel || '';
     const badgeLabel = item.category === 'stretch-yoga' ? 'Stretch & yoga' : 'Unclenching';
     return `
-    <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-builtin="true" data-source-url="${escapeHtml(sourceUrl)}" data-source-label="${escapeHtml(sourceLabel)}" data-license-url="${escapeHtml(licenseUrl)}" data-license-label="${escapeHtml(licenseLabel)}">
+    <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-date-added="${escapeHtml(item.dateAdded || '')}" data-builtin="true" data-source-url="${escapeHtml(sourceUrl)}" data-source-label="${escapeHtml(sourceLabel)}" data-license-url="${escapeHtml(licenseUrl)}" data-license-label="${escapeHtml(licenseLabel)}">
       <div class="result" data-id="${escapeHtml(item.identifier)}">
         <button type="button" class="result-icon-btn" data-id="${escapeHtml(item.identifier)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
         <div class="result-body">
@@ -2281,6 +2419,7 @@ function renderLibrary(category = activeLibraryCategory){
             </button>
             <div class="result-badges">
               <span class="result-runtime">${escapeHtml(item.runtime)} · ${escapeHtml(badgeLabel)}</span>
+              <span class="result-play-count track-play-count" data-id="${escapeHtml(item.identifier)}">${formatPlayCount(item.identifier)}</span>
               <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(item.identifier)}">${bookmarkIcon(saved)}</span>
             </div>
           </div>
@@ -2308,6 +2447,12 @@ function renderLibrary(category = activeLibraryCategory){
   if(openIdentifier) setIconState(openIdentifier, !npbAudio.paused);
 }
 
+librarySortEl.addEventListener('change', () => {
+  activeLibrarySort = librarySortEl.value;
+  localStorage.setItem(LIBRARY_SORT_KEY, activeLibrarySort);
+  renderLibrary();
+});
+
 function renderSaved(){
   const list = getSaved();
   if(list.length === 0){
@@ -2323,7 +2468,7 @@ function renderSaved(){
     const creator = item.creator || '';
     const builtin = BUILTIN_TRACKS.find(track => track.identifier === id);
     const builtinAttrs = builtin
-      ? ` data-builtin="true" data-source-url="${escapeHtml(builtin.sourceUrl || 'https://howtounclench.com/#the-unclenching-library')}" data-source-label="${escapeHtml(builtin.sourceLabel || 'How to Unclench')}" data-license-url="${escapeHtml(builtin.licenseUrl || '')}" data-license-label="${escapeHtml(builtin.licenseLabel || '')}"`
+      ? ` data-builtin="true" data-date-added="${escapeHtml(builtin.dateAdded || '')}" data-source-url="${escapeHtml(builtin.sourceUrl || 'https://howtounclench.com/#the-unclenching-library')}" data-source-label="${escapeHtml(builtin.sourceLabel || 'How to Unclench')}" data-license-url="${escapeHtml(builtin.licenseUrl || '')}" data-license-label="${escapeHtml(builtin.licenseLabel || '')}"`
       : '';
     return `
       <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}" data-desc="${escapeHtml(item.description || '')}"${builtinAttrs}>
@@ -2337,6 +2482,7 @@ function renderSaved(){
               </button>
               <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}">${escapeHtml(item.runtime || '')}</span>
+                <span class="result-play-count track-play-count" data-id="${escapeHtml(id)}">${formatPlayCount(id)}</span>
                 <span class="result-saved-icon is-saved" data-id="${escapeHtml(id)}">${bookmarkIcon(true)}</span>
               </div>
             </div>
@@ -2527,6 +2673,7 @@ function render(docs, query, page = 0){
               </button>
               <div class="result-badges">
                 <span class="result-runtime" data-id="${escapeHtml(id)}"></span>
+                <span class="result-play-count track-play-count" data-id="${escapeHtml(id)}">${formatPlayCount(id)}</span>
                 <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(id)}">${bookmarkIcon(saved)}</span>
               </div>
             </div>
@@ -2634,7 +2781,6 @@ async function playTrack(identifier){
     }
 
     npbAudio.src = url;
-    npbAudio.play().catch(() => {});
     const audio = npbAudio;
 
     if('mediaSession' in navigator){
@@ -2652,6 +2798,7 @@ async function playTrack(identifier){
     npbSaveBtn.innerHTML = bookmarkIcon(saved);
 
     setupNowPlaying(audio, identifier, group);
+    audio.play().catch(() => {});
 
   }catch(err){
     iconEl.classList.remove('is-loading', 'is-active');
@@ -2690,6 +2837,8 @@ function toggleExpand(identifier){
           ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
           <div class="player-meta">
             ${group.dataset.creator ? (isBuiltin ? `<span>${escapeHtml(group.dataset.creator)}</span>` : `<button type="button" class="creator-link" data-creator="${escapeHtml(group.dataset.creator)}">${escapeHtml(group.dataset.creator)}</button>`) : ''}
+            <span class="track-play-count" data-id="${escapeHtml(identifier)}">${formatPlayCount(identifier)}</span>
+            ${group.dataset.dateAdded ? `<span>Added ${escapeHtml(formatDateAdded(group.dataset.dateAdded))}</span>` : ''}
             <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(sourceLabel)}</a>
             ${licenseUrl && licenseLabel ? `<a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener">${escapeHtml(licenseLabel)}</a>` : ''}
           </div>
@@ -2895,6 +3044,8 @@ function setupNowPlaying(audio, identifier, group){
     if(_wasPlaying){
       historyOnResume(audio);
     } else {
+      if(!_historySession) historyStartSession(identifier, group.dataset.title, group.dataset.creator);
+      recordTrackPlay(identifier, group);
       historyOnPlay(audio);
       _wasPlaying = true;
     }
@@ -2913,12 +3064,18 @@ function setupNowPlaying(audio, identifier, group){
       _historySession.durationSec = isFinite(audio.duration) ? audio.duration : _historySession.durationSec;
     }
     historyEndSession();
+    _wasPlaying = false;
   }, { signal });
 
   audio.addEventListener('timeupdate', () => historyOnTimeUpdate(audio), { signal });
 
   // initial state
-  if(!audio.paused){ setIconState(identifier, true); historyOnPlay(audio); _wasPlaying = true; }
+  if(!audio.paused){
+    setIconState(identifier, true);
+    recordTrackPlay(identifier, group);
+    historyOnPlay(audio);
+    _wasPlaying = true;
+  }
 }
 
 npbSaveBtn.addEventListener('click', async () => {
