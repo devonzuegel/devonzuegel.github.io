@@ -83,6 +83,9 @@
   .stat-card .stat-lbl { font-family: var(--mono); font-size: 10px; color: var(--sage); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
   .chart-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
   .chart-card canvas { width: 100%; display: block; }
+  .current-week-label { position:absolute; color:var(--amber); background:var(--surface2); border:1px solid var(--amber); border-radius:4px; padding:3px 5px; font:700 10px var(--mono); white-space:nowrap; transform:translateX(-100%) rotate(-45deg); transform-origin:right top; animation:week-pulse 2s ease-in-out infinite; }
+  @keyframes week-pulse { 0%, 100% { opacity:1; box-shadow:0 0 7px #E9A83A55; } 50% { opacity:.65; box-shadow:0 0 0 #E9A83A00; } }
+  @media (prefers-reduced-motion:reduce) { .current-week-label { animation:none; } }
   @media (max-width: 600px) { .stat-cards { grid-template-columns: repeat(2, 1fr); } .stats-grid { grid-template-columns: 1fr; } }
   /* map */
   #map { height: 480px; border-radius: 12px; border: 1px solid var(--line); margin-top: 4px; }
@@ -641,13 +644,27 @@ function renderStats() {
     return { ctx: ctx, w: w, h: h };
   }
 
+  function fitWeeklyTrend(values) {
+    if (values.length < 2) return null;
+    var meanX = (values.length - 1) / 2;
+    var meanY = values.reduce(function(sum, v) { return sum + v; }, 0) / values.length;
+    var numerator = 0, denominator = 0;
+    values.forEach(function(v, i) {
+      numerator += (i - meanX) * (v - meanY);
+      denominator += (i - meanX) * (i - meanX);
+    });
+    var slope = numerator / denominator;
+    return { first: meanY - slope * meanX, last: meanY + slope * meanX, count: values.length };
+  }
+
   function drawBarChart(cv, labels, values, color, opts) {
     opts = opts || {};
     var d = setupCanvas(cv);
     var ctx = d.ctx, W = d.w, H = d.h;
-    var pad = { t: 8, r: 8, b: opts.rotateLabels ? 56 : 28, l: 36 };
+    var pad = { t: 8, r: 8, b: opts.inProgressLabel ? 82 : opts.rotateLabels ? 56 : 28, l: 36 };
     var chartW = W - pad.l - pad.r, chartH = H - pad.t - pad.b;
-    var max = Math.max.apply(null, values.concat([1]));
+    var trend = opts.completedWeekTrend ? fitWeeklyTrend(values.slice(0, opts.inProgressIndex)) : null;
+    var max = Math.max.apply(null, values.concat(trend ? [1, trend.first, trend.last] : [1]));
 
     // grid
     ctx.strokeStyle = C.line; ctx.lineWidth = 0.5;
@@ -695,6 +712,12 @@ function renderStats() {
       }
 
       // label
+      if (i === opts.inProgressIndex && opts.inProgressLabel) {
+        opts.inProgressLabel.textContent = labels[i] + " · NOW";
+        opts.inProgressLabel.style.left = (cv.offsetLeft + x + barW / 2) + "px";
+        opts.inProgressLabel.style.top = (cv.offsetTop + pad.t + chartH + 6) + "px";
+        return;
+      }
       ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace";
       if (opts.rotateLabels) {
         ctx.save();
@@ -708,6 +731,20 @@ function renderStats() {
         ctx.fillText(labels[i], x + barW / 2, pad.t + chartH + 12);
       }
     });
+    if (trend) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.l, pad.t, chartW, chartH);
+      ctx.clip();
+      ctx.beginPath();
+      ctx.moveTo(pad.l + gap / 2, pad.t + chartH - trend.first / max * chartH);
+      ctx.lineTo(pad.l + (trend.count - 0.5) * gap, pad.t + chartH - trend.last / max * chartH);
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = C.bone;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   function drawLineChart(cv, labels, values, color, opts) {
@@ -919,7 +956,12 @@ function renderStats() {
     return allSessions.filter(function(x){ return x.s.ts >= mon.getTime() && x.s.ts < end.getTime(); }).length;
   });
 
-  var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 190);
+  var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 216);
+  cB.card.style.position = "relative";
+  var currentWeekLabel = document.createElement("span");
+  currentWeekLabel.className = "current-week-label";
+  currentWeekLabel.title = "Current week — still in progress";
+  cB.card.appendChild(currentWeekLabel);
   var weekKey = document.createElement("div");
   weekKey.style.cssText = "display:flex;align-items:center;gap:6px;margin-top:8px;font-family:var(--mono);font-size:10px;color:" + C.sage;
   var weekSwatch = document.createElement("span");
@@ -928,6 +970,14 @@ function renderStats() {
   weekKey.appendChild(weekSwatch);
   weekKey.appendChild(document.createTextNode("Current week · in progress"));
   cB.card.appendChild(weekKey);
+  var trendKey = document.createElement("div");
+  trendKey.style.cssText = weekKey.style.cssText;
+  var trendSwatch = document.createElement("span");
+  trendSwatch.setAttribute("aria-hidden", "true");
+  trendSwatch.style.cssText = "width:14px;border-top:2px dashed " + C.bone;
+  trendKey.appendChild(trendSwatch);
+  trendKey.appendChild(document.createTextNode("Trend · completed weeks only"));
+  cB.card.appendChild(trendKey);
   grid1.appendChild(cB.card);
 
   // ── Chart C: Score distribution ────────────────────────────────────────
@@ -1061,7 +1111,7 @@ function renderStats() {
     }
 
     // B: Games per week
-    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, { rotateLabels: true, inProgressIndex: weeks12.length - 1 });
+    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, { rotateLabels: true, inProgressIndex: weeks12.length - 1, inProgressLabel: currentWeekLabel, completedWeekTrend: true });
 
     // C: Score distribution
     drawBarChart(cC.canvas, scoreLabels, scoreDist, C.sage, { rotateLabels: true });
