@@ -608,9 +608,11 @@
     line-height: 1.3;
     margin: 0 0 4px;
     color: var(--ink);
-    white-space: nowrap;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
     flex-shrink: 1;
     min-width: 0;
   }
@@ -633,6 +635,7 @@
     font-size: 13.5px;
     line-height: 1.5;
     color: #55605a;
+    margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -797,31 +800,55 @@
     display: block;
     width: 100%;
     margin: 0;
+    padding: 0;
     -webkit-appearance: none;
     appearance: none;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,.25);
+    height: 40px;
+    background: transparent;
     outline: none;
     cursor: pointer;
     accent-color: var(--paper);
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .npb-scrubber::-webkit-slider-runnable-track{
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.25);
   }
   .npb-scrubber::-webkit-slider-thumb{
     -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 26px;
+    height: 26px;
+    margin-top: -9px;
     border-radius: 50%;
     background: var(--paper);
     cursor: pointer;
     box-shadow: 0 1px 3px rgba(0,0,0,.3);
   }
+  .npb-scrubber::-moz-range-track{
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.25);
+  }
+  .npb-scrubber::-moz-range-progress{
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.65);
+  }
   .npb-scrubber::-moz-range-thumb{
-    width: 16px;
-    height: 16px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--paper);
     border: none;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  }
+  .npb-scrubber:focus-visible{
+    outline: 2px solid rgba(255,255,255,.85);
+    outline-offset: -4px;
+    border-radius: 8px;
   }
 
   @media (max-width: 520px){
@@ -835,6 +862,16 @@
     .npb-skip-btn{ width: 44px; height: 44px; padding: 8px; }
     .npb-title{ font-size: 16px; }
     .npb-save-btn{ width: 40px; height: 40px; padding: 9px; }
+    .npb-scrubber{ height: 48px; }
+    .npb-scrubber::-webkit-slider-runnable-track{ height: 10px; }
+    .npb-scrubber::-webkit-slider-thumb{
+      width: 32px;
+      height: 32px;
+      margin-top: -11px;
+    }
+    .npb-scrubber::-moz-range-track,
+    .npb-scrubber::-moz-range-progress{ height: 10px; }
+    .npb-scrubber::-moz-range-thumb{ width: 32px; height: 32px; }
   }
 
   /* ── Toast ── */
@@ -935,19 +972,67 @@
   }
 
   @media (max-width: 600px){
-    #results, #saved-results{
-      margin-left: -24px;
-      margin-right: -24px;
+    .wrap{
+      padding: 58px 12px 92px;
     }
-    #results .results, #saved-results .results{
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
+    .status{
+      min-height: 18px;
+      margin-bottom: 12px;
+    }
+    .library-chips{
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+    #results, #saved-results, #library-results{
+      margin-left: -4px;
+      margin-right: -4px;
+    }
+    #results .results, #saved-results .results, #library-results .results{
+      border-radius: 8px;
+    }
+    .result{
+      gap: 8px;
+      padding: 12px 10px;
+    }
+    .result-icon-btn{
+      width: 32px;
+      height: 32px;
+    }
+    .result-title-row{
+      display: block;
+    }
+    .result-title-with-chevron{
+      width: 100%;
+      align-items: flex-start;
+      overflow: visible;
+    }
+    .result-title{
+      font-size: 15.5px;
+      line-height: 1.25;
+      margin-bottom: 3px;
+    }
+    .result-chevron-icon{
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+    .result-badges{
+      width: 100%;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 0;
+      margin-bottom: 4px;
+    }
+    .result-runtime{
+      font-size: 11.5px;
+    }
+    .result-desc{
+      font-size: 12.5px;
+      line-height: 1.4;
     }
     .load-more-btn{
-      margin-left: 24px;
-      margin-right: 24px;
-      width: calc(100% - 48px);
+      margin-left: 4px;
+      margin-right: 4px;
+      width: calc(100% - 8px);
     }
   }
 
@@ -1316,7 +1401,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-22T04:51:24Z'; // updated by deploy
+const BUILD_TIME = '2026-09-22T15:59:33Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
