@@ -338,7 +338,7 @@ function venueMapMarkup(e, expanded = false) {
   const canvas = `<div class="${expanded ? "expanded-venue-map" : "mini-venue-map"}" data-venue-map data-lat="${v.lat}" data-lng="${v.lng}" data-city-lat="${city.lat || v.lat}" data-city-lng="${city.lng || v.lng}" aria-label="Map of ${esc(v.name)}"></div>`;
   return expanded
     ? canvas
-    : `<div class="venue-map-preview">${canvas}${button("venue-map", icon("map") + " Expand map", "expand-venue-map", `data-id="${esc(e.id)}" aria-label="Expand map for ${esc(v.name)}"`)}</div>`;
+    : `<div class="venue-map-preview">${canvas}${button("venue-map", "", "expand-venue-map", `data-id="${esc(e.id)}" aria-label="Expand map for ${esc(v.name)}"`)}</div>`;
 }
 function venueLocationModal(id) {
   const e = eventFor(id);
