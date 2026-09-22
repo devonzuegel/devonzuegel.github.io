@@ -233,7 +233,8 @@ function renderChrome() {
   $("#mobile-header").innerHTML =
     `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">encore<span>✳</span></a>${account}</div>${navMarkup(true)}</div>`;
 }
-function weekendLabel(preset, label) {
+let openWeekendTooltip = null;
+function weekendLabel(preset) {
   const { from, to } = dateRange(preset);
   const format = (day) => {
     const parts = new Intl.DateTimeFormat("en-GB", {
@@ -246,7 +247,7 @@ function weekendLabel(preset, label) {
       .map((type) => parts.find((p) => p.type === type).value)
       .join("-");
   };
-  return `${label} · ${format(from)} → ${format(to)}`;
+  return `${format(from)} → ${format(to)}`;
 }
 function renderControls() {
   const cs = cities(),
@@ -275,22 +276,26 @@ function renderControls() {
       .join("");
   $("#controls").innerHTML =
     `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your listening")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><span class="date-label">${icon("calendar")}When</span><div class="date-chips">${[
-      ["weekend", weekendLabel("weekend", "This weekend")],
-      ["next-weekend", weekendLabel("next-weekend", "Next weekend")],
+      ["weekend", "This weekend"],
+      ["next-weekend", "Next weekend"],
       ["30", "30 days"],
       ["60", "60 days"],
       ["90", "90 days"],
       ["180", "6 months"],
       ["365", "1 year"],
     ]
-      .map(([p, l]) =>
-        button(
+      .map(([p, l]) => {
+        const weekend = p === "weekend" || p === "next-weekend";
+        const chip = button(
           "date-preset",
           l,
           `chip ${state.preset === p ? "active" : ""}`,
-          `data-preset="${p}"`,
-        ),
-      )
+          `data-preset="${p}"${weekend ? ` aria-describedby="tooltip-${p}"` : ""}`,
+        );
+        return weekend
+          ? `<span class="weekend-tooltip-wrap ${openWeekendTooltip === p ? "tooltip-open" : ""}">${chip}<span class="weekend-tooltip" id="tooltip-${p}" role="tooltip">${weekendLabel(p)}</span></span>`
+          : chip;
+      })
       .join(
         "",
       )}</div><div class="date-range"><input type="date" id="date-from" aria-label="From date" value="${state.from}"><span>—</span><input type="date" id="date-to" aria-label="To date" value="${state.to}"></div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
@@ -1126,6 +1131,7 @@ document.addEventListener("click", async (e) => {
         break;
       }
       case "date-preset":
+        openWeekendTooltip = el.dataset.preset;
         state.preset = el.dataset.preset;
         Object.assign(state, dateRange(state.preset));
         state.calendarMonth = state.from.slice(0, 7);
@@ -1619,3 +1625,23 @@ if (returnedSpotify) {
   );
   history.replaceState(null, "", location.pathname);
 }
+
+function dismissWeekendTooltips() {
+  openWeekendTooltip = null;
+  document.querySelectorAll(".weekend-tooltip-wrap").forEach((el) => {
+    el.classList.remove("tooltip-open");
+    el.classList.add("tooltip-dismissed");
+  });
+}
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".weekend-tooltip-wrap")) dismissWeekendTooltips();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") dismissWeekendTooltips();
+});
+for (const event of ["pointerover", "focusin"])
+  document.addEventListener(event, (e) => {
+    const wrap = e.target.closest(".weekend-tooltip-wrap");
+    if (wrap && !wrap.contains(e.relatedTarget))
+      wrap.classList.remove("tooltip-dismissed");
+  });

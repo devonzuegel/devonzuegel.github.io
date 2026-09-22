@@ -2723,3 +2723,35 @@ small {
   color: var(--muted);
   font-size: 10px;
 }
+
+.weekend-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.weekend-tooltip {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 1100;
+  width: max-content;
+  max-width: 240px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 4px 16px #0002;
+  font-size: 11px;
+  line-height: 1.4;
+  visibility: hidden;
+  opacity: 0;
+}
+.weekend-tooltip-wrap:not(.tooltip-dismissed):is(
+    :hover,
+    :focus-within,
+    .tooltip-open
+  )
+  .weekend-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
