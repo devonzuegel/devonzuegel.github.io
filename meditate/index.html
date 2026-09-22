@@ -1269,7 +1269,7 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             <span class="nav-action-label">Refresh</span>
           </button>
-          <button type="button" class="tab" data-view="library">Library <span class="count">13</span></button>
+          <button type="button" class="tab" data-view="library">Library <span class="count" id="library-count">24</span></button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
           <button type="button" class="tab" data-view="history">History</button>
           <button type="button" class="tab" data-view="about">About</button>
@@ -1327,7 +1327,7 @@
     </div>
 
     <div class="view" id="view-about">
-      <p class="about-footer">The built-in library includes ten guided practices from <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench</a> by Jonny Miller, plus three movement practices: <a href="https://commons.wikimedia.org/wiki/File:Yoga-Meditation.ogg" target="_blank" rel="noopener">Yoga Meditation</a> and <a href="https://commons.wikimedia.org/wiki/File:Computer_Yoga.ogg" target="_blank" rel="noopener">Computer Yoga</a> by Yogi Nils (CC BY-SA 3.0), and <a href="https://ccmixter.org/files/GeeArtriasRose/49356" target="_blank" rel="noopener">Move More Fluidly</a> by GeeArtriasRose (CC BY-NC 3.0). Search results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>.</p>
+      <p class="about-footer">The built-in library includes ten guided practices from <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench</a> by Jonny Miller, plus freely licensed movement, gentle-yoga, and yoga-nidra sessions from Yogi Nils, GeeArtriasRose, <a href="https://archive.org/details/GroundingMovtMed" target="_blank" rel="noopener">Jen McCarron</a>, <a href="https://archive.org/details/GentleYoga1" target="_blank" rel="noopener">Lisa Simchison</a>, <a href="https://archive.org/details/YogaNidra-WalkThruTheChakras" target="_blank" rel="noopener">AMYcarrhiltonRMT</a>, and <a href="https://archive.org/details/yoga-nidra" target="_blank" rel="noopener">Tim Rowe</a>. Each track’s source and license appear in its expanded details. Search results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>.</p>
 
       <div class="about-section">
         <h2 class="about-section-title">Refresh App</h2>
@@ -1401,7 +1401,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-22T15:59:33Z'; // updated by deploy
+const BUILD_TIME = '2026-09-22T16:38:52Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1559,8 +1559,153 @@ const BUILTIN_TRACKS = [
     sourceLabel: 'ccMixter',
     licenseUrl: 'https://creativecommons.org/licenses/by-nc/3.0/',
     licenseLabel: 'CC BY-NC 3.0'
+  },
+  {
+    identifier: 'stretch-grounding-movement-meditation',
+    title: 'Grounding Movement & Meditation',
+    creator: 'Jen McCarron',
+    runtime: '23:57',
+    description: 'Fifteen minutes of gentle, accessible movement followed by a calming guided visualization.',
+    audioUrl: 'https://archive.org/download/GroundingMovtMed/grounding%20movt%20%26%20med.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/GroundingMovtMed',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    licenseLabel: 'CC BY-NC-ND 3.0'
+  },
+  {
+    identifier: 'stretch-gentle-inner-light',
+    title: 'Gentle Inner Light',
+    creator: 'Jen McCarron',
+    runtime: '1:05:03',
+    description: 'A slow, graceful practice with gentle core work, inward attention, and hamstring stretching.',
+    audioUrl: 'https://ia601602.us.archive.org/7/items/GentleInnerLight-Level1/GentleInnerLight-Level1.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/GentleInnerLight-Level1',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+    licenseLabel: 'CC BY-NC-SA 3.0'
+  },
+  {
+    identifier: 'stretch-om-gentle-vinyasa',
+    title: 'OM Meditation & Gentle Vinyasa',
+    creator: 'Jen McCarron',
+    runtime: '53:12',
+    description: 'A beginner-friendly gentle flow that opens with a quiet six-minute meditation on OM.',
+    audioUrl: 'https://archive.org/download/OMMeditationAndGentleVinyasa60minLevel1/OM%20Meditation%20and%20Gentle%20Vinyasa%2060min_level%201.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/OMMeditationAndGentleVinyasa60minLevel1',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+    licenseLabel: 'CC BY-NC-SA 3.0'
+  },
+  {
+    identifier: 'stretch-gentle-back-legs-hips',
+    title: 'Gentle Yoga for Back, Legs & Hips',
+    creator: 'Jen McCarron',
+    runtime: '1:13:18',
+    description: 'A beginner-friendly practice to stretch the hips, legs, and lower back; have pillows or a blanket nearby.',
+    audioUrl: 'https://archive.org/download/PrenatalYoga60minbeg-int/prenatal_60min.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/PrenatalYoga60minbeg-int',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+    licenseLabel: 'CC BY-NC-SA 3.0'
+  },
+  {
+    identifier: 'stretch-level-one-vinyasa',
+    title: 'Level 1 Vinyasa Flow',
+    creator: 'Jen McCarron',
+    runtime: '44:57',
+    description: 'A moderately paced beginner flow with gentle transitions and a short core-strengthening section.',
+    audioUrl: 'https://archive.org/download/Level1VinyasaFlow_525/Level1Swrc.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/Level1VinyasaFlow_525',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    licenseLabel: 'CC0 1.0'
+  },
+  {
+    identifier: 'stretch-gentle-yoga-33',
+    title: 'Gentle Yoga — 33 Minutes',
+    creator: 'Lisa Simchison',
+    runtime: '32:47',
+    description: 'A peaceful half-hour sequence of gentle yoga postures and spoken guidance.',
+    audioUrl: 'https://archive.org/download/GentleYoga1/GentleYoga1.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/GentleYoga1',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    licenseLabel: 'CC BY-NC-ND 3.0'
+  },
+  {
+    identifier: 'stretch-gentle-yoga-75',
+    title: 'Gentle Yoga — 75 Minutes',
+    creator: 'Lisa Simchison',
+    runtime: '1:15:13',
+    description: 'An unhurried full-length gentle-yoga session for a long evening wind-down.',
+    audioUrl: 'https://archive.org/download/BonusGentleYoga75CSV/Bonus%20Gentle%20Yoga%2075%20CSV.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/BonusGentleYoga75CSV',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    licenseLabel: 'CC BY-NC-ND 3.0'
+  },
+  {
+    identifier: 'stretch-yoga-nidra-chakras',
+    title: 'Yoga Nidra: Walk Through the Chakras',
+    creator: 'AMYcarrhiltonRMT',
+    runtime: '33:30',
+    description: 'A deeply restful lying-down practice with a slow guided journey through the body’s energy centers.',
+    audioUrl: 'https://archive.org/download/YogaNidra-WalkThruTheChakras/YogaNidra.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/YogaNidra-WalkThruTheChakras',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    licenseLabel: 'CC0 1.0'
+  },
+  {
+    identifier: 'stretch-yoga-nidra-short',
+    title: 'Yoga Nidra: Short Practice',
+    creator: 'Tim Rowe',
+    runtime: '18:26',
+    description: 'A compact guided rest exploring opposite sensations, softened boundaries, and deep relaxation.',
+    audioUrl: 'https://archive.org/download/yoga_nidra_19_96/yoga_nidra_19_96.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/yoga_nidra_19_96',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    licenseLabel: 'CC BY-NC-ND 4.0'
+  },
+  {
+    identifier: 'stretch-yoga-nidra-welcoming',
+    title: 'Welcoming & Acceptance',
+    creator: 'Tim Rowe',
+    runtime: '6:48',
+    description: 'A brief guided exercise in non-resistance, welcoming, and gentle acceptance.',
+    audioUrl: 'https://archive.org/download/yoga_nidra_welcoming/yoga_nidra_welcoming.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/yoga_nidra_welcoming',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    licenseLabel: 'CC BY-NC-ND 4.0'
+  },
+  {
+    identifier: 'stretch-yoga-nidra-full',
+    title: 'Yoga Nidra: Full Practice',
+    creator: 'Tim Rowe',
+    runtime: '43:22',
+    description: 'A longer spoken yoga-nidra session for settling into sustained, whole-body rest.',
+    audioUrl: 'https://archive.org/download/yoga-nidra/YogaNidra.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://archive.org/details/yoga-nidra',
+    sourceLabel: 'Internet Archive',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    licenseLabel: 'CC BY-NC-ND 4.0'
   }
 ];
+
+document.getElementById('library-count').textContent = BUILTIN_TRACKS.length;
 
 // ---------- Service worker: makes the page itself (this HTML/CSS/JS) load offline ----------
 // Requires being served over http(s) — file:// and Claude's in-chat preview can't register one.

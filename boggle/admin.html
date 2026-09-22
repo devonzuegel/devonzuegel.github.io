@@ -680,6 +680,20 @@ function renderStats() {
       ctx.quadraticCurveTo(x, y, x + r, y);
       ctx.closePath(); ctx.fill();
 
+      if (i === opts.inProgressIndex) {
+        ctx.save();
+        ctx.clip();
+        ctx.strokeStyle = C.bg;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (var stripe = -bH; stripe < barW; stripe += 7) {
+          ctx.moveTo(x + stripe, y + bH);
+          ctx.lineTo(x + stripe + bH, y);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // label
       ctx.fillStyle = C.sage; ctx.font = "9px 'SF Mono',monospace";
       if (opts.rotateLabels) {
@@ -906,6 +920,14 @@ function renderStats() {
   });
 
   var cB = makeChartCard("Games per week (last 12 weeks)", "chart-gpw", 190);
+  var weekKey = document.createElement("div");
+  weekKey.style.cssText = "display:flex;align-items:center;gap:6px;margin-top:8px;font-family:var(--mono);font-size:10px;color:" + C.sage;
+  var weekSwatch = document.createElement("span");
+  weekSwatch.setAttribute("aria-hidden", "true");
+  weekSwatch.style.cssText = "width:14px;height:10px;border-radius:2px;background:repeating-linear-gradient(135deg," + C.amber + " 0 5px," + C.bg + " 5px 7px)";
+  weekKey.appendChild(weekSwatch);
+  weekKey.appendChild(document.createTextNode("Current week · in progress"));
+  cB.card.appendChild(weekKey);
   grid1.appendChild(cB.card);
 
   // ── Chart C: Score distribution ────────────────────────────────────────
@@ -1039,7 +1061,7 @@ function renderStats() {
     }
 
     // B: Games per week
-    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, { rotateLabels: true });
+    drawBarChart(cB.canvas, weeks12.map(weekLabel), gamesPerWeek, C.amber, { rotateLabels: true, inProgressIndex: weeks12.length - 1 });
 
     // C: Score distribution
     drawBarChart(cC.canvas, scoreLabels, scoreDist, C.sage, { rotateLabels: true });
