@@ -14,10 +14,10 @@ export function addMapboxBasemap(map, config, thumbnail = false) {
     const center = map.getCenter(),
       size = map.getSize();
     // Mapbox uses a 512px world tile; Leaflet uses 256px.
-    return `${base}/static/${center.lng},${center.lat},${map.getZoom() - 1}/${Math.round(size.x)}x${Math.round(size.y)}@2x?access_token=${encodeURIComponent(token)}&attribution=false`;
+    return `${base}/static/${center.lng},${center.lat},${map.getZoom() - 1}/${Math.round(size.x)}x${Math.round(size.y)}@2x?access_token=${encodeURIComponent(token)}&attribution=false&logo=false`;
   };
   map.attributionControl.setPrefix(false);
-  // Static images include Mapbox's logo at the bottom; keep the text clear of it.
+  // Keep the required text attribution visible on static thumbnails.
   if (thumbnail) map.attributionControl.setPosition("topright");
   const layer = thumbnail
     ? L.imageOverlay(url(), map.getBounds(), { attribution })

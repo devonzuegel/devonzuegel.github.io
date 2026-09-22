@@ -1,9 +1,9 @@
-import { addMapboxBasemap } from "./shared/mapbox-basemap.js";
+import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";
 import {
   mountVenueMaps,
   disposeVenueMaps,
-} from "./shared/venue-maps.js?v=20260922-mapbox";
+} from "./shared/venue-maps.js?v=20260922-minimap-logo";
 import {
   DEFAULT_CITIES,
   SIZE_BUCKETS,

@@ -1,4 +1,4 @@
-import { addMapboxBasemap } from "./mapbox-basemap.js";
+import { addMapboxBasemap } from "./mapbox-basemap.js?v=20260922-minimap-logo";
 // Only visible thumbnails load maps; dispose them as rows leave the viewport.
 const groups = new Map();
 export function disposeVenueMaps(root) {
