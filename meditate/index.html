@@ -360,6 +360,12 @@
     font-weight: 500;
   }
   .chip:hover{ border-color: var(--moss); background: var(--card); }
+  .chip.is-active{
+    border-color: var(--moss);
+    background: var(--moss);
+    color: var(--paper);
+  }
+  .library-chips{ margin: 14px 0 18px; }
 
   .status{
     font-size: 14px;
@@ -1178,7 +1184,7 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             <span class="nav-action-label">Refresh</span>
           </button>
-          <button type="button" class="tab" data-view="library">Library <span class="count">10</span></button>
+          <button type="button" class="tab" data-view="library">Library <span class="count">13</span></button>
           <button type="button" class="tab" data-view="saved">Saved <span class="count" id="saved-count"></span></button>
           <button type="button" class="tab" data-view="history">History</button>
           <button type="button" class="tab" data-view="about">About</button>
@@ -1201,6 +1207,7 @@
           <button type="button" class="chip" data-q="loving kindness meditation">Loving-kindness</button>
           <button type="button" class="chip" data-q="sleep meditation">Sleep</button>
           <button type="button" class="chip" data-q="breathing meditation">Breathing</button>
+          <button type="button" class="chip" data-library-category="stretch-yoga" data-q="stretch &amp; yoga">Stretch &amp; yoga</button>
         </div>
 
         <div class="status" id="status"></div>
@@ -1210,6 +1217,11 @@
 
     <div class="view" id="view-library">
       <div class="status" id="library-status"></div>
+      <div class="chips library-chips" id="library-chips">
+        <button type="button" class="chip is-active" data-library-category="all">All</button>
+        <button type="button" class="chip" data-library-category="unclenching">Unclenching</button>
+        <button type="button" class="chip" data-library-category="stretch-yoga">Stretch &amp; yoga</button>
+      </div>
       <div id="library-results"></div>
     </div>
 
@@ -1230,7 +1242,7 @@
     </div>
 
     <div class="view" id="view-about">
-      <p class="about-footer">The built-in library includes ten guided practices from <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench</a> by Jonny Miller. Search results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>, filtered to audio items tagged with meditation-related subjects.</p>
+      <p class="about-footer">The built-in library includes ten guided practices from <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench</a> by Jonny Miller, plus three movement practices: <a href="https://commons.wikimedia.org/wiki/File:Yoga-Meditation.ogg" target="_blank" rel="noopener">Yoga Meditation</a> and <a href="https://commons.wikimedia.org/wiki/File:Computer_Yoga.ogg" target="_blank" rel="noopener">Computer Yoga</a> by Yogi Nils (CC BY-SA 3.0), and <a href="https://ccmixter.org/files/GeeArtriasRose/49356" target="_blank" rel="noopener">Move More Fluidly</a> by GeeArtriasRose (CC BY-NC 3.0). Search results are pulled live from the <a href="https://archive.org/advancedsearch.php" target="_blank" rel="noopener">Internet Archive Advanced Search API</a>.</p>
 
       <div class="about-section">
         <h2 class="about-section-title">Refresh App</h2>
@@ -1304,7 +1316,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-19T07:15:18Z'; // updated by deploy
+const BUILD_TIME = '2026-09-22T04:51:24Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1423,6 +1435,45 @@ const BUILTIN_TRACKS = [
     runtime: '4:05',
     description: 'A gentle practice to help you access your inner wisdom and guidance.',
     audioUrl: './audio/unclenching/welcome-everything.mp3'
+  },
+  {
+    identifier: 'stretch-yoga-meditation',
+    title: 'Yoga Meditation',
+    creator: 'Yogi Nils',
+    runtime: '7:50',
+    description: 'A short, calm guided yoga and meditation sequence for gently settling the body and mind.',
+    audioUrl: './audio/stretching/yoga-meditation.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Yoga-Meditation.ogg',
+    sourceLabel: 'Wikimedia Commons',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+    licenseLabel: 'CC BY-SA 3.0'
+  },
+  {
+    identifier: 'stretch-computer-yoga',
+    title: 'Computer Yoga',
+    creator: 'Yogi Nils',
+    runtime: '8:53',
+    description: 'A simple guided yoga break with gentle movement to release tension after sitting or screen time.',
+    audioUrl: './audio/stretching/computer-yoga.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Computer_Yoga.ogg',
+    sourceLabel: 'Wikimedia Commons',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+    licenseLabel: 'CC BY-SA 3.0'
+  },
+  {
+    identifier: 'stretch-move-more-fluidly',
+    title: 'Move More Fluidly',
+    creator: 'GeeArtriasRose',
+    runtime: '6:27',
+    description: 'A gentle guided movement practice for noticing tight places and releasing tension throughout the body.',
+    audioUrl: './audio/stretching/move-more-fluidly.mp3',
+    category: 'stretch-yoga',
+    sourceUrl: 'https://ccmixter.org/files/GeeArtriasRose/49356',
+    sourceLabel: 'ccMixter',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc/3.0/',
+    licenseLabel: 'CC BY-NC 3.0'
   }
 ];
 
@@ -1784,6 +1835,7 @@ function renderHistory(){
       if(builtin && !metaCache.has(id)){
         metaCache.set(id, { url: builtin.audioUrl, duration: builtin.runtime });
       }
+      if(builtin) activeLibraryCategory = builtin.category || 'unclenching';
       activateView(builtin ? 'library' : 'search');
       playTrack(id);
     });
@@ -1944,6 +1996,7 @@ navLogoEl.addEventListener('click', () => {
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     setNavMenuOpen(false);
+    if(tab.dataset.view === 'library') activeLibraryCategory = 'all';
     activateView(tab.dataset.view);
   });
 });
@@ -1963,13 +2016,31 @@ requestAnimationFrame(() => {
   requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
 });
 
-function renderLibrary(){
-  libraryStatusEl.innerHTML = `10 guided practices · <a href="https://howtounclench.com/#the-unclenching-library" target="_blank" rel="noopener">How to Unclench ↗</a>`;
+let activeLibraryCategory = 'all';
 
-  const html = BUILTIN_TRACKS.map(item => {
+function renderLibrary(category = activeLibraryCategory){
+  activeLibraryCategory = category;
+  const items = category === 'all'
+    ? BUILTIN_TRACKS
+    : BUILTIN_TRACKS.filter(item => (item.category || 'unclenching') === category);
+  const categoryLabel = category === 'stretch-yoga' ? 'Stretch & yoga' : 'Unclenching';
+  libraryStatusEl.textContent = category === 'all'
+    ? `${BUILTIN_TRACKS.length} guided practices · 2 collections`
+    : `${items.length} ${categoryLabel.toLowerCase()} practices`;
+
+  document.querySelectorAll('#library-chips .chip').forEach(chip => {
+    chip.classList.toggle('is-active', chip.dataset.libraryCategory === category);
+  });
+
+  const html = items.map(item => {
     const saved = isSaved(item.identifier);
+    const sourceUrl = item.sourceUrl || 'https://howtounclench.com/#the-unclenching-library';
+    const sourceLabel = item.sourceLabel || 'How to Unclench';
+    const licenseUrl = item.licenseUrl || '';
+    const licenseLabel = item.licenseLabel || '';
+    const badgeLabel = item.category === 'stretch-yoga' ? 'Stretch & yoga' : 'Unclenching';
     return `
-    <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-builtin="true" data-source-url="https://howtounclench.com/#the-unclenching-library">
+    <div class="result-group" data-identifier="${escapeHtml(item.identifier)}" data-title="${escapeHtml(item.title)}" data-creator="${escapeHtml(item.creator)}" data-runtime="${escapeHtml(item.runtime)}" data-desc="${escapeHtml(item.description)}" data-builtin="true" data-source-url="${escapeHtml(sourceUrl)}" data-source-label="${escapeHtml(sourceLabel)}" data-license-url="${escapeHtml(licenseUrl)}" data-license-label="${escapeHtml(licenseLabel)}">
       <div class="result" data-id="${escapeHtml(item.identifier)}">
         <button type="button" class="result-icon-btn" data-id="${escapeHtml(item.identifier)}" aria-label="Play"><div class="result-icon">${playIcon()}</div></button>
         <div class="result-body">
@@ -1979,7 +2050,7 @@ function renderLibrary(){
               <span class="result-chevron-icon">${chevronIcon()}</span>
             </button>
             <div class="result-badges">
-              <span class="result-runtime">${escapeHtml(item.runtime)} · Built in</span>
+              <span class="result-runtime">${escapeHtml(item.runtime)} · ${escapeHtml(badgeLabel)}</span>
               <span class="result-saved-icon ${saved ? 'is-saved' : ''}" data-id="${escapeHtml(item.identifier)}">${bookmarkIcon(saved)}</span>
             </div>
           </div>
@@ -2022,7 +2093,7 @@ function renderSaved(){
     const creator = item.creator || '';
     const builtin = BUILTIN_TRACKS.find(track => track.identifier === id);
     const builtinAttrs = builtin
-      ? ' data-builtin="true" data-source-url="https://howtounclench.com/#the-unclenching-library"'
+      ? ` data-builtin="true" data-source-url="${escapeHtml(builtin.sourceUrl || 'https://howtounclench.com/#the-unclenching-library')}" data-source-label="${escapeHtml(builtin.sourceLabel || 'How to Unclench')}" data-license-url="${escapeHtml(builtin.licenseUrl || '')}" data-license-label="${escapeHtml(builtin.licenseLabel || '')}"`
       : '';
     return `
       <div class="result-group" data-identifier="${escapeHtml(id)}" data-title="${escapeHtml(title)}" data-creator="${escapeHtml(creator)}" data-runtime="${escapeHtml(item.runtime || '')}" data-desc="${escapeHtml(item.description || '')}"${builtinAttrs}>
@@ -2380,13 +2451,17 @@ function toggleExpand(identifier){
       const url = builtinTrack?.audioUrl
         || (openIdentifier === identifier && currentAudio ? currentAudio.src : '');
       const sourceUrl = group.dataset.sourceUrl || `https://archive.org/details/${encodeURIComponent(identifier)}`;
+      const sourceLabel = group.dataset.sourceLabel || (isBuiltin ? 'Built-in source' : 'archive.org');
+      const licenseUrl = group.dataset.licenseUrl || '';
+      const licenseLabel = group.dataset.licenseLabel || '';
       slot.innerHTML = `
         <div class="player-row">
           ${group.dataset.title ? `<p class="player-full-title">${escapeHtml(group.dataset.title)}</p>` : ''}
           ${group.dataset.desc ? `<p class="player-full-desc">${escapeHtml(group.dataset.desc)}</p>` : ''}
           <div class="player-meta">
             ${group.dataset.creator ? (isBuiltin ? `<span>${escapeHtml(group.dataset.creator)}</span>` : `<button type="button" class="creator-link" data-creator="${escapeHtml(group.dataset.creator)}">${escapeHtml(group.dataset.creator)}</button>`) : ''}
-            <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${isBuiltin ? 'How to Unclench' : 'archive.org'}</a>
+            <a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(sourceLabel)}</a>
+            ${licenseUrl && licenseLabel ? `<a href="${escapeHtml(licenseUrl)}" target="_blank" rel="noopener">${escapeHtml(licenseLabel)}</a>` : ''}
           </div>
           ${url ? `<audio controls src="${escapeHtml(url)}"></audio>` : ''}
           <div style="margin-top:10px;">
@@ -2454,11 +2529,22 @@ function cssEscape(str){
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  if(/\b(stretch|stretching|yoga|mobility)\b/i.test(input.value)){
+    activeLibraryCategory = 'stretch-yoga';
+    activateView('library');
+    return;
+  }
   search(input.value, 0);
 });
 
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
+    if(chip.dataset.libraryCategory){
+      activeLibraryCategory = chip.dataset.libraryCategory;
+      if(chip.dataset.q) input.value = chip.dataset.q;
+      activateView('library');
+      return;
+    }
     input.value = chip.dataset.q;
     search(chip.dataset.q, 0);
   });

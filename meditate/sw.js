@@ -1,4 +1,4 @@
-const SHELL_CACHE = 'meditation-shell-20260919071518';
+const SHELL_CACHE = 'meditation-shell-20260922045124';
 const AUDIO_CACHE = 'meditation-audio-v1';
 const SHELL_URLS = ['./', './index.html', './manifest.json'];
 
@@ -36,7 +36,7 @@ self.addEventListener('fetch', (event) => {
   const isArchiveAudio = url.hostname.endsWith('archive.org')
     && /\.(mp3|ogg)$/i.test(url.pathname);
   const isBuiltinAudio = url.origin === self.location.origin
-    && /\/audio\/unclenching\/[^/]+\.(mp3|ogg)$/i.test(url.pathname);
+    && /\/audio\/[^/]+\/[^/]+\.(mp3|ogg)$/i.test(url.pathname);
   if(isArchiveAudio || isBuiltinAudio){
     event.respondWith(
       caches.open(AUDIO_CACHE).then((cache) =>
