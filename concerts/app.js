@@ -51,6 +51,7 @@ const icons = {
   arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
   external: '<path d="M14 3h7v7m0-7L10 14M11 4H4v16h16v-7"/>',
   down: '<path d="m7 10 5 5 5-5"/>',
+  chevron: '<path d="m9 5 7 7-7 7"/>',
   left: '<path d="m15 5-7 7 7 7"/>',
   right: '<path d="m9 5 7 7-7 7"/>',
   upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/>',
@@ -369,7 +370,7 @@ function row(e) {
       ?.slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || '<span class="genre-tag">Genre unknown</span>'
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(match.name + ": " + match.reason)}">${icon("spotify")}You listen to this</span>` : ""}</div></div></div><div class="event-location"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("listen", "play", "Sample " + e.artists?.[0]?.name, `data-id="${esc(e.id)}"`, "listen-btn")}</div>${
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(match.name + ": " + match.reason)}">${icon("spotify")}You listen to this</span>` : ""}</div></div></div><div class="event-location"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div>${
     state.tab === "saved" && (a.notes || a.music || a.venue || a.visuals)
       ? `<div class="inline-assessment">${["music", "venue", "visuals"]
           .filter((k) => a[k])
@@ -1077,7 +1078,20 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("click", async (e) => {
   const el = e.target.closest("[data-action]");
-  if (!el || el.disabled) return;
+  if (!el) {
+    const row = e.target.closest(".event-row");
+    if (
+      row &&
+      !e.target.closest(
+        'a, button, input, select, textarea, [role="button"]',
+      ) &&
+      !window.getSelection()?.toString()
+    ) {
+      openDetail(row.dataset.eventId);
+    }
+    return;
+  }
+  if (el.disabled) return;
   const action = el.dataset.action,
     id = el.dataset.id;
   try {

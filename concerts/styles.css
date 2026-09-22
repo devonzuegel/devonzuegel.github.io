@@ -808,6 +808,7 @@ small {
   letter-spacing: 0.1px;
 }
 .event-row {
+  cursor: pointer;
   display: grid;
   grid-template-columns: 70px minmax(200px, 1.3fr) minmax(170px, 1fr) 73px;
   gap: 15px;
@@ -1006,7 +1007,7 @@ small {
 .save-btn.saved .icon {
   fill: #a94e321a;
 }
-.listen-btn {
+.details-btn {
   border: 1px solid var(--line);
   border-radius: 50%;
   width: 29px;
@@ -1016,11 +1017,11 @@ small {
   align-items: center;
   justify-content: center;
 }
-.listen-btn .icon {
+.details-btn .icon {
   width: 13px;
   height: 13px;
 }
-.listen-btn:hover {
+.details-btn:hover {
   background: var(--green);
   color: white;
 }
@@ -2312,7 +2313,7 @@ small {
     min-width: 30px;
     height: 30px;
   }
-  .listen-btn {
+  .details-btn {
     width: 26px;
     height: 26px;
   }
@@ -2499,7 +2500,7 @@ small {
   .event-date .day,
   .capacity,
   .save-btn,
-  .listen-btn,
+  .details-btn,
   .rating-score,
   .searchbox .icon,
   .list-table-header {
@@ -2540,7 +2541,7 @@ small {
   }
   .city-toggle[aria-pressed="true"] .city-check,
   .chip.active,
-  .listen-btn:hover,
+  .details-btn:hover,
   .calendar-day.today .num,
   .primary,
   .rating-score.selected,
