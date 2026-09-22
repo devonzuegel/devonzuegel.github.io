@@ -83,6 +83,19 @@
   .stat-card .stat-lbl { font-family: var(--mono); font-size: 10px; color: var(--sage); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
   .chart-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
   .chart-card canvas { width: 100%; display: block; }
+  .player-chart { min-width:0; }
+  .player-chart-note, .player-chart-detail { font:11px/1.5 var(--mono); color:var(--sage); }
+  .player-chart-note { min-height:50px; margin:10px 0; }
+  .player-chart-body { overflow-x:auto; }
+  .player-chart-body svg { display:block; min-width:320px; font-family:var(--mono); }
+  .player-chart-detail { margin-top:10px; min-height:34px; max-height:100px; overflow:auto; color:var(--bone); }
+  .player-chart [tabindex]:focus { outline:2px solid var(--bone); outline-offset:2px; }
+  .player-ranking { max-height:260px; overflow:auto; }
+  .player-rank-row { display:grid; grid-template-columns:minmax(70px, 1fr) 2fr 40px; gap:8px; align-items:center; padding:5px 2px; font:11px var(--mono); }
+  .player-rank-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .player-rank-track { height:12px; background:var(--surface2); border-radius:2px; }
+  .player-rank-fill { display:block; height:100%; background:var(--amber); border-radius:2px; }
+  .player-rank-count { text-align:right; color:var(--amber); }
   .current-week-label { position:absolute; color:var(--amber); background:var(--surface2); border:1px solid var(--amber); border-radius:4px; padding:3px 5px; font:700 10px var(--mono); white-space:nowrap; transform:translateX(-100%) rotate(-45deg); transform-origin:right top; animation:week-pulse 2s ease-in-out infinite; }
   @keyframes week-pulse { 0%, 100% { opacity:1; box-shadow:0 0 7px #E9A83A55; } 50% { opacity:.65; box-shadow:0 0 0 #E9A83A00; } }
   @media (prefers-reduced-motion:reduce) { .current-week-label { animation:none; } }
@@ -122,6 +135,7 @@
 </div>
 
 
+<script src="player-charts.js"></script>
 <script>
 var API = "https://boggle-api.vercel.app/api";
 var expanded = {};
@@ -993,25 +1007,6 @@ function renderStats() {
   var cC = makeChartCard("Score distribution", "chart-scores", 160);
   grid2.appendChild(cC.card);
 
-  // ── Chart D: Games per player distribution ─────────────────────────────
-  var gpPerPlayer = players.map(function(p) {
-    return (p.fullData && p.fullData.sessions || []).filter(function(s){ return !s.early; }).length;
-  });
-  var maxGP = Math.max.apply(null, gpPerPlayer.concat([1]));
-  var gpDist = [], gpDistLabels = [];
-  // bucket by 1 up to 10, then 11-20, 21+
-  for (var g = 0; g <= Math.min(maxGP, 10); g++) {
-    gpDist.push(gpPerPlayer.filter(function(v){ return v === g; }).length);
-    gpDistLabels.push(String(g));
-  }
-  if (maxGP > 10) {
-    gpDist.push(gpPerPlayer.filter(function(v){ return v > 10; }).length);
-    gpDistLabels.push("11+");
-  }
-
-  var cD = makeChartCard("Games per player", "chart-gpp", 160);
-  grid2.appendChild(cD.card);
-
   // ── Chart E: Avg score per week ────────────────────────────────────────
   var avgScorePerWeek = weeks12.map(function(mon) {
     var end = new Date(mon); end.setDate(mon.getDate() + 7);
@@ -1096,6 +1091,10 @@ function renderStats() {
   el.appendChild(grid1);
   el.appendChild(grid2);
   el.appendChild(wideDiv);
+  var playerCharts = document.createElement("div");
+  playerCharts.className = "stats-grid";
+  el.appendChild(playerCharts);
+  renderPlayerGameCharts(playerCharts, players);
 
   // ── Draw all charts after DOM is ready ────────────────────────────────
   setTimeout(function() {
@@ -1115,9 +1114,6 @@ function renderStats() {
 
     // C: Score distribution
     drawBarChart(cC.canvas, scoreLabels, scoreDist, C.sage, { rotateLabels: true });
-
-    // D: Games per player
-    drawBarChart(cD.canvas, gpDistLabels, gpDist, C.amber, {});
 
     // E: Avg score per week (line)
     var cdE = drawLineChart(cE.canvas, weeks12.map(weekLabel), avgScorePerWeek, C.sage, { zeroBase: true });
