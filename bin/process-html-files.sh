@@ -48,3 +48,7 @@ echo "Processed all HTML files in '$DIRECTORY' and its subdirectories."
 ##################################################################################################################################
 
 find . -type f -name '*.html' -exec sed -i '' 's/<meta<!DOCTYPE html>/<!DOCTYPE html>/' {} \;
+
+
+# Add the shared System / Light / Dark appearance selector to main-site pages.
+python3 bin/install-theme.py "$DIRECTORY"

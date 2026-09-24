@@ -898,36 +898,38 @@ html[data-theme="dark"] ul.tags li a {
   color: #c0c0c0 !important;
 }
 
-/* Dark mode toggle button */
-#dark-mode-toggle {
-  background: rgba(128, 128, 128, 0.12);
-  border: none;
-  border-radius: 4px;
-  padding: 3px 7px;
-  cursor: pointer;
+/* Shared appearance selector */
+html { color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) { color-scheme: dark; }
+}
+.theme-control-wrap { margin-top: 16px; }
+.theme-control {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  opacity: 0.7;
-  transition: opacity 0.2s, background 0.2s;
+  gap: 6px;
+  margin: 0;
   font-size: 12px;
   color: inherit;
-  line-height: 1;
 }
-#dark-mode-toggle:hover {
-  opacity: 1;
-  background: rgba(128, 128, 128, 0.2);
+.theme-select {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 4px 6px;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
-#dark-mode-toggle svg {
-  display: block;
-  flex-shrink: 0;
+.theme-select:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
-/* Narrow header: show inline after the nav links, icon only */
-.narrow-only #dark-mode-toggle {
-  margin-left: 6px;
+.narrow-only .theme-control {
+  margin-left: 8px;
   vertical-align: middle;
-  font-size: 0;
-}
-.narrow-only #dark-mode-toggle svg {
-  display: inline-block;
 }
