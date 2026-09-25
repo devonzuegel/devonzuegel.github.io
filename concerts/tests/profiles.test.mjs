@@ -144,3 +144,32 @@ test("API validates auth, methods and field values and supports cross-device sav
     undefined,
   );
 });
+
+test("hide and restore sync across devices while preserving bookmarks and notes", async () => {
+  const p = await createProfile("hide-restore");
+  await syncProfile(p.username, p.code, [
+    op("keep", "event/show/saved", true),
+    op("note", "event/show/notes", "Keep this thought"),
+    op("hide", "event/show/hidden", true),
+  ]);
+  const second = await authenticate(p.username, p.code);
+  assert.equal(second.fields["event/show/hidden"].value, true);
+  await syncProfile(p.username, p.code, [
+    op(
+      "restore",
+      "event/show/hidden",
+      false,
+      second.fields["event/show/hidden"].rev,
+    ),
+  ]);
+  const first = await authenticate(p.username, p.code);
+  assert.equal(first.fields["event/show/hidden"].value, false);
+  assert.equal(first.fields["event/show/saved"].value, true);
+  assert.equal(first.fields["event/show/notes"].value, "Keep this thought");
+  await assert.rejects(
+    syncProfile(p.username, p.code, [
+      op("invalid", "event/show/hidden", "true"),
+    ]),
+    { status: 400 },
+  );
+});

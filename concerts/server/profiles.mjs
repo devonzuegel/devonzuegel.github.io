@@ -72,12 +72,12 @@ export function validateOp(op) {
       throw Object.assign(new Error("Invalid change."), { status: 400 });
     const v = op.value;
     if (
-      /^event\/[a-zA-Z0-9_.:-]+\/(saved|notes|music|venue|visuals|snapshot)$/.test(
+      /^event\/[a-zA-Z0-9_.:-]+\/(saved|hidden|notes|music|venue|visuals|snapshot)$/.test(
         op.key,
       )
     ) {
       const field = op.key.split("/")[2];
-      if (field === "saved" && typeof v !== "boolean")
+      if (["saved", "hidden"].includes(field) && typeof v !== "boolean")
         throw new Error("Invalid bookmark.");
       if (field === "notes" && (typeof v !== "string" || v.length > 30000))
         throw new Error("Notes must be under 30,000 characters.");

@@ -188,3 +188,50 @@ test("pasted YouTube URLs accept only genuine video URL hosts and IDs", async ()
   );
   assert.equal(youtubeVideoID("javascript:alert(1)"), null);
 });
+
+test("hidden concerts leave discovery and saved views without losing personal data", () => {
+  const event = concert();
+  const fields = {
+    "event/show-1/hidden": { value: true },
+    "event/show-1/saved": { value: true },
+    "event/show-1/notes": { value: "Great visuals" },
+    "event/show-1/snapshot": { value: event },
+  };
+  assert.equal(filterEvents([event], filters, fields).length, 0);
+  assert.equal(
+    filterEvents([event], { ...filters, tab: "saved" }, fields).length,
+    0,
+  );
+  assert.equal(savedCounts([event], fields).total, 0);
+  const hiddenFilters = {
+    ...filters,
+    tab: "hidden",
+    cities: [],
+    from: "2030-01-01",
+    to: "2030-01-02",
+    genre: "Rock",
+    matches: true,
+  };
+  assert.equal(
+    filterEvents(allEvents([], fields), hiddenFilters, fields).length,
+    1,
+  );
+  assert.equal(
+    filterEvents([event], { ...hiddenFilters, query: "visuals" }, fields)
+      .length,
+    1,
+  );
+  assert.equal(
+    filterEvents([event], { ...hiddenFilters, query: "no match" }, fields)
+      .length,
+    0,
+  );
+  fields["event/show-1/hidden"].value = false;
+  assert.equal(filterEvents([event], filters, fields).length, 1);
+  assert.equal(
+    filterEvents([event], { ...filters, tab: "saved" }, fields).length,
+    1,
+  );
+  assert.equal(filterEvents([event], hiddenFilters, fields).length, 0);
+  assert.equal(fields["event/show-1/notes"].value, "Great visuals");
+});

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=DM+Serif+Display:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400..700;1,400..700&family=Inter:wght@400..700&display=swap");
 :root {
   color-scheme: light dark;
   --paper: #f7f5ef;
@@ -11,8 +11,8 @@
   --accent-soft: #f1e4d9;
   --green: #45634d;
   --green-soft: #e6ecdf;
-  --serif: "DM Serif Display", Georgia, serif;
-  --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --serif: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --radius: 9px;
 }
 * {
@@ -407,7 +407,7 @@ small {
   padding: 35px 44px 35px;
   max-width: 1650px;
   width: 100%;
-  margin: auto;
+  margin: 0 auto;
   align-self: start;
 }
 .topline {
@@ -810,7 +810,7 @@ small {
 }
 .list-table-header {
   display: grid;
-  grid-template-columns: 70px minmax(200px, 1.3fr) minmax(170px, 1fr) 73px;
+  grid-template-columns: 70px minmax(200px, 1.3fr) minmax(170px, 1fr) 110px;
   gap: 15px;
   padding: 19px 0 6px;
   font-size: 9px;
@@ -849,7 +849,7 @@ small {
 .event-row {
   cursor: pointer;
   display: grid;
-  grid-template-columns: 70px minmax(200px, 1.3fr) minmax(170px, 1fr) 73px;
+  grid-template-columns: 70px minmax(200px, 1.3fr) minmax(170px, 1fr) 110px;
   gap: 15px;
   align-items: center;
   position: relative;
@@ -1047,8 +1047,7 @@ small {
   fill: #a94e321a;
 }
 .details-btn {
-  border: 1px solid var(--line);
-  border-radius: 50%;
+  border: 0;
   width: 29px;
   height: 29px;
   color: #6e7965;
@@ -1061,8 +1060,8 @@ small {
   height: 13px;
 }
 .details-btn:hover {
-  background: var(--green);
-  color: white;
+  background: transparent;
+  color: var(--ink);
 }
 .inline-assessment {
   grid-column: 2 / 4;
@@ -1952,6 +1951,7 @@ small {
   box-shadow: 0 4px 18px #24301b24;
 }
 #toast.visible {
+  pointer-events: auto;
   opacity: 1;
   transform: translate(-50%, 0);
 }
@@ -1990,7 +1990,7 @@ small {
   }
   .event-row,
   .list-table-header {
-    grid-template-columns: 80px minmax(250px, 1.3fr) minmax(220px, 1fr) 90px;
+    grid-template-columns: 80px minmax(250px, 1.3fr) minmax(220px, 1fr) 110px;
   }
   .event-art {
     width: 60px;
@@ -2012,7 +2012,7 @@ small {
   }
   .event-row,
   .list-table-header {
-    grid-template-columns: 58px minmax(160px, 1.25fr) minmax(150px, 1fr) 63px;
+    grid-template-columns: 58px minmax(160px, 1.25fr) minmax(150px, 1fr) 110px;
     gap: 9px;
   }
   .event-art {
@@ -2577,7 +2577,6 @@ small {
   }
   .city-toggle[aria-pressed="true"] .city-check,
   .chip.active,
-  .details-btn:hover,
   .calendar-day.today .num,
   .primary,
   .rating-score.selected,
@@ -3012,7 +3011,7 @@ summary.month-heading:focus-visible {
 @media (min-width: 1200px) {
   .event-row,
   .list-table-header {
-    grid-template-columns: 62px minmax(260px, 1fr) minmax(380px, 1fr) 73px;
+    grid-template-columns: 62px minmax(260px, 1fr) minmax(380px, 1fr) 110px;
     gap: 16px;
   }
   .event-art {
@@ -3205,4 +3204,42 @@ summary.month-heading:focus-visible {
   .viewbar-right .view-switch {
     margin-left: auto;
   }
+}
+
+.hide-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 33px;
+  border-radius: 50%;
+  color: var(--muted);
+}
+.hide-btn:hover {
+  background: var(--green-soft);
+  color: var(--ink);
+}
+.hidden-view .filter-select,
+.hidden-view .matches-toggle,
+.hidden-view .view-switch {
+  display: none;
+}
+.toast-undo {
+  color: inherit;
+  text-decoration: underline;
+  margin-left: 14px;
+  font-weight: 600;
+  padding: 6px;
+}
+
+.date-toolbar[hidden] {
+  display: none;
+}
+
+.results-ghost {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--paper);
+  overflow: hidden;
 }

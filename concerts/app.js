@@ -1,3 +1,4 @@
+import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";
 import {
@@ -29,13 +30,15 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=weekend-labels";
+} from "./shared/core.js?v=20260924-hidden";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 const config = window.CONCERTS_CONFIG || {},
   apiBase = config.apiBase || "/api/concerts";
 const store = new ClientStore(apiBase);
 const icons = {
+  hide: '<path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.5 5.3A11 11 0 0 1 12 5c6 0 10 7 10 7a18 18 0 0 1-3 3.6M6.5 6.5A21 21 0 0 0 2 12s4 7 10 7a11 11 0 0 0 5.5-1.5"/>',
+  restore: '<path d="M3 4v6h6M3 10a9 9 0 1 1 1 8"/>',
   search: '<circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 4.5 4.5"/>',
   explore: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
   bookmark: '<path d="M6.5 4.5h11v16L12 17l-5.5 3.5z"/>',
@@ -153,12 +156,19 @@ function persistUI() {
     );
   } catch {}
 }
-function toast(message) {
+function toast(message, action = "") {
   const el = $("#toast");
-  el.textContent = message;
+  el.innerHTML = esc(message) + action;
+  el.inert = false;
   el.classList.add("visible");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("visible"), 4200);
+  toastTimer = setTimeout(
+    () => {
+      el.classList.remove("visible");
+      el.inert = true;
+    },
+    action ? 10000 : 4200,
+  );
 }
 const events = () => allEvents(state.feed.events, store.fields);
 const listening = () => valueAt(store.fields, "listening", {});
@@ -215,7 +225,10 @@ function shell() {
 }
 function navMarkup(mobile = false) {
   const count = savedCounts(events(), store.fields);
-  return `<div class="${mobile ? "mobile-nav" : "main-nav"}">${button("tab", icon("explore") + "Discover", `nav-btn ${state.tab === "discover" ? "active" : ""}`, 'data-tab="discover"')}${button("tab", icon("bookmark") + 'Saved <span class="badge">' + count.upcoming + "</span>", `nav-btn ${state.tab === "saved" ? "active" : ""}`, 'data-tab="saved"')}${mobile ? icoButton("profile", "user", "Your profile") : ""}</div>`;
+  const hidden = events().filter(
+    (e) => assessment(store.fields, e.id).hidden,
+  ).length;
+  return `<div class="${mobile ? "mobile-nav" : "main-nav"}">${button("tab", icon("explore") + "Discover", `nav-btn ${state.tab === "discover" ? "active" : ""}`, 'data-tab="discover"')}${button("tab", icon("bookmark") + 'Saved <span class="badge">' + count.upcoming + "</span>", `nav-btn ${state.tab === "saved" ? "active" : ""}`, 'data-tab="saved"')}${button("tab", icon("hide") + 'Hidden <span class="badge">' + hidden + "</span>", `nav-btn ${state.tab === "hidden" ? "active" : ""}`, 'data-tab="hidden"')}${mobile ? icoButton("profile", "user", "Your profile") : ""}</div>`;
 }
 function renderChrome() {
   const account = button(
@@ -227,7 +240,7 @@ function renderChrome() {
   const c = cities();
   $("#sidebar-content").innerHTML =
     navMarkup() +
-    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="sidebar-sources">${button("sources", icon("info") + "Sources", "subtle-btn")}</div><div class="listening-box">${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your Spotify history" : "Add your Spotify history"), "small-button")}</div>`;
+    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="sidebar-sources">${button("sources", icon("info") + "Sources", "subtle-btn")}</div><div class="listening-box">${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your Spotify history" : "Add your Spotify listening history"), "small-button")}</div>`;
   $("#sidebar-bottom").innerHTML =
     `${button("profile", `<span class="avatar">${esc((store.profile || "D").slice(0, 1).toUpperCase())}</span><span class="profile-text"><strong>${esc(store.profile || "Your account")}</strong><small title="${esc(store.lastError)}">${esc(store.status)}</small></span>${icon("down")}`, "profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
   $("#mobile-header").innerHTML =
@@ -302,7 +315,11 @@ function renderControls() {
       SIZE_BUCKETS.map((x) => [x[0], x[1]]),
       state.size,
     )}</select></label></div>`;
-  if (state.tab === "saved" && state.savedPeriod !== "upcoming")
+  $("#controls").classList.toggle("hidden-view", state.tab === "hidden");
+  if (
+    state.tab === "hidden" ||
+    (state.tab === "saved" && state.savedPeriod !== "upcoming")
+  )
     $("#controls .date-toolbar").hidden = true;
 }
 function sizeDots(v) {
@@ -319,6 +336,16 @@ function sizeDots(v) {
               ? 4
               : 5;
   return `<span class="size-dots" aria-hidden="true">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? "lit" : ""}"></i>`).join("")}</span>`;
+}
+function hideBtn(e) {
+  const hidden = assessment(store.fields, e.id).hidden;
+  return icoButton(
+    hidden ? "restore" : "hide",
+    hidden ? "restore" : "hide",
+    (hidden ? "Restore concert: " : "Hide concert: ") + e.title,
+    `data-id="${esc(e.id)}"`,
+    "hide-btn",
+  );
 }
 function saveBtn(e) {
   const saved = assessment(store.fields, e.id).saved;
@@ -399,15 +426,17 @@ function row(e) {
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location"><div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location"><div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 function resultsBar(list) {
   const counts = savedCounts(events(), store.fields);
   const label =
     state.tab === "saved"
       ? `Showing ${list.length} of ${state.savedPeriod === "upcoming" ? counts.upcoming + " upcoming" : counts.total} saved`
-      : list.length + " concerts";
-  return `<div class="viewbar"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "Refresh", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
+      : state.tab === "hidden"
+        ? `${list.length} hidden ${list.length === 1 ? "concert" : "concerts"} · all dates and cities`
+        : list.length + " concerts";
+  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "Refresh", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ["matches", "Listening matches"],
     ...(state.tab === "saved"
@@ -442,13 +471,8 @@ function resultsBar(list) {
 function feedNote() {
   return `${state.feed.sourceError ? `<div class="banner">${esc(state.feed.sourceError)}</div>` : ""}${store.data.conflicts?.length ? `<div class="banner">A note was edited on two devices. ${button("conflicts", "Review both versions", "text-button")}</div>` : ""}${state.matches && !Object.keys(listening() || {}).length ? `<div class="banner">Add your listening history to find familiar artists. ${button("listening", "Import Spotify history", "text-button")}</div>` : ""}${state.unmapped ? `<div class="banner">Showing concerts without a verified map location. ${button("clear-unmapped", "Show all concerts", "text-button")}</div>` : ""}`;
 }
+let lastResultsBody = null;
 function renderResults() {
-  disposeVenueMaps($("#results"));
-  if (map) {
-    state.mapPosition = { center: map.getCenter(), zoom: map.getZoom() };
-    map.remove();
-    map = null;
-  }
   const list = filtered(),
     root = $("#results");
   if (!root) return;
@@ -467,7 +491,14 @@ function renderResults() {
       state.tab === "saved" && !savedCounts(events(), store.fields).total
         ? "Save a concert with the bookmark button. Your notes, ratings, and plans will have a home here."
         : "Try a wider date range, another city, or fewer filters. Venue calendars are only part of the picture.";
-    body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(state.tab === "saved" ? "discover" : "reset-filters", state.tab === "saved" ? "Explore concerts" : "Reset filters", "secondary")}</div>`;
+    if (state.tab === "hidden") {
+      title = state.query
+        ? "No hidden concerts match your search."
+        : "No hidden concerts.";
+      text =
+        "Concerts you hide appear here. Restore any concert to show it in results again.";
+    }
+    body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Explore concerts" : "Reset filters", "secondary")}</div>`;
   } else if (state.view === "list") {
     let month = "";
     body =
@@ -491,7 +522,32 @@ function renderResults() {
   } else if (state.view === "calendar") body = calendarView(list);
   else if (state.view === "venue") body = venueView(list);
   else body = mapView(list);
-  root.innerHTML = resultsBar(list) + feedNote() + body;
+  // Loading and sync notifications should not restart a transition or reload maps.
+  const notices = feedNote();
+  const signature = state.view + "|" + body;
+  if (lastResultsBody === signature && root.querySelector(".results-content")) {
+    root.querySelector(".viewbar").outerHTML = resultsBar(list);
+    root.querySelector(".results-notices").innerHTML = notices;
+    persistUI();
+    return;
+  }
+  const before = captureResults(
+    root.querySelector(".results-content"),
+    new Set(
+      state.view === "list" ? list.slice(0, state.limit).map((e) => e.id) : [],
+    ),
+  );
+  disposeVenueMaps(root);
+  if (map) {
+    state.mapPosition = { center: map.getCenter(), zoom: map.getZoom() };
+    map.remove();
+    map = null;
+  }
+  lastResultsBody = signature;
+  root.innerHTML =
+    resultsBar(list) +
+    `<div class="results-notices">${notices}</div><div class="results-content">${body}</div>`;
+  animateResults(root.querySelector(".results-content"), before);
   if (state.view === "list") mountVenueMaps(root, config).catch(() => {});
   if (state.view === "map" && list.length)
     requestAnimationFrame(() => initializeMap(list));
@@ -1039,7 +1095,12 @@ function download(contents, name, type) {
 }
 function exportModal() {
   const list = events()
-    .filter((e) => assessment(store.fields, e.id).saved && isUpcoming(e))
+    .filter(
+      (e) =>
+        assessment(store.fields, e.id).saved &&
+        !assessment(store.fields, e.id).hidden &&
+        isUpcoming(e),
+    )
     .sort((a, b) => a.date.localeCompare(b.date));
   openModal(
     "Make room for a good night.",
@@ -1131,6 +1192,11 @@ document.addEventListener("click", async (e) => {
       case "tab":
         state.tab = el.dataset.tab;
         state.sort = "date";
+        if (state.tab === "hidden") {
+          state.view = "list";
+          state.query = "";
+          state.limit = 60;
+        }
         renderChrome();
         renderControls();
         renderResults();
@@ -1229,6 +1295,23 @@ document.addEventListener("click", async (e) => {
       case "listen":
         openDetail(id, true);
         break;
+      case "hide":
+      case "restore": {
+        const event = eventFor(id);
+        if (!event) break;
+        const hidden = action === "hide";
+        store.change(`event/${id}/snapshot`, event);
+        store.change(`event/${id}/hidden`, hidden);
+        toast(
+          hidden
+            ? "Concert hidden."
+            : "Concert restored. Your bookmarks and notes are kept.",
+          hidden
+            ? button("restore", "Undo", "toast-undo", `data-id="${esc(id)}"`)
+            : "",
+        );
+        break;
+      }
       case "save":
         saveEvent(eventFor(id));
         break;

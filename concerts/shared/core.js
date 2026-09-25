@@ -207,6 +207,7 @@ export function assessment(fields, id) {
   const key = `event/${id}/`;
   return {
     saved: valueAt(fields, key + "saved", false),
+    hidden: valueAt(fields, key + "hidden", false),
     notes: valueAt(fields, key + "notes", ""),
     music: valueAt(fields, key + "music"),
     venue: valueAt(fields, key + "venue"),
@@ -255,6 +256,21 @@ export function filterEvents(
   const q = normalize(filters.query);
   let result = events.filter((e) => {
     const a = assessment(fields, e.id);
+    if (filters.tab === "hidden") {
+      return (
+        a.hidden &&
+        (!q ||
+          normalize(
+            [
+              e.title,
+              e.venue?.name,
+              ...(e.artists || []).map((a) => a.name),
+              a.notes,
+            ].join(" "),
+          ).includes(q))
+      );
+    }
+    if (a.hidden) return false;
     if (filters.tab === "saved" && !a.saved) return false;
     if (!enabled.some((c) => e.metro === c.id || inMetro(e.venue, c)))
       return false;
@@ -329,7 +345,10 @@ export function filterEvents(
   });
 }
 export function savedCounts(events, fields, now = new Date()) {
-  const saved = events.filter((e) => assessment(fields, e.id).saved);
+  const saved = events.filter((e) => {
+    const a = assessment(fields, e.id);
+    return a.saved && !a.hidden;
+  });
   return {
     total: saved.length,
     upcoming: saved.filter((e) => isUpcoming(e, now)).length,
