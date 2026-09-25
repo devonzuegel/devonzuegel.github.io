@@ -38,7 +38,7 @@ test("static entry uses rooted local assets and contains no analytics, recipient
     "vendor/qr.js",
   ])
     await readFile(new URL(name, dir));
-  assert.match(html, /src="\/QR-codes\/app.js"/);
+  assert.match(html, /src="\/QR-codes\/app\.js(?:\?[^"<>]+)?"/);
   assert.match(html, /noindex/);
   assert.doesNotMatch(
     html,
