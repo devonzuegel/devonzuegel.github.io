@@ -208,7 +208,7 @@ function icoButton(action, name, label, attrs = "", cls = "icon-btn") {
 }
 function shell() {
   $("#app").innerHTML =
-    `<div class="layout"><aside class="sidebar" aria-label="Concert navigation"><a class="wordmark" href="./">encore<span>✳</span></a><div class="tagline">Your concert shortlist</div><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div class="topline"><span class="today-label">Today: ${dateLabel(dayInZone(), { weekday: "short", month: "short", day: "numeric" }).replace(/\bSep\b/, "Sept")}</span><div class="utility">${button("sources", icon("info") + " Sources", "text-button")}${button("refresh", icon("refresh") + " Refresh", "text-button")}</div></div><div id="controls"></div><div id="results"></div></main></div>`;
+    `<div class="layout"><aside class="sidebar" aria-label="Concert navigation"><a class="wordmark" href="./">Concert Tracker</a><div id="sidebar-content"></div><div class="sidebar-bottom" id="sidebar-bottom"></div></aside><main id="main" class="main"><div id="mobile-header"></div><div id="controls"></div><div id="results"></div></main></div>`;
   renderChrome();
   renderControls();
   renderResults();
@@ -224,21 +224,14 @@ function renderChrome() {
     "account-button",
     `aria-label="${esc(store.profile ? "Signed in as " + store.profile : "Not signed in. Open account options")}"`,
   );
-  let accountSlot = $("#account-slot");
-  if (!accountSlot) {
-    accountSlot = document.createElement("div");
-    accountSlot.id = "account-slot";
-    $(".utility").append(accountSlot);
-  }
-  accountSlot.innerHTML = account;
   const c = cities();
   $("#sidebar-content").innerHTML =
     navMarkup() +
-    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="listening-box"><span class="eyebrow">A familiar sound</span><p>${Object.keys(listening() || {}).length ? "Find shows by artists in your listening history." : "Bring your listening history. Find artists you already love."}</p>${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your listening" : "Add your listening"), "small-button")}</div>`;
+    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="sidebar-sources">${button("sources", icon("info") + "Sources", "subtle-btn")}</div><div class="listening-box">${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your Spotify history" : "Add your Spotify history"), "small-button")}</div>`;
   $("#sidebar-bottom").innerHTML =
     `${button("profile", `<span class="avatar">${esc((store.profile || "D").slice(0, 1).toUpperCase())}</span><span class="profile-text"><strong>${esc(store.profile || "Your account")}</strong><small title="${esc(store.lastError)}">${esc(store.status)}</small></span>${icon("down")}`, "profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
   $("#mobile-header").innerHTML =
-    `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">encore<span>✳</span></a>${account}</div>${navMarkup(true)}</div>`;
+    `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">Concert Tracker</a>${account}</div>${navMarkup(true)}</div>`;
 }
 let openWeekendTooltip = null;
 function weekendLabel(preset) {
@@ -282,7 +275,7 @@ function renderControls() {
       )
       .join("");
   $("#controls").innerHTML =
-    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your listening")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><span class="date-label">${icon("calendar")}When</span><div class="date-chips">${[
+    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your Spotify history")}${icoButton("sources", "info", "Sources")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><div class="date-chips">${[
       ["weekend", "This weekend"],
       ["next-weekend", "Next weekend"],
       ["30", "30 days"],
@@ -297,7 +290,7 @@ function renderControls() {
           "date-preset",
           l,
           `chip ${state.preset === p ? "active" : ""}`,
-          `data-preset="${p}"${weekend ? ` aria-describedby="tooltip-${p}"` : ""}`,
+          `data-preset="${p}" aria-pressed="${state.preset === p}"${weekend ? ` aria-describedby="tooltip-${p}"` : ""}`,
         );
         return weekend
           ? `<span class="weekend-tooltip-wrap ${openWeekendTooltip === p ? "tooltip-open" : ""}">${chip}<span class="weekend-tooltip" id="tooltip-${p}" role="tooltip">${weekendLabel(p)}</span></span>`
@@ -414,7 +407,7 @@ function resultsBar(list) {
     state.tab === "saved"
       ? `Showing ${list.length} of ${state.savedPeriod === "upcoming" ? counts.upcoming + " upcoming" : counts.total} saved`
       : list.length + " concerts";
-  return `<div class="viewbar"><div class="results-heading"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right"><select id="sort" aria-label="Sort concerts" class="sort-select">${[
+  return `<div class="viewbar"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "Refresh", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ["matches", "Listening matches"],
     ...(state.tab === "saved"
@@ -447,9 +440,7 @@ function resultsBar(list) {
     .join("")}</div></div></div>`;
 }
 function feedNote() {
-  const updated = state.feed.updatedAt ? new Date(state.feed.updatedAt) : null;
-  const age = updated ? (Date.now() - updated) / 3600000 : Infinity;
-  return `<div class="feed-note"><span class="status-dot"></span><span>Official venue calendars${updated ? " · updated " + new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(updated) : ""} · Coverage is partial. ${button("sources", "See sources and gaps", "")}${age > 36 ? " · Listings may be out of date." : ""}</span></div>${state.feed.sourceError ? `<div class="banner">${esc(state.feed.sourceError)}</div>` : ""}${store.data.conflicts?.length ? `<div class="banner">A note was edited on two devices. ${button("conflicts", "Review both versions", "text-button")}</div>` : ""}${state.matches && !Object.keys(listening() || {}).length ? `<div class="banner">Add your listening history to find familiar artists. ${button("listening", "Import Spotify history", "text-button")}</div>` : ""}${state.unmapped ? `<div class="banner">Showing concerts without a verified map location. ${button("clear-unmapped", "Show all concerts", "text-button")}</div>` : ""}`;
+  return `${state.feed.sourceError ? `<div class="banner">${esc(state.feed.sourceError)}</div>` : ""}${store.data.conflicts?.length ? `<div class="banner">A note was edited on two devices. ${button("conflicts", "Review both versions", "text-button")}</div>` : ""}${state.matches && !Object.keys(listening() || {}).length ? `<div class="banner">Add your listening history to find familiar artists. ${button("listening", "Import Spotify history", "text-button")}</div>` : ""}${state.unmapped ? `<div class="banner">Showing concerts without a verified map location. ${button("clear-unmapped", "Show all concerts", "text-button")}</div>` : ""}`;
 }
 function renderResults() {
   disposeVenueMaps($("#results"));
@@ -1404,7 +1395,7 @@ document.addEventListener("click", async (e) => {
         }
         download(
           calendarICS(list),
-          "encore-saved-concerts.ics",
+          "concert-tracker-saved-concerts.ics",
           "text/calendar",
         );
         closeModal();

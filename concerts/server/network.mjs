@@ -1,5 +1,5 @@
 export const USER_AGENT =
-  "EncoreConcerts/1.0 (+https://devonzuegel.com/concerts/)";
+  "ConcertTracker/1.0 (+https://devonzuegel.com/concerts/)";
 export async function request(url, options = {}) {
   const r = await fetch(url, {
     ...options,

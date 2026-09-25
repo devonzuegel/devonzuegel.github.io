@@ -1,4 +1,4 @@
-# Encore / concerts
+# Concert Tracker / concerts
 
 A concert notebook at `/concerts/`, built to fit this static website. The front end works on GitHub Pages. A small Node API adds username-based sync, cached recording searches, and optional Ticketmaster/YouTube/Spotify integrations.
 

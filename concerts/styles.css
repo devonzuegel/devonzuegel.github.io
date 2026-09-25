@@ -90,6 +90,50 @@ input[type="checkbox"] {
   width: 16px;
   height: 16px;
 }
+/* Native popup menus need explicit option colors, even when the closed
+   select uses a transparent background. */
+select option,
+select optgroup {
+  background-color: var(--white);
+  color: var(--ink);
+}
+select option:checked {
+  background-color: var(--green-soft);
+  color: var(--ink);
+}
+@supports (appearance: base-select) {
+  select,
+  select::picker(select) {
+    appearance: base-select;
+  }
+  select::picker(select) {
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 4px;
+    margin-top: 6px;
+    max-height: min(360px, 60vh);
+    overflow-y: auto;
+    box-shadow: 0 8px 24px #0003;
+    font-family: var(--sans);
+    font-size: 12px;
+  }
+  select option {
+    padding: 9px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  select option:hover,
+  select option:focus {
+    background: var(--green-soft);
+    color: var(--ink);
+    outline: none;
+  }
+  select::picker-icon {
+    color: var(--muted);
+  }
+}
 textarea {
   width: 100%;
   min-height: 115px;
@@ -155,9 +199,10 @@ small {
 }
 .wordmark {
   font-family: var(--serif);
-  font-size: 39px;
-  line-height: 1;
-  letter-spacing: -1.6px;
+  font-size: 32px;
+  line-height: 1.05;
+  max-width: 185px;
+  letter-spacing: -1px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -169,12 +214,8 @@ small {
   font-size: 38px;
   line-height: 1;
 }
-.tagline {
-  font-size: 10px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  margin: 12px 0 42px;
-  color: var(--muted);
+.sidebar > .wordmark {
+  margin-bottom: 28px;
 }
 .main-nav {
   display: flex;
@@ -299,11 +340,9 @@ small {
   margin-top: 24px;
   padding-top: 24px;
 }
-.listening-box p {
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--muted);
-  margin: 9px 0 12px;
+.listening-box .small-button {
+  max-width: 100%;
+  text-align: left;
 }
 .small-button {
   display: inline-flex;
@@ -374,12 +413,8 @@ small {
 .topline {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 31px;
-}
-.today-label {
-  font-size: 11px;
-  color: var(--muted);
 }
 .mobile-brand {
   display: none;
@@ -531,7 +566,7 @@ small {
   display: flex;
   align-items: center;
   gap: 13px;
-  margin: 24px 0 22px;
+  margin: 0 0 22px;
   flex-wrap: wrap;
 }
 .date-label {
@@ -2105,7 +2140,7 @@ small {
   }
   .date-toolbar {
     gap: 8px;
-    margin: 18px 0 16px;
+    margin: 8px 0 16px;
   }
   .date-chips {
     gap: 5px;
@@ -2148,9 +2183,6 @@ small {
   }
   .mobile-nav .nav-btn:last-child .icon {
     display: block;
-  }
-  .topline .today-label {
-    font-size: 10px;
   }
   .hero h1 {
     font-size: 40px;
@@ -3068,4 +3100,109 @@ summary.month-heading:focus-visible {
 }
 .event-tags:empty {
   display: none;
+}
+
+/* Quiet date shortcuts; retain a clear selection without individual boxes. */
+.date-chips {
+  gap: 2px;
+}
+.date-chips .chip {
+  border-color: transparent;
+  color: var(--muted);
+  padding: 7px 9px;
+}
+.date-chips .chip:hover {
+  border-color: transparent;
+  background: var(--white);
+  color: var(--ink);
+}
+.date-chips .chip.active {
+  border-color: transparent;
+  background: var(--green-soft);
+  color: var(--ink);
+  font-weight: 550;
+}
+.date-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.sidebar-sources {
+  margin-top: 8px;
+}
+
+.results-total {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.results-refresh {
+  font-size: 11px;
+}
+.results-refresh .icon {
+  width: 15px;
+  height: 15px;
+}
+
+@media (min-width: 821px) {
+  .main {
+    padding-top: 20px;
+  }
+}
+
+/* Distinct, quiet controls for refreshing and sorting the results. */
+.results-refresh,
+.sort-select {
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  line-height: 20px;
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 11px;
+}
+.results-refresh:hover,
+.sort-select:hover {
+  background: var(--green-soft);
+  color: var(--ink);
+}
+.results-refresh:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.sort-select {
+  display: inline-flex;
+  align-items: center;
+  max-width: 180px;
+  cursor: pointer;
+}
+.sort-select::picker-icon {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  align-self: center;
+  transform: translateY(-2px) rotate(45deg);
+  margin-left: 12px;
+  margin-right: 2px;
+}
+.viewbar-right {
+  gap: 12px;
+}
+@media (max-width: 560px) {
+  .viewbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .viewbar-right {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .viewbar-right .view-switch {
+    margin-left: auto;
+  }
 }

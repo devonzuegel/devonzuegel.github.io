@@ -436,7 +436,7 @@ export function calendarICS(events, now = new Date()) {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Encore//Concert notebook//EN",
+    "PRODID:-//Concert Tracker//Concert notebook//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
   ];
