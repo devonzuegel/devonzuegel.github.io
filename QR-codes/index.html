@@ -12,17 +12,17 @@
     />
     <title>QR codes · Devon Zuegel</title>
     <script src="/theme.js"></script>
-    <link rel="stylesheet" href="/QR-codes/styles.css?v=20260925-notes" />
+    <link rel="stylesheet" href="/QR-codes/styles.css?v=20260925-sidebar" />
     <script type="module" src="/QR-codes/app.js?v=20260925-notes"></script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <div class="layout">
       <aside class="sidebar">
-        <a class="site-name" href="/"
-          >DEVON<br />
-          ZUEGEL</a
-        >
+        <div class="app-brand">
+          <h1><a class="site-name" href="#/">QR Codes</a></h1>
+          <p class="app-caption">A personal link notebook</p>
+        </div>
         <nav aria-label="Dashboard" id="nav" hidden>
           <a href="#/" data-nav="codes">QR codes</a>
           <a href="#/settings" data-nav="settings">Settings</a>
@@ -32,10 +32,6 @@
       </aside>
       <main id="main" tabindex="-1">
         <header class="page-header">
-          <div>
-            <p class="eyebrow">A personal link notebook</p>
-            <h1>QR codes</h1>
-          </div>
           <a class="button primary" id="new-code" href="#/new" hidden
             >+ New QR code</a
           >

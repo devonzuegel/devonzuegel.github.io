@@ -95,11 +95,17 @@ summary:focus-visible {
   padding-top: 8px;
 }
 .site-name {
+  display: block;
   font-size: 30px;
   line-height: 1.2;
-  letter-spacing: 3px;
+  letter-spacing: -0.5px;
   color: var(--ink);
   text-decoration: none;
+}
+.app-caption {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 10px 0 0;
 }
 .sidebar nav {
   display: flex;
@@ -132,9 +138,9 @@ main {
 .page-header {
   display: flex;
   gap: 20px;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding-bottom: 28px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--line);
   margin-bottom: 28px;
 }
@@ -556,12 +562,11 @@ html[data-theme="dark"] .error {
     gap: 15px;
     margin-bottom: 36px;
   }
-  .site-name {
-    font-size: 17px;
-    letter-spacing: 2px;
+  .app-brand {
+    flex-basis: 100%;
   }
-  .site-name br {
-    display: none;
+  .site-name {
+    font-size: 26px;
   }
   .back-site {
     display: none;
