@@ -1494,7 +1494,7 @@
   </div>
 
 <script>
-const BUILD_TIME = '2026-09-25T03:46:05Z'; // updated by deploy
+const BUILD_TIME = '2026-09-25T03:49:04Z'; // updated by deploy
 
 (function(){
   const el = document.getElementById('build-age');
@@ -1871,7 +1871,7 @@ const BUILTIN_TRACKS = [
     creator: 'Tranquila',
     runtime: '5:54',
     description: 'A calm morning walk with a warm drink, gentle sensory grounding, and an intention for the day ahead.',
-    audioUrl: './audio/brew-walks/morning-mug-walk.mp3',
+    audioUrl: './audio/brew-walks/morning-mug-walk.mp3?v=kokoro-065',
     category: 'brew-walks',
     synthetic: true,
     sourceUrl: './#about',
@@ -1885,7 +1885,7 @@ const BUILTIN_TRACKS = [
     creator: 'Tranquila',
     runtime: '7:02',
     description: 'An unhurried tea walk for a park or leafy route, using sight, sound, steps, and breath to widen awareness.',
-    audioUrl: './audio/brew-walks/tea-and-trees.mp3',
+    audioUrl: './audio/brew-walks/tea-and-trees.mp3?v=kokoro-065',
     category: 'brew-walks',
     synthetic: true,
     sourceUrl: './#about',
@@ -1899,7 +1899,7 @@ const BUILTIN_TRACKS = [
     creator: 'Tranquila',
     runtime: '5:07',
     description: 'A short transition practice for loosening your grip on what came before and choosing the next small thing.',
-    audioUrl: './audio/brew-walks/around-the-block-reset.mp3',
+    audioUrl: './audio/brew-walks/around-the-block-reset.mp3?v=kokoro-065',
     category: 'brew-walks',
     synthetic: true,
     sourceUrl: './#about',
@@ -2129,7 +2129,36 @@ function trashIcon(){
 
 // ---------- Saved list (metadata in localStorage, audio bytes in Cache Storage) ----------
 function getSaved(){
-  try{ return JSON.parse(localStorage.getItem(SAVED_KEY)) || []; }
+  try{
+    const list = JSON.parse(localStorage.getItem(SAVED_KEY)) || [];
+    if(!navigator.onLine) return list;
+    const cacheMigrations = [];
+    const migrated = list.map(item => {
+      const current = BUILTIN_TRACKS.find(track => track.identifier === item.identifier);
+      if(!current || current.audioUrl === item.audioUrl) return item;
+      cacheMigrations.push({ oldUrl: item.audioUrl, newUrl: current.audioUrl });
+      return { ...item, ...current };
+    });
+
+    if(cacheMigrations.length){
+      localStorage.setItem(SAVED_KEY, JSON.stringify(migrated));
+      if(navigator.onLine && 'caches' in window){
+        caches.open(AUDIO_CACHE).then(async cache => {
+          for(const { oldUrl, newUrl } of cacheMigrations){
+            try{
+              const response = await fetch(newUrl);
+              if(response.ok){
+                await cache.put(newUrl, response);
+                await cache.delete(oldUrl);
+              }
+            } catch{ /* Keep the old cached audio if refresh fails. */ }
+          }
+        });
+      }
+    }
+
+    return migrated;
+  }
   catch{ return []; }
 }
 function setSaved(list){
