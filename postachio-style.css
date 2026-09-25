@@ -754,6 +754,9 @@ footer {
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"]) {
+    --post-inline-surface: #2a2a2c;
+    --post-inline-highlight: #51452b;
+    --post-inline-ink: #e0e0e0;
     color-scheme: dark;
   }
   html:not([data-theme="light"]) body {
@@ -827,6 +830,9 @@ footer {
 }
 
 html[data-theme="dark"] {
+  --post-inline-surface: #2a2a2c;
+  --post-inline-highlight: #51452b;
+  --post-inline-ink: #e0e0e0;
   color-scheme: dark;
 }
 html[data-theme="dark"] body {

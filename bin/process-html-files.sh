@@ -52,3 +52,6 @@ find . -type f -name '*.html' -exec sed -i '' 's/<meta<!DOCTYPE html>/<!DOCTYPE 
 
 # Add the shared System / Light / Dark appearance selector to main-site pages.
 python3 bin/install-theme.py "$DIRECTORY"
+
+# Preserve imported post colors in light mode and adapt them in dark mode.
+python3 bin/adapt-post-colors.py "$DIRECTORY"
