@@ -17,6 +17,12 @@ The TypeScript Worker serves `https://qr.devonzuegel.com`, with D1 persistence a
 
 ## Repository and local commands
 
+### Link-open notes
+
+The code detail page shows link-open history before the editing and download panels. Each open has **Add note** / **Edit note**, with a plain-text field (maximum 2,000 characters) and **Save note**. Saving an empty field clears the note. Notes are owner-only, do not trigger emails or change open counts, and expire with their visit after 90 days. Concurrent edits use the last successful save.
+
+Apply `npx wrangler d1 migrations apply qr-codes --remote` before deploying the notes Worker or publishing its frontend. Migration `0002_visit_notes.sql` adds a non-null `note` column with an empty default, preserving existing visits. Rollback to the previous Worker/frontend can leave this additive column in place; do not drop it and lose notes. Test fixtures apply all migrations in filename order.
+
 Repository: `https://github.com/devonzuegel/devonzuegel.github.io`. GitHub's Pages API was inspected on September 25, 2026 UTC: legacy branch deployment, `master`, root `/`, custom domain `devonzuegel.com`, status `built`. There is no frontend framework build for the main site. The root README's Evernote/Postach.io import is for blog updates; it is not needed to publish this tool. Do not run that import for QR changes.
 
 Use Node 22 or later (the system Node 20 is too old for current Wrangler). On this machine Node 26 is at `/opt/homebrew/opt/node@26/bin`; for example, `export PATH=/opt/homebrew/opt/node@26/bin:$PATH` in the current terminal.
@@ -211,7 +217,7 @@ All timestamps in JSON and D1 are **UTC Unix seconds**. Public code IDs are 16 c
 | Table                | Purpose and key/index                                                                                                                                       |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `codes`              | Stored destination, editable name/placement/toggles; durable `opens` and `last_open`; random PK, unique create request key, `(created_at,id)` listing index |
-| `visits`             | Coarse geography, time, email status/reason; `(code_id,opened_at,id)` pagination and time retention indexes                                                 |
+| `visits`             | Coarse geography, time, email status/reason, private `note`; `(code_id,opened_at,id)` pagination and time retention indexes                                                 |
 | `email_jobs`         | Immutable serialized email, status, deadline, attempts, lease/token/provider ID; unique visit; due/status, lease and code/time indexes                      |
 | `email_reservations` | One per job; indexed last-reservation time for rolling budgets; removed after 32 days                                                                       |
 | `sessions`           | Hashed opaque cookie, numeric owner ID, CSRF token, expiry                                                                                                  |
@@ -235,13 +241,14 @@ Production session cookie: `__Host-qr_session`, Path `/`, Secure, HttpOnly, Same
 | `GET /api/codes/:id`                | Auth; full code including permanent `tracking_url`                                                                                                                            |
 | `PATCH /api/codes/:id`              | Auth + CSRF; full editable `{name,destination,placement,alerts,active}`; retains ID and aggregates; last save wins                                                            |
 | `GET /api/codes/:id/visits?cursor=` | Auth; `{items,next_cursor}`; 25 newest visit rows, coarse geography, `email_status`, reason                                                                                   |
+| `PATCH /api/codes/:id/visits/:visitId` | Auth + CSRF; `{note}` → `{id,note}`; plain text up to 2,000 characters, empty string clears; 404 for missing/expired visit or wrong code |
 | `GET /api/settings`                 | Auth; fixed recipient, configuration readiness, budgets, pause, logging usage, latest test and delivery problems                                                              |
 | `POST /api/test-email`              | Auth + CSRF; `{}`; 202 queued or 429 if unavailable/cooldown/budget; at most one per five minutes globally; ignores recipient input                                           |
 | `GET /r/:id`                        | Public; 302 to stored active destination; eligible logging/outbox; 404 unknown, 410 disabled, 503 lookup failure                                                              |
 | `HEAD /r/:id`                       | Same resolution/redirect without a body, logging or email                                                                                                                     |
 | `OPTIONS`                           | 204, no logging; CORS headers only for the configured origin                                                                                                                  |
 
-A code JSON object contains `id,name,destination,placement,alerts,active,created_at,updated_at,opens,last_open,tracking_url`. Booleans are JSON booleans. Visit JSON contains `id,opened_at,city,region,country,email_status,reason`. Locations may be null. Email states are `pending`, `accepted`, `suppressed`, `failed`; internal `sending` is shown as pending. Pagination cursors are server-issued `<timestamp>:<id>` keysets; pass unchanged and stop at null. This is pagination, not a transaction snapshot across later edits. Errors are JSON `{error}` with appropriate 400/401/403/404/409/413/415/429/503 codes. No destructive delete API exists.
+A code JSON object contains `id,name,destination,placement,alerts,active,created_at,updated_at,opens,last_open,tracking_url`. Booleans are JSON booleans. Visit JSON contains `id,opened_at,city,region,country,email_status,reason,note`. Locations may be null; notes default to an empty string. Email states are `pending`, `accepted`, `suppressed`, `failed`; internal `sending` is shown as pending. Pagination cursors are server-issued `<timestamp>:<id>` keysets; pass unchanged and stop at null. This is pagination, not a transaction snapshot across later edits. Errors are JSON `{error}` with appropriate 400/401/403/404/409/413/415/429/503 codes. No destructive delete API exists.
 
 ## Rollback and revocation
 

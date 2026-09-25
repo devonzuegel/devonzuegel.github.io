@@ -66,12 +66,17 @@ globalThis.fetch = async (url, opts) => {
 };
 let owner = false,
   failSave = false,
+  failNote = false,
   failList = false,
   holdList = false,
   trackingRequests = 0;
 await page.route("https://qr.devonzuegel.com/**", async (route) => {
   const request = route.request(),
     url = new URL(request.url());
+  if (failNote && request.method() === "PATCH" && url.pathname.includes("/visits/")) {
+    await route.fulfill({ status: 503, contentType: "application/json", body: '{"error":"Temporary note save failure"}' });
+    return;
+  }
   if (url.pathname.startsWith("/r/")) trackingRequests++;
   if (url.pathname === "/api/codes" && request.method() === "GET") {
     if (holdList) await new Promise((resolve) => setTimeout(resolve, 600));
@@ -231,6 +236,39 @@ try {
   await f.drain();
   assert.equal(sent.length, 1);
   assert.match(JSON.parse(sent[0].body).text, /Asheville/);
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(page.getByText("Asheville, North Carolina, US", { exact: true })).toBeVisible();
+  const historyBox = await page.locator(".history").boundingBox();
+  const editBox = await page.locator(".detail-grid").boundingBox();
+  assert.ok(historyBox.y + historyBox.height <= editBox.y);
+  assert.equal(await page.getByText("Small tools for everyday life.").count(), 0);
+  await page.getByText("Add note", { exact: true }).click();
+  const noteText = 'Spoke after the event\n<img src=x onerror=alert(1)> & follow up';
+  await page.getByLabel("Note for this open").fill(noteText);
+  failNote = true;
+  await page.getByRole("button", { name: "Save note", exact: true }).click();
+  await expect(page.getByText("Temporary note save failure")).toBeVisible();
+  await expect(page.getByLabel("Note for this open")).toHaveValue(noteText);
+  failNote = false;
+  await page.getByRole("button", { name: "Save note", exact: true }).click();
+  await expect(page.getByText("Note saved.", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.locator(".visit-note-text")).toHaveText(noteText);
+  assert.equal(await page.locator(".visit img").count(), 0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.getByText("Edit note", { exact: true }).click();
+  await expect(page.getByLabel("Note for this open")).toHaveValue(noteText);
+  await page.screenshot({ path: screenshots + "/visit-notes-dark-phone.png", fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.getByLabel("Note for this open").fill("");
+  await page.getByRole("button", { name: "Save note", exact: true }).click();
+  await expect(page.getByText("Note cleared.", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("Add note", { exact: true })).toBeVisible();
+  await expect(page.locator(".visit-note-text")).toBeHidden();
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.emulateMedia({ colorScheme: "light" });
   await page.getByLabel("Destination URL").fill("https://example.org/changed");
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(

@@ -1,0 +1,1 @@
+ALTER TABLE visits ADD COLUMN note TEXT NOT NULL DEFAULT '' CHECK(length(note) <= 2000);

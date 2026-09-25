@@ -1,5 +1,5 @@
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import worker from "../.build/index.mjs";
 import { random, hash, now } from "../.build/core.mjs";
 export async function fixture() {
@@ -12,17 +12,19 @@ export async function fixture() {
     }),
   );
   const DB = await mf.getD1Database("DB");
-  const sql = await readFile(
-    new URL("../migrations/0001_initial.sql", import.meta.url),
-    "utf8",
-  );
-  // Execute complete SQL statements, keeping each trigger's BEGIN…END intact.
-  const statements = sql
-    .replace(/^--.*$/gm, "")
-    .split(/;(?=\s*(?:CREATE|PRAGMA|$))/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  for (const s of statements) await DB.prepare(s).run();
+  const migrations = new URL("../migrations/", import.meta.url);
+  for (const file of (await readdir(migrations))
+    .filter((f) => f.endsWith(".sql"))
+    .sort()) {
+    const sql = await readFile(new URL(file, migrations), "utf8");
+    // Execute complete SQL statements, keeping each trigger's BEGIN…END intact.
+    const statements = sql
+      .replace(/^--.*$/gm, "")
+      .split(/;(?=\s*(?:CREATE|ALTER|PRAGMA|$))/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+    for (const s of statements) await DB.prepare(s).run();
+  }
   const allow = { limit: async () => ({ success: true }) };
   const env = {
     DB,

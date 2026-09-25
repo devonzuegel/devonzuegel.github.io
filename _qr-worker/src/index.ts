@@ -142,14 +142,24 @@ async function admin(
       throw new HttpError(409, "The 1,000-code safety limit has been reached.");
     return json(publicCode(c, e), 201);
   }
-  const m = path.match(/^\/api\/codes\/([\w-]{22})(\/visits)?$/);
+  const m = path.match(/^\/api\/codes\/([\w-]{22})(\/visits(?:\/([\w-]{22}))?)?$/);
   if (m) {
     const c = await getCode(e, m[1]);
     if (!c) throw new HttpError(404, "Code not found.");
-    if (m[2] && req.method === "GET") {
+    if (m[3] && req.method === "PATCH") {
+      const { note } = await body(req);
+      if (typeof note !== "string" || note.length > 2000)
+        throw new HttpError(400, "Notes must be text of at most 2,000 characters.");
+      const visit = await e.DB.prepare(
+        "UPDATE visits SET note=? WHERE id=? AND code_id=? RETURNING id,note",
+      ).bind(note, m[3], c.id).first();
+      if (!visit) throw new HttpError(404, "Link open not found. It may have expired.");
+      return json(visit);
+    }
+    if (m[2] && !m[3] && req.method === "GET") {
       const after = cursor(new URL(req.url).searchParams.get("cursor"));
       const r = await e.DB.prepare(
-        `SELECT id,opened_at,city,region,country,email_status,reason FROM visits WHERE code_id=? AND (? IS NULL OR (opened_at,id)<(?,?)) ORDER BY opened_at DESC,id DESC LIMIT 26`,
+        `SELECT id,opened_at,city,region,country,email_status,reason,note FROM visits WHERE code_id=? AND (? IS NULL OR (opened_at,id)<(?,?)) ORDER BY opened_at DESC,id DESC LIMIT 26`,
       )
         .bind(c.id, after?.time ?? null, after?.time ?? null, after?.id ?? null)
         .all<{ id: string; opened_at: number }>();

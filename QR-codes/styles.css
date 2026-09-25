@@ -38,7 +38,8 @@ a:hover {
   color: #d84c30;
 }
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 button,
@@ -73,7 +74,9 @@ button:disabled {
 }
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
@@ -98,16 +101,11 @@ input:focus-visible {
   color: var(--ink);
   text-decoration: none;
 }
-.site-caption {
-  font-size: 13px;
-  max-width: 160px;
-  color: var(--muted);
-  margin: 20px 0 45px;
-}
 .sidebar nav {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-top: 35px;
 }
 .sidebar nav a {
   text-decoration: none;
@@ -328,7 +326,8 @@ label {
   font-size: 14px;
   margin: 20px 0;
 }
-input:not([type="checkbox"]) {
+input:not([type="checkbox"]),
+textarea {
   display: block;
   width: 100%;
   border: 1px solid var(--line);
@@ -338,6 +337,9 @@ input:not([type="checkbox"]) {
   border-radius: 4px;
   margin-top: 7px;
   min-width: 0;
+}
+textarea {
+  resize: vertical;
 }
 input[type="checkbox"] {
   accent-color: var(--accent);
@@ -404,9 +406,6 @@ input[type="checkbox"] {
   list-style: none;
 }
 .visit {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
   border-top: 1px solid var(--line);
   padding: 15px 0;
   font-size: 13px;
@@ -414,8 +413,30 @@ input[type="checkbox"] {
 .visit p {
   margin: 5px 0;
 }
-.visit > div:last-child {
+.visit-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.visit-delivery {
   text-align: right;
+}
+.visit-note-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.visit-note summary {
+  color: var(--accent);
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 8px;
+}
+.visit-note label {
+  margin: 12px 0;
+}
+.visit-note button {
+  font-size: 13px;
+  padding: 7px 12px;
 }
 .settings {
   display: grid;
@@ -542,11 +563,11 @@ html[data-theme="dark"] .error {
   .site-name br {
     display: none;
   }
-  .site-caption,
   .back-site {
     display: none;
   }
   .sidebar nav {
+    margin-top: 0;
     flex-direction: row;
     flex-wrap: wrap;
     font-size: 13px;
@@ -596,11 +617,11 @@ html[data-theme="dark"] .error {
   .settings dd {
     margin-bottom: 12px;
   }
-  .visit {
+  .visit-meta {
     flex-direction: column;
     gap: 0;
   }
-  .visit > div:last-child {
+  .visit-delivery {
     text-align: left;
   }
 }

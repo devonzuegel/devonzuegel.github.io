@@ -93,6 +93,39 @@ test("URL normalization rejects credentials, schemes and tracking loops", () => 
   ])
     assert.throws(() => destination(url, f.env));
 });
+test("visit notes persist, clear, validate and stay private to the correct code", async () => {
+  const c = await f.code({ alerts: false }), other = await f.code();
+  await f.request(`/r/${c.id}`, { owner: false });
+  const path = `/api/codes/${c.id}/visits`;
+  const visit = (await (await f.request(path)).json()).items[0];
+  assert.equal(visit.note, "");
+  const endpoint = `${path}/${visit.id}`;
+  const note = 'Met at the library\n<img src=x onerror=alert(1)> & "context"';
+  const edit = (data, options = {}) => f.request(endpoint, {
+    method: "PATCH", body: JSON.stringify(data), ...options,
+  });
+  assert.equal((await edit({ note }, { owner: false })).status, 401);
+  for (const headers of [{ Origin: "https://evil.example" }, { "X-CSRF-Token": "wrong" }])
+    assert.equal((await edit({ note }, { headers })).status, 403);
+  for (const bad of [{}, { note: null }, { note: 1 }, { note: "x".repeat(2001) }])
+    assert.equal((await edit(bad)).status, 400);
+  assert.equal((await f.request(`/api/codes/${other.id}/visits/${visit.id}`, {
+    method: "PATCH", body: JSON.stringify({ note }),
+  })).status, 404);
+  assert.equal((await f.request(`${path}/${random(16)}`, {
+    method: "PATCH", body: JSON.stringify({ note }),
+  })).status, 404);
+  assert.equal((await edit({ note: "x".repeat(2000) })).status, 200);
+  assert.deepEqual(await (await edit({ note })).json(), { id: visit.id, note });
+  assert.equal((await (await f.request(path)).json()).items[0].note, note);
+  assert.equal(await count("email_jobs"), 0);
+  assert.equal((await (await f.request(`/api/codes/${c.id}`)).json()).opens, 1);
+  assert.equal((await edit({ note: "" })).status, 200);
+  assert.equal((await (await f.request(path)).json()).items[0].note, "");
+  await f.DB.prepare("UPDATE sessions SET owner_id='123'").run();
+  assert.equal((await edit({ note })).status, 401);
+  assert.equal((await f.request(path)).status, 401);
+});
 test("creation retries are idempotent; edits keep ID, copies get new ID, disable is reversible", async () => {
   const headers = { "Idempotency-Key": random() },
     data = {

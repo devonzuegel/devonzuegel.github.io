@@ -242,7 +242,7 @@ async function visits(append = false) {
   const rows = result.items
     .map(
       (g) =>
-        `<li class="visit"><div><time>${date(g.opened_at)}</time><p>${esc(locationText(g))}</p></div><div><span class="badge">${labels[g.email_status] || "Unknown"}</span>${g.reason ? `<p class="hint">${esc(reasons[g.reason] || g.reason)}</p>` : ""}</div></li>`,
+        `<li class="visit"><div class="visit-meta"><div><time>${date(g.opened_at)}</time><p>${esc(locationText(g))}</p></div><div class="visit-delivery"><span class="badge">${labels[g.email_status] || "Unknown"}</span>${g.reason ? `<p class="hint">${esc(reasons[g.reason] || g.reason)}</p>` : ""}</div></div><p class="visit-note-text" ${g.note ? "" : "hidden"}>${esc(g.note)}</p><details class="visit-note"><summary>${g.note ? "Edit note" : "Add note"}</summary><form data-visit-id="${esc(g.id)}"><label>Note for this open<textarea name="note" rows="3" maxlength="2000" placeholder="Add context about this open…">${esc(g.note)}</textarea></label><button type="submit">Save note</button><p class="note-status hint" role="status" aria-live="polite"></p></form></details></li>`,
     )
     .join("");
   if (append) $("#visits").insertAdjacentHTML("beforeend", rows);
@@ -252,12 +252,43 @@ async function visits(append = false) {
       '<li class="muted">No link opens yet. A real phone scan that opens the link will appear here.</li>';
   $("#more-visits").hidden = !nextVisits;
 }
+function wireVisitNotes(codeId) {
+  $("#visits").addEventListener("submit", async (event) => {
+    const form = event.target.closest("form[data-visit-id]");
+    if (!form) return;
+    event.preventDefault();
+    const button = form.querySelector("button"),
+      input = form.elements.note,
+      status = form.querySelector(".note-status"),
+      row = form.closest(".visit");
+    if (button.disabled) return;
+    button.disabled = input.disabled = true;
+    status.className = "note-status hint";
+    status.textContent = "Saving…";
+    try {
+      const saved = await api(`/api/codes/${codeId}/visits/${form.dataset.visitId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ note: input.value }),
+      });
+      row.querySelector(".visit-note-text").textContent = saved.note;
+      row.querySelector(".visit-note-text").hidden = !saved.note;
+      row.querySelector("summary").textContent = saved.note ? "Edit note" : "Add note";
+      status.textContent = saved.note ? "Note saved." : "Note cleared.";
+    } catch (err) {
+      status.className = "note-status error-text";
+      status.textContent = err.message;
+    } finally {
+      button.disabled = input.disabled = false;
+    }
+  });
+}
 async function details(id, v) {
   const c = await api(`/api/codes/${id}`);
   if (v !== version) return;
   currentCode = c;
-  view.innerHTML = `<a class="back-link" href="#/">← All codes</a><div class="section-heading"><h2 id="detail-title">${esc(c.name)}</h2><span class="badge">${c.active ? "Active" : "Disabled"}</span></div><div class="detail-grid"><section class="panel"><h3>Edit this code</h3><p class="muted">Change the destination any time. Its printed image and permanent link stay the same.</p><form id="code-form">${fields(c)}<p id="form-error" role="alert" class="error-text"></p><button type="submit" class="primary">Save changes</button></form><div class="danger-row"><button id="toggle-code" class="text-button">${c.active ? "Disable code" : "Reactivate code"}</button><button data-duplicate="${c.id}" class="text-button">Duplicate</button></div></section><section class="panel qr-panel"><div class="qr-image" role="img" aria-label="QR code for ${esc(c.name)}">${svg(c.tracking_url)}</div><p class="eyebrow">Permanent tracking link</p><p class="tracking-url">${esc(c.tracking_url)}</p><div class="actions"><button data-download="svg">Download SVG</button><button data-download="png">Download PNG</button><button data-copy="${esc(c.tracking_url)}">Copy link</button></div><p id="destination-display" class="destination">${esc(c.destination)}</p><a id="destination-preview" href="${esc(c.destination)}" target="_blank" rel="noopener noreferrer">Preview destination ↗</a><p class="hint">Previewing and downloading do not count as opens. SVG is scalable; PNG is at least 1,600 px.</p>${apiBase.startsWith("http:") ? '<p class="notice warning">Local test code. Do not print for production.</p>' : ""}</section></div><section class="panel history"><div class="section-heading"><h3>${c.opens.toLocaleString()} QR link opens</h3><button id="refresh-visits">Refresh</button></div><p class="muted">Recent 90 days · America/New_York · “Sent to email service” means accepted by the provider, not confirmed inbox delivery.</p><ul id="visits"><li>Loading recent opens…</li></ul><button id="more-visits" hidden>Load older opens</button></section>`;
+  view.innerHTML = `<a class="back-link" href="#/">← All codes</a><div class="section-heading"><h2 id="detail-title">${esc(c.name)}</h2><span class="badge">${c.active ? "Active" : "Disabled"}</span></div><section class="panel history"><div class="section-heading"><h3>${c.opens.toLocaleString()} QR link opens</h3><button id="refresh-visits">Refresh</button></div><p class="muted">Opens and notes kept for 90 days · America/New_York · “Sent to email service” means accepted by the provider, not confirmed inbox delivery.</p><ul id="visits"><li>Loading recent opens…</li></ul><button id="more-visits" hidden>Load older opens</button></section><div class="detail-grid"><section class="panel"><h3>Edit this code</h3><p class="muted">Change the destination any time. Its printed image and permanent link stay the same.</p><form id="code-form">${fields(c)}<p id="form-error" role="alert" class="error-text"></p><button type="submit" class="primary">Save changes</button></form><div class="danger-row"><button id="toggle-code" class="text-button">${c.active ? "Disable code" : "Reactivate code"}</button><button data-duplicate="${c.id}" class="text-button">Duplicate</button></div></section><section class="panel qr-panel"><div class="qr-image" role="img" aria-label="QR code for ${esc(c.name)}">${svg(c.tracking_url)}</div><p class="eyebrow">Permanent tracking link</p><p class="tracking-url">${esc(c.tracking_url)}</p><div class="actions"><button data-download="svg">Download SVG</button><button data-download="png">Download PNG</button><button data-copy="${esc(c.tracking_url)}">Copy link</button></div><p id="destination-display" class="destination">${esc(c.destination)}</p><a id="destination-preview" href="${esc(c.destination)}" target="_blank" rel="noopener noreferrer">Preview destination ↗</a><p class="hint">Previewing and downloading do not count as opens. SVG is scalable; PNG is at least 1,600 px.</p>${apiBase.startsWith("http:") ? '<p class="notice warning">Local test code. Do not print for production.</p>' : ""}</section></div>`;
   wireForm(c);
+  wireVisitNotes(c.id);
   $("#toggle-code").addEventListener("click", async (event) => {
     if (
       currentCode.active &&
