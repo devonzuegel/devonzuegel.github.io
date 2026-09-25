@@ -1,5 +1,8 @@
 ;(function () {
   var preference = 'system'
+  var colorTimer
+  var cleanupTimer
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
   try {
     var stored = localStorage.getItem('theme')
     if (stored === 'light' || stored === 'dark') preference = stored
@@ -33,9 +36,29 @@
     })
   }
 
-  function choose(value) {
+  function transitionTo(value) {
+    clearTimeout(colorTimer)
+    clearTimeout(cleanupTimer)
     preference = value
-    applyPreference()
+    document.querySelectorAll('.theme-control').forEach(updateSelector)
+    if (reducedMotion.matches) {
+      document.documentElement.classList.remove('theme-color-transition')
+      applyPreference()
+      return
+    }
+    // Finish the 240ms selector slide before starting the page's color fade.
+    document.documentElement.classList.add('theme-color-transition')
+    colorTimer = setTimeout(function () {
+      applyPreference()
+      cleanupTimer = setTimeout(function () {
+        document.documentElement.classList.remove('theme-color-transition')
+      }, 360)
+    }, 270)
+  }
+
+  function choose(value) {
+    if (value === preference) return
+    transitionTo(value)
     try {
       if (preference === 'system') localStorage.removeItem('theme')
       else localStorage.setItem('theme', preference)
@@ -99,7 +122,6 @@
     try {
       if (event.storageArea && event.storageArea !== localStorage) return
     } catch (error) { return }
-    preference = event.newValue === 'light' || event.newValue === 'dark' ? event.newValue : 'system'
-    applyPreference()
+    transitionTo(event.newValue === 'light' || event.newValue === 'dark' ? event.newValue : 'system')
   })
 })()
