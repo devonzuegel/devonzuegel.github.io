@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   parseDate,
+  parseLabeledTimes,
   parseVenue,
   makeEvent,
   normalizeGenres,
@@ -10,6 +11,24 @@ import { responseText } from "../server/network.mjs";
 import venues from "../data/venues.json" with { type: "json" };
 const now = new Date("2026-09-19T12:00Z"),
   venue = venues.find((v) => v.id === "elsewhere");
+test("doors and show times retain their own labels, including midnight", () => {
+  assert.deepEqual(parseLabeledTimes("Doors open at 7:30pm / Show: 9pm"), {
+    doorsTime: "19:30",
+    showTime: "21:00",
+  });
+  assert.deepEqual(parseLabeledTimes("doors at 11pm, music at 12am"), {
+    doorsTime: "23:00",
+    showTime: "00:00",
+  });
+  assert.deepEqual(parseLabeledTimes("Doors TBA / Show 8pm"), {
+    doorsTime: null,
+    showTime: "20:00",
+  });
+  assert.deepEqual(parseLabeledTimes("7pm"), {
+    doorsTime: null,
+    showTime: null,
+  });
+});
 test("calendar dates cross year boundaries without rolling February 30 into March", () => {
   assert.equal(parseDate("Fri Jan 8", now), "2027-01-08");
   assert.equal(parseDate("Feb 30", now), null);

@@ -76,6 +76,19 @@ export function parseTime(text) {
   const h = (+m[1] % 12) + (/pm/i.test(m[3]) ? 12 : 0);
   return `${String(h).padStart(2, "0")}:${m[2] || "00"}`;
 }
+export function parseLabeledTimes(text) {
+  const value = clean(text);
+  const labeled = (label) =>
+    parseTime(
+      value.match(
+        new RegExp(
+          `\\b(?:${label})\\s*(?:(?:open|starts?|at)\\s*){0,2}:?\\s*(\\d{1,2}(?::\\d{2})?\\s*(?:am|pm))\\b`,
+          "i",
+        ),
+      )?.[1],
+    );
+  return { doorsTime: labeled("doors"), showTime: labeled("show|music") };
+}
 const stripStatus = (s) =>
   clean(s).replace(
     /^\*?(sold out|cancelled|canceled|postponed)\*?\s*[-:–]?\s*/i,
@@ -185,6 +198,14 @@ export function makeEvent(venue, input, now = new Date()) {
     date: input.date,
     time: input.time || null,
     timeKind: input.timeKind || "show",
+    doorsTime:
+      input.doorsTime ||
+      (input.timeKind === "doors" ? input.time : null) ||
+      null,
+    showTime:
+      input.showTime ||
+      (input.timeKind !== "doors" ? input.time : null) ||
+      null,
     startAt,
     endAt: input.endAt || null,
     timezone: venue.timezone,
@@ -232,6 +253,7 @@ export function parseVenue(venue, html, now = new Date()) {
           date,
           time: parseTime(times),
           timeKind: /doors/i.test(times) ? "doors" : "show",
+          ...parseLabeledTimes(times),
           artists: [
             stripStatus(title).replace(
               /\s+[–—:]\s+.*(?:tour|anniversary|presents).*/i,
@@ -293,6 +315,7 @@ export function parseVenue(venue, html, now = new Date()) {
           date,
           time: parseTime(t || times),
           timeKind: t ? "show" : "doors",
+          ...parseLabeledTimes(times),
           artists: acts,
           genres: e
             .find(".genre")

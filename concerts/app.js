@@ -358,35 +358,55 @@ function venueLocationModal(id) {
   );
   mountVenueMaps($("#modal-root"), config, true).catch(() => {});
 }
+function rowTimes(e) {
+  const doors = e.doorsTime || (e.timeKind === "doors" ? e.time : null);
+  const show = e.showTime || (e.timeKind === "show" ? e.time : null);
+  return (
+    [
+      doors ? `Doors ${timeLabel({ time: doors })}` : "",
+      show ? `Show ${timeLabel({ time: show })}` : "",
+    ]
+      .filter(Boolean)
+      .map((t) => `<span>${esc(t)}</span>`)
+      .join("") || esc(timeLabel(e))
+  );
+}
+function rowAssessment(a) {
+  const scores = ["music", "venue", "visuals"]
+    .filter((k) => a[k])
+    .map(
+      (k) => `<span>${k[0].toUpperCase() + k.slice(1)} <b>${a[k]}/5</b></span>`,
+    )
+    .join("");
+  return scores || a.notes?.trim()
+    ? `<div class="row-assessment">${scores ? `<div class="row-scores">${scores}</div>` : ""}${a.notes?.trim() ? `<p class="row-note" title="${esc(a.notes)}">${esc(a.notes)}</p>` : ""}</div>`
+    : "";
+}
+function listeningContext(match) {
+  if (!match) return "";
+  const reason =
+    Number.isFinite(match.plays) && match.plays > 0
+      ? `${match.plays.toLocaleString()} plays in your history`
+      : match.reason || "In your listening history";
+  return `${match.name} · ${reason}`;
+}
 function row(e) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
-  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${esc(timeLabel(e))}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
+  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
     e.artists?.length > 1
-      ? `<p class="supporting">with ${esc(
-          e.artists
-            .slice(1)
-            .map((a) => a.name)
-            .join(", "),
+      ? `<p class="supporting">Lineup: ${esc(
+          e.artists.map((a) => a.name).join(", "),
         )}</p>`
       : ""
   }<div class="event-tags">${
     e.genres
-      ?.slice(0, 2)
+      ?.filter((g) => !/^(unknown|genre unknown)$/i.test(g))
+      .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
-      .join("") || '<span class="genre-tag">Genre unknown</span>'
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(match.name + ": " + match.reason)}">${icon("spotify")}You listen to this</span>` : ""}</div></div></div><div class="event-location"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div>${
-    state.tab === "saved" && (a.notes || a.music || a.venue || a.visuals)
-      ? `<div class="inline-assessment">${["music", "venue", "visuals"]
-          .filter((k) => a[k])
-          .map(
-            (k) =>
-              `<span>${k[0].toUpperCase() + k.slice(1)} <span class="mini-score">${a[k]}/5</span></span>`,
-          )
-          .join("")}${a.notes ? `<p>${esc(a.notes)}</p>` : ""}</div>`
-      : ""
-  }</article>`;
+      .join("") || ""
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location"><div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 function resultsBar(list) {
   const counts = savedCounts(events(), store.fields);
@@ -464,13 +484,13 @@ function renderResults() {
     for (const e of list.slice(0, state.limit)) {
       const m = e.date?.slice(0, 7) || "tba";
       if (m !== month) {
-        if (month) body += "</details>";
+        if (month) body += "</div></details>";
         month = m;
-        body += `<details class="month-group" data-month="${m}" ${collapsedMonths.has(m) ? "" : "open"}><summary class="month-heading" title="Collapse or expand this month">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></summary>`;
+        body += `<details class="month-group" data-month="${m}" ${collapsedMonths.has(m) ? "" : "open"}><summary class="month-heading" title="Collapse or expand this month">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></summary><div class="month-results">`;
       }
       body += row(e);
     }
-    if (month) body += "</details>";
+    if (month) body += "</div></details>";
     if (list.length > state.limit)
       body += button(
         "more-events",
@@ -751,7 +771,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${dateLabel(e.date)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(match.name + ": " + match.reason)}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">Kept in your saved concerts. This show is no longer in the current feed; check the venue for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + (a.saved ? "Saved" : "Save"), "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section"><div class="section-title"><h3>Get a feel for the music.</h3></div><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<strong>A little preview of the night.</strong><span>Choose a recording below.<br>Nothing plays until you press play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${dateLabel(e.date)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">Kept in your saved concerts. This show is no longer in the current feed; check the venue for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + (a.saved ? "Saved" : "Save"), "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section"><div class="section-title"><h3>Get a feel for the music.</h3></div><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<strong>A little preview of the night.</strong><span>Choose a recording below.<br>Nothing plays until you press play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1686,3 +1706,46 @@ document.addEventListener(
   },
   true,
 );
+
+const monthAnimations = new WeakMap();
+document.addEventListener("click", (event) => {
+  const heading = event.target.closest("summary.month-heading");
+  if (!heading) return;
+  event.preventDefault();
+  const group = heading.parentElement;
+  const content = group.querySelector(".month-results");
+  const previous = monthAnimations.get(group);
+  const expand = previous ? !previous.expand : !group.open;
+  const startHeight = group.open ? content.getBoundingClientRect().height : 0;
+  previous?.animation.cancel();
+  const finish = () => {
+    group.open = expand;
+    delete group.dataset.expanding;
+    content.style.overflow = "";
+    if (expand) collapsedMonths.delete(group.dataset.month);
+    else collapsedMonths.add(group.dataset.month);
+    monthAnimations.delete(group);
+  };
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    finish();
+    return;
+  }
+  group.open = true;
+  group.dataset.expanding = String(expand);
+  content.style.overflow = "hidden";
+  const animation = content.animate(
+    [
+      { height: `${startHeight}px` },
+      { height: `${expand ? content.scrollHeight : 0}px` },
+    ],
+    { duration: 320, easing: "cubic-bezier(.4, 0, .2, 1)", fill: "forwards" },
+  );
+  monthAnimations.set(group, { animation, expand });
+  animation.finished
+    .then(() => {
+      if (monthAnimations.get(group)?.animation !== animation) return;
+      finish();
+      animation.cancel();
+    })
+    .catch(() => {});
+});
