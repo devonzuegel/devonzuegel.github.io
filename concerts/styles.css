@@ -200,6 +200,7 @@ small {
 .wordmark {
   font-family: var(--serif);
   font-size: 32px;
+  font-weight: 600;
   line-height: 1.05;
   max-width: 185px;
   letter-spacing: -1px;
@@ -832,6 +833,7 @@ small {
   padding: 26px 0 8px;
   font-family: var(--serif);
   font-size: 24px;
+  font-weight: 600;
 }
 .month-heading:after {
   content: "";
@@ -872,7 +874,7 @@ small {
 .event-date strong {
   font-family: var(--serif);
   font-size: 26px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.1;
 }
 .event-date .time {
@@ -3174,6 +3176,8 @@ summary.month-heading:focus-visible {
 .sort-select {
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
   max-width: 180px;
   cursor: pointer;
 }
