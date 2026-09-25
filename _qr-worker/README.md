@@ -4,15 +4,16 @@ The dashboard is `https://devonzuegel.com/QR-codes/`. GitHub Pages serves `QR-co
 
 The TypeScript Worker serves `https://qr.devonzuegel.com`, with D1 persistence and a Resend outbox. Everything in this directory starts under `_qr-worker`, which the existing GitHub Pages Jekyll build excludes. There are no backend credentials, recipient addresses, sessions or visit data in the static frontend. Do not add `.nojekyll` or include this directory in a different static build without an explicit exclusion.
 
-**Implementation and local validation are separate from deployment.** No Cloudflare resources, OAuth app, DNS records, Resend account or live messages were created during implementation. The recipient has not been assumed. The final live scan/email check below remains required after configuration.
+**Live as of September 25, 2026.** The dashboard is published on GitHub Pages, and the hosted QR checks passed for feature commit `f65840f`. The Worker is deployed at `https://qr.devonzuegel.com` on Workers Free, with production D1 and its one-minute retry schedule. GitHub OAuth app `3882968` is configured and owner sign-in works. Resend has verified `notify.devonzuegel.com`; its dedicated key has Sending access restricted to this domain. Email is enabled. All four credentials/settings requiring secrecy are stored as encrypted Worker secrets. Deployment version: `c20afc36-9d5f-4a25-b6c9-935a9b8ea946`. The live browser redirect and email check passed, and the owner confirmed both emails arrived. A physical phone-camera scan remains a user check.
 
 ## Validation record — September 25, 2026 UTC
 
-- TypeScript check and all **22 automated tests passed**, including actual D1 transactions, concurrency, OAuth/CSRF, failures, pagination, retention and independent QR decoding.
-- Headless Chrome browser checks passed at 1440px desktop and 390px phone widths, in light/dark appearance. SVG and PNG exports independently decoded to the permanent tracking URL. Preview and download generated no visits; the mock scan/redirect/email flow passed. No real email was sent.
+- TypeScript check and all **23 automated tests passed**, including actual D1 transactions, concurrency, OAuth/CSRF, failures, pagination, retention, independent QR decoding and production configuration validation.
+- Headless Chrome browser checks passed at 1440px desktop and 390px phone widths, in light/dark appearance. SVG and PNG exports independently decoded to the permanent tracking URL. Preview and download generated no visits; the mock scan/redirect/email flow passed. Routine automated tests send no real email.
 - `wrangler d1 migrations apply --local` applied all 24 migration statements; real local Worker smoke checks returned correct 401, CORS and 404 responses. Production deployment dry run passed.
-- Full **Jekyll 3.10.0 safe build** passed into a temporary directory. Existing homepage, QR dashboard, local QR bundle and privacy page were present; `_qr-worker` was absent. Public QR output was checked for secrets and test recipient data. The GitHub-hosted CI/Pages deployment itself has not run for these uncommitted changes.
-- Live GitHub OAuth authorization, custom-domain TLS, Cloudflare geography and Resend inbox delivery remain unverified until the external accounts and recipient are configured.
+- Full **Jekyll 3.10.0 safe build** passed into a temporary directory. Existing homepage, QR dashboard, local QR bundle and privacy page were present; `_qr-worker` was absent. Public QR output was checked for secrets and test recipient data. [GitHub-hosted QR checks passed](https://github.com/devonzuegel/devonzuegel.github.io/actions/runs/36090429379), Pages reports `built`, and the public dashboard responds with HTTP 200.
+- Production HTTPS checks passed: the private API returns 401 without a session, CORS allows only the dashboard origin, and unknown QR IDs return 404, all with `no-store`. Live owner OAuth sign-in, Cloudflare coarse geography, email dispatch and inbox arrival passed. Non-owner authorization is covered by automated tests; no second live GitHub account was used.
+- Production setup: the existing zone is Active in the configured account; the Workers plan shows Free / Current plan. D1 `b96d0322-f9f4-403f-83eb-99364345171a` was created in ENAM and all 24 initial migration statements applied successfully. The full DNS zone was exported before changes; it had 4 A, 5 CNAME and 2 TXT records, with no `qr` or `notify` conflict. The backup is outside the repository at `/private/tmp/qr-dns-before.zone` (also downloaded as `~/Downloads/devonzuegel.com.txt`). Wrangler created the `qr` Worker Custom Domain. Resend's DKIM TXT and two DNS-only CNAME records were added and verified. Its account shows Transactional Free (100/day, 3,000/month), 2 of 3 domains used, and no paid overages enabled. Receiving and open/click tracking remain disabled.
 
 ## Repository and local commands
 
@@ -104,10 +105,10 @@ Add `notify.devonzuegel.com` as a sending domain; use the North Virginia (`us-ea
 | Type | Cloudflare Name            | Value                                                                                     | Priority |
 | ---- | -------------------------- | ----------------------------------------------------------------------------------------- | -------- |
 | TXT  | `resend._domainkey.notify` | Exact `p=…` DKIM value from Resend                                                        | —        |
-| MX   | `send.notify`              | Exact feedback host from Resend; for `us-east-1`, `feedback-smtp.us-east-1.amazonses.com` | 10       |
-| TXT  | `send.notify`              | `v=spf1 include:amazonses.com ~all` (confirm against Resend's displayed record)           | —        |
+| CNAME | `rsend.notify`            | `rsend.forge.rmta.net` (generated for this domain during production setup)               | —        |
+| CNAME | `send.notify`             | `send.forge.rmta.net` (generated for this domain during production setup)                | —        |
 
-These are the sending/DKIM/bounce records, **not** an inbound MX at the apex. Never replace existing personal email MX records or create a second SPF policy at an existing name. If Resend displays different record names/values, its generated records are authoritative. Verify DNS in Resend and wait for Verified. Optional DMARC can be added at `_dmarc.notify` after reviewing any inherited existing policy. [Resend's Cloudflare DNS guide](https://resend.com/docs/knowledge-base/cloudflare)
+These are the sending/DKIM/bounce records, **not** an inbound MX at the apex. The two CNAMEs above replace the older MX/TXT example: use the actual generated records shown by Resend. Never replace existing personal email MX records or create a second SPF policy at an existing name. If Resend displays different record names/values, its generated records are authoritative. Verify DNS in Resend and wait for Verified. Optional DMARC can be added at `_dmarc.notify` after reviewing any inherited existing policy. [Resend's Cloudflare DNS guide](https://resend.com/docs/knowledge-base/cloudflare)
 
 The configured sender is `QR Alerts <qr-alerts@notify.devonzuegel.com>`. Create a **Sending access** API key restricted to that domain. Select the one recipient email address explicitly; no address is inferred from the website or GitHub profile. It will be a Worker secret and visible only in authenticated settings, email payloads in private D1, and the provider/mailbox. No public request can select a recipient.
 
@@ -143,7 +144,18 @@ Publish your reviewed feature commit to `master`, following the repository's cur
 
 Check `/`, an existing article, `/QR-codes`, `/QR-codes/`, and a detail hash route. The dashboard uses absolute asset paths; direct opens and refreshes work. Verify `/_qr-worker/src/index.ts` and `/_qr-worker/.dev.vars` return 404 on the deployed Pages site. Never deploy local D1 files or build-test artifacts. [GitHub Pages static hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)
 
-## 6. Explicit live end-to-end check (still pending)
+## 6. Explicit live end-to-end check
+
+Completed September 25, 2026, approximately 19:13–19:19 UTC, in the desktop in-app browser:
+
+- Owner GitHub sign-in succeeded. Settings showed the selected recipient and ready configuration. The test email was accepted and Resend reported delivered at 3:13 PM EDT.
+- Created `LIVE CHECK — setup test` with placement `Setup test`. Downloaded PNG and SVG without generating an open. An independent jsQR decode of the actual 1620 × 1620 PNG matched its permanent production tracking URL.
+- Opened that decoded URL at 3:15 PM EDT. It reached the homepage and recorded one open with coarse Cloudflare geography. Resend reported the alert delivered in the same minute; its displayed body contained the correct name, placement, destination, local time and location caveat. The owner explicitly confirmed both the test and QR alert emails arrived in the intended inbox.
+- Changed the destination to the privacy page and opened the same tracking URL. It reached the new destination and recorded a second open; its email was correctly suppressed by the source cooldown. Duplication generated a different tracking ID.
+- Disabled the original and verified the unavailable visitor page, then reactivated it and verified a `302`, the updated destination and `Cache-Control: no-store` using HEAD. Finally disabled both setup codes, retaining their test history.
+- A physical phone-camera scan was not performed. Browser opening of the independently decoded download verified the live redirect/email path; scan a newly created code on a real phone before printing a large batch.
+
+For future deployments, repeat this procedure as needed:
 
 This check **sends real email** to the configured recipient:
 
