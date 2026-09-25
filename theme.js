@@ -10,40 +10,75 @@
   function applyPreference() {
     if (preference === 'system') document.documentElement.removeAttribute('data-theme')
     else document.documentElement.setAttribute('data-theme', preference)
-    document.querySelectorAll('.theme-select').forEach(function (select) {
-      select.value = preference
-    })
+    document.querySelectorAll('.theme-control').forEach(updateSelector)
   }
 
   // Run synchronously in the head so saved overrides apply before first paint.
   // With no override, the stylesheet follows live system appearance changes.
   applyPreference()
 
+  var choices = ['system', 'light', 'dark']
+  var icons = {
+    system: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8M12 16v5"/>',
+    light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
+    dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+  }
+
+  function updateSelector(control) {
+    control.style.setProperty('--theme-position', choices.indexOf(preference))
+    control.querySelectorAll('.theme-option').forEach(function (button) {
+      var selected = button.value === preference
+      button.setAttribute('aria-checked', String(selected))
+      button.tabIndex = selected ? 0 : -1
+    })
+  }
+
+  function choose(value) {
+    preference = value
+    applyPreference()
+    try {
+      if (preference === 'system') localStorage.removeItem('theme')
+      else localStorage.setItem('theme', preference)
+    } catch (error) {
+      // Keep the current choice even when it cannot be persisted.
+    }
+  }
+
   function makeSelector() {
-    var label = document.createElement('label')
-    label.className = 'theme-control'
-    label.appendChild(document.createTextNode('Appearance '))
-    var select = document.createElement('select')
-    select.className = 'theme-select'
-    ;['System', 'Light', 'Dark'].forEach(function (name) {
-      var option = document.createElement('option')
-      option.value = name.toLowerCase()
-      option.textContent = name
-      select.appendChild(option)
+    var control = document.createElement('div')
+    control.className = 'theme-control'
+    control.setAttribute('role', 'radiogroup')
+    control.setAttribute('aria-label', 'Appearance')
+    var highlight = document.createElement('span')
+    highlight.className = 'theme-highlight'
+    highlight.setAttribute('aria-hidden', 'true')
+    control.appendChild(highlight)
+    choices.forEach(function (value, index) {
+      var button = document.createElement('button')
+      button.className = 'theme-option'
+      button.type = 'button'
+      button.value = value
+      button.setAttribute('role', 'radio')
+      var name = value.charAt(0).toUpperCase() + value.slice(1)
+      button.setAttribute('aria-label', name)
+      button.title = value === 'system' ? 'Follow system appearance' : name + ' mode'
+      button.innerHTML = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + icons[value] + '</svg>'
+      button.addEventListener('click', function () { choose(value) })
+      button.addEventListener('keydown', function (event) {
+        var next
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % 3
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + 2) % 3
+        else if (event.key === 'Home') next = 0
+        else if (event.key === 'End') next = 2
+        else return
+        event.preventDefault()
+        choose(choices[next])
+        control.querySelectorAll('.theme-option')[next].focus()
+      })
+      control.appendChild(button)
     })
-    select.value = preference
-    select.addEventListener('change', function () {
-      preference = select.value
-      applyPreference()
-      try {
-        if (preference === 'system') localStorage.removeItem('theme')
-        else localStorage.setItem('theme', preference)
-      } catch (error) {
-        // Keep the current choice even when it cannot be persisted.
-      }
-    })
-    label.appendChild(select)
-    return label
+    updateSelector(control)
+    return control
   }
 
   document.addEventListener('DOMContentLoaded', function () {
