@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; connect-src https://qr.devonzuegel.com http://localhost:8787; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>QR codes · Devon Zuegel</title>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/QR-codes/styles.css" />
+    <script type="module" src="/QR-codes/app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="layout">
+      <aside class="sidebar">
+        <a class="site-name" href="/"
+          >DEVON<br />
+          ZUEGEL</a
+        >
+        <p class="site-caption">Small tools for everyday life.</p>
+        <nav aria-label="Dashboard" id="nav" hidden>
+          <a href="#/" data-nav="codes">QR codes</a>
+          <a href="#/settings" data-nav="settings">Settings</a>
+          <button id="logout" class="text-button">Sign out</button>
+        </nav>
+        <a class="back-site" href="/">← Back to my website</a>
+      </aside>
+      <main id="main" tabindex="-1">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">A personal link notebook</p>
+            <h1>QR codes</h1>
+          </div>
+          <a class="button primary" id="new-code" href="#/new" hidden
+            >+ New QR code</a
+          >
+        </header>
+        <div id="notice" role="status" aria-live="polite"></div>
+        <p id="reauth" hidden>
+          <a target="_blank" rel="noopener noreferrer"
+            >Sign in again in a new tab</a
+          >, then retry to keep your form.
+        </p>
+        <div id="budget-notice" class="notice warning" hidden></div>
+        <div id="view" aria-live="polite">
+          <section class="panel empty">
+            <h2>Opening your dashboard…</h2>
+            <p>Checking your sign-in.</p>
+          </section>
+        </div>
+        <footer>
+          <p>
+            QR link opens count requests to a link, including shared links and
+            reloads. They are not a count of camera scans or unique people.
+            Preview and bot filtering is best-effort.
+          </p>
+          <p>
+            Location is approximate and can be wrong, especially with mobile
+            networks, VPNs and proxies. A placement label describes the code,
+            not the visitor’s location. Rate-limited traffic is not fully
+            counted.
+          </p>
+          <a href="/privacy.html#qr-links">Privacy &amp; tracking</a> · Times
+          shown in America/New_York
+        </footer>
+      </main>
+    </div>
+    <noscript
+      ><p class="notice">
+        Please enable JavaScript to sign in and create QR codes.
+      </p></noscript
+    >
+  </body>
+</html>

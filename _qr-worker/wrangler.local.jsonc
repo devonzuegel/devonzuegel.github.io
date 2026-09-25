@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "devon-qr-codes-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-24",
+  "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "qr-codes-local",
+      "database_id": "local-only",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "ratelimits": [
+    {
+      "name": "SOURCE_LIMIT",
+      "namespace_id": "697975511",
+      "simple": { "limit": 20, "period": 60 },
+    },
+    {
+      "name": "GLOBAL_LIMIT",
+      "namespace_id": "697975512",
+      "simple": { "limit": 60, "period": 60 },
+    },
+    {
+      "name": "AUTH_LIMIT",
+      "namespace_id": "697975513",
+      "simple": { "limit": 10, "period": 60 },
+    },
+  ],
+  "vars": {
+    "LOCAL_DEV": "true",
+    "DASHBOARD_ORIGIN": "http://localhost:8000",
+    "PUBLIC_ORIGIN": "http://localhost:8787",
+    "GITHUB_CLIENT_ID": "REPLACE_WITH_LOCAL_OAUTH_CLIENT_ID",
+    "OWNER_GITHUB_ID": "6979755",
+    "EMAIL_FROM": "QR Alerts <qr-alerts@notify.devonzuegel.com>",
+    "EMAIL_ENABLED": "false",
+  },
+}

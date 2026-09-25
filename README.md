@@ -136,3 +136,7 @@ Press `Ctrl+C` to stop the server.
 - [ ] for all the html files in directories (i.e. not in root), make sure that the postachio-style.css path is correct! lmk which ones were broken
 - [ ] `wget` downloads everything such that the `.html` extension is preserved in the path. It's good that the extension is in the filenames, but I don't want the contents of the html files themselves to point to e.g. `.../about-me.html`, because it makes the urls ugly. I want them to point to `.../about-me`. In theory this should be easy to fix, but I haven't found the right flags for `wget` to fix this.
 - [ ] I should also have it download the postach.io CSS, JS, etc. I thought `wget` would've already done that given the flags I gave it, but apparently not.
+
+# Personal QR-code dashboard
+
+`/QR-codes/` is a private owner dashboard with a separate Cloudflare Worker/D1 backend. Creating and editing codes happens in the dashboard without publishing the website again. See [_qr-worker/README.md](_qr-worker/README.md) for local tests, the DNS inventory, account and secret setup, API/schema documentation, live verification, and rollback. The static QR renderer is checked in; regenerate it with `cd _qr-worker && npm ci && npm run build` before publishing frontend changes. Keep `_qr-worker/` excluded from the public Pages output.

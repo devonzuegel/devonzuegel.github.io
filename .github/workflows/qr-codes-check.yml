@@ -1,0 +1,63 @@
+name: Check QR dashboard
+on:
+  pull_request:
+    paths:
+      [
+        "QR-codes/**",
+        "_qr-worker/**",
+        "privacy.html",
+        ".github/workflows/qr-codes-check.yml",
+      ]
+  push:
+    branches: [master]
+    paths:
+      [
+        "QR-codes/**",
+        "_qr-worker/**",
+        "privacy.html",
+        ".github/workflows/qr-codes-check.yml",
+      ]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: _qr-worker/package-lock.json
+      - run: npm ci
+        working-directory: _qr-worker
+      - run: npm run check && npm test
+        working-directory: _qr-worker
+      - run: npx playwright install --with-deps chromium
+        working-directory: _qr-worker
+      - run: npm run test:browser
+        working-directory: _qr-worker
+      - run: npm run dry-run
+        working-directory: _qr-worker
+        env:
+          WRANGLER_SEND_METRICS: "false"
+      - name: Check committed QR bundle
+        run: git diff --exit-code -- QR-codes/vendor/
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - name: Check Pages output
+        run: |
+          test -f _site/index.html
+          test -f _site/QR-codes/index.html
+          test -f _site/QR-codes/vendor/qr.js
+          test -f _site/privacy.html
+          test ! -e _site/_qr-worker
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: qr-browser-screenshots
+          path: _qr-worker/.build/screenshots/

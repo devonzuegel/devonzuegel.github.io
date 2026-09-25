@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "devon-qr-codes",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-24",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "qr.devonzuegel.com", "custom_domain": true }],
+  "triggers": { "crons": ["* * * * *"] },
+  "observability": { "enabled": false },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "qr-codes",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "ratelimits": [
+    {
+      "name": "SOURCE_LIMIT",
+      "namespace_id": "697975501",
+      "simple": { "limit": 20, "period": 60 },
+    },
+    {
+      "name": "GLOBAL_LIMIT",
+      "namespace_id": "697975502",
+      "simple": { "limit": 60, "period": 60 },
+    },
+    {
+      "name": "AUTH_LIMIT",
+      "namespace_id": "697975503",
+      "simple": { "limit": 10, "period": 60 },
+    },
+  ],
+  "vars": {
+    "DASHBOARD_ORIGIN": "https://devonzuegel.com",
+    "PUBLIC_ORIGIN": "https://qr.devonzuegel.com",
+    "GITHUB_CLIENT_ID": "REPLACE_WITH_OAUTH_CLIENT_ID",
+    "OWNER_GITHUB_ID": "6979755",
+    "EMAIL_FROM": "QR Alerts <qr-alerts@notify.devonzuegel.com>",
+    "EMAIL_ENABLED": "false",
+    "EMAIL_DAILY_BUDGET": "80",
+    "EMAIL_MONTHLY_BUDGET": "2400",
+    "LOG_DAILY_LIMIT": "1000",
+    "CODE_COOLDOWN_SECONDS": "15",
+    "SOURCE_COOLDOWN_SECONDS": "300",
+    "VISIT_RETENTION_DAYS": "90",
+  },
+}

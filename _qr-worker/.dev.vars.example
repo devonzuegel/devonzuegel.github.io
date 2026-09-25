@@ -1,0 +1,6 @@
+# Local OAuth app ONLY; never commit .dev.vars. No development auth bypass.
+GITHUB_CLIENT_SECRET="replace-locally"
+RATE_HASH_SECRET="replace-with-at-least-32-random-characters"
+# Optional local sending; EMAIL_ENABLED defaults to false.
+# RESEND_API_KEY="re_replace-locally"
+# ALERT_RECIPIENT="your-chosen-address@example.net"
