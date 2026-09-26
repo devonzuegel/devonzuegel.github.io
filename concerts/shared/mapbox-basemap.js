@@ -17,8 +17,6 @@ export function addMapboxBasemap(map, config, thumbnail = false) {
     return `${base}/static/${center.lng},${center.lat},${map.getZoom() - 1}/${Math.round(size.x)}x${Math.round(size.y)}@2x?access_token=${encodeURIComponent(token)}&attribution=false&logo=false`;
   };
   map.attributionControl.setPrefix(false);
-  // Keep the required text attribution visible on static thumbnails.
-  if (thumbnail) map.attributionControl.setPosition("topright");
   const layer = thumbnail
     ? L.imageOverlay(url(), map.getBounds(), { attribution })
     : L.tileLayer(url(), {
@@ -28,6 +26,19 @@ export function addMapboxBasemap(map, config, thumbnail = false) {
         attribution,
       });
   layer.addTo(map);
+  if (thumbnail) {
+    map.attributionControl.remove();
+    const credit = L.control({ position: "topright" });
+    credit.onAdd = () => {
+      const details = L.DomUtil.create("details", "map-attribution-compact");
+      details.innerHTML = `<summary aria-label="Map attribution" title="Map attribution">i</summary><div>${attribution}</div>`;
+      L.DomEvent.disableClickPropagation(details);
+      details.addEventListener("click", (event) => event.stopPropagation());
+      L.DomEvent.disableScrollPropagation(details);
+      return details;
+    };
+    credit.addTo(map);
+  }
   if (!thumbnail) {
     const logo = L.control({ position: "bottomleft" });
     logo.onAdd = () => {

@@ -920,6 +920,13 @@ async function closeDetail() {
   if (detailReturnFocus?.isConnected)
     detailReturnFocus.focus({ preventScroll: true });
 }
+function recordingSourceLabel(provider) {
+  return (
+    { youtube: "YouTube", archive: "Internet Archive" }[provider] ||
+    provider ||
+    "Unknown source"
+  );
+}
 function renderMedia() {
   const m = state.media,
     root = $("#media-results");
@@ -928,7 +935,7 @@ function renderMedia() {
     root.innerHTML = '<p class="media-notice">Looking for recordings…</p>';
     return;
   }
-  root.innerHTML = `${m.error ? `<p class="media-notice">${esc(m.error)}</p>${button("retry-media", "Try again", "small-button")}` : ""}${!m.items.length && !m.loading ? '<p class="media-notice">No recordings found in the connected source. Try a shorter artist name or All music.</p>' : ""}<div class="media-results">${m.items.map((item, i) => button("play-recording", `<img class="media-thumbnail" src="${esc(safeURL(item.thumbnail))}" alt="" loading="lazy"><span><strong>${esc(item.title)}</strong><small>${item.kind === "audio" ? "Audio" : "Video"} · ${esc(item.channel || item.provider)}${item.duration ? " · " + esc(item.duration.replace("PT", "").toLowerCase()) : ""}</small></span>`, `media-result ${m.playing === i ? "active" : ""}`, `data-index="${i}"`)).join("")}</div>${m.hasMore ? button("more-media", m.loading ? "Loading…" : "More recordings", "small-button", m.loading ? "disabled" : "") : ""}<p class="media-notice">${esc(m.notice || "Recordings from " + (m.provider === "youtube" ? "YouTube" : "Internet Archive") + ".")}</p><div class="form-actions"><a class="text-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(m.artist + " live performance")}" target="_blank" rel="noopener">Search YouTube ${icon("external")}</a><a class="text-button" href="https://open.spotify.com/search/${encodeURIComponent(m.artist)}" target="_blank" rel="noopener">Open Spotify ${icon("external")}</a></div>`;
+  root.innerHTML = `${m.error ? `<p class="media-notice">${esc(m.error)}</p>${button("retry-media", "Try again", "small-button")}` : ""}${!m.items.length && !m.loading ? '<p class="media-notice">No recordings found in the connected source. Try a shorter artist name or All music.</p>' : ""}<div class="media-results">${m.items.map((item, i) => button("play-recording", `<img class="media-thumbnail" src="${esc(safeURL(item.thumbnail))}" alt="" loading="lazy"><span><strong>${esc(item.title)}</strong><small class="media-meta"><span class="media-source-badge">${esc(recordingSourceLabel(item.provider))}</span><span>${item.kind === "audio" ? "Audio" : "Video"}${item.channel ? " · " + esc(item.channel) : ""}${item.duration ? " · " + esc(item.duration.replace("PT", "").toLowerCase()) : ""}</span></small></span>`, `media-result ${m.playing === i ? "active" : ""}`, `data-index="${i}"`)).join("")}</div>${m.hasMore ? button("more-media", m.loading ? "Loading…" : "More recordings", "small-button", m.loading ? "disabled" : "") : ""}<p class="media-notice">${esc(m.notice || "Recordings from " + (m.provider === "youtube" ? "YouTube" : "Internet Archive") + ".")}</p><div class="form-actions"><a class="text-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(m.artist + " live performance")}" target="_blank" rel="noopener">Search YouTube ${icon("external")}</a><a class="text-button" href="https://open.spotify.com/search/${encodeURIComponent(m.artist)}" target="_blank" rel="noopener">Open Spotify ${icon("external")}</a></div>`;
 }
 async function loadMedia(more = false) {
   const req = ++mediaRequest,
