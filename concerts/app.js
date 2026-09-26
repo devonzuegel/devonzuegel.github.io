@@ -240,9 +240,9 @@ function renderChrome() {
   const c = cities();
   $("#sidebar-content").innerHTML =
     navMarkup() +
-    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="sidebar-sources">${button("sources", icon("info") + "Sources", "subtle-btn")}</div><div class="listening-box">${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your Spotify history" : "Add your Spotify listening history"), "small-button")}</div>`;
+    `<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${icoButton("cities", "plus", "Manage cities", "", "icon-btn small")}</div><div class="city-list">${c.map((city) => `<button class="city-toggle" data-action="toggle-city" data-city="${esc(city.id)}" aria-pressed="${city.enabled}" style="--city:${esc(city.color)}"><span class="city-dot" data-city="${esc(city.id)}"></span>${esc(city.name)}<span class="city-check">${city.enabled ? icon("check") : ""}</span></button>`).join("")}</div>${button("cities", icon("plus") + "Add a city", "subtle-btn")}<div class="sidebar-sources">${button("sources", icon("info") + "Sources", "subtle-btn")}</div><div class="listening-box">${button("listening", icon("spotify") + (Object.keys(listening() || {}).length ? "Your Spotify history" : "Add your Spotify listening history"), "small-button")}</div>`;
   $("#sidebar-bottom").innerHTML =
-    `${button("profile", `<span class="avatar">${esc((store.profile || "D").slice(0, 1).toUpperCase())}</span><span class="profile-text"><strong>${esc(store.profile || "Your account")}</strong><small title="${esc(store.lastError)}">${esc(store.status)}</small></span>${icon("down")}`, "profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
+    `${button("profile", `<span class="avatar">${esc((store.profile || "D").slice(0, 1).toUpperCase())}</span><span class="profile-text"><strong>${esc(store.profile || "Account")}</strong><small title="${esc(store.lastError)}">${esc(store.status)}</small></span>${icon("down")}`, "profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
   $("#mobile-header").innerHTML =
     `<div class="mobile-brand"><div class="mobile-account-row"><a class="wordmark" href="./">Concert Tracker</a>${account}</div>${navMarkup(true)}</div>`;
 }
@@ -288,7 +288,7 @@ function renderControls() {
       )
       .join("");
   $("#controls").innerHTML =
-    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your Spotify history")}${icoButton("sources", "info", "Sources")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><div class="date-chips">${[
+    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your Spotify history")}${icoButton("sources", "info", "Sources")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><div class="date-chips">${[
       ["weekend", "This weekend"],
       ["next-weekend", "Next weekend"],
       ["30", "30 days"],
@@ -410,23 +410,33 @@ function listeningContext(match) {
       : match.reason || "In your listening history";
   return `${match.name} · ${reason}`;
 }
+function eventDateLabel(e) {
+  return (
+    dateLabel(e.date) +
+    (e.endDate && e.endDate !== e.date ? " – " + dateLabel(e.endDate) : "")
+  );
+}
 function row(e) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
-  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
+  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${e.endDate ? "Through " + dateLabel(e.endDate, { month: "short", day: "numeric" }) : rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
     e.artists?.length > 1
       ? `<p class="supporting">Lineup: ${esc(
-          e.artists.map((a) => a.name).join(", "),
+          e.artists
+            .slice(0, 4)
+            .map((a) => a.name)
+            .join(", ") +
+            (e.artists.length > 4 ? ` + ${e.artists.length - 4} more` : ""),
         )}</p>`
       : ""
-  }<div class="event-tags">${
+  }<div class="event-tags">${e.eventType === "festival" ? '<span class="genre-tag">Festival</span>' : ""}${
     e.genres
       ?.filter((g) => !/^(unknown|genre unknown)$/i.test(g))
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location"><div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div>${venueMapMarkup(e)}</div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 function resultsBar(list) {
   const counts = savedCounts(events(), store.fields);
@@ -485,20 +495,19 @@ function renderResults() {
   else if (!list.length) {
     let title =
       state.tab === "saved" && !savedCounts(events(), store.fields).total
-        ? "Your next good night starts here."
-        : "No shows in this view.";
+        ? "No saved concerts"
+        : "No matching concerts";
     let text =
       state.tab === "saved" && !savedCounts(events(), store.fields).total
-        ? "Save a concert with the bookmark button. Your notes, ratings, and plans will have a home here."
-        : "Try a wider date range, another city, or fewer filters. Venue calendars are only part of the picture.";
+        ? "Use the bookmark button to save concerts."
+        : "Try changing the dates, cities, or filters.";
     if (state.tab === "hidden") {
       title = state.query
         ? "No hidden concerts match your search."
         : "No hidden concerts.";
-      text =
-        "Concerts you hide appear here. Restore any concert to show it in results again.";
+      text = "Restore hidden concerts to return them to results.";
     }
-    body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Explore concerts" : "Reset filters", "secondary")}</div>`;
+    body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Browse concerts" : "Reset filters", "secondary")}</div>`;
   } else if (state.view === "list") {
     let month = "";
     body =
@@ -560,7 +569,9 @@ function calendarView(list) {
   const days = Array.from({ length: 42 }, (_, i) => addDays(start, i));
   return `<div class="calendar-header"><h2>${dateLabel(first, { month: "long", year: "numeric" })}</h2><div class="nav">${button("calendar-today", "Today", "text-button")}${icoButton("calendar-prev", "left", "Previous month")}${icoButton("calendar-next", "right", "Next month")}</div></div><div class="calendar-grid">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => `<div class="calendar-weekday">${d}</div>`).join("")}${days
     .map((day) => {
-      const dayEvents = list.filter((e) => e.date === day);
+      const dayEvents = list.filter(
+        (e) => e.date <= day && (e.endDate || e.date) >= day,
+      );
       return `<div class="calendar-day ${day.slice(0, 7) !== state.calendarMonth ? "outside" : ""} ${day === dayInZone() ? "today" : ""}"><span class="num">${Number(day.slice(8))}</span>${dayEvents
         .slice(0, 3)
         .map((e) =>
@@ -582,12 +593,12 @@ function venueView(list) {
     .sort((a, b) => a.venue.name.localeCompare(b.venue.name))
     .map(
       ({ venue: v, events: ev }) =>
-        `<article class="venue-card"><div class="location-line"><span class="city-dot" style="--city:${esc(cityFor(v.metro).color)}"></span>${esc(v.locality || cityFor(v.metro).name)}<span style="margin-left:auto">${ev.length} shows</span></div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</div>${ev
+        `<article class="venue-card"><div class="location-line"><span class="city-dot" data-city="${esc(v.metro)}" style="--city:${esc(cityFor(v.metro).color)}"></span>${esc(v.locality || cityFor(v.metro).name)}<span style="margin-left:auto">${ev.length} shows</span></div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</div>${ev
           .slice(0, 4)
           .map((e) =>
             button(
               "open",
-              `<small>${dateLabel(e.date)} · ${esc(timeLabel(e))}</small>${esc(e.title)}${assessment(store.fields, e.id).saved ? " ♡" : ""}`,
+              `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small>${esc(e.title)}${assessment(store.fields, e.id).saved ? " ♡" : ""}`,
               "event-snippet",
               `data-id="${esc(e.id)}"`,
             ),
@@ -623,11 +634,11 @@ function renderMapSelection(list) {
   const el = $("#map-selection");
   if (!el) return;
   if (!group) {
-    el.innerHTML = `<span class="eyebrow">The lay of the land</span><h3 style="margin-top:16px">A good night,<br>somewhere nearby.</h3><p>Select a venue pin to see its upcoming shows. Use the city buttons to jump between metros.</p><p>Filled pins show concert counts. A star marks a venue with a saved show.</p>`;
+    el.innerHTML = `<p>Select a venue to see concerts.</p><p>Numbers show concert counts; stars mark saved concerts.</p>`;
     return;
   }
   const { venue: v, events: ev } = group;
-  el.innerHTML = `<span class="eyebrow">${esc(v.locality)}</span><h3 style="margin:12px 0">${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}</div><p style="margin-top:10px">${esc(v.address)}</p>${ev.map((e) => button("open", `<small>${dateLabel(e.date)} · ${esc(timeLabel(e))}</small><b>${esc(e.title)} ${assessment(store.fields, e.id).saved ? "★" : ""}</b>`, "event-snippet", `data-id="${esc(e.id)}"`)).join("")}`;
+  el.innerHTML = `<span class="eyebrow">${esc(v.locality)}</span><h3 style="margin:12px 0">${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}</div><p style="margin-top:10px">${esc(v.address)}</p>${ev.map((e) => button("open", `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small><b>${esc(e.title)} ${assessment(store.fields, e.id).saved ? "★" : ""}</b>`, "event-snippet", `data-id="${esc(e.id)}"`)).join("")}`;
 }
 async function initializeMap(list) {
   if (!$("#concert-map")) return;
@@ -818,7 +829,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${dateLabel(e.date)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">Kept in your saved concerts. This show is no longer in the current feed; check the venue for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + (a.saved ? "Saved" : "Save"), "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section"><div class="section-title"><h3>Get a feel for the music.</h3></div><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<strong>A little preview of the night.</strong><span>Choose a recording below.<br>Nothing plays until you press play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + (a.saved ? "Saved" : "Save"), "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -833,12 +844,13 @@ function openDetail(id, listen = false) {
       )
       .join(
         "",
-      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section><section class="detail-section"><div class="section-title"><h3>Your take.</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "How it sounds to you")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes to future you <small>Private to you</small></summary><textarea aria-label="Notes to future you" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="What caught your ear? What’s the room like?">${esc(a.notes)}</textarea></details><p class="media-notice">Notes and ratings save this concert automatically. Your impressions can change; come back and edit anytime.</p></section><section class="detail-section"><div class="section-title"><h3>The room matters.</h3></div><div class="venue-facts"><strong>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " people" : ""}</strong><p>${esc(e.venue.capacity?.configuration || e.venue.layout || "Room configuration not published.")}</p>${e.venue.capacity ? `<a class="source-link" href="${esc(safeURL(e.venue.capacity.source))}" target="_blank" rel="noopener">Capacity source · checked ${esc(e.venue.capacity.verifiedAt)}</a>` : "<p>We haven’t verified this venue’s capacity yet.</p>"}</div><p class="detail-address">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}<br>${esc(e.venue.address)}</p><a class="secondary" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue.name + " " + e.venue.address)}" target="_blank" rel="noopener">${icon("map")}Open directions ${icon("external")}</a></section><section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">From the source</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div><p class="media-notice">Schedules can change. Confirm details with the venue before heading out.</p></section></div></section>`;
+      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section><section class="detail-section"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
   animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
   $(".detail-top button").focus();
   loadMedia();
+  loadVenueMedia(e);
   if (listen)
     setTimeout(
       () =>
@@ -848,6 +860,45 @@ function openDetail(id, listen = false) {
         }),
       80,
     );
+}
+function venueSection(e) {
+  const v = e.venue;
+  const rawAddress = v.address || "";
+  const address =
+    rawAddress.toLowerCase() === v.name.toLowerCase()
+      ? ""
+      : rawAddress.toLowerCase().startsWith(v.name.toLowerCase() + ",")
+        ? rawAddress.slice(v.name.length + 1).trim()
+        : rawAddress;
+  const directions =
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(v.name + " " + (v.address || v.locality || ""));
+  return `<section class="detail-section venue-detail"><div class="venue-detail-header"><div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><p>${esc(address || v.locality || "")}</p></div><a class="text-button" href="${esc(directions)}" target="_blank" rel="noopener">${icon("map")}Directions ${icon("external")}</a></div><div class="venue-detail-facts"><span>${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</span>${v.layout || v.capacity?.configuration ? `<span>${esc(v.layout || v.capacity.configuration)}</span>` : ""}${v.capacity?.source ? `<a class="source-link" href="${esc(safeURL(v.capacity.source))}" target="_blank" rel="noopener">Capacity source</a>` : ""}</div><div id="venue-media" aria-live="polite"><p class="media-notice">Loading venue photos and videos…</p></div></section>`;
+}
+let venueMediaRequest = 0;
+async function loadVenueMedia(e) {
+  const req = ++venueMediaRequest;
+  try {
+    const data = await apiGet("venue-media", { venue: e.venue.id });
+    if (req !== venueMediaRequest || state.selected !== e.id) return;
+    $("#venue-media").innerHTML =
+      `<div class="venue-media-label">Photos <small>${esc(data.photoSource)}</small></div>${data.photos.length ? `<div class="venue-photo-grid">${data.photos.map((p) => `<a href="${esc(safeURL(p.url))}" target="_blank" rel="noopener"><img src="${esc(safeURL(p.thumbnail))}" alt="${esc(p.title)}" loading="lazy"><small>${esc(p.title)}</small><small>${esc([p.credit, p.license].filter(Boolean).join(" · "))} · Source ↗</small></a>`).join("")}</div>` : `<p class="media-notice">${data.photosUnavailable ? "Photos unavailable." : "No venue photos found."}</p>`}<div class="venue-media-label">Videos <small>YouTube search results</small></div>${data.videos.length ? `<div class="venue-video-grid">${data.videos.map((v) => `<details class="venue-video" data-video="${esc(v.id)}"><summary><img src="${esc(safeURL(v.thumbnail))}" alt="" loading="lazy"><span>${icon("play")}${esc(v.title)}</span></summary><div class="venue-video-player"></div><a class="source-link" href="${esc(safeURL(v.url))}" target="_blank" rel="noopener">${esc(v.channel)} · YouTube ↗</a></details>`).join("")}</div>` : `<p class="media-notice">${data.videosUnavailable ? "Videos unavailable." : "No venue videos found."}</p>`}`;
+    $("#venue-media")
+      .querySelectorAll(".venue-video")
+      .forEach((el) =>
+        el.addEventListener("toggle", () => {
+          const player = el.querySelector(".venue-video-player");
+          player.innerHTML =
+            el.open && /^[a-zA-Z0-9_-]{11}$/.test(el.dataset.video)
+              ? `<iframe title="Venue video" src="https://www.youtube-nocookie.com/embed/${el.dataset.video}" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`
+              : "";
+        }),
+      );
+  } catch {
+    if (req === venueMediaRequest && state.selected === e.id)
+      $("#venue-media").innerHTML =
+        '<p class="media-notice">Venue photos and videos unavailable.</p>';
+  }
 }
 function updateDetailMeta() {
   if (!state.selected) return;
@@ -935,7 +986,7 @@ function renderMedia() {
     root.innerHTML = '<p class="media-notice">Looking for recordings…</p>';
     return;
   }
-  root.innerHTML = `${m.error ? `<p class="media-notice">${esc(m.error)}</p>${button("retry-media", "Try again", "small-button")}` : ""}${!m.items.length && !m.loading ? '<p class="media-notice">No recordings found in the connected source. Try a shorter artist name or All music.</p>' : ""}<div class="media-results">${m.items.map((item, i) => button("play-recording", `<img class="media-thumbnail" src="${esc(safeURL(item.thumbnail))}" alt="" loading="lazy"><span><strong>${esc(item.title)}</strong><small class="media-meta"><span class="media-source-badge">${esc(recordingSourceLabel(item.provider))}</span><span>${item.kind === "audio" ? "Audio" : "Video"}${item.channel ? " · " + esc(item.channel) : ""}${item.duration ? " · " + esc(item.duration.replace("PT", "").toLowerCase()) : ""}</span></small></span>`, `media-result ${m.playing === i ? "active" : ""}`, `data-index="${i}"`)).join("")}</div>${m.hasMore ? button("more-media", m.loading ? "Loading…" : "More recordings", "small-button", m.loading ? "disabled" : "") : ""}<p class="media-notice">${esc(m.notice || "Recordings from " + (m.provider === "youtube" ? "YouTube" : "Internet Archive") + ".")}</p><div class="form-actions"><a class="text-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(m.artist + " live performance")}" target="_blank" rel="noopener">Search YouTube ${icon("external")}</a><a class="text-button" href="https://open.spotify.com/search/${encodeURIComponent(m.artist)}" target="_blank" rel="noopener">Open Spotify ${icon("external")}</a></div>`;
+  root.innerHTML = `${m.error ? `<p class="media-notice">${esc(m.error)}</p>${button("retry-media", "Try again", "small-button")}` : ""}${!m.items.length && !m.loading ? '<p class="media-notice">No recordings found. Try another search or All music.</p>' : ""}<div class="media-results">${m.items.map((item, i) => button("play-recording", `<img class="media-thumbnail" src="${esc(safeURL(item.thumbnail))}" alt="" loading="lazy"><span><strong>${esc(item.title)}</strong><small class="media-meta"><span class="media-source-badge">${esc(recordingSourceLabel(item.provider))}</span><span>${item.kind === "audio" ? "Audio" : "Video"}${item.channel ? " · " + esc(item.channel) : ""}${item.duration ? " · " + esc(item.duration.replace("PT", "").toLowerCase()) : ""}</span></small></span>`, `media-result ${m.playing === i ? "active" : ""}`, `data-index="${i}"`)).join("")}</div>${m.hasMore ? button("more-media", m.loading ? "Loading…" : "More recordings", "small-button", m.loading ? "disabled" : "") : ""}${m.notice ? `<p class="media-notice">${esc(m.notice)}</p>` : ""}<div class="form-actions"><a class="text-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(m.artist + " live performance")}" target="_blank" rel="noopener">Search YouTube ${icon("external")}</a><a class="text-button" href="https://open.spotify.com/search/${encodeURIComponent(m.artist)}" target="_blank" rel="noopener">Open Spotify ${icon("external")}</a></div>`;
 }
 async function loadMedia(more = false) {
   const req = ++mediaRequest,
@@ -1021,34 +1072,34 @@ function closeModal() {
 function profileModal(mode = "create") {
   if (store.profile) {
     openModal(
-      "Your account",
-      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Use your username and private sync code on your other device. Keep the code somewhere you can find it again.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div><div class="sidebar-rule"></div><p>Signing out keeps pending changes on this device. Your guest saves on this device will reappear.</p>${button("logout", "Sign out", "secondary")}`,
+      "Account",
+      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Save your sync code to sign in on other devices.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div><div class="sidebar-rule"></div><p>Signing out restores your guest list. Pending account changes stay on this device.</p>${button("logout", "Sign out", "secondary")}`,
     );
     return;
   }
   if (state.capabilities.sync === false) {
     openModal(
       "Not signed in",
-      "<p>You’re browsing as a guest. Your saved concerts, ratings, notes, cities, and imported listening totals are stored in this browser on this device.</p><p>Cross-device sign-in is not available yet: the cloud database still needs to be connected. Clearing this site’s browser data will remove your guest saves.</p>",
+      "<p>Guest data is saved only in this browser.</p><p>Sync is unavailable. Clearing browser data deletes guest saves.</p>",
     );
     return;
   }
   openModal(
-    "Your account",
-    `<p>One account, one saved concert list. Sign in on any device with your username and private sync code.</p><div class="profile-tabs">${button("profile-create-tab", "Create account", `chip ${mode === "create" ? "active" : ""}`)}${button("profile-login-tab", "Sign in", `chip ${mode === "login" ? "active" : ""}`)}</div><form id="profile-form" data-mode="${mode}"><label class="form-field">Username<input id="profile-name" name="username" autocomplete="username" placeholder="e.g. devon" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}" minlength="3" maxlength="32" required></label>${mode === "login" ? '<label class="form-field">Private sync code<input id="profile-code" name="code" autocomplete="current-password" type="password" required></label>' : ""}<button type="submit" class="primary">${mode === "create" ? "Create account" : "Sign in"}</button><p id="profile-error" class="form-error" role="alert"></p></form><p class="media-notice">${mode === "create" ? "Your current browser-only saves will come with you." : "Guest saves stay on this device and are separate from your account."} ${state.capabilities.storage === "local" ? "This preview syncs devices connected to the same running server." : ""}</p>`,
+    "Account",
+    `<p>One saved list per account, synced across devices using your username and sync code.</p><div class="profile-tabs">${button("profile-create-tab", "Create account", `chip ${mode === "create" ? "active" : ""}`)}${button("profile-login-tab", "Sign in", `chip ${mode === "login" ? "active" : ""}`)}</div><form id="profile-form" data-mode="${mode}"><label class="form-field">Username<input id="profile-name" name="username" autocomplete="username" placeholder="e.g. devon" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}" minlength="3" maxlength="32" required></label>${mode === "login" ? '<label class="form-field">Private sync code<input id="profile-code" name="code" autocomplete="current-password" type="password" required></label>' : ""}<button type="submit" class="primary">${mode === "create" ? "Create account" : "Sign in"}</button><p id="profile-error" class="form-error" role="alert"></p></form><p class="media-notice">${mode === "create" ? "Guest saves will transfer to your account." : "Guest saves stay on this device and are separate from your account."} ${state.capabilities.storage === "local" ? "This preview syncs devices connected to the same running server." : ""}</p>`,
   );
 }
 function citiesModal() {
   openModal(
-    "A few places to be.",
-    `<p>Follow metro areas, then toggle them on and off as your plans change. Removing a city keeps its saved concerts.</p><div id="city-settings">${cities()
+    "Cities",
+    `<p>Removing a city keeps its saved concerts.</p><div id="city-settings">${cities()
       .map(
         (c) =>
-          `<div class="city-settings-row"><span class="city-dot" style="--city:${esc(c.color)}"></span><div><strong>${esc(c.name)}</strong><small>${esc(c.region || "Metro area")}${!DEFAULT_CITIES.some((d) => d.id === c.id) ? ` · <label>Radius <input type="number" min="1" max="200" value="${c.radius}" data-radius-city="${esc(c.id)}" aria-label="Radius in miles for ${esc(c.name)}"> miles</label>` : ""}</small></div>${icoButton("remove-city", "close", "Remove " + c.name, `data-city="${esc(c.id)}"`)}</div>`,
+          `<div class="city-settings-row"><span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span><div><strong>${esc(c.name)}</strong><small>${esc(c.region || "Metro area")}${!DEFAULT_CITIES.some((d) => d.id === c.id) ? ` · <label>Radius <input type="number" min="1" max="200" value="${c.radius}" data-radius-city="${esc(c.id)}" aria-label="Radius in miles for ${esc(c.name)}"> miles</label>` : ""}</small></div>${icoButton("remove-city", "close", "Remove " + c.name, `data-city="${esc(c.id)}"`)}</div>`,
       )
       .join(
         "",
-      )}</div><form id="city-search" class="city-search-form"><input id="city-query" placeholder="Search for a city" aria-label="City name" required minlength="2"><button class="primary" type="submit">Find city</button></form><div id="place-results"></div><p class="media-notice">New metros need a connected catalog source for automatic listings beyond the included venue calendars. Place search: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> / <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>.</p>`,
+      )}</div><form id="city-search" class="city-search-form"><input id="city-query" placeholder="Search for a city" aria-label="City name" required minlength="2"><button class="primary" type="submit">Find city</button></form><div id="place-results"></div><p class="media-notice">Adding a city does not add event sources. City search: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> / <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>.</p>`,
   );
 }
 let placeResults = [];
@@ -1058,15 +1109,15 @@ function listeningModal() {
       ...new Map(Object.values(l).map((a) => [normalize(a.name), a])).values(),
     ].sort((a, b) => b.score - a.score);
   openModal(
-    "A familiar sound.",
-    `<p>Match upcoming lineups to the music you already listen to. Your concert list stays chronological unless you choose match-first sorting.</p>${
+    "Spotify listening history",
+    `<p>Import listening history to find matching artists.</p>${
       artists.length
-        ? `<div class="venue-facts"><strong>${artists.length} artists</strong><p>Ready to match with upcoming shows.</p></div><p>${artists
+        ? `<div class="venue-facts"><strong>${artists.length} artists</strong></div><p>${artists
             .slice(0, 6)
             .map((a) => esc(a.name))
             .join(" · ")}${artists.length > 6 ? " …" : ""}</p>`
         : ""
-    }<div class="import-drop">${icon("upload")}<strong>Import your Spotify listening history</strong><p>No Premium or developer account needed.</p><input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your data from Spotify</a>, then choose the streaming-history JSON files here. You can select several files together. Only per-artist play totals are kept; the raw history stays in your browser. Importing replaces the previous listening summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>You can also connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify connection isn’t configured in this installation. Importing works independently.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
+    }<div class="import-drop">${icon("upload")}<strong>Import your Spotify listening history</strong><p>No Premium or developer account needed.</p><input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your Spotify data</a>, then upload the streaming-history JSON files. Only artist play totals sync; raw history stays in this browser. Each import replaces the previous summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>Connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify sync is unavailable.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
   );
 }
 function sourcesModal() {
@@ -1076,7 +1127,7 @@ function sourcesModal() {
   }));
   openModal(
     "The picture so far.",
-    `<p>These are real listings from official venue calendars. This is a growing, partial catalog—not every show in the metro. A failed calendar is a gap, not an empty concert schedule.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster is connected for supported metros." : "Ticketmaster is not connected. It can expand city coverage once a free developer API key is configured."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube search is connected, with Internet Archive as a fallback." : "Internet Archive works without keys. YouTube search needs a free developer API key."}</p><p><strong>Maps:</strong> Mapbox basemaps with OpenStreetMap data. Venue positions are verified source coordinates or matched venue addresses. Capacity figures cite their sources in concert details; unknown sizes are left blank.</p>`,
+    `<p>Official venue and festival calendars. Coverage is partial; unavailable sources may have missing events.</p>${state.feed.updatedAt ? `<p>Catalog updated ${new Date(state.feed.updatedAt).toLocaleString()}.</p>` : ""}<table class="source-table"><thead><tr><th class="metro-column">Metro</th><th>Venue / source</th><th>Shows</th><th>Status</th></tr></thead><tbody>${byCity.flatMap(({ c, sources }) => sources.map((s) => `<tr><td class="metro-column">${esc(c.short)}</td><td><a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><small>${esc(s.message || "Official venue calendar.")}</small></td><td>${s.count || 0}</td><td><span class="source-status ${s.status === "error" ? "error" : ""}">${s.status === "ok" ? "Loaded" : s.status === "error" ? "Unavailable" : "No listings"}</span></td></tr>`)).join("")}</tbody></table><div class="sidebar-rule"></div><p><strong>Broader discovery:</strong> ${state.capabilities.ticketmaster ? "Ticketmaster connected." : "Ticketmaster not connected."}</p><p><strong>Recordings:</strong> ${state.capabilities.youtube ? "YouTube and Internet Archive." : "Internet Archive. YouTube not connected."}</p><p><strong>Maps:</strong> Mapbox / OpenStreetMap. Capacity sources are linked in concert details.</p>`,
     true,
   );
 }
@@ -1110,8 +1161,8 @@ function exportModal() {
     )
     .sort((a, b) => a.date.localeCompare(b.date));
   openModal(
-    "Make room for a good night.",
-    `<p>Choose saved concerts to export. Calendar files are snapshots; they won’t automatically track changes. Private notes and reminders are not included.</p>${list.length ? `<label class="check-label"><input type="checkbox" id="export-all" checked>Select all</label><div class="export-list">${list.map((e) => `<label class="export-item"><input type="checkbox" name="export-event" value="${esc(e.id)}" checked><span>${esc(e.title)}<small>${dateLabel(e.date)} · ${esc(e.venue.name)}${!e.time ? " · Time TBA" : ""}</small></span></label>`).join("")}</div>${button("download-selected", "Download calendar file", "primary")}` : "<p>No upcoming saved concerts to export yet.</p>"}`,
+    "Export to calendar",
+    `<p>Select concerts to export. Calendar files don’t update automatically and exclude notes.</p>${list.length ? `<label class="check-label"><input type="checkbox" id="export-all" checked>Select all</label><div class="export-list">${list.map((e) => `<label class="export-item"><input type="checkbox" name="export-event" value="${esc(e.id)}" checked><span>${esc(e.title)}<small>${eventDateLabel(e)} · ${esc(e.venue.name)}${!e.time ? " · Time TBA" : ""}</small></span></label>`).join("")}</div>${button("download-selected", "Download calendar file", "primary")}` : "<p>No upcoming saved concerts to export yet.</p>"}`,
   );
 }
 function conflictsModal() {
@@ -1123,7 +1174,7 @@ function conflictsModal() {
   const current = valueAt(store.fields, c.key, "");
   openModal(
     "Keep both thoughts.",
-    `<p>This note changed on two devices. Neither version has been discarded. Choose which text to keep, or combine them.</p><strong>Currently synced</strong><div class="conflict-note">${esc(current)}</div><strong>Incoming edit</strong><div class="conflict-note">${esc(c.incoming)}</div><div class="form-actions">${button("resolve-conflict", "Keep synced", "secondary", `data-conflict="${esc(c.id)}" data-choice="existing"`)}${button("resolve-conflict", "Keep incoming", "secondary", `data-conflict="${esc(c.id)}" data-choice="incoming"`)}${button("resolve-conflict", "Keep both", "primary", `data-conflict="${esc(c.id)}" data-choice="both"`)}</div>`,
+    `<p>This note changed on two devices. Choose a version or keep both.</p><strong>Currently synced</strong><div class="conflict-note">${esc(current)}</div><strong>Incoming edit</strong><div class="conflict-note">${esc(c.incoming)}</div><div class="form-actions">${button("resolve-conflict", "Keep synced", "secondary", `data-conflict="${esc(c.id)}" data-choice="existing"`)}${button("resolve-conflict", "Keep incoming", "secondary", `data-conflict="${esc(c.id)}" data-choice="incoming"`)}${button("resolve-conflict", "Keep both", "primary", `data-conflict="${esc(c.id)}" data-choice="both"`)}</div>`,
   );
 }
 function filtersChanged(refetch = false) {
@@ -1290,7 +1341,7 @@ document.addEventListener("click", async (e) => {
         break;
       case "refresh":
         await loadFeed();
-        toast("Loaded the latest available catalog.");
+        toast("Concerts updated.");
         break;
       case "more-events":
         state.limit += 60;
@@ -1344,7 +1395,7 @@ document.addEventListener("click", async (e) => {
         $("#media-query").placeholder =
           "Search recordings or paste a YouTube link";
         $("#player").innerHTML =
-          `<div class="player-placeholder">${icon("headphones")}<strong>${esc(state.media.artist)}</strong><span>Choose a recording below.</span></div>`;
+          `<div class="player-placeholder">${icon("headphones")}<strong>${esc(state.media.artist)}</strong><span>Select a recording to play.</span></div>`;
         await loadMedia();
         break;
       case "media-mode":
@@ -1374,7 +1425,10 @@ document.addEventListener("click", async (e) => {
         moveCalendar(0);
         break;
       case "calendar-day": {
-        const list = filtered().filter((e) => e.date === el.dataset.day);
+        const list = filtered().filter(
+          (e) =>
+            e.date <= el.dataset.day && (e.endDate || e.date) >= el.dataset.day,
+        );
         openModal(
           dateLabel(el.dataset.day),
           `<div class="day-modal-events">${list.map((e) => button("modal-open-concert", esc(e.title) + `<small>${esc(timeLabel(e))} · ${esc(e.venue.name)} · ${esc(cityFor(e.metro).short)}</small>`, "", `data-id="${esc(e.id)}"`)).join("")}</div>`,

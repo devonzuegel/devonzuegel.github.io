@@ -1,6 +1,6 @@
 # Concert source coverage
 
-Checked 2026-09-26T15:01:08.898Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-09-26T22:03:05.796Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
@@ -21,5 +21,11 @@ Checked 2026-09-26T15:01:08.898Z. This is a partial catalog, not every concert i
 | miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 6 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Respectable Street](https://respectablestreet.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
 | nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 113 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Portola](https://www.portolamusicfestival.com/general-info/) | 1 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Hardly Strictly Bluegrass](https://hardlystrictlybluegrass.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Outside Lands](https://sfoutsidelands.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [III Points](https://www.iiipoints.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Ultra Music Festival](https://ultramusicfestival.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Governors Ball](https://www.governorsballmusicfestival.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
 
 Counts reflect successful parsing, not an independent completeness audit. Each source needs to be compared against the website; pagination and inaccessible feeds are explicitly reported.

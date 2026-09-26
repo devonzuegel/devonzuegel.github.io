@@ -1,0 +1,62 @@
+[
+  {
+    "id": "festival-portola",
+    "name": "Portola",
+    "metro": "sf",
+    "url": "https://www.portolamusicfestival.com/general-info/",
+    "kind": "festival",
+    "timezone": "America/Los_Angeles",
+    "venueName": "Pier 80",
+    "locality": "San Francisco"
+  },
+  {
+    "id": "festival-hsb",
+    "name": "Hardly Strictly Bluegrass",
+    "metro": "sf",
+    "url": "https://hardlystrictlybluegrass.com/",
+    "kind": "festival",
+    "timezone": "America/Los_Angeles",
+    "venueName": "Golden Gate Park \u00b7 Hellman Hollow, Lindley & Marx meadows",
+    "locality": "San Francisco"
+  },
+  {
+    "id": "festival-outside",
+    "name": "Outside Lands",
+    "metro": "sf",
+    "url": "https://sfoutsidelands.com/",
+    "kind": "festival",
+    "timezone": "America/Los_Angeles",
+    "venueName": "Golden Gate Park",
+    "locality": "San Francisco"
+  },
+  {
+    "id": "festival-iii",
+    "name": "III Points",
+    "metro": "miami",
+    "url": "https://www.iiipoints.com/",
+    "kind": "festival",
+    "timezone": "America/New_York",
+    "venueName": "Mana Wynwood",
+    "locality": "Miami"
+  },
+  {
+    "id": "festival-ultra",
+    "name": "Ultra Music Festival",
+    "metro": "miami",
+    "url": "https://ultramusicfestival.com/",
+    "kind": "festival",
+    "timezone": "America/New_York",
+    "venueName": "Bayfront Park",
+    "locality": "Miami"
+  },
+  {
+    "id": "festival-govball",
+    "name": "Governors Ball",
+    "metro": "nyc",
+    "url": "https://www.governorsballmusicfestival.com/",
+    "kind": "festival",
+    "timezone": "America/New_York",
+    "venueName": "Flushing Meadows Corona Park",
+    "locality": "Queens"
+  }
+]

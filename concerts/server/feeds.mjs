@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { readFestival } from "./festivals.mjs";
 import * as cheerio from "cheerio";
 import { parseVenue, makeEvent, clean } from "./parsers.mjs";
 import { request, json, responseText } from "./network.mjs";
@@ -12,6 +13,9 @@ import {
 } from "../shared/core.js";
 export const venues = JSON.parse(
   await readFile(new URL("../data/venues.json", import.meta.url), "utf8"),
+);
+export const festivals = JSON.parse(
+  await readFile(new URL("../data/festivals.json", import.meta.url), "utf8"),
 );
 const SNAPSHOT = new URL("../data/events.json", import.meta.url);
 export async function bundledFeed() {
@@ -98,28 +102,38 @@ export async function readVenue(v, now = new Date()) {
 }
 export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
   const prior = await getFeed();
-  const outputs = new Array(venues.length);
+  const sources = [...venues, ...festivals];
+  const outputs = new Array(sources.length);
   let cursor = 0;
   await Promise.all(
     Array.from({ length: concurrency }, async () => {
-      while (cursor < venues.length) {
+      while (cursor < sources.length) {
         const index = cursor++,
-          v = venues[index];
+          v = sources[index];
         try {
-          const { events, pages, hasMore } = await readVenue(v, now);
+          const { events, pages, hasMore } =
+            v.kind === "festival"
+              ? await readFestival(v, now, async (url) => {
+                  if (!(await allowed(url)))
+                    throw new Error(
+                      "Automated access is restricted by this source.",
+                    );
+                  return responseText(await request(url));
+                })
+              : await readVenue(v, now);
           if (
             !events.length &&
             prior.events.some(
               (e) =>
                 (e.sourceId || e.venue?.id) === v.id &&
-                e.date >= dayInZone(now, v.timezone),
+                (e.endDate || e.date) >= dayInZone(now, v.timezone),
             )
           )
             throw new Error(
               "Calendar returned no readable events; keeping previously retrieved listings.",
             );
           const current = events.filter(
-            (e) => e.date >= dayInZone(now, v.timezone),
+            (e) => (e.endDate || e.date) >= dayInZone(now, v.timezone),
           );
           outputs[index] = {
             events: current,
@@ -137,14 +151,16 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
                 ? hasMore
                   ? "Additional source pages may exist."
                   : "Official calendar. Coverage limited to published listings."
-                : "No upcoming concerts could be read from this calendar.",
+                : v.kind === "festival"
+                  ? "Published festival dates are past; waiting for the next announcement."
+                  : "No upcoming concerts could be read from this calendar.",
             },
           };
         } catch (error) {
           const old = prior.events.filter(
             (e) =>
               (e.sourceId || e.venue?.id) === v.id &&
-              e.date >= dayInZone(now, v.timezone),
+              (e.endDate || e.date) >= dayInZone(now, v.timezone),
           );
           outputs[index] = {
             events: old,
@@ -169,7 +185,7 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
     updatedAt: now.toISOString(),
     coverage: "partial",
     notice:
-      "Official venue calendars. Coverage is incomplete; open Sources to see included venues and gaps.",
+      "Official venue and festival calendars. Coverage is incomplete; open Sources to see included sources and gaps.",
   };
   if (store.storageMode !== "unconfigured") await store.set("feed", feed);
   return feed;

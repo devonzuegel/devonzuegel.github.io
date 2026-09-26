@@ -82,3 +82,9 @@ Map tiles are requested only for the visible map, with OpenStreetMap attribution
 On September 19, 2026: the build and 26 automated tests passed. Browser checks covered desktop and 390-pixel phone layouts, all four views, map clustering and venue selection, artist filtering, adding/removing a city, automatic saving, independent ratings, note persistence after reload, and creating/reopening a username notebook. An Internet Archive performance played in the embedded player; its media element reported active playback with no error, and ratings did not replace the player. Temporary test notes/ratings/bookmarks were cleared. Cloud Redis, live Spotify OAuth, and credential-dependent Ticketmaster/YouTube searches remain unverified.
 
 Map rendering uses MapLibre GL JS with the Leaflet adapter, keeping venue clustering and selection. Maptoolkit Community light/dark styles require no API key for this personal site. Keep the Maptoolkit logo and copyright links visible; see https://docs.maptoolkit.org/attribution/. Map resources load only when Map view is opened.
+
+## Festival coverage
+
+Free official organizer calendars are refreshed alongside venues: Portola, Hardly Strictly Bluegrass, Outside Lands, III Points, Ultra Miami, and Governors Ball. Configuration lives in `data/festivals.json`; parsers live in `server/festivals.mjs`. This is a curated, partial catalog, not exhaustive festival discovery.
+
+Each festival is one saveable event with an inclusive `endDate`. Date filters overlap its entire run, calendar view includes each day, and ICS exports use an exclusive all-day end date. Source dates must include an explicit year; stale JSON-LD and prior-year lineups are ignored. Readable current-year lineups are imported for III Points and Hardly Strictly Bluegrass. Other lineups remain on the organizer site. Coordinates and capacities are left unknown until verified.

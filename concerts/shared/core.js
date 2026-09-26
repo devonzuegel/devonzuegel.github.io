@@ -169,6 +169,7 @@ export function dateLabel(
 }
 export function isUpcoming(e, now = new Date()) {
   if (e.status === "cancelled" || !e.date) return false;
+  if (e.endDate) return e.endDate >= dayInZone(now, e.timezone);
   return e.startAt
     ? new Date(e.startAt) >= now
     : e.date >= dayInZone(now, e.timezone);
@@ -277,13 +278,18 @@ export function filterEvents(
     if (filters.tab === "saved" && filters.savedPeriod === "past") {
       if (
         !e.date ||
-        (e.startAt
-          ? new Date(e.startAt) >= now
-          : e.date >= dayInZone(now, e.timezone))
+        (e.endDate
+          ? e.endDate >= dayInZone(now, e.timezone)
+          : e.startAt
+            ? new Date(e.startAt) >= now
+            : e.date >= dayInZone(now, e.timezone))
       )
         return false;
     } else if (filters.tab === "saved" && filters.savedPeriod === "all") {
-    } else if (e.date && (e.date < filters.from || e.date > filters.to))
+    } else if (
+      e.date &&
+      ((e.endDate || e.date) < filters.from || e.date > filters.to)
+    )
       return false;
     if (
       filters.tab === "saved" &&
@@ -479,6 +485,10 @@ export function calendarICS(events, now = new Date()) {
           .replace(/\.\d{3}/, "")}`,
       );
     else lines.push(`DTSTART;VALUE=DATE:${e.date.replaceAll("-", "")}`);
+    if (!start && e.endDate)
+      lines.push(
+        `DTEND;VALUE=DATE:${addDays(e.endDate, 1).replaceAll("-", "")}`,
+      );
     if (e.endAt && start)
       lines.push(
         `DTEND:${new Date(e.endAt)
