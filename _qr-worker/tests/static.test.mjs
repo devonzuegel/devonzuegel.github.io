@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
-import { matrix, svg, filename } from "../../QR-codes/qr.js";
+import { matrix, svg, filename, normalizeColor } from "../../QR-codes/qr.js";
 import jsQR from "jsqr";
 const url = "https://qr.devonzuegel.com/r/1234567890abcdefghijkl";
 test("locally bundled QR has four white modules, correction Q, decodes to permanent link", () => {
@@ -24,8 +24,15 @@ test("locally bundled QR has four white modules, correction Q, decodes to perman
   const result = jsQR(data, n * scale, n * scale);
   assert.equal(result.data, url);
   assert.match(svg(url), /fill="white"/);
-  assert.match(svg(url), /fill="black"/);
+  assert.match(svg(url), /fill="#000000"/);
   assert.equal(filename("Library / Flyer?"), "Library-Flyer");
+});
+test("QR colors normalize hex and reject SVG injection or invalid input", () => {
+  assert.equal(normalizeColor(" #abc "), "#AABBCC");
+  assert.equal(normalizeColor("054080"), "#054080");
+  assert.match(svg(url, "#054080"), /fill="#054080"/);
+  for (const color of ["", "red", "#abcd", "#12345678", '#000000" onload="alert(1)'])
+    assert.throws(() => svg(url, color), /hex color/);
 });
 test("static entry uses rooted local assets and contains no analytics, recipient or server credentials", async () => {
   const dir = new URL("../../QR-codes/", import.meta.url),

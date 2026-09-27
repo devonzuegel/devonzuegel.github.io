@@ -2,7 +2,14 @@ import encodeQR from "./vendor/qr.js";
 export function matrix(url) {
   return encodeQR(url, "raw", { ecc: "quartile", border: 4, scale: 1 });
 }
-export function svg(url) {
+export function normalizeColor(value) {
+  const hex = String(value).trim().replace(/^#/, "");
+  if (!/^(?:[a-f\d]{3}|[a-f\d]{6})$/i.test(hex))
+    throw new Error("Enter a hex color such as #054080.");
+  return "#" + (hex.length === 3 ? [...hex].map((c) => c + c).join("") : hex).toUpperCase();
+}
+export function svg(url, color = "#000000") {
+  color = normalizeColor(color);
   const grid = matrix(url),
     size = grid.length;
   const path = grid
@@ -10,9 +17,10 @@ export function svg(url) {
       row.flatMap((black, x) => (black ? [`M${x} ${y}h1v1h-1z`] : [])),
     )
     .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size * 32}" height="${size * 32}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="white"/><path d="${path}" fill="black"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size * 32}" height="${size * 32}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="white"/><path d="${path}" fill="${color}"/></svg>`;
 }
-export async function png(url) {
+export async function png(url, color = "#000000") {
+  color = normalizeColor(color);
   const grid = matrix(url),
     scale = Math.ceil(1600 / grid.length),
     canvas = document.createElement("canvas");
@@ -20,7 +28,7 @@ export async function png(url) {
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = color;
   grid.forEach((row, y) =>
     row.forEach((black, x) => {
       if (black) ctx.fillRect(x * scale, y * scale, scale, scale);
@@ -43,11 +51,11 @@ export function filename(name) {
       .slice(0, 100) || "QR-code"
   );
 }
-export async function download(code, format) {
+export async function download(code, format, color = "#000000") {
   const blob =
     format === "png"
-      ? await png(code.tracking_url)
-      : new Blob([svg(code.tracking_url)], { type: "image/svg+xml" });
+      ? await png(code.tracking_url, color)
+      : new Blob([svg(code.tracking_url, color)], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob),
     a = document.createElement("a");
   a.href = url;

@@ -180,6 +180,15 @@ try {
   );
   const code = await f.DB.prepare("SELECT * FROM codes").first(),
     tracking = f.env.PUBLIC_ORIGIN + "/r/" + code.id;
+  await page.getByLabel("Hex color", { exact: true }).fill("#invalid");
+  await expect(page.getByRole("button", { name: "Download PNG" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Download SVG" })).toBeDisabled();
+  await page.getByLabel("Color picker", { exact: true }).fill("#123456");
+  await expect(page.getByLabel("Hex color", { exact: true })).toHaveValue("#123456");
+  await expect(page.getByRole("button", { name: "Download PNG" })).toBeEnabled();
+  await page.getByLabel("Hex color", { exact: true }).fill("#054080");
+  await expect(page.getByLabel("Color picker", { exact: true })).toHaveValue("#054080");
+  await expect(page.locator(".qr-image path")).toHaveAttribute("fill", "#054080");
   await page.evaluate(() => window.getSelection()?.removeAllRanges());
   await page.screenshot({
     path: screenshots + "/detail-desktop.png",
@@ -191,6 +200,7 @@ try {
   assert.equal(pngDownload.suggestedFilename(), "Library-flyer.png");
   const png = PNG.sync.read(await readFile(await pngDownload.path()));
   assert.ok(png.width >= 1600);
+  assert.ok(png.data.some((v, i) => i % 4 === 0 && v === 5 && png.data[i + 1] === 64 && png.data[i + 2] === 128));
   assert.equal(
     jsQR(new Uint8ClampedArray(png.data), png.width, png.height).data,
     tracking,
@@ -200,6 +210,7 @@ try {
   const svgDownload = await svgEvent;
   const svgText = await readFile(await svgDownload.path(), "utf8");
   assert.match(svgText, /fill="white"/);
+  assert.match(svgText, /fill="#054080"/);
   // Rasterize the exported SVG in the browser, then independently decode its pixels.
   const svgPixels = await page.evaluate(async (text) => {
     const image = new Image();

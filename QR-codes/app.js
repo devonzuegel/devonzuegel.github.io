@@ -1,5 +1,6 @@
 import { apiBase } from "./config.js";
-import { svg, download } from "./qr.js";
+import { svg, download, normalizeColor } from "./qr.js?v=20260926-color";
+const downloadColors = new Map();
 const $ = (s) => document.querySelector(s),
   view = $("#view");
 const esc = (s) =>
@@ -282,12 +283,37 @@ function wireVisitNotes(codeId) {
     }
   });
 }
+function wireColor(code) {
+  const picker = $("#qr-color"), hex = $("#qr-hex"), error = $("#qr-color-error");
+  function update(fromPicker = false) {
+    try {
+      const color = normalizeColor(fromPicker ? picker.value : hex.value);
+      downloadColors.set(code.id, color);
+      picker.value = color;
+      if (fromPicker) hex.value = color;
+      $(".qr-image").innerHTML = svg(code.tracking_url, color);
+      hex.removeAttribute("aria-invalid");
+      error.textContent = "";
+      view.querySelectorAll("[data-download]").forEach((button) => button.disabled = false);
+    } catch (err) {
+      hex.setAttribute("aria-invalid", "true");
+      error.textContent = err.message;
+      view.querySelectorAll("[data-download]").forEach((button) => button.disabled = true);
+    }
+  }
+  picker.addEventListener("input", () => update(true));
+  hex.addEventListener("input", () => update());
+  hex.addEventListener("blur", () => {
+    if (!hex.hasAttribute("aria-invalid")) hex.value = normalizeColor(hex.value);
+  });
+}
 async function details(id, v) {
   const c = await api(`/api/codes/${id}`);
   if (v !== version) return;
   currentCode = c;
-  view.innerHTML = `<a class="back-link" href="#/">← All codes</a><div class="section-heading"><h2 id="detail-title">${esc(c.name)}</h2><span class="badge">${c.active ? "Active" : "Disabled"}</span></div><section class="panel history"><div class="section-heading"><h3>${c.opens.toLocaleString()} QR link opens</h3><button id="refresh-visits">Refresh</button></div><p class="muted">Opens and notes kept for 90 days · America/New_York · “Sent to email service” means accepted by the provider, not confirmed inbox delivery.</p><ul id="visits"><li>Loading recent opens…</li></ul><button id="more-visits" hidden>Load older opens</button></section><div class="detail-grid"><section class="panel"><h3>Edit this code</h3><p class="muted">Change the destination any time. Its printed image and permanent link stay the same.</p><form id="code-form">${fields(c)}<p id="form-error" role="alert" class="error-text"></p><button type="submit" class="primary">Save changes</button></form><div class="danger-row"><button id="toggle-code" class="text-button">${c.active ? "Disable code" : "Reactivate code"}</button><button data-duplicate="${c.id}" class="text-button">Duplicate</button></div></section><section class="panel qr-panel"><div class="qr-image" role="img" aria-label="QR code for ${esc(c.name)}">${svg(c.tracking_url)}</div><p class="eyebrow">Permanent tracking link</p><p class="tracking-url">${esc(c.tracking_url)}</p><div class="actions"><button data-download="svg">Download SVG</button><button data-download="png">Download PNG</button><button data-copy="${esc(c.tracking_url)}">Copy link</button></div><p id="destination-display" class="destination">${esc(c.destination)}</p><a id="destination-preview" href="${esc(c.destination)}" target="_blank" rel="noopener noreferrer">Preview destination ↗</a><p class="hint">Previewing and downloading do not count as opens. SVG is scalable; PNG is at least 1,600 px.</p>${apiBase.startsWith("http:") ? '<p class="notice warning">Local test code. Do not print for production.</p>' : ""}</section></div>`;
+  view.innerHTML = `<a class="back-link" href="#/">← All codes</a><div class="section-heading"><h2 id="detail-title">${esc(c.name)}</h2><span class="badge">${c.active ? "Active" : "Disabled"}</span></div><section class="panel history"><div class="section-heading"><h3>${c.opens.toLocaleString()} QR link opens</h3><button id="refresh-visits">Refresh</button></div><p class="muted">Opens and notes kept for 90 days · America/New_York · “Sent to email service” means accepted by the provider, not confirmed inbox delivery.</p><ul id="visits"><li>Loading recent opens…</li></ul><button id="more-visits" hidden>Load older opens</button></section><div class="detail-grid"><section class="panel"><h3>Edit this code</h3><p class="muted">Change the destination any time. Its printed image and permanent link stay the same.</p><form id="code-form">${fields(c)}<p id="form-error" role="alert" class="error-text"></p><button type="submit" class="primary">Save changes</button></form><div class="danger-row"><button id="toggle-code" class="text-button">${c.active ? "Disable code" : "Reactivate code"}</button><button data-duplicate="${c.id}" class="text-button">Duplicate</button></div></section><section class="panel qr-panel"><div class="qr-image" role="img" aria-label="QR code for ${esc(c.name)}">${svg(c.tracking_url, downloadColors.get(c.id))}</div><div class="qr-color-controls"><label>Color picker<input id="qr-color" type="color" value="${downloadColors.get(c.id) || "#000000"}" aria-describedby="qr-color-hint"></label><label>Hex color<input id="qr-hex" type="text" value="${downloadColors.get(c.id) || "#000000"}" placeholder="#054080" maxlength="7" spellcheck="false" autocomplete="off" aria-describedby="qr-color-error qr-color-hint"></label></div><p id="qr-color-error" class="error-text" role="alert"></p><p id="qr-color-hint" class="hint">Dark colors scan best on white. Test your downloaded code before printing.</p><p class="eyebrow">Permanent tracking link</p><p class="tracking-url">${esc(c.tracking_url)}</p><div class="actions"><button data-download="svg">Download SVG</button><button data-download="png">Download PNG</button><button data-copy="${esc(c.tracking_url)}">Copy link</button></div><p id="destination-display" class="destination">${esc(c.destination)}</p><a id="destination-preview" href="${esc(c.destination)}" target="_blank" rel="noopener noreferrer">Preview destination ↗</a><p class="hint">Previewing and downloading do not count as opens. SVG is scalable; PNG is at least 1,600 px.</p>${apiBase.startsWith("http:") ? '<p class="notice warning">Local test code. Do not print for production.</p>' : ""}</section></div>`;
   wireForm(c);
+  wireColor(c);
   wireVisitNotes(c.id);
   $("#toggle-code").addEventListener("click", async (event) => {
     if (
@@ -401,7 +427,7 @@ view.addEventListener("click", (event) => {
     });
   if (button.dataset.download && currentCode)
     runButton(button, async () => {
-      await download(currentCode, button.dataset.download);
+      await download(currentCode, button.dataset.download, normalizeColor($("#qr-hex").value));
       message("Image downloaded.");
     });
   if (button.dataset.duplicate)

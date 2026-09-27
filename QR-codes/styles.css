@@ -379,6 +379,33 @@ input[type="checkbox"] {
   width: 100%;
   height: auto;
 }
+.qr-color-controls {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 16px;
+  max-width: 310px;
+  margin: 0 auto;
+  text-align: left;
+}
+.qr-color-controls label {
+  margin: 0;
+}
+.qr-color-controls input {
+  height: 44px;
+}
+.qr-color-controls input[type="color"] {
+  padding: 4px;
+  cursor: pointer;
+}
+#qr-hex {
+  font-family: monospace;
+}
+#qr-color-error:empty {
+  display: none;
+}
+#qr-color-hint {
+  margin: 12px 0 22px;
+}
 .actions {
   display: flex;
   justify-content: center;

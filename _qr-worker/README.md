@@ -23,6 +23,10 @@ The code detail page shows link-open history before the editing and download pan
 
 Apply `npx wrangler d1 migrations apply qr-codes --remote` before deploying the notes Worker or publishing its frontend. Migration `0002_visit_notes.sql` adds a non-null `note` column with an empty default, preserving existing visits. Rollback to the previous Worker/frontend can leave this additive column in place; do not drop it and lose notes. Test fixtures apply all migrations in filename order.
 
+### Download colors
+
+The QR preview has synchronized native color-picker and hex inputs. Three- or six-digit hex values (with or without `#`) set the foreground for the preview and both PNG/SVG exports; the background and quiet zone stay white. Invalid hex disables downloads until corrected. Dark colors scan best. Colors are download preferences held per code in the current page session, reset on a full reload, and do not change the permanent URL or create visits. Browser tests independently decode colored PNG and SVG exports, including `#054080`.
+
 Repository: `https://github.com/devonzuegel/devonzuegel.github.io`. GitHub's Pages API was inspected on September 25, 2026 UTC: legacy branch deployment, `master`, root `/`, custom domain `devonzuegel.com`, status `built`. There is no frontend framework build for the main site. The root README's Evernote/Postach.io import is for blog updates; it is not needed to publish this tool. Do not run that import for QR changes.
 
 Use Node 22 or later (the system Node 20 is too old for current Wrangler). On this machine Node 26 is at `/opt/homebrew/opt/node@26/bin`; for example, `export PATH=/opt/homebrew/opt/node@26/bin:$PATH` in the current terminal.
