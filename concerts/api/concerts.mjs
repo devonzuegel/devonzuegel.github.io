@@ -5,6 +5,7 @@ import {
   syncProfile,
 } from "../server/profiles.mjs";
 import { getFeed, ticketmaster } from "../server/feeds.mjs";
+import { artistContext } from "../server/artist-context.mjs";
 import { venueMedia } from "../server/venue-media.mjs";
 import { searchMedia } from "../server/media.mjs";
 import {
@@ -139,6 +140,8 @@ export default async function handler(req, res) {
         sourceError,
       });
     }
+    if (action === "artist-context")
+      return send(await artistContext(u.searchParams.get("artist")));
     if (action === "venue-media") {
       const feed = await getFeed();
       const venue = feed.events.find(

@@ -1461,6 +1461,7 @@ small {
 }
 .detail-buttons {
   display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
   margin: 20px 0 26px;
 }
@@ -3427,4 +3428,245 @@ summary.month-heading:focus-visible {
   aspect-ratio: 16/9;
   border: 0;
   margin: 8px 0;
+}
+
+.mobile-day-heading,
+.mobile-venue-facts,
+.mobile-view-select {
+  display: none;
+}
+@media (max-width: 560px) {
+  .mobile-day-heading {
+    display: block;
+    font: 600 12px/1.4 var(--sans);
+    color: var(--muted);
+    margin: 14px 0 0;
+  }
+  .event-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    min-height: 0;
+    padding: 12px 0;
+    align-items: start;
+  }
+  .event-main,
+  .event-location {
+    display: contents;
+  }
+  .event-row .event-art {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: 96px;
+    height: 96px;
+  }
+  .event-row .event-date {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 66px 0 0;
+    min-height: 28px;
+  }
+  .event-row .event-date .day,
+  .event-row .event-date strong {
+    display: none;
+  }
+  .event-row .event-date .time {
+    display: block;
+    max-width: none;
+    font-size: 11px;
+    line-height: 1.4;
+    padding-top: 5px;
+  }
+  .event-copy {
+    grid-column: 2;
+    grid-row: 2;
+    padding-bottom: 3px;
+  }
+  .event-row .event-title {
+    font-size: 14px;
+  }
+  .event-row .supporting {
+    font-size: 10px;
+    margin: 4px 0;
+  }
+  .event-row .event-tags {
+    margin-top: 4px;
+    gap: 4px;
+  }
+  .event-row .venue-map-preview {
+    grid-column: 1;
+    grid-row: 3;
+    width: 96px;
+    margin: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .event-row .mini-venue-map {
+    height: 64px;
+  }
+  .event-row .venue-summary {
+    grid-column: 2;
+    grid-row: 3;
+    padding-top: 1px;
+  }
+  .event-row .venue-name {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  .event-row .location-line {
+    font-size: 10px;
+  }
+  .event-row .venue-summary > .capacity,
+  .event-row .venue-type {
+    display: none;
+  }
+  .mobile-venue-facts {
+    display: block;
+    font-size: 10px;
+    line-height: 1.45;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+  .mobile-venue-facts:empty {
+    display: none;
+  }
+  .event-row .map-location-unknown {
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 9px;
+    visibility: hidden;
+  }
+  .event-row .event-actions {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+  .event-row .event-actions .details-btn {
+    display: none;
+  }
+  .event-row .event-actions button {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    padding: 5px;
+  }
+  .viewbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px auto;
+    align-items: center;
+    gap: 8px;
+  }
+  .results-heading,
+  .results-total,
+  .viewbar-right {
+    display: contents;
+  }
+  .results-count {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 12px;
+  }
+  .results-refresh {
+    grid-column: 2;
+    grid-row: 1;
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
+  .results-refresh span {
+    display: none;
+  }
+  .sort-select {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .viewbar .matches-toggle {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .viewbar .view-switch {
+    display: none;
+  }
+  .mobile-view-select {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    width: auto;
+    font-size: 11px;
+    padding: 6px 9px;
+    border: 0;
+    border-radius: 6px;
+    background-color: var(--white);
+  }
+}
+
+@media (max-width: 560px) {
+  .mobile-view-select::picker-icon {
+    margin-left: 10px;
+    align-self: center;
+  }
+}
+
+.artist-context {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.artist-facts {
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+.artist-facts:empty {
+  display: none;
+}
+.artist-background summary {
+  cursor: pointer;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+.artist-background p {
+  margin: 6px 0;
+}
+.artist-background small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+}
+.artist-background a,
+.artist-context-empty {
+  color: var(--muted);
+  font-size: 10px;
+}
+@media (max-width: 560px) {
+  .artist-context {
+    font-size: 10px;
+  }
+}
+.artist-bio-preview {
+  margin: 0 0 5px;
+  color: var(--ink);
+}
+
+/* Keep concert actions together even on phone-width panels. */
+.detail-buttons > * { white-space: nowrap; }
+@media (max-width: 560px) {
+  .detail-buttons .detail-action-label { display: none; }
+  .detail-buttons .secondary {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  .detail-buttons .primary { min-width: 0; padding: 10px; }
+  .detail-buttons .primary .icon:last-child { display: none; }
 }

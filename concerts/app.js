@@ -420,7 +420,7 @@ function row(e) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
-  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${e.endDate ? "Through " + dateLabel(e.endDate, { month: "short", day: "numeric" }) : rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
+  return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${e.endDate ? "Through " + dateLabel(e.endDate, { month: "short", day: "numeric" }) : rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div class="event-copy" style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
     e.artists?.length > 1
       ? `<p class="supporting">Lineup: ${esc(
           e.artists
@@ -436,7 +436,74 @@ function row(e) {
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+}
+const artistContexts = new Map();
+let artistObserver;
+function contextMarkup(data) {
+  if (!data?.found)
+    return '<span class="artist-context-empty">Artist background unavailable</span>';
+  const bio = data.bio || data.description;
+  const preview =
+    bio.length > 220 ? bio.slice(0, 220).replace(/\s+\S*$/, "") + "…" : bio;
+  return `<p class="artist-bio-preview">${esc(preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}<details class="artist-background"><summary>Background & sources</summary>${bio.length > 220 ? `<p>${esc(bio)}</p>` : ""}${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">Wikidata ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</details>`;
+}
+function artistContextSlot(e) {
+  if (e.eventType === "festival") return "";
+  const name = e.artists?.[0]?.name;
+  if (!name) return "";
+  const data = artistContexts.get(name);
+  return `<div class="artist-context" data-artist-context="${esc(name)}">${data ? contextMarkup(data) : '<span class="artist-context-empty">Loading artist background…</span>'}</div>`;
+}
+const artistJobs = [];
+const artistPending = new Set();
+let artistActive = 0;
+function mountArtistContexts(root) {
+  artistObserver?.disconnect();
+  artistObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        artistObserver.unobserve(entry.target);
+        const name = entry.target.dataset.artistContext;
+        if (!artistContexts.has(name) && !artistPending.has(name)) {
+          artistPending.add(name);
+          artistJobs.push(name);
+        }
+      }
+      pumpArtistContexts();
+    },
+    { rootMargin: "200px" },
+  );
+  root
+    .querySelectorAll("[data-artist-context]")
+    .forEach((el) => artistObserver.observe(el));
+}
+function pumpArtistContexts() {
+  while (artistActive < 2 && artistJobs.length) {
+    const name = artistJobs.shift();
+    artistActive++;
+    apiGet("artist-context", { artist: name })
+      .then((data) => {
+        artistContexts.set(name, data);
+        document.querySelectorAll("[data-artist-context]").forEach((el) => {
+          if (el.dataset.artistContext === name)
+            el.innerHTML = contextMarkup(data);
+        });
+      })
+      .catch(() => {
+        document.querySelectorAll("[data-artist-context]").forEach((el) => {
+          if (el.dataset.artistContext === name)
+            el.innerHTML =
+              '<span class="artist-context-empty">Artist background unavailable</span>';
+        });
+      })
+      .finally(() => {
+        artistPending.delete(name);
+        artistActive--;
+        pumpArtistContexts();
+      });
+  }
 }
 function resultsBar(list) {
   const counts = savedCounts(events(), store.fields);
@@ -446,7 +513,7 @@ function resultsBar(list) {
       : state.tab === "hidden"
         ? `${list.length} hidden ${list.length === 1 ? "concert" : "concerts"} · all dates and cities`
         : list.length + " concerts";
-  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "Refresh", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
+  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ["matches", "Listening matches"],
     ...(state.tab === "saved"
@@ -461,6 +528,18 @@ function resultsBar(list) {
     .map(
       ([v, l]) =>
         `<option value="${v}" ${state.sort === v ? "selected" : ""}>${l}</option>`,
+    )
+    .join(
+      "",
+    )}</select><select id="mobile-view" class="mobile-view-select" aria-label="Concert view">${[
+    ["list", "List"],
+    ["calendar", "Calendar"],
+    ["venue", "Venues"],
+    ["map", "Map"],
+  ]
+    .map(
+      ([value, label]) =>
+        `<option value="${value}" ${state.view === value ? "selected" : ""}>${label}</option>`,
     )
     .join("")}</select><div class="view-switch" aria-label="Concert view">${[
     ["list", "list", "List"],
@@ -509,7 +588,8 @@ function renderResults() {
     }
     body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Browse concerts" : "Reset filters", "secondary")}</div>`;
   } else if (state.view === "list") {
-    let month = "";
+    let month = "",
+      day = "";
     body =
       '<div class="list-table-header"><span>Date</span><span class="artist-label">Artist & sound</span><span>Venue & size</span><span></span></div>';
     for (const e of list.slice(0, state.limit)) {
@@ -518,6 +598,10 @@ function renderResults() {
         if (month) body += "</div></details>";
         month = m;
         body += `<details class="month-group" data-month="${m}" ${collapsedMonths.has(m) ? "" : "open"}><summary class="month-heading" title="Collapse or expand this month">${m === "tba" ? "Date to be announced" : dateLabel(m + "-01", { month: "long" })} <span>${m === "tba" ? "" : m.slice(0, 4)}</span></summary><div class="month-results">`;
+      }
+      if (e.date !== day) {
+        day = e.date;
+        body += `<h3 class="mobile-day-heading">${e.date ? dateLabel(e.date, { weekday: "short", month: "short", day: "numeric" }) : "Date TBA"}</h3>`;
       }
       body += row(e);
     }
@@ -557,6 +641,7 @@ function renderResults() {
     resultsBar(list) +
     `<div class="results-notices">${notices}</div><div class="results-content">${body}</div>`;
   animateResults(root.querySelector(".results-content"), before);
+  mountArtistContexts(root);
   if (state.view === "list") mountVenueMaps(root, config).catch(() => {});
   if (state.view === "map" && list.length)
     requestAnimationFrame(() => initializeMap(list));
@@ -829,7 +914,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + (a.saved ? "Saved" : "Save"), "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Hide concert"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -910,8 +995,18 @@ function updateDetailMeta() {
   }
   const btn = $('[data-action="detail-save"]');
   if (btn) {
-    btn.innerHTML = icon("bookmark") + (a.saved ? "Saved" : "Save");
+    btn.innerHTML = icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`;
     btn.setAttribute("aria-pressed", a.saved);
+  }
+  const hide = $(".detail-hide");
+  if (hide) {
+    hide.dataset.action = a.hidden ? "restore" : "hide";
+    hide.innerHTML =
+      icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`;
+    hide.setAttribute(
+      "aria-label",
+      a.hidden ? "Restore concert" : "Hide concert",
+    );
   }
   const status = $("#detail-sync");
   if (status) status.textContent = store.status;
@@ -1231,7 +1326,7 @@ document.addEventListener("click", async (e) => {
     if (
       row &&
       !e.target.closest(
-        'a, button, input, select, textarea, [role="button"]',
+        'a, button, input, select, textarea, details, [role="button"]',
       ) &&
       !window.getSelection()?.toString()
     ) {
@@ -1600,6 +1695,11 @@ document.addEventListener("change", async (e) => {
   }
   if (el.id === "size-filter") {
     state.size = el.value;
+    renderResults();
+  }
+  if (el.id === "mobile-view") {
+    state.view = el.value;
+    state.unmapped = false;
     renderResults();
   }
   if (el.id === "sort") {
