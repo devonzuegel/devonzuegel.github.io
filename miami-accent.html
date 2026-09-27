@@ -135,7 +135,28 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
   .hero .strip{background-size:200% 100%;animation:shift 6s ease-in-out infinite alternate}
   @keyframes shift{from{background-position:0 0}to{background-position:100% 0}}
 }
+
+/* Tucked-away section navigation */
+.wrap > section{scroll-margin-top:24px}
+.page-toc{position:fixed;right:0;top:35%;z-index:20;display:flex;align-items:flex-start}
+.toc-toggle{font:800 12px "Nunito",sans-serif;writing-mode:vertical-rl;padding:14px 10px;min-width:44px;min-height:88px;color:var(--pink);background:var(--card);border:1.5px solid var(--line);border-right:0;border-radius:12px 0 0 12px;cursor:pointer}
+.toc-links{width:180px;padding:10px;background:var(--card);border:1.5px solid var(--line);border-right:0;border-radius:0 0 0 12px;box-shadow:-8px 8px 24px rgba(0,0,0,.08)}
+.toc-links[hidden]{display:none}
+.toc-links a{display:block;padding:10px 12px;min-height:44px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;color:var(--ink)}
+.toc-links a:hover,.toc-links a:focus-visible{background:var(--chip);color:var(--aqua)}
+@media(max-width:900px){.page-toc{top:auto;bottom:max(24px,env(safe-area-inset-bottom));align-items:flex-end}}
 </style></head><body>
+
+<nav class="page-toc" aria-label="Table of contents">
+  <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-links">Contents</button>
+  <div class="toc-links" id="toc-links" hidden>
+    <a href="#sounds">The sounds</a>
+    <a href="#fillers">The fillers</a>
+    <a href="#party-tricks">Party tricks</a>
+    <a href="#hear-it">Hear it</a>
+    <a href="#drill-plan">Drill plan</a>
+  </div>
+</nav>
 
 <div class="wrap">
   <header class="hero">
@@ -149,8 +170,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
     </div>
   </header>
 
-  <section>
-    <div class="sec-head"><span class="eyebrow">01</span><h2>The sounds</h2></div>
+  <section id="sounds" tabindex="-1">
+    <div class="sec-head"><h2>The sounds</h2></div>
     <div class="stack">
       <div class="card star">
         <h3>The heavy L</h3>
@@ -180,8 +201,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
     </div>
   </section>
 
-  <section>
-    <div class="sec-head"><span class="eyebrow">02</span><h2>The fillers</h2></div>
+  <section id="fillers" tabindex="-1">
+    <div class="sec-head"><h2>The fillers</h2></div>
     <p class="lede">Sprinkle these in. "Bro" is for everyone, any gender, any age.</p>
     <div class="chips">
       <span class="chip">bro</span>
@@ -194,8 +215,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
     </div>
   </section>
 
-  <section>
-    <div class="sec-head"><span class="eyebrow">03</span><h2>Party tricks</h2></div>
+  <section id="party-tricks" tabindex="-1">
+    <div class="sec-head"><h2>Party tricks</h2></div>
     <p class="lede">Literal translations from Spanish that locals say without noticing. FIU's Phillip Carter documented these as the core of the dialect.</p>
     <div class="calques">
       <div class="calque"><div class="say">Get down from the car.</div><div class="from"><em>bajar del carro</em> · not "get out of"</div></div>
@@ -215,8 +236,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
     <p class="note"><b>Bonus move:</b> speak flat English, then say one Spanish name or word (Alejandro, Publix's <em>croquetas</em>) with a full accent switch for exactly one word, then snap back.</p>
   </section>
 
-  <section>
-    <div class="sec-head"><span class="eyebrow">04</span><h2>Hear it</h2></div>
+  <section id="hear-it" tabindex="-1">
+    <div class="sec-head"><h2>Hear it</h2></div>
     <p class="lede">Play a clip, repeat it immediately, record yourself in Voice Memos, compare.</p>
     <div class="vids">
       <div class="embed"><div class="k">YouTube · phonetics walkthrough</div><div class="t">Miami Latino Accent Decoded</div>
@@ -240,8 +261,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
     <p class="note">Also worth searching: Pero Like sketches, Jenny Lorenzo's "Abuela," Pitbull interviews, and the Only in Dade Instagram.</p>
   </section>
 
-  <section>
-    <div class="sec-head"><span class="eyebrow">05</span><h2>Drill plan</h2></div>
+  <section id="drill-plan" tabindex="-1">
+    <div class="sec-head"><h2>Drill plan</h2></div>
     <div class="drills">
       <div class="drill"><div class="n">1</div><p><b>Shadow, 5 min a day.</b> Ten-second clip, repeat instantly, mimic rhythm before sounds. Record and A/B.</p></div>
       <div class="drill"><div class="n">2</div><p><b>Anchor sentence.</b> Drill the one at the top until every L, vowel, and syllable lands without thinking.</p></div>
@@ -253,4 +274,37 @@ footer{margin-top:40px;font-size:12.5px;color:var(--ink-2);border-top:1.5px soli
 
   <footer>Phrases and sound features from Phillip Carter's Miami English research at FIU (American Speech, 2020–2023) and the linked clips. Not a linguistics paper. Dale.</footer>
 </div>
+<script>
+(() => {
+  const nav = document.querySelector('.page-toc');
+  const button = nav.querySelector('button');
+  const links = nav.querySelector('.toc-links');
+  const hover = matchMedia('(hover: hover) and (pointer: fine)');
+  function setOpen(open) {
+    button.setAttribute('aria-expanded', String(open));
+    links.hidden = !open;
+  }
+  button.addEventListener('click', () => setOpen(links.hidden));
+  nav.addEventListener('mouseenter', () => { if (hover.matches) setOpen(true); });
+  nav.addEventListener('mouseleave', () => {
+    if (hover.matches && !nav.contains(document.activeElement)) setOpen(false);
+  });
+  nav.addEventListener('focusout', event => {
+    if (!nav.contains(event.relatedTarget)) setOpen(false);
+  });
+  document.addEventListener('click', event => {
+    if (!nav.contains(event.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !links.hidden) { setOpen(false); button.focus(); }
+  });
+  links.addEventListener('click', event => {
+    const link = event.target.closest('a');
+    if (!link) return;
+    const section = document.querySelector(link.getAttribute('href'));
+    setOpen(false);
+    section.focus({preventScroll:true});
+  });
+})();
+</script>
 </body></html>
