@@ -1,26 +1,26 @@
 # Concert source coverage
 
-Checked 2026-10-01T17:25:25.007Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-10-02T16:43:29.547Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
-| sf | [The Independent](https://www.theindependentsf.com/) | 85 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [The Independent](https://www.theindependentsf.com/) | 84 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Chapel](https://thechapelsf.com/music/) | 14 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Rickshaw Stop](https://rickshawstop.com/) | 15 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Cafe du Nord](https://cafedunord.com/) | 65 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 58 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Bowery Ballroom](https://mercuryeastpresents.com/boweryballroom/) | 84 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Le Poisson Rouge](https://lpr.com/) | 10 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Elsewhere](https://www.elsewhere.club/events) | 87 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 57 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Bowery Ballroom](https://mercuryeastpresents.com/boweryballroom/) | 83 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Le Poisson Rouge](https://lpr.com/) | 11 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Elsewhere](https://www.elsewhere.club/events) | 84 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Baby’s All Right](https://wl.seetickets.us/BabysAllRightBrooklyn) | 0 | error | Source returned HTTP 403. |
 | nyc | [Brooklyn Made](https://brooklynmadepresents.com/) | 0 | error | fetch failed |
-| miami | [Miami Beach Bandshell](https://miamibeachbandshell.com/events/) | 34 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Miami Beach Bandshell](https://miamibeachbandshell.com/events/) | 33 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Revolution Live](https://www.jointherevolution.net/concerts/) | 31 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Culture Room](https://www.cultureroom.net/) | 13 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 67 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 22 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 21 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Respectable Street](https://respectablestreet.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
-| nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 111 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 113 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Portola](https://www.portolamusicfestival.com/general-info/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Hardly Strictly Bluegrass](https://hardlystrictlybluegrass.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Outside Lands](https://sfoutsidelands.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
