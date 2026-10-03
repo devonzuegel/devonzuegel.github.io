@@ -1,7 +1,12 @@
 // Researched venue facts. Keep room capacities separate from whole-building figures.
 export const venueProfiles = [
   {
-    names: ["Audio", "Audio SF", "Audio San Francisco"],
+    names: ["Audio", "Audio SF", "Audio San Francisco", "Audio Nightclub"],
+    address: "316 11th Street, San Francisco, CA 94103",
+    locality: "San Francisco",
+    lat: 37.7714818, lng: -122.41365155,
+    locationSource: "https://www.audiosf.com/contact/",
+    locationSourceName: "Audio official map",
     metro: "sf",
     description:
       "An electronic-music nightclub on 11th Street with a standing dance floor.",
@@ -175,7 +180,14 @@ export const venueProfiles = [
     },
   },
   {
-    names: ["620 Jones Terrace"],
+    names: ["620 Jones Terrace", "620 Jones"],
+    address: "620 Jones Street, San Francisco, CA 94102",
+    locality: "San Francisco",
+    lat: 37.787036288701, lng: -122.41315023996,
+    addressSource: "https://620-jones.com/about-620-jones/",
+    locationSource: "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=620%20Jones%20Street%2C%20San%20Francisco%2C%20CA%2094102&benchmark=Public_AR_Current&format=json",
+    locationSourceName: "US Census address geocoder",
+    locationApproximate: true,
     metro: "sf",
     description:
       "Heated outdoor terrace and bars at 620 Jones. Published whole-building capacities do not isolate the terrace.",
@@ -497,12 +509,16 @@ export function enrichVenue(venue, metro) {
   if (!p) return venue;
   // A named sub-room must never inherit the full venue's occupancy.
   const capacity = venue.capacity || (!venue.room ? p.capacity : null);
+  const knownCoordinates = Number.isFinite(venue.lat) && Number.isFinite(venue.lng);
+  const useLocation = !knownCoordinates && Number.isFinite(p.lat) && Number.isFinite(p.lng) && (!venue.locality || normalize(venue.locality)===normalize(p.locality)) && (!venue.address || normalize(venue.address.split(',')[0])===normalize(p.address.split(',')[0]));
   return {
     ...venue,
     capacity,
+    ...(useLocation ? {lat:p.lat,lng:p.lng,address:venue.address||p.address,locality:venue.locality||p.locality,locationSource:p.locationSource,locationApproximate:!!p.locationApproximate} : {}),
     description: venue.description || p.description,
     descriptionSource: venue.descriptionSource || (!venue.description ? p.source : undefined),
     provenance: {...venue.provenance,
+      ...(useLocation ? {coordinates:{secondary:true,sources:[{name:p.locationSourceName,url:p.locationSource},...(p.addressSource?[{name:"Official venue address",url:p.addressSource}]:[])],match:p.locationApproximate?"Verified venue address; approximate street-address pin":"Venue name and metro matched to its official map"}} : {}),
       ...((!venue.description || venue.descriptionSource===p.source) ? {description:{secondary:true,sources:[{name:"Venue reference",url:p.source}],match:"Researched venue name and metro"}} : {}),
       ...((!venue.capacity || venue.capacity.source===p.capacity?.source) && capacity ? {capacity:{secondary:true,sources:[{name:"Capacity reference",url:capacity.source||p.source}],match:"Researched venue name and metro; whole venue"}} : {})},
   };
@@ -510,4 +526,13 @@ export function enrichVenue(venue, metro) {
 export function enrichEventVenue(event) {
   const venue = enrichVenue(event.venue, event.metro);
   return venue === event.venue ? event : { ...event, venue };
+}
+
+// Older list snapshots can contain nulls; they must not erase newer venue facts.
+export function mergeVenueRecords(...records) {
+  const merged = {};
+  for (const record of records) for (const [key,value] of Object.entries(record||{})) {
+    if (value != null && value !== "") merged[key] = key === "provenance" ? {...merged[key],...value} : value;
+  }
+  return merged;
 }

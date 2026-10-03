@@ -1,3 +1,4 @@
+import {geocodeVenue} from "./geocoding.mjs";
 import {json} from './network.mjs';
 import {normalize,hash} from '../shared/core.js';
 import * as store from './storage.mjs';
@@ -64,13 +65,13 @@ export async function enrichVenueReferences(events) {
     const key=JSON.stringify([event.metro,v.name,v.locality,v.room]);
     if(!lookedUp.has(key)) lookedUp.set(key,await venueReference(v).catch(()=>null));
     const extra=lookedUp.get(key);
-    if(!extra){output.push(event);continue;}
+    if(!extra){output.push({...event,venue:await geocodeVenue(v,event.metro).catch(()=>v)});continue;}
     const venue={...v,provenance:{...v.provenance}};
     for(const field of ['description','address','lat','lng']) if((venue[field]==null || venue[field]==='') && extra[field]!=null && extra[field]!=='') {
       venue[field]=extra[field];
       venue.provenance[field]={secondary:true,sources:[{name:'MusicBrainz',url:extra.source}],match:'Unique exact venue name and city; room matches excluded'};
     }
-    output.push({...event,venue});
+    output.push({...event,venue:await geocodeVenue(venue,event.metro).catch(()=>venue)});
   }
   return output;
 }

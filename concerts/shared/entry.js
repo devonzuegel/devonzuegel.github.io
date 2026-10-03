@@ -8,7 +8,7 @@ function showStartupError() {
 }
 const timeout = setTimeout(showStartupError, 20000);
 try {
-  await import("../app.js?v=20261003-og");
+  await import("../app.js?v=20261003-maps");
 } catch (error) {
   console.error("Concert Tracker startup failed:", error);
   showStartupError();

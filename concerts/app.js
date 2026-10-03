@@ -1,14 +1,15 @@
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261003-og";
 import { manageLists, sharedListTimestamp } from "./shared/share-lists.js?v=20261003-og";
-import { enrichEventVenue } from "./shared/venue-profiles.js?v=20261003-sources";
+import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
 import { syncLink, parseSyncLink } from "./shared/qr-sync.js";
 import {
   addHistoryDetails,
   historyRank,
+  historyPercentile,
   importFileMetadata,
-} from "./shared/listening-details.js?v=20261002-startup";
+} from "./shared/listening-details.js?v=20261003-percentile";
 import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";
@@ -451,7 +452,7 @@ function venueMapMarkup(e, expanded = false) {
     return '<small class="map-location-unknown">Map location unavailable</small>';
   const canvas = `<div class="${expanded ? "expanded-venue-map" : "mini-venue-map"}" data-venue-map data-lat="${v.lat}" data-lng="${v.lng}" data-city-lat="${city.lat || v.lat}" data-city-lng="${city.lng || v.lng}" aria-label="Map of ${esc(v.name)}"></div>`;
   return expanded
-    ? canvas
+    ? canvas + (v.locationApproximate ? '<p class="media-notice">Approximate street-address location.</p>' : "")
     : `<div class="venue-map-preview">${canvas}${button("venue-map", "", "expand-venue-map", `data-id="${esc(e.id)}" aria-label="Expand map for ${esc(v.name)}"`)}</div>`;
 }
 function venueLocationModal(id) {
@@ -528,9 +529,10 @@ function listeningDetailsMarkup(e) {
       : "Unknown";
   return `<section class="detail-section" id="listening-details"><h3>Your Spotify history</h3>${matches
     .map(({ name }) => {
+      const heading = matches.length > 1 ? `<h4>${esc(name)}</h4>` : "";
       const a = imported?.artists?.[normalize(name)];
       if (!a)
-        return `<h4>${esc(name)}</h4><p>Re-import your Spotify history on this device to see tracks and dates.</p>${button("listening", "Import history", "secondary")}`;
+        return `${heading}<p>Re-import your Spotify history on this device to see tracks and dates.</p>${button("listening", "Import history", "secondary")}`;
       const tracks = Object.values(a.tracks).sort((x, y) => y.plays - x.plays);
       const months = Object.entries(a.months).sort(([x], [y]) =>
         x.localeCompare(y),
@@ -538,7 +540,9 @@ function listeningDetailsMarkup(e) {
       const max = Math.max(1, ...months.map(([, n]) => n));
       const thisMonth = new Date().toISOString().slice(0, 7);
       const recent = a.months[thisMonth] || 0;
-      return `<h4>${esc(name)}</h4><p>${a.plays.toLocaleString()} plays · ${tracks.length} known songs · ${Math.round(a.ms / 60000).toLocaleString()} minutes</p><p>#${historyRank(a, imported.artists)} by plays in this import</p><p>${recent} plays this month · ${a.plays - a.undated - recent} in earlier months${a.undated ? ` · ${a.undated} undated` : ""}</p><p>First listen: ${fmt(a.first)}<br>Last listen: ${fmt(a.last)}</p><details open><summary>Monthly listening</summary><div class="listening-timeline">${months.map(([month, n]) => `<div title="${month}: ${n} plays"><span>${month}</span><meter min="0" max="${max}" value="${n}">${n}</meter><span>${n}</span></div>`).join("") || "No dated plays available."}</div>${a.undated ? `<p>${a.undated} plays have no date.</p>` : ""}</details><details open><summary>Tracks · most played first</summary><ol class="listening-tracks">${tracks.map((t) => `<li><a href="${t.uri ? "https://open.spotify.com/track/" + t.uri.split(":")[2] : "https://open.spotify.com/search/" + encodeURIComponent(name + " " + t.name)}" target="_blank" rel="noopener">${esc(t.name)}</a><small>${t.plays} plays · ${Math.round(t.ms / 60000)} min</small></li>`).join("") || "Track names unavailable."}</ol></details>`;
+      const percentile = historyPercentile(a, imported.artists);
+      const ordinal = {one:"st",two:"nd",few:"rd",other:"th"}[new Intl.PluralRules("en-US", {type:"ordinal"}).select(percentile)];
+      return `${heading}<p>${a.plays.toLocaleString()} plays · ${tracks.length} known songs · ${Math.round(a.ms / 60000).toLocaleString()} minutes</p><p>#${historyRank(a, imported.artists).toLocaleString()} · <span title="More plays than ${percentile}% of artists in your imported history; ties share a percentile.">${percentile}${ordinal} percentile</span> by plays in this import</p><p>${recent} plays this month · ${a.plays - a.undated - recent} in earlier months${a.undated ? ` · ${a.undated} undated` : ""}</p><p>First listen: ${fmt(a.first)}<br>Last listen: ${fmt(a.last)}</p><details open><summary>Monthly listening</summary><div class="listening-timeline">${months.map(([month, n]) => `<div title="${month}: ${n} plays"><span>${month}</span><meter min="0" max="${max}" value="${n}">${n}</meter><span>${n}</span></div>`).join("") || "No dated plays available."}</div>${a.undated ? `<p>${a.undated} plays have no date.</p>` : ""}</details><details open><summary>Tracks · most played first</summary><ol class="listening-tracks">${tracks.map((t) => `<li><a href="${t.uri ? "https://open.spotify.com/track/" + t.uri.split(":")[2] : "https://open.spotify.com/search/" + encodeURIComponent(name + " " + t.name)}" target="_blank" rel="noopener">${esc(t.name)}</a><small>${t.plays} plays · ${Math.round(t.ms / 60000)} min</small></li>`).join("") || "Track names unavailable."}</ol></details>`;
     })
     .join(
       "",
@@ -598,7 +602,7 @@ function contextMarkup(data, full = false) {
   const bio = data.bio || data.description;
   const preview =
     bio.length > 220 ? bio.slice(0, 220).replace(/\s+\S*$/, "") + "…" : bio;
-  return `<p class="artist-bio-preview">${esc(full ? bio : preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}<span class="secondary-source" title="${esc(data.match||"Artist name matched to an external reference")}">Secondary source: <a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.additionalSource ? ` · <a href="${esc(safeURL(data.additionalSource.url))}" target="_blank" rel="noopener">${esc(data.additionalSource.name)} ↗</a>` : ""}</span>${full ? `<div class="artist-background">${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</div>` : ""}`;
+  return `<p class="artist-bio-preview">${esc(full ? bio : preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}<span class="secondary-source" title="${esc(data.match||"Artist name matched to an external reference")}">Secondary source: <a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.additionalSource ? ` · <a href="${esc(safeURL(data.additionalSource.url))}" target="_blank" rel="noopener">${esc(data.additionalSource.name)} ↗</a>` : ""}</span>${full ? `<div class="artist-background"><a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</div>` : ""}`;
 }
 function artistContextSlot(e) {
   if (e.eventType === "festival") return "";
@@ -1006,10 +1010,12 @@ async function loadSharedFeed() {
         const full = known.get(e.id);
         const matchingVenue = catalog.find(
           (other) =>
+            (!e.metro || other.metro === e.metro) &&
+            normalize(other.venue?.room) === normalize(e.venue?.room) &&
             normalize(other.venue?.name) === normalize(e.venue?.name) &&
             normalize(other.venue?.locality) === normalize(e.venue?.locality),
         )?.venue;
-        const venue = { ...matchingVenue, ...e.venue, ...full?.venue };
+        const venue = mergeVenueRecords(matchingVenue, e.venue, full?.venue);
         const metro = full?.metro || e.metro || venue.metro || "shared";
         return {
           ...e,

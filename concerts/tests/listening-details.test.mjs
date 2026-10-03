@@ -44,3 +44,12 @@ test("missing dates and tracks stay unknown rather than fabricated", () => {
   assert.equal(a.undated, 1);
   assert.deepEqual(a.tracks, {});
 });
+
+test('listening percentiles count artists with fewer plays and handle ties', async () => {
+  const {historyPercentile} = await import('../shared/listening-details.js');
+  const artists = {a:{plays:10},b:{plays:3},c:{plays:3},d:{plays:1}};
+  assert.equal(historyPercentile(artists.a,artists),75);
+  assert.equal(historyPercentile(artists.b,artists),25);
+  assert.equal(historyPercentile(artists.c,artists),25);
+  assert.equal(historyPercentile(artists.d,artists),0);
+});

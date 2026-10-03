@@ -54,6 +54,14 @@ export function historyRank(artist, artists) {
   );
 }
 
+// Percentile is the percentage of imported artists with strictly fewer plays.
+// Artists tied on play count receive the same percentile.
+export function historyPercentile(artist, artists) {
+  const values = Object.values(artists).filter(a => Number.isFinite(a.plays));
+  if (!values.length) return 0;
+  return Math.round(values.filter(a => a.plays < artist.plays).length / values.length * 1000) / 10;
+}
+
 export function importFileMetadata(file, doc, summary) {
   const rows = Array.isArray(doc)
     ? doc

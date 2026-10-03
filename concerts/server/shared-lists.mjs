@@ -51,6 +51,8 @@ export function publicConcert(e) {
     venue: {
       id: text(e.venue?.id, 200),
       provenance: provenance(e.venue?.provenance),
+      locationSource: url(e.venue?.locationSource),
+      locationApproximate: !!e.venue?.locationApproximate,
       metro: text(e.venue?.metro, 80),
       lat: Number.isFinite(e.venue?.lat) ? e.venue.lat : null,
       lng: Number.isFinite(e.venue?.lng) ? e.venue.lng : null,

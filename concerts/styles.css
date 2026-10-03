@@ -4268,9 +4268,6 @@ summary.month-heading:focus-visible {
 .event-row.saved-event-row:hover {
   background: color-mix(in srgb, var(--accent) 13%, var(--paper));
 }
-.saved-event-row .event-date {
-  padding-left: 9px;
-}
 .save-btn.saved .icon,
 [data-action="detail-save"][aria-pressed="true"] .icon {
   fill: currentColor;
@@ -4398,4 +4395,14 @@ summary.month-heading:focus-visible {
   .shared-mobile-nav .main-nav { display: flex; flex-wrap: wrap; gap: 6px; }
   .shared-mobile-nav .nav-btn { width: auto; font-size: 12px; }
   .shared-mobile-nav .shared-list-nav { margin-top: 8px; }
+}
+
+/* Reserve the same stripe gutter for every row, including compact rows. */
+.event-row,
+.event-row.hidden-event-row,
+.list-table-header {
+  padding-left: 16px;
+}
+.event-row .event-date {
+  padding-left: 0;
 }
