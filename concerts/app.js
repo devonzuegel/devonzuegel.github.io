@@ -279,8 +279,8 @@ function weekendLabel(preset) {
       timeZone: "UTC",
     }).formatToParts(new Date(day + "T12:00:00Z"));
     return ["weekday", "day", "month"]
-      .map((type) => parts.find((p) => p.type === type).value)
-      .join("-");
+      .map((type) => esc(parts.find((p) => p.type === type).value))
+      .join('<span class="date-separator">-</span>');
   };
   return `${format(from)} → ${format(to)}`;
 }

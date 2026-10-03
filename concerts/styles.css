@@ -4218,3 +4218,5 @@ summary.month-heading:focus-visible {
 [data-action="detail-save"][aria-pressed="true"] .icon {
   fill: currentColor;
 }
+
+.weekend-tooltip .date-separator { opacity: 0.5; }
