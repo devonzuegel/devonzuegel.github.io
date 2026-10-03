@@ -376,7 +376,7 @@ export function mergeEvents(events) {
     if (!e?.id || !e.title) continue;
     const prior = map.get(e.id);
     if (prior) {
-      map.set(e.id, { ...prior, ...e });
+      map.set(e.id, { ...prior, ...e, sources: [...new Map([...(prior.sources || []), ...(e.sources || [])].map(s => [s.url, s])).values()] });
       continue;
     }
     map.set(e.id, e);

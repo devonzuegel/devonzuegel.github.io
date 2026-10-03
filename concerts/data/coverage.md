@@ -36,3 +36,11 @@ Checked 2026-10-03T03:36:06.111Z. Partial catalog.
 | sf | [F8](https://www.feightsf.com/new-events) | 14 | ok | Published official listings only; coverage may be incomplete. |
 
 Additional candidates: Monarch and Great Northern (Ticketspot widget integration required), 1015 Folsom (automated request returned HTTP 403).
+
+New discovery sources (checked 2026-10-03T06:42:14.231Z):
+
+| Source | Upcoming imported | Notes |
+| --- | ---: | --- |
+| 19hz Bay Area / Northern California | 548 | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
+| Afrobeats Oakland | 2 | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
+| The Faight Collective | 11 | Published upcoming listings imported; additional organizer listings may exist. |

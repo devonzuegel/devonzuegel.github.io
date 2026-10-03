@@ -266,13 +266,37 @@ export function parseVenue(venue, html, now = new Date()) {
           genres: e.find(".eventlist-cats a").map((i, a) => clean($(a).text())).get() });
       });
       break;
+    case "eventbrite-organizer": {
+      const data = JSON.parse($('#__NEXT_DATA__').text()).props.pageProps;
+      if (data.upcomingEventsFailed || !Array.isArray(data.upcomingEvents)) throw new Error("Organizer calendar unavailable.");
+      for (const item of data.upcomingEvents) {
+        if (item.is_online_event || item.is_protected_event || item.hide_start_date) continue;
+        const place=item.primary_venue, address=place?.address;
+        if (!place?.name || address?.region !== "CA" || item.timezone !== venue.timezone) continue;
+        if (/yoga|sound healing|workshop|dating show|comedy/i.test(item.name)) continue;
+        const pin=value=>value!=null && value!=='' && Number.isFinite(Number(value))?Number(value):null;
+        const actual={id:'eventbrite-venue-'+place.id,name:place.name,metro:venue.metro,timezone:item.timezone,
+          locality:address.city,address:address.localized_address_display,lat:pin(address.latitude),lng:pin(address.longitude),locationSource:item.url};
+        const event=makeEvent(actual,{id:'eventbrite-'+item.id,title:item.name,date:parseDate(item.start_date),
+          time:/^\d{2}:\d{2}/.test(item.start_time||'')?item.start_time.slice(0,5):null,
+          url:item.url,image:item.image?.url,status:item.is_cancelled?'cancelled':item.ticket_availability?.is_sold_out?'sold out':'scheduled'},now);
+        if(event){event.sourceId=venue.id;event.sources=[{name:venue.name+' · Eventbrite',url:venue.url},{name:'Eventbrite',url:item.url}];out.push(event);}
+      }
+      break;
+    }
+    case "19hz-bayarea":
     case "19hz-halcyon":
       $("tr").each((i, node) => {
         const cells = $(node).children("td"), listing = cells.eq(1);
-        if (!/@ Halcyon \(San Francisco\)\s*$/i.test(clean(listing.text()))) return;
+        const location=clean(listing.text()).match(/@ (.+) \(([^()]+)\)\s*$/);
+        if (!location || (venue.parser === '19hz-halcyon' && !/@ Halcyon \(San Francisco\)\s*$/i.test(clean(listing.text())))) return;
+        const actual=venue.parser==='19hz-halcyon'?venue:{id:'19hz-venue-'+hash(location[1]+'|'+location[2]),name:location[1],locality:location[2],metro:venue.metro,timezone:venue.timezone,url:venue.url};
         const link = listing.find("a").first();
         const date = clean(cells.eq(6).text()).match(/20\d{2}\/\d{2}\/\d{2}/)?.[0].replaceAll("/", "-");
-        const event = makeEvent(venue, {
+        const ticket=abs(link.attr('href'));
+        const ebid=ticket.match(/eventbrite\.[^/]+\/e\/[^?]*?(\d{10,})(?:[/?]|$)/)?.[1];
+        const event = makeEvent(actual, {
+          id:ebid?'eventbrite-'+ebid:undefined,
           title: clean(link.text()), date,
           time: parseTime(clean(cells.eq(0).text()).match(/\(([^)]+)\)/)?.[1]?.split("-")[0]),
           url: abs(link.attr("href")),
@@ -280,7 +304,9 @@ export function parseVenue(venue, html, now = new Date()) {
           genres: clean(cells.eq(2).text()).split(/,\s*/),
         }, now);
         if (event) {
-          event.sources = [{ name: "19hz · Halcyon", url: venue.url }, { name: "Event listing", url: event.ticketUrl }];
+          event.sourceId=venue.id;
+          event.sources = [{ name: venue.parser === "19hz-halcyon" ? "19hz · Halcyon" : "19hz", url: venue.url }, { name: "Event listing", url: event.ticketUrl }];
+          event.provenance={time:{secondary:true,sources:[{name:'19hz',url:venue.url}],match:'Community calendar listing; verify with the ticket page'}};
           out.push(event);
         }
       });

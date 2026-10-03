@@ -42,7 +42,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20261003-sources";
+} from "./shared/core.js?v=20261003-discovery";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);

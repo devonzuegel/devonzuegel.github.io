@@ -100,3 +100,7 @@ Artist context combines Wikidata/Wikipedia with MusicBrainz: linked MusicBrainz 
 Shared links use `https://devonzuegel.com/concerts/?list=…`. The Cloudflare Worker in `_concerts-worker` inserts list-specific Open Graph/Twitter metadata into the initial GitHub Pages HTML for all visitors. Images use `/concerts/share-image?list=…&v=…`; the Worker proxies the existing API's image renderer. There is no separate redirect/preview page. Revoked or invalid lists return 404; dynamic responses are not cached. Social platforms may retain their own cached previews.
 
 Deploy the API first, then `npx wrangler deploy --config _concerts-worker/wrangler.jsonc`, and publish frontend changes through GitHub Pages. The Worker only handles shared-list HTML and preview images; other concerts requests pass through to GitHub Pages.
+
+### Regional and organizer discovery
+
+19hz Bay Area / Northern California imports published DJ nights and dance parties across venues, with secondary-source attribution. Afrobeats Oakland and The Faight Collective import structured upcoming events from their public Eventbrite organizer pages. These sources participate in the daily catalog refresh; no Eventbrite API key is required. Organizer pagination is reported as partial when more listings exist. Protected/online events and clearly non-music listings are excluded. Eventbrite event IDs merge listings from different sources while preserving source links.

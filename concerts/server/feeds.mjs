@@ -125,6 +125,7 @@ export async function readVenue(v, now = new Date()) {
     if (url && new URL(url).hostname !== new URL(v.url).hostname) url = null;
     hasMore =
       !!url ||
+      (v.parser === "eventbrite-organizer" && JSON.parse(cheerio.load(html)('#__NEXT_DATA__').text()).props.pageProps.hasMoreUpcoming) ||
       (v.parser === "warfield" &&
         cheerio.load(html)("#loadMoreEvents").length > 0);
   } while (url && pages < 8);

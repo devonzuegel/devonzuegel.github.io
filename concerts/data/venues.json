@@ -464,5 +464,32 @@
     "lng": null,
     "capacity": null,
     "layout": null
+  },
+  {
+    "id": "19hz-bayarea",
+    "name": "19hz Bay Area / Northern California",
+    "url": "https://19hz.info/eventlisting_BayArea.php",
+    "parser": "19hz-bayarea",
+    "metro": "sf",
+    "timezone": "America/Los_Angeles",
+    "sourceNote": "Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller."
+  },
+  {
+    "id": "afrobeats-oakland",
+    "name": "Afrobeats Oakland",
+    "url": "https://www.eventbrite.com/o/4507691499",
+    "parser": "eventbrite-organizer",
+    "metro": "sf",
+    "timezone": "America/Los_Angeles",
+    "sourceNote": "Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically."
+  },
+  {
+    "id": "faight",
+    "name": "The Faight Collective",
+    "url": "https://www.eventbrite.com/o/75467307963",
+    "parser": "eventbrite-organizer",
+    "metro": "sf",
+    "timezone": "America/Los_Angeles",
+    "sourceNote": "Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically."
   }
 ]
