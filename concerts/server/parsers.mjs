@@ -277,23 +277,98 @@ export function parseVenue(venue, html, now = new Date()) {
     case "see":
       $(".seetickets-list-event-container").each((i, node) => {
         const e = $(node),
-          title = text(e, ".title");
+          title = text(e, ".title") || text(e, ".event-title");
         add({
           title,
-          date: parseDate(text(e, ".date"), now),
+          date: parseDate(text(e, ".date") || text(e, ".event-date"), now),
           time: parseTime(text(e, ".see-showtime")),
           artists: [
             ...artists(text(e, ".headliners") || title).map((a) => a.name),
             ...artists(text(e, ".supporting-talent")).map((a) => a.name),
           ],
-          url: e.find(".title a").attr("href"),
+          url: e.find(".title a, .event-title a").first().attr("href"),
           image: e.find("img").first().attr("src"),
           genres: [text(e, ".genre")],
           venueName:
             title.match(/^MOVED TO (?:THE )?([^:]+):/i)?.[1] ||
+            title.match(/\(MOVED TO (?:THE )?([^)]*)\)/i)?.[1] ||
             text(e, ".venue").replace(/^at /i, ""),
           status: text(e, ".seetickets-buy-btn"),
         });
+      });
+      $(".seetickets-calendar-event-container").each((i, node) => {
+        const e = $(node),
+          title = text(e, ".event-title"),
+          url = e.find(".event-title a").attr("href");
+        if (out.some((x) => x.ticketUrl === url) || /MOVED TO/i.test(title))
+          return;
+        const monthYear = clean(
+          e
+            .closest("table")
+            .prev(".seetickets-calendar-year-month-container")
+            .text(),
+        );
+        const [month, year] = monthYear.split(" ");
+        add({
+          title,
+          date: parseDate(
+            `${month} ${text(e.closest("td"), ".date-number")} ${year}`,
+            now,
+          ),
+          time: parseTime(text(e, ".doortime-showtime")),
+          url,
+          artists: [
+            title,
+            ...artists(text(e, ".supporting-talent")).map((a) => a.name),
+          ],
+          image: e.find("img").attr("src"),
+          status: text(e, ".seetickets-buy-btn"),
+        });
+      });
+      break;
+    case "warfield":
+      $(".entry").each((i, node) => {
+        const e = $(node),
+          title = text(e, "h3");
+        add({
+          title,
+          date: parseDate(text(e, ".date"), now),
+          time: parseTime(text(e, ".time")),
+          url: e.find("h3 a").attr("href"),
+          ticketUrl: e.find(".btn-tickets").attr("href"),
+          artists: [title, ...artists(text(e, ".title h4")).map((a) => a.name)],
+          image: e.find("img").attr("src"),
+          status: text(e, ".buttons"),
+        });
+      });
+      break;
+    case "fillmore":
+      $('script[type="application/ld+json"]').each((i, node) => {
+        try {
+          const x = JSON.parse($(node).text());
+          if (
+            x["@type"] !== "MusicEvent" ||
+            !x.startDate ||
+            /(?:multi|seven|\(7\)).*show ticket|parking|fast lane/i.test(x.name)
+          )
+            return;
+          if (!validDay(x.startDate.slice(0, 10))) return;
+          add({
+            title: x.name,
+            date: x.startDate.slice(0, 10),
+            time: x.startDate.slice(11, 16),
+            startAt: x.startDate,
+            url: x.url,
+            ticketUrl: [x.offers].flat()[0]?.url,
+            image: typeof x.image === "string" ? x.image : x.image?.url,
+            venueName: x.location?.name,
+            artists: [x.performer]
+              .flat()
+              .filter(Boolean)
+              .map((a) => a.name || a),
+            status: x.eventStatus,
+          });
+        } catch {}
       });
       break;
     case "bottom":

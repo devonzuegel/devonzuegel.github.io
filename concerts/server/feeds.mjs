@@ -92,7 +92,10 @@ export async function readVenue(v, now = new Date()) {
       url = next ? new URL(next, r.url).href : null;
     }
     if (url && new URL(url).hostname !== new URL(v.url).hostname) url = null;
-    hasMore = !!url;
+    hasMore =
+      !!url ||
+      (v.parser === "warfield" &&
+        cheerio.load(html)("#loadMoreEvents").length > 0);
   } while (url && pages < 8);
   return {
     events: [...new Map(events.map((e) => [e.id, e])).values()],

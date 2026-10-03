@@ -3658,15 +3658,107 @@ summary.month-heading:focus-visible {
 }
 
 /* Keep concert actions together even on phone-width panels. */
-.detail-buttons > * { white-space: nowrap; }
+.detail-buttons > * {
+  white-space: nowrap;
+}
 @media (max-width: 560px) {
-  .detail-buttons .detail-action-label { display: none; }
+  .detail-buttons .detail-action-label {
+    display: none;
+  }
   .detail-buttons .secondary {
     flex: 0 0 44px;
     width: 44px;
     height: 44px;
     padding: 0;
   }
-  .detail-buttons .primary { min-width: 0; padding: 10px; }
-  .detail-buttons .primary .icon:last-child { display: none; }
+  .detail-buttons .primary {
+    min-width: 0;
+    padding: 10px;
+  }
+  .detail-buttons .primary .icon:last-child {
+    display: none;
+  }
+}
+
+.artist-context:empty {
+  display: none;
+}
+.artist-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 14px;
+  color: var(--muted);
+}
+.artist-loading i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+  animation: artist-loading-pulse 1.5s ease-in-out infinite;
+}
+.artist-loading i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.artist-loading i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes artist-loading-pulse {
+  50% {
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .artist-loading i {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+.detail-artist-background {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 12px 0 20px;
+}
+.detail-artist-background:empty {
+  display: none;
+}
+
+.listening-timeline {
+  max-height: 220px;
+  overflow: auto;
+  margin: 10px 0;
+}
+.listening-timeline > div {
+  display: grid;
+  grid-template-columns: 65px 1fr 35px;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+}
+.listening-timeline meter {
+  width: 100%;
+}
+.listening-tracks {
+  max-height: 280px;
+  overflow: auto;
+  padding-left: 22px;
+}
+.listening-tracks li {
+  padding: 5px;
+}
+.listening-tracks small {
+  display: block;
+  color: var(--muted);
+}
+#listening-details {
+  font-size: 12px;
+  line-height: 1.6;
+}
+#listening-details details {
+  margin: 12px 0;
+}
+.detail-top {
+  gap: 8px;
 }

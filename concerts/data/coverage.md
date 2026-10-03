@@ -1,6 +1,6 @@
 # Concert source coverage
 
-Checked 2026-09-27T15:42:15.023Z. This is a partial catalog, not every concert in each metro.
+Updated 2026-10-03T01:15:27.899Z. Partial coverage; counts are imported listings, not an independent completeness audit.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
@@ -27,5 +27,8 @@ Checked 2026-09-27T15:42:15.023Z. This is a partial catalog, not every concert i
 | miami | [III Points](https://www.iiipoints.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Ultra Music Festival](https://ultramusicfestival.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Governors Ball](https://www.governorsballmusicfestival.com/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
+| sf | [Great American Music Hall](https://gamh.com/calendar/) | 68 | ok | Official published calendar imported. |
+| sf | [The Fillmore](https://www.thefillmore.com/shows) | 34 | ok | Official published calendar imported. |
+| sf | [The Warfield](https://www.thewarfieldtheatre.com/events) | 19 | ok | Visible calendar imported; additional Load more listings are not yet imported. |
 
-Counts reflect successful parsing, not an independent completeness audit. Each source needs to be compared against the website; pagination and inaccessible feeds are explicitly reported.
+Other SF candidates checked: August Hall, Regency Ballroom, Fox Oakland, The New Parish, The Freight, Neck of the Woods and Bimbo’s returned access errors. Ashkenaz, Public Works and Great Northern need separate widget integrations. These are not counted as covered.

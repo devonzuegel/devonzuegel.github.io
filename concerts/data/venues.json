@@ -206,7 +206,7 @@
   },
   {
     "id": "babys",
-    "name": "Baby\u2019s All Right",
+    "name": "Baby’s All Right",
     "metro": "nyc",
     "url": "https://wl.seetickets.us/BabysAllRightBrooklyn",
     "parser": "jsonld",
@@ -364,5 +364,47 @@
       "source": "https://mercuryeastpresents.com/private-events/",
       "verifiedAt": "2026-09-19"
     }
+  },
+  {
+    "id": "gamh",
+    "name": "Great American Music Hall",
+    "url": "https://gamh.com/calendar/",
+    "parser": "see",
+    "address": "859 O’Farrell Street, San Francisco, CA",
+    "metro": "sf",
+    "locality": "San Francisco",
+    "timezone": "America/Los_Angeles",
+    "lat": null,
+    "lng": null,
+    "capacity": null,
+    "layout": null
+  },
+  {
+    "id": "fillmore",
+    "name": "The Fillmore",
+    "url": "https://www.thefillmore.com/shows",
+    "parser": "fillmore",
+    "address": "1805 Geary Boulevard, San Francisco, CA 94115",
+    "metro": "sf",
+    "locality": "San Francisco",
+    "timezone": "America/Los_Angeles",
+    "lat": null,
+    "lng": null,
+    "capacity": null,
+    "layout": null
+  },
+  {
+    "id": "warfield",
+    "name": "The Warfield",
+    "url": "https://www.thewarfieldtheatre.com/events",
+    "parser": "warfield",
+    "address": "982 Market Street, San Francisco, CA 94102",
+    "metro": "sf",
+    "locality": "San Francisco",
+    "timezone": "America/Los_Angeles",
+    "lat": null,
+    "lng": null,
+    "capacity": null,
+    "layout": null
   }
 ]

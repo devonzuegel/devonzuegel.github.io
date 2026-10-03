@@ -1,3 +1,4 @@
+import { addHistoryDetails, historyRank } from "./shared/listening-details.js";
 import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";
@@ -410,6 +411,58 @@ function listeningContext(match) {
       : match.reason || "In your listening history";
   return `${match.name} · ${reason}`;
 }
+const historyDetailsKey = () => "concerts.listening-details.v1." + store.active;
+function listeningDetailsMarkup(e) {
+  let imported;
+  try {
+    imported = JSON.parse(localStorage.getItem(historyDetailsKey()));
+  } catch {}
+  const matches = (e.artists || []).filter(
+    (a) => listening()?.[normalize(a.name)] || listening()?.[a.spotifyId],
+  );
+  if (!matches.length) return "";
+  const fmt = (value) =>
+    value
+      ? new Date(value).toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Unknown";
+  return `<section class="detail-section" id="listening-details"><h3>Your Spotify history</h3>${matches
+    .map(({ name }) => {
+      const a = imported?.artists?.[normalize(name)];
+      if (!a)
+        return `<h4>${esc(name)}</h4><p>Re-import your Spotify history on this device to see tracks and dates.</p>${button("listening", "Import history", "secondary")}`;
+      const tracks = Object.values(a.tracks).sort((x, y) => y.plays - x.plays);
+      const months = Object.entries(a.months).sort(([x], [y]) =>
+        x.localeCompare(y),
+      );
+      const max = Math.max(1, ...months.map(([, n]) => n));
+      const thisMonth = new Date().toISOString().slice(0, 7);
+      const recent = a.months[thisMonth] || 0;
+      return `<h4>${esc(name)}</h4><p>${a.plays.toLocaleString()} plays · ${tracks.length} known songs · ${Math.round(a.ms / 60000).toLocaleString()} minutes</p><p>#${historyRank(a, imported.artists)} by plays in this import</p><p>${recent} plays this month · ${a.plays - a.undated - recent} in earlier months${a.undated ? ` · ${a.undated} undated` : ""}</p><p>First listen: ${fmt(a.first)}<br>Last listen: ${fmt(a.last)}</p><details open><summary>Monthly listening</summary><div class="listening-timeline">${months.map(([month, n]) => `<div title="${month}: ${n} plays"><span>${month}</span><meter min="0" max="${max}" value="${n}">${n}</meter><span>${n}</span></div>`).join("") || "No dated plays available."}</div>${a.undated ? `<p>${a.undated} plays have no date.</p>` : ""}</details><details open><summary>Tracks · most played first</summary><ol class="listening-tracks">${tracks.map((t) => `<li><a href="${t.uri ? "https://open.spotify.com/track/" + t.uri.split(":")[2] : "https://open.spotify.com/search/" + encodeURIComponent(name + " " + t.name)}" target="_blank" rel="noopener">${esc(t.name)}</a><small>${t.plays} plays · ${Math.round(t.ms / 60000)} min</small></li>`).join("") || "Track names unavailable."}</ol></details>`;
+    })
+    .join(
+      "",
+    )}${imported ? `<p class="media-notice">Imported history coverage: ${fmt(imported.first)} – ${fmt(imported.last)}. Counts include plays of at least 30 seconds. Track details stay on this device.</p>` : ""}</section>`;
+}
+function concertLink(id) {
+  const url = new URL(location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("concert", id);
+  return url;
+}
+function openLinkedConcert() {
+  const id = new URL(location.href).searchParams.get("concert");
+  if (id && id !== state.selected) {
+    if (eventFor(id)) openDetail(id);
+    else if (!state.loading)
+      toast("This concert is no longer in the current listings.");
+  } else if (!id && state.selected) closeDetail();
+}
+window.addEventListener("popstate", openLinkedConcert);
 function eventDateLabel(e) {
   return (
     dateLabel(e.date) +
@@ -436,24 +489,38 @@ function row(e) {
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<span class="spotify-tag" title="${esc(listeningContext(match))}">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}</div>${rowAssessment(a)}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<button class="spotify-tag" data-action="listening-detail" data-id="${esc(e.id)}" title="View listening details">${icon("spotify")}${esc(listeningContext(match))}</button>` : ""}</div>${rowAssessment(a)}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 const artistContexts = new Map();
 let artistObserver;
-function contextMarkup(data) {
-  if (!data?.found)
-    return '<span class="artist-context-empty">Artist background unavailable</span>';
+function contextMarkup(data, full = false) {
+  if (!data?.found) return "";
   const bio = data.bio || data.description;
   const preview =
     bio.length > 220 ? bio.slice(0, 220).replace(/\s+\S*$/, "") + "…" : bio;
-  return `<p class="artist-bio-preview">${esc(preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}<details class="artist-background"><summary>Background & sources</summary>${bio.length > 220 ? `<p>${esc(bio)}</p>` : ""}${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">Wikidata ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</details>`;
+  return `<p class="artist-bio-preview">${esc(full ? bio : preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}${full ? `<div class="artist-background">${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">Wikidata ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</div>` : ""}`;
 }
 function artistContextSlot(e) {
   if (e.eventType === "festival") return "";
   const name = e.artists?.[0]?.name;
   if (!name) return "";
   const data = artistContexts.get(name);
-  return `<div class="artist-context" data-artist-context="${esc(name)}">${data ? contextMarkup(data) : '<span class="artist-context-empty">Loading artist background…</span>'}</div>`;
+  return `<div class="artist-context" data-artist-context="${esc(name)}">${data ? contextMarkup(data) : '<span class="artist-loading" role="status" aria-label="Loading artist background"><i></i><i></i><i></i></span>'}</div>`;
+}
+function loadDetailBackground(name) {
+  const root = $("#detail-artist-background");
+  if (!root || !name) return;
+  root.dataset.artistContext = name;
+  root.dataset.artistFull = "true";
+  const data = artistContexts.get(name);
+  root.innerHTML = data
+    ? contextMarkup(data, true)
+    : '<span class="artist-loading" role="status" aria-label="Loading artist background"><i></i><i></i><i></i></span>';
+  if (!data && !artistPending.has(name)) {
+    artistPending.add(name);
+    artistJobs.unshift(name);
+    pumpArtistContexts();
+  }
 }
 const artistJobs = [];
 const artistPending = new Set();
@@ -488,14 +555,15 @@ function pumpArtistContexts() {
         artistContexts.set(name, data);
         document.querySelectorAll("[data-artist-context]").forEach((el) => {
           if (el.dataset.artistContext === name)
-            el.innerHTML = contextMarkup(data);
+            el.innerHTML = contextMarkup(
+              data,
+              el.dataset.artistFull === "true",
+            );
         });
       })
       .catch(() => {
         document.querySelectorAll("[data-artist-context]").forEach((el) => {
-          if (el.dataset.artistContext === name)
-            el.innerHTML =
-              '<span class="artist-context-empty">Artist background unavailable</span>';
+          if (el.dataset.artistContext === name) el.innerHTML = "";
         });
       })
       .finally(() => {
@@ -865,6 +933,7 @@ async function loadFeed() {
       renderChrome();
       renderControls();
       renderResults();
+      openLinkedConcert();
     }
   }
 }
@@ -902,6 +971,8 @@ function openDetail(id, listen = false) {
   detailReturnFocus = document.activeElement;
   detailNoteRev = store.fields[`event/${id}/notes`]?.rev || 0;
   state.selected = id;
+  if (new URL(location.href).searchParams.get("concert") !== id)
+    history.pushState(null, "", concertLink(id));
   state.media = {
     artist: e.artists?.[0]?.name || e.title,
     mode: "live",
@@ -914,7 +985,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Hide concert"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Hide concert"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -936,6 +1007,7 @@ function openDetail(id, listen = false) {
   $(".detail-top button").focus();
   loadMedia();
   loadVenueMedia(e);
+  loadDetailBackground(state.media.artist);
   if (listen)
     setTimeout(
       () =>
@@ -995,14 +1067,17 @@ function updateDetailMeta() {
   }
   const btn = $('[data-action="detail-save"]');
   if (btn) {
-    btn.innerHTML = icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`;
+    btn.innerHTML =
+      icon("bookmark") +
+      `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`;
     btn.setAttribute("aria-pressed", a.saved);
   }
   const hide = $(".detail-hide");
   if (hide) {
     hide.dataset.action = a.hidden ? "restore" : "hide";
     hide.innerHTML =
-      icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`;
+      icon(a.hidden ? "restore" : "hide") +
+      `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`;
     hide.setAttribute(
       "aria-label",
       a.hidden ? "Restore concert" : "Hide concert",
@@ -1061,6 +1136,9 @@ async function closeDetail() {
   if (!panel.isConnected) return;
   $("#app").inert = false;
   state.selected = null;
+  const url = new URL(location.href);
+  url.searchParams.delete("concert");
+  history.replaceState(null, "", url);
   $("#detail-root").innerHTML = "";
   document.body.style.overflow = "";
   if (detailReturnFocus?.isConnected)
@@ -1212,7 +1290,7 @@ function listeningModal() {
             .map((a) => esc(a.name))
             .join(" · ")}${artists.length > 6 ? " …" : ""}</p>`
         : ""
-    }<div class="import-drop">${icon("upload")}<strong>Import your Spotify listening history</strong><p>No Premium or developer account needed.</p><input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your Spotify data</a>, then upload the streaming-history JSON files. Only artist play totals sync; raw history stays in this browser. Each import replaces the previous summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>Connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify sync is unavailable.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
+    }<div class="import-drop">${icon("upload")}<strong>Import your Spotify listening history</strong><p>No Premium or developer account needed.</p><input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your Spotify data</a>, then upload the streaming-history JSON files. Only artist play totals sync; track summaries and dates stay on this device. Import non-overlapping files together to avoid counting plays twice. Each import replaces the previous summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>Connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify sync is unavailable.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
   );
 }
 function sourcesModal() {
@@ -1482,6 +1560,7 @@ document.addEventListener("click", async (e) => {
         break;
       case "artist":
         state.media.artist = el.dataset.artist;
+        loadDetailBackground(state.media.artist);
         state.media.query = "";
         document
           .querySelectorAll(".artist-tab")
@@ -1611,7 +1690,19 @@ document.addEventListener("click", async (e) => {
         listeningModal();
         toast("Listening updated.");
         break;
+      case "share-concert":
+        await navigator.clipboard.writeText(concertLink(id).href);
+        toast("Concert link copied.");
+        break;
+      case "listening-detail":
+        openDetail(id);
+        $("#listening-details")?.scrollIntoView({
+          block: "start",
+          behavior: "smooth",
+        });
+        break;
       case "clear-listening":
+        localStorage.removeItem(historyDetailsKey());
         if (store.data.spotify) await store.apiCall("spotify-disconnect", {});
         store.change("listening", null);
         closeModal();
@@ -1725,11 +1816,14 @@ document.addEventListener("change", async (e) => {
     status.textContent = "Reading your listening history…";
     try {
       const combined = {};
+      let detailed = { artists: {}, first: null, last: null };
       let plays = 0;
       for (const file of el.files) {
         if (file.size > 150 * 1024 * 1024)
           throw new Error("Choose JSON files smaller than 150 MB each.");
-        const data = importSpotifyHistory(JSON.parse(await file.text()));
+        const doc = JSON.parse(await file.text());
+        const data = importSpotifyHistory(doc);
+        addHistoryDetails(doc, detailed);
         plays += data.count;
         for (const [key, a] of Object.entries(data.artists)) {
           if (!combined[key]) combined[key] = { ...a };
@@ -1746,6 +1840,7 @@ document.addEventListener("change", async (e) => {
         throw new Error(
           "No music plays found. Choose streaming-history files containing artist names and listening durations.",
         );
+      localStorage.setItem(historyDetailsKey(), JSON.stringify(detailed));
       store.change("listening", combined);
       listeningModal();
       toast(
