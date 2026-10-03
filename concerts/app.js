@@ -1503,11 +1503,13 @@ document.addEventListener("click", async (e) => {
   const el = e.target.closest("[data-action]");
   if (!el) {
     const row = e.target.closest(".event-row");
+    // Ignore controls within the row, not the enclosing month disclosure.
+    const control = e.target.closest(
+      'a, button, input, select, textarea, details, [role="button"]',
+    );
     if (
       row &&
-      !e.target.closest(
-        'a, button, input, select, textarea, details, [role="button"]',
-      ) &&
+      (!control || !row.contains(control)) &&
       !window.getSelection()?.toString()
     ) {
       openDetail(row.dataset.eventId);
