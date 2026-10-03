@@ -7,7 +7,7 @@ import {
   addHistoryDetails,
   historyRank,
   importFileMetadata,
-} from "./shared/listening-details.js";
+} from "./shared/listening-details.js?v=20261002-startup";
 import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";

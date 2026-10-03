@@ -46,18 +46,21 @@
       }
     </script>
     <link rel="stylesheet" href="./vendor/MarkerCluster.css" />
-    <link rel="stylesheet" href="./styles.css?v=20260924-hidden" />
+    <link rel="stylesheet" href="./styles.css?v=20261002-startup" />
     <script src="./config.js?v=20260924-hidden"></script>
     <script defer src="./vendor/leaflet.js"></script>
     <script defer src="./vendor/leaflet.markercluster.js"></script>
-    <script type="module" src="./shared/entry.js?v=20261002-lists"></script>
+    <script type="module" src="./shared/entry.js?v=20261002-startup"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to concerts</a>
     <div id="app">
-      <div class="initial-loading">
-        <span class="wordmark">Concert Tracker</span>
-        <p>Loading concerts…</p>
+      <div class="initial-loading" role="status" aria-live="polite">
+        <div class="loading-record" aria-hidden="true"><img src="./favicon.svg" alt="" width="64" height="64"></div>
+        <h1>Concert Tracker</h1>
+        <p id="startup-status">Loading concerts…</p>
+        <div class="loading-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <button id="startup-retry" class="secondary" hidden onclick="location.reload()">Retry</button>
       </div>
     </div>
     <div id="detail-root"></div>
