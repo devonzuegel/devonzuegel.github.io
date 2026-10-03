@@ -6,7 +6,7 @@
       "maxDuration": 60,
       "includeFiles": "{data,shared}/**"
     },
-    "api/share.mjs": {
+    "api/share-image.mjs": {
       "maxDuration": 30,
       "includeFiles": "node_modules/@fontsource/inter/files/**"
     }

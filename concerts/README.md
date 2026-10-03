@@ -97,6 +97,6 @@ Artist context combines Wikidata/Wikipedia with MusicBrainz: linked MusicBrainz 
 
 ### Shared-list link previews
 
-Copy list links through the app's **Copy list link** or shared-list editor. They use the API host's `/api/share?list=…` endpoint, which returns list-specific Open Graph/Twitter tags in the initial HTML and a 1200×630 PNG (`&image=1`). Normal browsers immediately open the list on devonzuegel.com; no-JavaScript visitors get an Open shared list link. Images include title, author, count, dates and cities and use an update-version URL. Revoked lists return 404 for both HTML and image. Social platforms may retain their own cached previews.
+Shared links use `https://devonzuegel.com/concerts/?list=…`. The Cloudflare Worker in `_concerts-worker` inserts list-specific Open Graph/Twitter metadata into the initial GitHub Pages HTML for all visitors. Images use `/concerts/share-image?list=…&v=…`; the Worker proxies the existing API's image renderer. There is no separate redirect/preview page. Revoked or invalid lists return 404; dynamic responses are not cached. Social platforms may retain their own cached previews.
 
-GitHub Pages cannot server-render metadata for existing `devonzuegel.com/concerts/?list=…` URLs. Those URLs still work but must be copied using the app's preview-enabled link to produce a per-list crawler preview.
+Deploy the API first, then `npx wrangler deploy --config _concerts-worker/wrangler.jsonc`, and publish frontend changes through GitHub Pages. The Worker only handles shared-list HTML and preview images; other concerts requests pass through to GitHub Pages.

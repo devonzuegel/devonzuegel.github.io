@@ -1,4 +1,4 @@
-import { sharedListLink } from "./list-metadata.js?v=20261003-og";
+import { sharedListLink } from "./list-metadata.js?v=20261003-domain";
 export function sharedListTimestamp(value) {
   const date = new Date(value);
   if (!Number.isFinite(+date)) return "";
@@ -18,7 +18,7 @@ const esc = (value) =>
         c
       ],
   );
-const linkFor = id => sharedListLink(id, window.CONCERTS_CONFIG?.apiBase || "/api/concerts",location.origin);
+const linkFor = id => sharedListLink(id,location.origin);
 function concertChoices(choices, selected) {
   if (!choices.length)
     return "<p>Save some concerts first, then add them here.</p>";

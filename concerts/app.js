@@ -1,5 +1,5 @@
-import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261003-og";
-import { manageLists, sharedListTimestamp } from "./shared/share-lists.js?v=20261003-og";
+import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261003-domain";
+import { manageLists, sharedListTimestamp } from "./shared/share-lists.js?v=20261003-domain";
 import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
@@ -998,7 +998,7 @@ async function loadSharedFeed() {
   renderResults();
   try {
     sharedList = await apiGet("shared-list", { id: sharedListId });
-    setListMetadata(sharedList,sharedListLink(sharedListId,apiBase,location.origin));
+    setListMetadata(sharedList,sharedListLink(sharedListId,location.origin));
     let catalog = [];
     try {
       const r = await fetch("./data/events.json", {signal: AbortSignal.timeout(8000)});

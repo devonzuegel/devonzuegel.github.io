@@ -1,5 +1,5 @@
-export function sharedListLink(id, apiBase, origin) {
-  const url=new URL('/api/share',new URL(apiBase,origin));
+export function sharedListLink(id, origin) {
+  const url=new URL('/concerts/',origin);
   url.searchParams.set('list',id);
   return url.href;
 }
@@ -10,7 +10,7 @@ export function listMetadata(list,shareURL) {
   const cities=[...new Set(list.events.map(e=>e.venue?.locality).filter(Boolean))];
   const count=`${list.events.length} concert${list.events.length===1?'':'s'}`;
   const description=[`Shared by ${list.sharedBy||'list owner'}`,count,cities.join(', '),range].filter(Boolean).join(' · ');
-  const image=new URL(shareURL);image.searchParams.set('image','1');image.searchParams.set('v',list.updatedAt);
+  const image=new URL('/concerts/share-image',shareURL);image.searchParams.set('list',list.id);image.searchParams.set('v',list.updatedAt);
   return {title:list.title,description,count,cities:cities.join(' · '),range,url:shareURL,image:image.href,imageAlt:`${list.title} — ${description}`};
 }
 export function setListMetadata(list,shareURL) {
