@@ -4,7 +4,7 @@
   "functions": {
     "api/concerts.mjs": {
       "maxDuration": 60,
-      "includeFiles": "data/**"
+      "includeFiles": "{data,shared}/**"
     },
     "api/share.mjs": {
       "maxDuration": 30,
