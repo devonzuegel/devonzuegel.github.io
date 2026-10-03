@@ -238,6 +238,45 @@ export function parseVenue(venue, html, now = new Date()) {
     }
   };
   switch (venue.parser) {
+    case "audio":
+      $('[id="cal-event-block-in"]').each((i, node) => {
+        const e = $(node), title = text(e, '[id="cal-list-box-center"]');
+        const offsite = title.match(/\((?:[^)]*?)(?:@|at)\s+([^)]*)\)/i)?.[1];
+        add({ title, date: parseDate(text(e, '[id="cal-list-box-left"]'), now),
+          url: abs(e.find('[id="cal-list-box-left"] a').attr("href")),
+          ticketUrl: abs(e.find("form").attr("action")),
+          image: e.find("img").attr("src"), venueName: offsite });
+      });
+      break;
+    case "publicworks":
+      $(".eventbrite-items .event-item").each((i, node) => {
+        const e = $(node);
+        add({ title: text(e, ".event-title"), date: parseDate(text(e, ".event-date"), now),
+          url: abs(e.find("a").first().attr("href")), image: e.find("img").attr("src") });
+      });
+      break;
+    case "squarespace-events":
+      $(".eventlist-event").each((i, node) => {
+        const e = $(node);
+        add({ title: text(e, ".eventlist-title"), date: e.find("time.event-date").first().attr("datetime"),
+          time: clean(e.find(".event-time-24hr").first().text()) || null,
+          url: abs(e.find(".eventlist-title-link").attr("href")),
+          ticketUrl: e.find(".eventlist-excerpt a").first().attr("href"),
+          image: e.find("img").attr("data-src"),
+          genres: e.find(".eventlist-cats a").map((i, a) => clean($(a).text())).get() });
+      });
+      break;
+    case "halcyon-links":
+      $('a[href*="dice.fm/event/"]').each((i, node) => {
+        const e = $(node), label = clean(e.attr("aria-label") || e.text());
+        // Only current DICE cards with a published date; legacy social links have no reliable year.
+        const dateText = label.match(/\|\s*(\d{1,2}\s+[A-Za-z]+(?:\s+20\d{2})?)(?:\s*@|\s*\|)/)?.[1];
+        if (!dateText) return;
+        add({ title: label.split(" Tickets")[0], date: parseDate(dateText, now),
+          url: e.attr("href"), image: e.find("img").attr("src") });
+      });
+      break;
+
     case "ticketweb":
       $(".tw-section").each((i, node) => {
         const e = $(node),
