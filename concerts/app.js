@@ -310,7 +310,7 @@ function renderChrome() {
     $("#sidebar-content").innerHTML = nav + `<div class="sidebar-rule"></div>${sharedItem}<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${link("./?tab=discover&panel=cities",icon("plus"),"icon-btn small")}</div><div class="city-list">${citiesFrom(viewerStore.fields).map(c=>link(`./?tab=discover&city=${encodeURIComponent(c.id)}`,`<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.name)}`,"city-toggle")).join("")}</div>${link("./?tab=discover&panel=cities",icon("plus")+"Add a city","subtle-btn")}<div class="sidebar-sources">${link("./?tab=discover&panel=sources",icon("info")+"Sources","subtle-btn")}</div><div class="listening-box">${link("./?panel=listening",icon("spotify")+"Your Spotify listening history","small-button")}</div>`;
     $("#sidebar-bottom").innerHTML = `${link("./?panel=profile",`<span class="avatar">${esc((viewerStore.profile||"G").slice(0,1).toUpperCase())}</span><span class="profile-text"><strong>${esc(viewerStore.profile||"Account")}</strong><small>${viewerStore.profile ? "Your account" : "Guest · this device"}</small></span>`,"profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
     $("#mobile-header").innerHTML =
-      `<div class="shared-mobile-nav">${nav}${sharedItem}</div><div class="shared-discover-heading"><h1>${esc(sharedList?.title || "Shared list")}</h1>${button("copy-shared-list-link", "Copy list link", "small-button")}<p>${sharedList ? `Shared by <strong>${esc(sharedList.sharedBy || "list owner")}</strong> · Updated ${esc(sharedListTimestamp(sharedList.updatedAt))}` : ""}</p></div>`;
+      `<div class="shared-mobile-nav">${nav}${sharedItem}</div><div class="shared-discover-heading"><h1>${esc(sharedList?.title || "Shared list")}</h1><p>${sharedList ? `Shared by <strong>${esc(sharedList.sharedBy || "list owner")}</strong> · Updated ${esc(sharedListTimestamp(sharedList.updatedAt))}` : ""}</p></div>`;
     return;
   }
   const account = button(
@@ -1744,10 +1744,6 @@ document.addEventListener("click", async (e) => {
     id = el.dataset.id;
   try {
     switch (action) {
-      case "copy-shared-list-link":
-        await navigator.clipboard.writeText(sharedListLink(sharedListId,apiBase,location.origin));
-        toast("List link copied.");
-        break;
       case "venue-map":
         venueLocationModal(id);
         break;

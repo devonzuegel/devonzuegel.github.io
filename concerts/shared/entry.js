@@ -8,7 +8,7 @@ function showStartupError() {
 }
 const timeout = setTimeout(showStartupError, 20000);
 try {
-  await import("../app.js?v=20261003-maps");
+  await import("../app.js?v=20261003-share-button");
 } catch (error) {
   console.error("Concert Tracker startup failed:", error);
   showStartupError();
