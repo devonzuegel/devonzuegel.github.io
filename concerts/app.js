@@ -488,7 +488,7 @@ function row(e) {
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
   if (a.hidden)
-    return `<article class="event-row hidden-event-row" data-event-id="${esc(e.id)}"><span class="hidden-event-date">${e.date ? dateLabel(e.date, { month: "short", day: "numeric" }) : "TBA"}</span>${button("open", esc(e.title), "hidden-event-title", `data-id="${esc(e.id)}" title="${esc(e.title)}"`)}<span class="hidden-event-venue">${esc(e.venue.name)}</span><span class="hidden-event-label">Not interested</span>${hideBtn(e)}</article>`;
+    return `<article class="event-row hidden-event-row" data-event-id="${esc(e.id)}"><span class="hidden-event-date">${e.date ? dateLabel(e.date, { month: "short", day: "numeric" }) : "TBA"}</span>${button("open", esc(e.title), "hidden-event-title", `data-id="${esc(e.id)}" title="${esc(e.title)}"`)}<span class="hidden-event-venue">${esc(e.venue.name)}</span><span class="hidden-event-label">Not interested</span>${button("restore", icon("restore") + "Restore", "hidden-event-restore", `data-id="${esc(e.id)}" aria-label="Restore ${esc(e.title)}" title="Remove ‘Not interested’ and expand this concert"`)}</article>`;
   return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${e.endDate ? "Through " + dateLabel(e.endDate, { month: "short", day: "numeric" }) : rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div class="event-copy" style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
     e.artists?.length > 1
       ? `<p class="supporting">Lineup: ${esc(
@@ -1055,7 +1055,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Not interested"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Mark not interested"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1127,6 +1127,11 @@ async function loadVenueMedia(e) {
         '<p class="media-notice">Venue photos and videos unavailable.</p>';
   }
 }
+function interestStatusMarkup(id, hidden) {
+  return hidden
+    ? `<div class="detail-interest-status"><span>${icon("hide")}Not interested</span>${button("restore", "Undo", "detail-interest-undo", `data-id="${esc(id)}" aria-label="Remove Not interested status" title="Remove Not interested and expand this concert"`)}</div>`
+    : "";
+}
 function updateDetailMeta() {
   if (!state.selected) return;
   const a = assessment(store.fields, state.selected);
@@ -1144,15 +1149,12 @@ function updateDetailMeta() {
   }
   const hide = $(".detail-hide");
   if (hide) {
-    hide.dataset.action = a.hidden ? "restore" : "hide";
-    hide.innerHTML =
-      icon(a.hidden ? "restore" : "hide") +
-      `<span class="detail-action-label">${a.hidden ? "Restore" : "Not interested"}</span>`;
-    hide.setAttribute(
-      "aria-label",
-      a.hidden ? "Restore concert" : "Mark not interested",
-    );
+    hide.hidden = a.hidden;
+    hide.dataset.action = "hide";
+    hide.innerHTML = icon("hide") + '<span class="detail-action-label">Not interested</span>';
   }
+  const interestStatus = $("#detail-interest-status");
+  if (interestStatus) interestStatus.innerHTML = interestStatusMarkup(state.selected, a.hidden);
   const status = $("#detail-sync");
   if (status) status.textContent = store.status;
   for (const el of document.querySelectorAll('[data-action="rate"]')) {

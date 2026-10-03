@@ -3780,11 +3780,11 @@ summary.month-heading:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 3px 0;
+  padding: 3px 8px;
   min-height: 36px;
   height: 36px;
   color: var(--muted);
-  background: transparent;
+  background: color-mix(in srgb, var(--muted) 5%, var(--paper));
   font-size: 11px;
 }
 .hidden-event-title {
@@ -3796,7 +3796,7 @@ summary.month-heading:focus-visible {
   text-align: left;
   color: inherit;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 500;
 }
 .hidden-event-date,
 .hidden-event-label {
@@ -3809,12 +3809,29 @@ summary.month-heading:focus-visible {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hidden-event-row > .icon-btn {
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
-  color: inherit;
+.hidden-event-label {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 13%, var(--paper));
+  font-size: 10px;
+  font-weight: 500;
 }
+.hidden-event-restore {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 6px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+.hidden-event-restore .icon { width: 14px; height: 14px; }
+.hidden-event-restore:hover { background: var(--line); }
 @media (max-width: 560px) {
   .hidden-event-venue {
     display: none;
@@ -3823,3 +3840,31 @@ summary.month-heading:focus-visible {
     gap: 7px;
   }
 }
+
+/* Make the current interest status explicit in the concert panel. */
+.detail-interest-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--muted) 10%, var(--paper));
+  color: var(--muted);
+  font-size: 12px;
+}
+.detail-interest-status > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.detail-interest-status .icon { width: 16px; height: 16px; }
+.detail-interest-undo {
+  color: var(--ink);
+  font-weight: 500;
+  padding: 6px 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.detail-buttons .detail-hide[hidden] { display: none; }
