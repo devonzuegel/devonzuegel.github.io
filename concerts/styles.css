@@ -3868,3 +3868,36 @@ summary.month-heading:focus-visible {
   text-underline-offset: 3px;
 }
 .detail-buttons .detail-hide[hidden] { display: none; }
+
+/* Keep concert context with the panel controls and genre with the artists. */
+.detail-top { align-items: flex-start; }
+.detail-top-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  align-self: center;
+}
+.detail-top-meta .detail-date,
+.detail-top-meta .detail-venue {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  min-width: 0;
+  max-width: 100%;
+}
+.detail-top-meta .icon { flex-shrink: 0; width: 15px; height: 15px; }
+.detail-top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.detail-top-actions .secondary { white-space: nowrap; }
+.detail-artist-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 15px; }
+.detail-artist-row .artist-tabs { margin-bottom: 0; min-width: 0; max-width: 100%; }
+.detail-genres { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-left: auto; }
+.detail-genres:empty { display: none; }
+@media (max-width: 560px) {
+  .detail-top-actions { gap: 3px; }
+  .detail-top-actions .secondary { padding: 8px; font-size: 11px; }
+}
+
+.player:empty { display: none; }

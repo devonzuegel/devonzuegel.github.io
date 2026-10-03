@@ -1055,7 +1055,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Save concert (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1241,6 +1241,7 @@ async function loadMedia(more = false) {
     m.page = 1;
     m.nextPageToken = "";
     m.playing = null;
+    $("#player")?.replaceChildren();
   } else m.page++;
   m.loading = true;
   m.error = null;
@@ -1273,6 +1274,7 @@ async function loadMedia(more = false) {
     if (req === mediaRequest) {
       m.loading = false;
       renderMedia();
+      if (!more && m.items.length) playRecording(0);
     }
   }
 }
@@ -1289,8 +1291,17 @@ function playRecording(index) {
     )
   )
     return;
-  $("#player").innerHTML =
+  const player = $("#player");
+  if (!player) return;
+  const entering = !player.hasChildNodes();
+  player.innerHTML =
     `<iframe title="${esc(item.title)}" src="${esc(embed)}${embed.includes("?") ? "&" : "?"}autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="playing-label"><span>${esc(item.title)}</span><a href="${esc(item.url)}" target="_blank" rel="noopener">Can’t play? Open source ↗</a></div>`;
+  if (entering && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    player.animate(
+      [{ height: "0px", opacity: 0 }, { height: `${player.offsetHeight}px`, opacity: 1 }],
+      { duration: 280, easing: "ease-out" },
+    );
+  }
   renderMedia();
 }
 function openModal(title, body, wide = false) {
@@ -1501,6 +1512,28 @@ document.addEventListener("keydown", (e) => {
   }
   focusTrap(e);
 });
+document.addEventListener("keydown", (event) => {
+  if (
+    event.defaultPrevented || event.repeat || event.isComposing ||
+    event.metaKey || event.ctrlKey || event.altKey ||
+    !state.selected || $(".modal") || $(".detail-panel")?.dataset.closing ||
+    event.target.closest?.(
+      'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"]',
+    )
+  ) return;
+  const key = event.key.toLowerCase();
+  if (key === "n") {
+    const hide = $(".detail-hide");
+    if (hide && !hide.hidden) {
+      event.preventDefault();
+      hide.click();
+    }
+  } else if (key === "s") {
+    event.preventDefault();
+    if (!assessment(store.fields, state.selected).saved)
+      saveEvent(eventFor(state.selected), true);
+  }
+});
 document.addEventListener("click", async (e) => {
   const el = e.target.closest("[data-action]");
   if (!el) {
@@ -1643,6 +1676,7 @@ document.addEventListener("click", async (e) => {
         recordConcertAction(id, hidden ? "marking not interested" : "restore", { hidden });
         store.change(`event/${id}/snapshot`, event);
         store.change(`event/${id}/hidden`, hidden);
+        if (hidden && state.selected === id) await closeDetail();
         toast(
           hidden
             ? "Marked not interested."
@@ -1676,8 +1710,6 @@ document.addEventListener("click", async (e) => {
         $("#media-query").value = "";
         $("#media-query").placeholder =
           "Search recordings or paste a YouTube link";
-        $("#player").innerHTML =
-          `<div class="player-placeholder">${icon("headphones")}<strong>${esc(state.media.artist)}</strong><span>Select a recording to play.</span></div>`;
         await loadMedia();
         break;
       case "media-mode":
