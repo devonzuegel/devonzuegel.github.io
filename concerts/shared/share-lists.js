@@ -1,3 +1,14 @@
+import { sharedListLink } from "./list-metadata.js?v=20261003-og";
+export function sharedListTimestamp(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(+date)) return "";
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles", weekday: "short", month: "short", day: "numeric",
+    hour: "numeric", minute: "2-digit", hour12: true, timeZoneName: "short",
+  }).formatToParts(date).map(p => [p.type, p.value]));
+  return `${parts.weekday}, ${parts.month} ${parts.day} at ${parts.hour}:${parts.minute}${parts.dayPeriod.toLowerCase()} ${parts.timeZoneName}`;
+}
+
 import { dateLabel, timeLabel } from "./core.js";
 const esc = (value) =>
   String(value ?? "").replace(
@@ -7,11 +18,7 @@ const esc = (value) =>
         c
       ],
   );
-const linkFor = (id) => {
-  const u = new URL("./", location.href);
-  u.searchParams.set("list", id);
-  return u.href;
-};
+const linkFor = id => sharedListLink(id, window.CONCERTS_CONFIG?.apiBase || "/api/concerts",location.origin);
 function concertChoices(choices, selected) {
   if (!choices.length)
     return "<p>Save some concerts first, then add them here.</p>";

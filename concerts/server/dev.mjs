@@ -1,3 +1,4 @@
+import shareHandler from "../api/share.mjs";
 import http from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, extname, sep } from "node:path";
@@ -18,6 +19,7 @@ const types = {
 const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url, "http://localhost");
+    if (u.pathname === "/api/share") return await shareHandler(req,res);
     if (u.pathname === "/api/concerts") return await handler(req, res);
     if (u.pathname === "/" || u.pathname === "/concerts") {
       res.writeHead(302, { Location: "/concerts/" });

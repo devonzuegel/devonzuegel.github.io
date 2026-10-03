@@ -37,6 +37,7 @@ test("owner can create, update and revoke; strangers can only read", async () =>
     assert.equal((await ownerLists("stranger")).length, 0);
     const shared = await readList(list.id);
     assert.equal(shared.owner, undefined);
+    assert.equal(shared.sharedBy, "owner");
     assert.equal(shared.title, "Friday ideas");
     await assert.rejects(
       saveList("stranger", { id: list.id, title: "Hijack", events: [event] }),

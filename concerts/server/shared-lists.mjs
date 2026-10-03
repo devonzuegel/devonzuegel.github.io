@@ -11,6 +11,7 @@ const url = (v) => {
     return "";
   }
 };
+const provenance = value => Object.fromEntries(Object.entries(value||{}).slice(0,20).filter(([,v])=>v && typeof v === "object").map(([key,v])=>[text(key,80),{secondary:!!v.secondary,match:text(v.match),checkedAt:text(v.checkedAt,40),sources:(Array.isArray(v.sources)?v.sources:[]).slice(0,5).map(s=>({name:text(s.name),url:url(s.url)}))}]));
 // Explicit allowlist: no assessments, profile credentials or listening data enter public storage.
 export function publicConcert(e) {
   if (!e || !text(e.id, 200) || !text(e.title)) throw fail("Invalid concert.");
@@ -27,6 +28,8 @@ export function publicConcert(e) {
     id: text(e.id, 200),
     title: text(e.title),
     metro: text(e.metro, 80),
+    provenance: provenance(e.provenance),
+    dataConflicts: (Array.isArray(e.dataConflicts)?e.dataConflicts:[]).slice(0,20).map(c=>({field:text(c.field,80),sources:(Array.isArray(c.sources)?c.sources:[]).slice(0,5).map(s=>({name:text(s.name),url:url(s.url)}))})),
     artists: Array.isArray(e.artists)
       ? e.artists.slice(0, 200).map((a) => ({ name: text(a.name) }))
       : [{ name: text(e.title) }],
@@ -47,6 +50,7 @@ export function publicConcert(e) {
     image: url(e.image),
     venue: {
       id: text(e.venue?.id, 200),
+      provenance: provenance(e.venue?.provenance),
       metro: text(e.venue?.metro, 80),
       lat: Number.isFinite(e.venue?.lat) ? e.venue.lat : null,
       lng: Number.isFinite(e.venue?.lng) ? e.venue.lng : null,
@@ -123,7 +127,7 @@ export async function readList(id) {
   if (!list || list.revoked)
     throw fail("This list is unavailable or its link has been disabled.", 404);
   const { owner, ...publicList } = list;
-  return publicList;
+  return {...publicList, sharedBy: text(owner, 80)};
 }
 export async function revokeList(owner, id) {
   if (!/^[A-Za-z0-9_-]{32}$/.test(id || "")) throw fail("List not found.", 404);

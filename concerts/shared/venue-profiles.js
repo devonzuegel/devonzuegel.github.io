@@ -501,7 +501,10 @@ export function enrichVenue(venue, metro) {
     ...venue,
     capacity,
     description: venue.description || p.description,
-    descriptionSource: p.source,
+    descriptionSource: venue.descriptionSource || (!venue.description ? p.source : undefined),
+    provenance: {...venue.provenance,
+      ...((!venue.description || venue.descriptionSource===p.source) ? {description:{secondary:true,sources:[{name:"Venue reference",url:p.source}],match:"Researched venue name and metro"}} : {}),
+      ...((!venue.capacity || venue.capacity.source===p.capacity?.source) && capacity ? {capacity:{secondary:true,sources:[{name:"Capacity reference",url:capacity.source||p.source}],match:"Researched venue name and metro; whole venue"}} : {})},
   };
 }
 export function enrichEventVenue(event) {

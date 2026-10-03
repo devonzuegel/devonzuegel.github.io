@@ -1,3 +1,4 @@
+import { enrichFromDatasets } from "./enrichment.js?v=20261003-sources";
 export const DEFAULT_CITIES = [
   {
     id: "sf",
@@ -383,10 +384,10 @@ export function mergeEvents(events) {
   // Only collapse identical venue/artist/date/time matches. Distinct nights and shows survive.
   const aliases = new Map(),
     result = [];
-  for (const e of map.values()) {
+  for (const e of enrichFromDatasets([...map.values()])) {
     const key =
       e.date && e.time
-        ? `${normalize(e.venue?.name)}|${e.date}|${e.time}|${normalize(e.artists?.[0]?.name || e.title)}`
+        ? `${e.metro}|${normalize(e.venue?.locality)}|${normalize(e.venue?.name)}|${normalize(e.venue?.room)}|${e.date}|${e.time}|${normalize(e.artists?.[0]?.name || e.title)}`
         : e.id;
     if (aliases.has(key)) {
       const old = aliases.get(key);
@@ -396,6 +397,7 @@ export function mergeEvents(events) {
         ).values(),
       ];
       old.aliases = [...(old.aliases || []), e.id];
+      old.provenance = {...e.provenance,...old.provenance};
       if (!old.genres?.length && e.genres?.length) old.genres = e.genres;
     } else {
       aliases.set(key, e);

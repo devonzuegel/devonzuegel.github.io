@@ -74,7 +74,7 @@ export async function enrichDetails(event, fetchPage) {
       const {patch,links} = detailPage(event, await fetchPage(url), url);
       queue.push(...links);
       if (Object.keys(patch).length) {
-        result = {...result,...patch,sources:[...result.sources,{name:"Event details",url}]};
+        result = {...result,...patch,provenance:{...result.provenance,...Object.fromEntries(Object.keys(patch).map(field=>[field,{secondary:true,sources:[{name:"Ticket / event details",url}],match:"Linked event page; matching title and date"}]))},sources:[...result.sources,{name:"Event details",url}]};
         if (ticketHosts.test(new URL(url).hostname)) result.ticketUrl = url;
       }
     } catch { /* A blocked ticket page must not remove the calendar listing. */ }

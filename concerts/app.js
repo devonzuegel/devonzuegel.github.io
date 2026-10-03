@@ -1,5 +1,6 @@
-import { manageLists } from "./shared/share-lists.js?v=20261002-details";
-import { enrichEventVenue } from "./shared/venue-profiles.js";
+import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261003-og";
+import { manageLists, sharedListTimestamp } from "./shared/share-lists.js?v=20261003-og";
+import { enrichEventVenue } from "./shared/venue-profiles.js?v=20261003-sources";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
 import { syncLink, parseSyncLink } from "./shared/qr-sync.js";
@@ -40,7 +41,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20260924-hidden";
+} from "./shared/core.js?v=20261003-sources";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
@@ -54,6 +55,7 @@ const config = window.CONCERTS_CONFIG || {},
   apiBase = config.apiBase || "/api/concerts";
 const sharedListId = new URLSearchParams(location.search).get("list");
 let sharedList = null;
+const viewerStore = sharedListId ? new ClientStore(apiBase) : null;
 const store = sharedListId
   ? Object.assign(new EventTarget(), {
       fields: {},
@@ -114,6 +116,9 @@ try {
 } catch {}
 if (sharedListId) savedUI = {};
 const collapsedMonths = new Set();
+let navigationCities = null;
+const requestedCity = new URLSearchParams(location.search).get("city");
+if (!sharedListId && requestedCity) navigationCities = citiesFrom(store.fields).map(c=>({...c,enabled:c.id===requestedCity}));
 const state = {
   tab: "discover",
   view: "list",
@@ -146,6 +151,13 @@ const state = {
   },
   unmapped: false,
 };
+if (!sharedListId) {
+  const requestedTab = new URLSearchParams(location.search).get("tab");
+  if (["discover", "saved", "hidden"].includes(requestedTab)) {
+    state.tab = requestedTab;
+    state.query = "";
+  }
+}
 let map = null,
   markerGroup = null,
   feedRequest = 0,
@@ -226,7 +238,7 @@ const cities = () =>
           ]),
         ).values(),
       ]
-    : citiesFrom(store.fields);
+    : navigationCities || citiesFrom(store.fields);
 function effectiveCities() {
   const current = cities();
   if (state.tab === "saved") {
@@ -291,8 +303,13 @@ function navMarkup(mobile = false) {
 function renderChrome() {
   if (sharedListId) {
     document.body.classList.add("shared-discover");
+    const link = (href, label, cls = "nav-btn") => `<a class="${cls}" href="${esc(href)}"${cls.includes("icon-btn") ? ' aria-label="Manage cities"' : ""}>${label}</a>`;
+    const nav = `<div class="main-nav">${link("./?tab=discover", icon("explore")+"Discover")}${link("./?tab=saved",icon("bookmark")+"Saved")}${link("./?tab=hidden",icon("hide")+"Not interested")}</div>`;
+    const sharedItem = `<a class="nav-btn active shared-list-nav" href="?list=${encodeURIComponent(sharedListId)}" aria-current="page">${icon("list")}<span><small>Shared list · Read-only</small><strong>${esc(sharedList?.title || "Loading list…")}</strong>${sharedList?.sharedBy ? `<small>by ${esc(sharedList.sharedBy)}</small>` : ""}</span></a>`;
+    $("#sidebar-content").innerHTML = nav + `<div class="sidebar-rule"></div>${sharedItem}<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${link("./?tab=discover&panel=cities",icon("plus"),"icon-btn small")}</div><div class="city-list">${citiesFrom(viewerStore.fields).map(c=>link(`./?tab=discover&city=${encodeURIComponent(c.id)}`,`<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.name)}`,"city-toggle")).join("")}</div>${link("./?tab=discover&panel=cities",icon("plus")+"Add a city","subtle-btn")}<div class="sidebar-sources">${link("./?tab=discover&panel=sources",icon("info")+"Sources","subtle-btn")}</div><div class="listening-box">${link("./?panel=listening",icon("spotify")+"Your Spotify listening history","small-button")}</div>`;
+    $("#sidebar-bottom").innerHTML = `${link("./?panel=profile",`<span class="avatar">${esc((viewerStore.profile||"G").slice(0,1).toUpperCase())}</span><span class="profile-text"><strong>${esc(viewerStore.profile||"Account")}</strong><small>${viewerStore.profile ? "Your account" : "Guest · this device"}</small></span>`,"profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
     $("#mobile-header").innerHTML =
-      `<div class="shared-discover-heading"><a href="./">Concert Tracker</a><h1>${esc(sharedList?.title || "Shared list")}</h1><p>Read-only concert ideas${sharedList ? " · Updated " + esc(new Date(sharedList.updatedAt).toLocaleDateString()) : ""}</p></div>`;
+      `<div class="shared-mobile-nav">${nav}${sharedItem}</div><div class="shared-discover-heading"><h1>${esc(sharedList?.title || "Shared list")}</h1>${button("copy-shared-list-link", "Copy list link", "small-button")}<p>${sharedList ? `Shared by <strong>${esc(sharedList.sharedBy || "list owner")}</strong> · Updated ${esc(sharedListTimestamp(sharedList.updatedAt))}` : ""}</p></div>`;
     return;
   }
   const account = button(
@@ -448,6 +465,17 @@ function venueLocationModal(id) {
   );
   mountVenueMaps($("#modal-root"), config, true).catch(() => {});
 }
+function secondaryMarkup(provenance, field = "") {
+  const entries=Object.entries(provenance||{}).filter(([key,value])=>value?.secondary && (!field || key===field));
+  if(!entries.length) return "";
+  const sources=[...new Map(entries.flatMap(([,value])=>value.sources||[]).map(source=>[source.url,source])).values()];
+  const explanation=entries.map(([key,value])=>`${key}: ${value.match||"Matched from another dataset"}`).join("; ");
+  return `<span class="secondary-source" title="${esc(explanation)}">Secondary source${sources.length ? ': '+sources.map(source=>`<a href="${esc(safeURL(source.url))}" target="_blank" rel="noopener">${esc(source.name||"Reference")} ↗</a>`).join(' · ') : ''}</span>`;
+}
+function dataSourceNotes(e) {
+  const conflicts=e.dataConflicts||[];
+  return `${Object.entries(e.provenance||{}).filter(([,p])=>p.secondary).map(([field,p])=>`<p class="secondary-source"><strong>${esc(field.replace("venue.","Venue "))}</strong> · ${secondaryMarkup({[field]:p})}${esc(p.match||"Matched from another dataset")}</p>`).join("")}${conflicts.length ? `<p class="source-conflict">Sources disagree on ${esc([...new Set(conflicts.map(c=>c.field.replace('venue.','venue ')))].join(', '))}. Check the original listing. ${[...new Map(conflicts.flatMap(c=>c.sources||[]).map(s=>[s.url,s])).values()].map(s=>`<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(' · ')}</p>` : ''}`;
+}
 function rowTimes(e) {
   const doors = e.doorsTime || (e.timeKind === "doors" ? e.time : null);
   const show = e.showTime || (e.timeKind === "show" ? e.time : null);
@@ -561,7 +589,7 @@ function row(e) {
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<button class="spotify-tag" data-action="listening-detail" data-id="${esc(e.id)}" title="View listening details">${icon("spotify")}${esc(listeningContext(match))}</button>` : ""}</div>${rowAssessment(a)}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div><p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<button class="spotify-tag" data-action="listening-detail" data-id="${esc(e.id)}" title="View listening details">${icon("spotify")}${esc(listeningContext(match))}</button>` : ""}</div>${rowAssessment(a)}${secondaryMarkup(e.provenance,"time")}${e.dataConflicts?.some(c=>c.field==="time") ? '<span class="source-conflict">Time differs between sources</span>' : ""}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div>${secondaryMarkup(e.venue.provenance)}<p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 const artistContexts = new Map();
 let artistObserver;
@@ -570,7 +598,7 @@ function contextMarkup(data, full = false) {
   const bio = data.bio || data.description;
   const preview =
     bio.length > 220 ? bio.slice(0, 220).replace(/\s+\S*$/, "") + "…" : bio;
-  return `<p class="artist-bio-preview">${esc(full ? bio : preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}${full ? `<div class="artist-background">${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">Wikidata ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</div>` : ""}`;
+  return `<p class="artist-bio-preview">${esc(full ? bio : preview)}</p><p class="artist-facts">${esc(data.facts.join(" · "))}</p>${data.genres.length ? `<p class="artist-facts">Style: ${esc(data.genres.join(" · "))}</p>` : ""}${data.popularity ? `<p class="artist-facts" title="${esc(data.popularity.from)} – ${esc(data.popularity.to)}. Wikipedia readership measures online interest, not listeners or ticket sales.">${Number(data.popularity.views).toLocaleString()} Wikipedia views / 30 days</p>` : ""}<span class="secondary-source" title="${esc(data.match||"Artist name matched to an external reference")}">Secondary source: <a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.additionalSource ? ` · <a href="${esc(safeURL(data.additionalSource.url))}" target="_blank" rel="noopener">${esc(data.additionalSource.name)} ↗</a>` : ""}</span>${full ? `<div class="artist-background">${data.popularity ? `<p>Wikipedia views measure online interest, not listeners or ticket sales. ${esc(data.popularity.from)} – ${esc(data.popularity.to)}.</p>` : ""}<a href="${esc(safeURL(data.source))}" target="_blank" rel="noopener">${esc(data.sourceName||"Wikidata")} ↗</a>${data.bioSource ? ` · <a href="${esc(safeURL(data.bioSource))}" target="_blank" rel="noopener">Wikipedia · CC BY-SA ↗</a>` : ""}</div>` : ""}`;
 }
 function artistContextSlot(e) {
   if (e.eventType === "festival") return "";
@@ -822,7 +850,7 @@ function venueDescription(v) {
   const sources = [
     ...new Set([v.descriptionSource, v.capacity?.source].filter(Boolean)),
   ];
-  return `${description ? `<p class="venue-description">${esc(description)}</p>` : ""}${v.capacity?.configuration && v.capacity.configuration !== description ? `<p class="venue-configuration">${esc(v.capacity.configuration)}</p>` : ""}${sources.length ? `<div class="venue-fact-sources">${sources.map((url, i) => `<a href="${esc(safeURL(url))}" target="_blank" rel="noopener">${sources.length > 1 ? (i ? "Capacity source" : "Venue source") : "Source"} ↗</a>`).join(" · ")}</div>` : ""}`;
+  return `${description ? `<p class="venue-description">${esc(description)}</p>` : ""}${v.capacity?.configuration && v.capacity.configuration !== description ? `<p class="venue-configuration">${esc(v.capacity.configuration)}</p>` : ""}${secondaryMarkup(v.provenance)}${sources.length ? `<div class="venue-fact-sources">${sources.map((url, i) => `<a href="${esc(safeURL(url))}" target="_blank" rel="noopener">${sources.length > 1 ? (i ? "Capacity source" : "Venue source") : "Source"} ↗</a>`).join(" · ")}</div>` : ""}`;
 }
 
 function venueView(list) {
@@ -966,6 +994,7 @@ async function loadSharedFeed() {
   renderResults();
   try {
     sharedList = await apiGet("shared-list", { id: sharedListId });
+    setListMetadata(sharedList,sharedListLink(sharedListId,apiBase,location.origin));
     let catalog = [];
     try {
       const r = await fetch("./data/events.json", {signal: AbortSignal.timeout(8000)});
@@ -1181,7 +1210,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Toggle saved (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}${secondaryMarkup(e.provenance,"time")}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Toggle saved (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1196,7 +1225,7 @@ function openDetail(id, listen = false) {
       )
       .join(
         "",
-      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section personal-ratings"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
+      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section personal-ratings"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div>${dataSourceNotes(e)}<div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
   animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
@@ -1226,7 +1255,7 @@ function venueSection(e) {
   const directions =
     "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent(v.name + " " + (v.address || v.locality || ""));
-  return `<section class="detail-section venue-detail"><div class="venue-detail-header"><div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><p>${esc(address || v.locality || "")}</p></div><a class="text-button" href="${esc(directions)}" target="_blank" rel="noopener">${icon("map")}Directions ${icon("external")}</a></div><div class="venue-detail-facts"><span>${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</span>${v.layout || v.capacity?.configuration ? `<span>${esc(v.layout || v.capacity.configuration)}</span>` : ""}${v.capacity?.source ? `<a class="source-link" href="${esc(safeURL(v.capacity.source))}" target="_blank" rel="noopener">Capacity source</a>` : ""}</div>${v.description ? `<p class="venue-description">${esc(v.description)}</p>` : ""}<div id="venue-media" aria-live="polite"><p class="media-notice">Loading venue photos and videos…</p></div></section>`;
+  return `<section class="detail-section venue-detail"><div class="venue-detail-header"><div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><p>${esc(address || v.locality || "")}</p></div><a class="text-button" href="${esc(directions)}" target="_blank" rel="noopener">${icon("map")}Directions ${icon("external")}</a></div><div class="venue-detail-facts"><span>${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</span>${v.layout || v.capacity?.configuration ? `<span>${esc(v.layout || v.capacity.configuration)}</span>` : ""}${v.capacity?.source ? `<a class="source-link" href="${esc(safeURL(v.capacity.source))}" target="_blank" rel="noopener">Capacity source</a>` : ""}</div>${v.description ? `<p class="venue-description">${esc(v.description)}</p>` : ""}${secondaryMarkup(v.provenance)}<div id="venue-media" aria-live="polite"><p class="media-notice">Loading venue photos and videos…</p></div></section>`;
 }
 let venueMediaRequest = 0;
 async function loadVenueMedia(e) {
@@ -1709,6 +1738,10 @@ document.addEventListener("click", async (e) => {
     id = el.dataset.id;
   try {
     switch (action) {
+      case "copy-shared-list-link":
+        await navigator.clipboard.writeText(sharedListLink(sharedListId,apiBase,location.origin));
+        toast("List link copied.");
+        break;
       case "venue-map":
         venueLocationModal(id);
         break;
@@ -1737,7 +1770,8 @@ document.addEventListener("click", async (e) => {
         break;
       case "toggle-city": {
         const c = cities().find((c) => c.id === el.dataset.city);
-        if (c) store.change("city/" + c.id, { ...c, enabled: !c.enabled });
+        if (c && navigationCities) navigationCities = navigationCities.map(city=>city.id===c.id ? {...city,enabled:!city.enabled} : city);
+        else if (c) store.change("city/" + c.id, { ...c, enabled: !c.enabled });
         filtersChanged(true);
         break;
       }
@@ -2320,7 +2354,17 @@ if (!sharedListId) {
     }
   } catch {}
 }
-loadFeed();
+loadFeed().then(() => {
+  if (sharedListId) return;
+  const params = new URLSearchParams(location.search);
+  const panels = {profile:profileModal, listening:listeningModal, sources:sourcesModal, cities:citiesModal};
+  const panel = params.get("panel");
+  if (Object.hasOwn(panels,panel)) {
+    panels[panel]();
+    params.delete("panel");
+    history.replaceState(null,"",location.pathname+(params.size ? "?"+params : ""));
+  }
+});
 apiGet("status")
   .then((d) => (state.capabilities = d))
   .catch(() => {

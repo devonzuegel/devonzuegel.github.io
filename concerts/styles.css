@@ -4353,10 +4353,6 @@ summary.month-heading:focus-visible {
   }
 }
 
-.shared-discover .layout {
-  display: block;
-}
-.shared-discover .sidebar,
 .shared-discover .mobile-cities,
 .shared-discover .date-toolbar,
 .shared-discover .matches-toggle,
@@ -4384,4 +4380,22 @@ summary.month-heading:focus-visible {
 }
 .shared-discover .event-actions {
   justify-content: flex-end;
+}
+
+.secondary-source { display: block; font-size: 11px; line-height: 1.5; color: var(--muted); margin-top: 4px; }
+.secondary-source a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.source-conflict { display: block; font-size: 12px; color: var(--accent); margin-top: 5px; }
+
+.shared-discover .sidebar a { text-decoration: none; }
+.shared-list-nav { align-items: flex-start; }
+.shared-list-nav > span { min-width: 0; }
+.shared-list-nav strong, .shared-list-nav small { display: block; }
+.shared-list-nav strong { font-size: 14px; overflow-wrap: anywhere; margin: 3px 0; }
+.shared-list-nav small { font-size: 11px; font-weight: 400; color: var(--muted); }
+.shared-mobile-nav { display: none; }
+@media(max-width:820px) {
+  .shared-mobile-nav { display: block; margin-bottom: 20px; }
+  .shared-mobile-nav .main-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+  .shared-mobile-nav .nav-btn { width: auto; font-size: 12px; }
+  .shared-mobile-nav .shared-list-nav { margin-top: 8px; }
 }

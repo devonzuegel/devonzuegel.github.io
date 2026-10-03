@@ -1,3 +1,4 @@
+import { musicBrainzContext } from "./musicbrainz.mjs";
 import { json } from "./network.mjs";
 import * as store from "./storage.mjs";
 import { hash, normalize } from "../shared/core.js";
@@ -59,7 +60,7 @@ export function artistFacts(entity, labels, now = new Date()) {
 export async function artistContext(name, now = new Date()) {
   if (typeof name !== "string" || !name.trim() || name.length > 180)
     throw Object.assign(new Error("Invalid artist name."), { status: 400 });
-  const cacheKey = "artist-context:v1:" + hash(normalize(name));
+  const cacheKey = "artist-context:v2:" + hash(normalize(name));
   const cached = await store.get(cacheKey).catch(() => null);
   if (cached && +now - cached.at < 7 * 86400000) return cached.data;
   const results = await wd({
@@ -68,10 +69,10 @@ export async function artistContext(name, now = new Date()) {
     language: "en",
     limit: 8,
     type: "item",
-  });
+  }).catch(() => ({search:[]}));
   const match = matchArtist(name, results.search || []);
   if (!match) {
-    const data = { name, found: false };
+    const data = await musicBrainzContext(name).catch(()=>null) || { name, found: false };
     await store.set(cacheKey, { at: +now, data }).catch(() => {});
     return data;
   }
@@ -148,7 +149,20 @@ export async function artistContext(name, now = new Date()) {
       ? `https://en.wikipedia.org/wiki/${encodeURIComponent(title.replaceAll(" ", "_"))}`
       : null,
     updatedAt: now.toISOString(),
+    sourceName: "Wikidata", secondary:true, match:"Unique exact musical artist name; identity not independently confirmed",
   };
+  // An explicit cross-dataset ID is stronger than a second name search.
+  const mbid=values(entity,"P434")[0];
+  if(mbid && (!data.genres.length || !data.facts.some(f=>/^(Born|From)/.test(f)) || !data.facts.some(f=>/^(Formed|Active)/.test(f)))) {
+    const extra=await musicBrainzContext(name,mbid).catch(()=>null);
+    if(extra) {
+      const category=f=>/^(Born in|From|Based in)/.test(f)?"origin":/^(Born|Age)/.test(f)?"birth":"career";
+      const existing=new Set(data.facts.map(category));
+      data.facts.push(...extra.facts.filter(f=>!existing.has(category(f))));
+      if(!data.genres.length) data.genres=extra.genres;
+      data.additionalSource={name:extra.sourceName,url:extra.source,match:extra.match};
+    }
+  }
   await store.set(cacheKey, { at: +now, data }).catch(() => {});
   return data;
 }

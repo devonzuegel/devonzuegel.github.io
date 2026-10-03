@@ -88,3 +88,15 @@ Map rendering uses MapLibre GL JS with the Leaflet adapter, keeping venue cluste
 Free official organizer calendars are refreshed alongside venues: Portola, Hardly Strictly Bluegrass, Outside Lands, III Points, Ultra Miami, and Governors Ball. Configuration lives in `data/festivals.json`; parsers live in `server/festivals.mjs`. This is a curated, partial catalog, not exhaustive festival discovery.
 
 Each festival is one saveable event with an inclusive `endDate`. Date filters overlap its entire run, calendar view includes each day, and ICS exports use an exclusive all-day end date. Source dates must include an explicit year; stale JSON-LD and prior-year lineups are ignored. Readable current-year lineups are imported for III Points and Hardly Strictly Bluegrass. Other lineups remain on the organizer site. Coordinates and capacities are left unknown until verified.
+
+### Cross-source enrichment
+
+Missing event details are joined across loaded venue calendars and Ticketmaster listings only when title, date, metro, venue and room agree. Conflicting times are retained as conflicts, never resolved by source order. Venue facts can also be reused across dates at the same venue; room capacities stay separate. Borrowed fields retain source URLs and match explanations in `provenance`.
+
+Artist context combines Wikidata/Wikipedia with MusicBrainz: linked MusicBrainz IDs are preferred, with unique exact-name results as a labelled fallback. Ambiguous matches are rejected. Missing venue addresses, coordinates and descriptions are checked against MusicBrainz by exact venue name and city during catalog refresh. Lookups are cached and rate-limited; venue enrichment has a one-minute per-refresh budget so external outages cannot block the catalog. Repeated refreshes reuse cached results. Secondary references are visibly labelled in the UI and shared-list snapshots preserve those labels. Unresolved fields remain unknown.
+
+### Shared-list link previews
+
+Copy list links through the app's **Copy list link** or shared-list editor. They use the API host's `/api/share?list=…` endpoint, which returns list-specific Open Graph/Twitter tags in the initial HTML and a 1200×630 PNG (`&image=1`). Normal browsers immediately open the list on devonzuegel.com; no-JavaScript visitors get an Open shared list link. Images include title, author, count, dates and cities and use an update-version URL. Revoked lists return 404 for both HTML and image. Social platforms may retain their own cached previews.
+
+GitHub Pages cannot server-render metadata for existing `devonzuegel.com/concerts/?list=…` URLs. Those URLs still work but must be copied using the app's preview-enabled link to produce a per-list crawler preview.

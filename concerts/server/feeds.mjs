@@ -1,3 +1,4 @@
+import { enrichVenueReferences } from "./musicbrainz.mjs";
 import { enrichDetails } from "./event-details.mjs";
 import { enrichEventVenue } from "../shared/venue-profiles.js";
 import { readFile } from "node:fs/promises";
@@ -23,10 +24,11 @@ export const festivals = JSON.parse(
 const verifiedDetails = JSON.parse(await readFile(new URL("../data/event-details.json", import.meta.url), "utf8"));
 function verifiedFallback(event) {
   const detail = verifiedDetails[event.id];
-  if (event.time || !detail || detail.date !== event.date) return event;
+  if (!detail || detail.date !== event.date || (event.time && event.time!==detail.time)) return event;
   return {...event, time:detail.time, timeKind:detail.timeKind, showTime:detail.showTime,
     startAt:localToISO(event.date,detail.time,event.timezone),ticketUrl:detail.ticketUrl,
     sources:[...event.sources,{name:detail.source,url:detail.ticketUrl}],
+    provenance:{...event.provenance,time:{secondary:true,sources:[{name:detail.source,url:detail.ticketUrl}],match:"Manually verified linked ticket page",checkedAt:detail.verifiedAt}},
     detailVerifiedAt:detail.verifiedAt};
 }
 async function fetchDetail(url) {
@@ -222,7 +224,7 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
     }),
   );
   const feed = {
-    events: mergeEvents(outputs.flatMap((o) => o.events)).map(enrichEventVenue),
+    events: await enrichVenueReferences(mergeEvents(outputs.flatMap((o) => o.events)).map(enrichEventVenue)),
     sources: outputs.map((o) => o.source),
     updatedAt: now.toISOString(),
     coverage: "partial",
