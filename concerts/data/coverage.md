@@ -31,7 +31,7 @@ Checked 2026-10-03T03:36:06.111Z. Partial catalog.
 | sf | [The Fillmore](https://www.thefillmore.com/shows) | 34 | ok | Official published calendar imported. |
 | sf | [The Warfield](https://www.thewarfieldtheatre.com/events) | 19 | ok | Visible calendar imported; additional Load more listings are not yet imported. |
 | sf | [Audio](https://www.audiosf.com/events/) | 30 | ok | Published official listings only; coverage may be incomplete. |
-| sf | [Halcyon](https://linktr.ee/halcyonsf) | 0 | error | Official ticket-link page restricts automated access; no listings imported. |
+| sf | [Halcyon via 19hz](https://19hz.info/eventlisting_BayArea.php) | 16 | ok | Community-maintained calendar with original ticket links. |
 | sf | [Public Works](https://publicsf.com/) | 5 | ok | Published official listings only; coverage may be incomplete. |
 | sf | [F8](https://www.feightsf.com/new-events) | 14 | ok | Published official listings only; coverage may be incomplete. |
 

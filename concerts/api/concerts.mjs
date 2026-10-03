@@ -1,4 +1,10 @@
 import {
+  ownerLists,
+  saveList,
+  readList,
+  revokeList,
+} from "../server/shared-lists.mjs";
+import {
   createProfile,
   authenticate,
   publicProfile,
@@ -55,6 +61,8 @@ export default async function handler(req, res) {
   }
   try {
     const changing = [
+      "save-list",
+      "revoke-list",
       "create-profile",
       "sync",
       "spotify-start",
@@ -86,6 +94,8 @@ export default async function handler(req, res) {
         ticketmaster: !!process.env.TICKETMASTER_API_KEY,
         spotify: spotifyConfigured(),
       });
+    if (action === "shared-list")
+      return send(await readList(u.searchParams.get("id")));
     if (action === "events") {
       const feed = await getFeed();
       let extra = { events: [], configured: false };
@@ -229,6 +239,11 @@ export default async function handler(req, res) {
     const name = req.headers["x-profile"],
       code = req.headers.authorization?.replace(/^Bearer /, "");
     const p = await authenticate(name, code);
+    if (action === "lists")
+      return send({ lists: await ownerLists(p.username) });
+    if (action === "save-list") return send(await saveList(p.username, body));
+    if (action === "revoke-list")
+      return send(await revokeList(p.username, body.id));
     if (action === "profile") return send(publicProfile(p));
     if (action === "sync")
       return send(await syncProfile(name, code, body.operations || []));

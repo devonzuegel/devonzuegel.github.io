@@ -1,7 +1,13 @@
+import { manageLists } from "./shared/share-lists.js";
+import { enrichEventVenue } from "./shared/venue-profiles.js";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
 import { syncLink, parseSyncLink } from "./shared/qr-sync.js";
-import { addHistoryDetails, historyRank } from "./shared/listening-details.js";
+import {
+  addHistoryDetails,
+  historyRank,
+  importFileMetadata,
+} from "./shared/listening-details.js";
 import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
 import { openRangePicker } from "./shared/range-picker.js";
@@ -181,7 +187,8 @@ function toast(message, action = "") {
     action ? 10000 : 4200,
   );
 }
-const events = () => allEvents(state.feed.events, store.fields);
+const events = () =>
+  allEvents(state.feed.events, store.fields).map(enrichEventVenue);
 const listening = () => valueAt(store.fields, "listening", {});
 const cities = () => citiesFrom(store.fields);
 function effectiveCities() {
@@ -210,7 +217,7 @@ const filtered = () =>
     {
       ...state,
       cities: effectiveCities(),
-      includeHidden: state.view === "list",
+      includeHidden: true,
     },
     store.fields,
     listening(),
@@ -303,7 +310,7 @@ function renderControls() {
       )
       .join("");
   $("#controls").innerHTML =
-    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your Spotify history")}${icoButton("sources", "info", "Sources")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><div class="date-chips">${[
+    `<div class="mobile-cities">${cs.map((c) => button("toggle-city", `<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.short || c.name)}`, "mobile-city", `data-city="${esc(c.id)}" aria-pressed="${c.enabled}"`)).join("")}${icoButton("cities", "plus", "Manage cities")}${icoButton("listening", "spotify", "Your Spotify history")}${icoButton("sources", "info", "Sources")}</div>${state.tab === "saved" ? `<div class="saved-summary"><div class="saved-stat"><strong>${counts.upcoming}</strong><span>upcoming</span></div><div class="saved-stat"><strong>${counts.total}</strong><span>saved in total</span></div><div class="saved-actions"><div class="saved-period">${["upcoming", "past", "all"].map((p) => button("period", p[0].toUpperCase() + p.slice(1), `chip ${state.savedPeriod === p ? "active" : ""}`, `data-period="${p}"`)).join("")}</div>${button("shared-lists", "Shared lists", "small-button")}${button("export", icon("calendar") + "Export", "small-button")}</div></div>` : ""}<div class="date-toolbar"><div class="date-chips">${[
       ["weekend", "This weekend"],
       ["next-weekend", "Next weekend"],
       ["30", "30 days"],
@@ -597,7 +604,7 @@ function resultsBar(list) {
       : state.tab === "hidden"
         ? `${list.length} hidden ${list.length === 1 ? "concert" : "concerts"} · all dates and cities`
         : list.length + " concerts";
-  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "Listening matches", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
+  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ["matches", "Listening matches"],
     ...(state.tab === "saved"
@@ -732,23 +739,27 @@ function renderResults() {
   persistUI();
 }
 function calendarView(list) {
+  const rangeApplies =
+    state.tab !== "hidden" &&
+    !(state.tab === "saved" && ["past", "all"].includes(state.savedPeriod));
   const first = state.calendarMonth + "-01",
     d = new Date(first + "T12:00:00Z");
   const start = addDays(first, -d.getUTCDay());
   const days = Array.from({ length: 42 }, (_, i) => addDays(start, i));
-  return `<div class="calendar-header"><h2>${dateLabel(first, { month: "long", year: "numeric" })}</h2><div class="nav">${button("calendar-today", "Today", "text-button")}${icoButton("calendar-prev", "left", "Previous month")}${icoButton("calendar-next", "right", "Next month")}</div></div><div class="calendar-grid">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => `<div class="calendar-weekday">${d}</div>`).join("")}${days
+  return `<div class="calendar-header"><h2>${dateLabel(first, { month: "long", year: "numeric" })}</h2><div class="nav">${button("calendar-today", "Today", "text-button")}${icoButton("calendar-prev", "left", "Previous month")}${icoButton("calendar-next", "right", "Next month")}</div></div>${rangeApplies ? `<p class="calendar-range-note">Showing ${dateLabel(state.from)} – ${dateLabel(state.to)}. Shaded dates are outside this range.</p>` : ""}<div class="calendar-grid">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => `<div class="calendar-weekday">${d}</div>`).join("")}${days
     .map((day) => {
-      const dayEvents = list.filter(
-        (e) => e.date <= day && (e.endDate || e.date) >= day,
-      );
-      return `<div class="calendar-day ${day.slice(0, 7) !== state.calendarMonth ? "outside" : ""} ${day === dayInZone() ? "today" : ""}"><span class="num">${Number(day.slice(8))}</span>${dayEvents
+      const excluded = rangeApplies && (day < state.from || day > state.to);
+      const dayEvents = excluded
+        ? []
+        : list.filter((e) => e.date <= day && (e.endDate || e.date) >= day);
+      return `<div class="calendar-day ${excluded ? "outside-range" : ""} ${day.slice(0, 7) !== state.calendarMonth ? "outside" : ""} ${day === dayInZone() ? "today" : ""}"><span class="num">${Number(day.slice(8))}</span>${excluded ? '<span class="calendar-excluded-label">Outside range</span>' : ""}${dayEvents
         .slice(0, 3)
         .map((e) =>
           button(
             "open",
             esc(e.title),
-            "calendar-event",
-            `data-id="${esc(e.id)}" style="--city:${esc(cityFor(e.metro).color)}" title="${esc(e.title + " · " + e.venue.name)}"`,
+            `calendar-event${assessment(store.fields, e.id).hidden ? " not-interested" : ""}`,
+            `data-id="${esc(e.id)}" style="--city:${esc(cityFor(e.metro).color)}" title="${esc(e.title + " · " + e.venue.name + (assessment(store.fields, e.id).hidden ? " · Not interested" : ""))}"`,
           ),
         )
         .join(
@@ -757,18 +768,26 @@ function calendarView(list) {
     })
     .join("")}</div>`;
 }
+function venueDescription(v) {
+  const description = v.description || v.layout || v.capacity?.configuration;
+  const sources = [
+    ...new Set([v.descriptionSource, v.capacity?.source].filter(Boolean)),
+  ];
+  return `${description ? `<p class="venue-description">${esc(description)}</p>` : ""}${v.capacity?.configuration && v.capacity.configuration !== description ? `<p class="venue-configuration">${esc(v.capacity.configuration)}</p>` : ""}${sources.length ? `<div class="venue-fact-sources">${sources.map((url, i) => `<a href="${esc(safeURL(url))}" target="_blank" rel="noopener">${sources.length > 1 ? (i ? "Capacity source" : "Venue source") : "Source"} ↗</a>`).join(" · ")}</div>` : ""}`;
+}
+
 function venueView(list) {
   return `<div class="venue-grid">${groupVenues(list)
     .sort((a, b) => a.venue.name.localeCompare(b.venue.name))
     .map(
       ({ venue: v, events: ev }) =>
-        `<article class="venue-card"><div class="location-line"><span class="city-dot" data-city="${esc(v.metro)}" style="--city:${esc(cityFor(v.metro).color)}"></span>${esc(v.locality || cityFor(v.metro).name)}<span style="margin-left:auto">${ev.length} shows</span></div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</div>${ev
+        `<article class="venue-card"><div class="location-line"><span class="city-dot" data-city="${esc(v.metro)}" style="--city:${esc(cityFor(v.metro).color)}"></span>${esc(v.locality || cityFor(v.metro).name)}<span style="margin-left:auto">${ev.length} shows</span></div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</div>${venueDescription(v)}${ev
           .slice(0, 4)
           .map((e) =>
             button(
               "open",
-              `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small>${esc(e.title)}${assessment(store.fields, e.id).saved ? " ♡" : ""}`,
-              "event-snippet",
+              `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small>${esc(e.title)}${assessment(store.fields, e.id).hidden ? '<span class="interest-label">Not interested</span>' : assessment(store.fields, e.id).saved ? " ♡" : ""}`,
+              `event-snippet${assessment(store.fields, e.id).hidden ? " not-interested" : ""}`,
               `data-id="${esc(e.id)}"`,
             ),
           )
@@ -807,7 +826,7 @@ function renderMapSelection(list) {
     return;
   }
   const { venue: v, events: ev } = group;
-  el.innerHTML = `<span class="eyebrow">${esc(v.locality)}</span><h3 style="margin:12px 0">${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}</div><p style="margin-top:10px">${esc(v.address)}</p>${ev.map((e) => button("open", `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small><b>${esc(e.title)} ${assessment(store.fields, e.id).saved ? "★" : ""}</b>`, "event-snippet", `data-id="${esc(e.id)}"`)).join("")}`;
+  el.innerHTML = `<span class="eyebrow">${esc(v.locality)}</span><h3 style="margin:12px 0">${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><div class="capacity">${sizeDots(v)}${esc(capacityLabel(v))}</div><p style="margin-top:10px">${esc(v.address)}</p>${ev.map((e) => button("open", `<small>${eventDateLabel(e)} · ${esc(timeLabel(e))}</small><b>${esc(e.title)} ${!assessment(store.fields, e.id).hidden && assessment(store.fields, e.id).saved ? "★" : ""}</b>${assessment(store.fields, e.id).hidden ? '<span class="interest-label">Not interested</span>' : ""}`, `event-snippet${assessment(store.fields, e.id).hidden ? " not-interested" : ""}`, `data-id="${esc(e.id)}"`)).join("")}`;
 }
 async function initializeMap(list) {
   if (!$("#concert-map")) return;
@@ -835,7 +854,7 @@ async function initializeMap(list) {
     showCoverageOnHover: false,
     iconCreateFunction: (cluster) =>
       L.divIcon({
-        html: `<div class="map-cluster">${cluster.getChildCount()}</div>`,
+        html: `<div class="map-cluster${cluster.getAllChildMarkers().every((marker) => marker.options.notInterested) ? " not-interested" : ""}">${cluster.getChildCount()}</div>`,
         className: "",
         iconSize: [38, 38],
       }),
@@ -845,12 +864,19 @@ async function initializeMap(list) {
     const v = g.venue;
     if (!Number.isFinite(v.lat) || !Number.isFinite(v.lng)) continue;
     points.push([v.lat, v.lng]);
-    const saved = g.events.some((e) => assessment(store.fields, e.id).saved);
+    const notInterested = g.events.every(
+      (e) => assessment(store.fields, e.id).hidden,
+    );
+    const saved = g.events.some((e) => {
+      const a = assessment(store.fields, e.id);
+      return a.saved && !a.hidden;
+    });
     const marker = L.marker([v.lat, v.lng], {
-      title: `${v.name}: ${g.events.length} concerts${saved ? ", saved shows" : ""}`,
+      notInterested,
+      title: `${v.name}: ${g.events.length} concerts${notInterested ? ", not interested" : saved ? ", saved shows" : ""}`,
       icon: L.divIcon({
         className: "",
-        html: `<div class="map-pin" style="--city:${esc(cityFor(v.metro).color)}"><span>${saved ? "★ " : ""}${g.events.length}</span></div>`,
+        html: `<div class="map-pin${notInterested ? " not-interested" : ""}" style="--city:${esc(cityFor(v.metro).color)}"><span>${saved ? "★ " : ""}${g.events.length}</span></div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 30],
       }),
@@ -1055,7 +1081,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Save concert (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Toggle saved (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1070,7 +1096,7 @@ function openDetail(id, listen = false) {
       )
       .join(
         "",
-      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section><section class="detail-section"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
+      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
   animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
@@ -1100,7 +1126,7 @@ function venueSection(e) {
   const directions =
     "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent(v.name + " " + (v.address || v.locality || ""));
-  return `<section class="detail-section venue-detail"><div class="venue-detail-header"><div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><p>${esc(address || v.locality || "")}</p></div><a class="text-button" href="${esc(directions)}" target="_blank" rel="noopener">${icon("map")}Directions ${icon("external")}</a></div><div class="venue-detail-facts"><span>${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</span>${v.layout || v.capacity?.configuration ? `<span>${esc(v.layout || v.capacity.configuration)}</span>` : ""}${v.capacity?.source ? `<a class="source-link" href="${esc(safeURL(v.capacity.source))}" target="_blank" rel="noopener">Capacity source</a>` : ""}</div><div id="venue-media" aria-live="polite"><p class="media-notice">Loading venue photos and videos…</p></div></section>`;
+  return `<section class="detail-section venue-detail"><div class="venue-detail-header"><div><h3>${esc(v.name)}${v.room ? " · " + esc(v.room) : ""}</h3><p>${esc(address || v.locality || "")}</p></div><a class="text-button" href="${esc(directions)}" target="_blank" rel="noopener">${icon("map")}Directions ${icon("external")}</a></div><div class="venue-detail-facts"><span>${esc(capacityLabel(v))}${v.capacity ? " capacity" : ""}</span>${v.layout || v.capacity?.configuration ? `<span>${esc(v.layout || v.capacity.configuration)}</span>` : ""}${v.capacity?.source ? `<a class="source-link" href="${esc(safeURL(v.capacity.source))}" target="_blank" rel="noopener">Capacity source</a>` : ""}</div>${v.description ? `<p class="venue-description">${esc(v.description)}</p>` : ""}<div id="venue-media" aria-live="polite"><p class="media-notice">Loading venue photos and videos…</p></div></section>`;
 }
 let venueMediaRequest = 0;
 async function loadVenueMedia(e) {
@@ -1129,7 +1155,7 @@ async function loadVenueMedia(e) {
 }
 function interestStatusMarkup(id, hidden) {
   return hidden
-    ? `<div class="detail-interest-status"><span>${icon("hide")}Not interested</span>${button("restore", "Undo", "detail-interest-undo", `data-id="${esc(id)}" aria-label="Remove Not interested status" title="Remove Not interested and expand this concert"`)}</div>`
+    ? `<div class="detail-interest-status"><span>${icon("hide")}Not interested</span>${button("restore", "Undo", "detail-interest-undo", `data-id="${esc(id)}" aria-label="Remove Not interested status" aria-keyshortcuts="n" title="Remove Not interested and expand this concert (N)"`)}</div>`
     : "";
 }
 function updateDetailMeta() {
@@ -1151,10 +1177,12 @@ function updateDetailMeta() {
   if (hide) {
     hide.hidden = a.hidden;
     hide.dataset.action = "hide";
-    hide.innerHTML = icon("hide") + '<span class="detail-action-label">Not interested</span>';
+    hide.innerHTML =
+      icon("hide") + '<span class="detail-action-label">Not interested</span>';
   }
   const interestStatus = $("#detail-interest-status");
-  if (interestStatus) interestStatus.innerHTML = interestStatusMarkup(state.selected, a.hidden);
+  if (interestStatus)
+    interestStatus.innerHTML = interestStatusMarkup(state.selected, a.hidden);
   const status = $("#detail-sync");
   if (status) status.textContent = store.status;
   for (const el of document.querySelectorAll('[data-action="rate"]')) {
@@ -1294,11 +1322,13 @@ function playRecording(index) {
   const player = $("#player");
   if (!player) return;
   const entering = !player.hasChildNodes();
-  player.innerHTML =
-    `<iframe title="${esc(item.title)}" src="${esc(embed)}${embed.includes("?") ? "&" : "?"}autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="playing-label"><span>${esc(item.title)}</span><a href="${esc(item.url)}" target="_blank" rel="noopener">Can’t play? Open source ↗</a></div>`;
+  player.innerHTML = `<iframe title="${esc(item.title)}" src="${esc(embed)}${embed.includes("?") ? "&" : "?"}autoplay=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="playing-label"><span>${esc(item.title)}</span><a href="${esc(item.url)}" target="_blank" rel="noopener">Can’t play? Open source ↗</a></div>`;
   if (entering && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     player.animate(
-      [{ height: "0px", opacity: 0 }, { height: `${player.offsetHeight}px`, opacity: 1 }],
+      [
+        { height: "0px", opacity: 0 },
+        { height: `${player.offsetHeight}px`, opacity: 1 },
+      ],
       { duration: 280, easing: "ease-out" },
     );
   }
@@ -1391,6 +1421,29 @@ function citiesModal() {
   );
 }
 let placeResults = [];
+function listeningImportMarkup(artists) {
+  if (!artists.length)
+    return "<p>Import listening history to find matching artists.</p>";
+  let imported;
+  try {
+    imported = JSON.parse(localStorage.getItem(historyDetailsKey()));
+  } catch {}
+  const date = (value) =>
+    value && Number.isFinite(+new Date(value))
+      ? new Date(value).toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Unknown";
+  const range = (item) =>
+    item.first && item.last
+      ? `${date(item.first)} – ${date(item.last)}`
+      : "Dates unavailable";
+  const number = (value) => Number(value || 0).toLocaleString();
+  return `<div class="listening-import-summary"><strong>${icon("check")}Listening history imported</strong><p>${number(artists.length)} artists${imported?.files ? ` · ${number(imported.files.reduce((sum, file) => sum + file.plays, 0))} music plays · ${number(imported.files.length)} files` : ""}</p><p>${imported?.importedAt ? `Last imported ${esc(new Date(imported.importedAt).toLocaleString())}` : "Import date and filenames weren’t recorded for this history. Re-import the files to add them."}</p>${imported?.first ? `<p>Listening dates: ${esc(range(imported))}</p>` : ""}</div>${imported?.files?.length ? `<details class="import-file-details"><summary>Imported files (${number(imported.files.length)})</summary><ul>${imported.files.map((file) => `<li><strong>${esc(file.name)}</strong><span>${esc(file.format)} · ${number(Math.ceil(file.size / 1024))} KB · ${esc(file.type)}</span><span>${number(file.records)} records · ${number(file.plays)} music plays · ${number(file.artists)} artists</span><span>Listening dates: ${esc(range(file))}</span>${file.modifiedAt ? `<span>File modified: ${esc(date(file.modifiedAt))}</span>` : ""}</li>`).join("")}</ul><p class="media-notice">Music plays count listens of at least 30 seconds. File details are stored on this device.</p></details>` : ""}`;
+}
+
 function listeningModal() {
   const l = listening() || {},
     artists = [
@@ -1398,14 +1451,7 @@ function listeningModal() {
     ].sort((a, b) => b.score - a.score);
   openModal(
     "Spotify listening history",
-    `<p>Import listening history to find matching artists.</p>${
-      artists.length
-        ? `<div class="venue-facts"><strong>${artists.length} artists</strong></div><p>${artists
-            .slice(0, 6)
-            .map((a) => esc(a.name))
-            .join(" · ")}${artists.length > 6 ? " …" : ""}</p>`
-        : ""
-    }<div class="import-drop">${icon("upload")}<strong>Import your Spotify listening history</strong><p>No Premium or developer account needed.</p><input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your Spotify data</a>, then upload the streaming-history JSON files. Only artist play totals sync; track summaries and dates stay on this device. Import non-overlapping files together to avoid counting plays twice. Each import replaces the previous summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>Connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify sync is unavailable.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
+    `${listeningImportMarkup(artists)}<div class="import-drop">${icon("upload")}<strong>${artists.length ? "Replace imported history" : "Import your Spotify listening history"}</strong>${artists.length ? "" : "<p>No Premium or developer account needed.</p>"}<input id="spotify-import" type="file" accept=".json,application/json" multiple aria-label="Import Spotify streaming-history JSON files"></div><p id="import-status" role="status"></p><p>Request <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener">your Spotify data</a>, then upload the streaming-history JSON files. Only artist play totals sync; track summaries, dates, and file metadata stay on this device. Import non-overlapping files together to avoid counting plays twice. Each import replaces the previous summary.</p>${state.capabilities.spotify ? `<div class="sidebar-rule"></div><p>Connect Spotify for automatic updates.</p><div class="form-actions">${button("connect-spotify", "Connect Spotify", "secondary")}${store.data.spotify ? button("refresh-spotify", "Refresh listening", "secondary") : ""}</div>` : '<p class="media-notice">Automatic Spotify sync is unavailable.</p>'}${artists.length ? `<div class="sidebar-rule"></div>${button("clear-listening", "Remove listening data", "text-button")}` : ""}`,
   );
 }
 function sourcesModal() {
@@ -1475,16 +1521,7 @@ function moveCalendar(direction) {
   const d = new Date(state.calendarMonth + "-01T12:00:00Z");
   d.setUTCMonth(d.getUTCMonth() + direction);
   state.calendarMonth = d.toISOString().slice(0, 7);
-  const first = state.calendarMonth + "-01";
-  d.setUTCMonth(d.getUTCMonth() + 1);
-  const last = addDays(d.toISOString().slice(0, 10), -1);
-  if (first < state.from || last > state.to) {
-    state.preset = "custom";
-    state.from = first;
-    state.to = last;
-    renderControls();
-    loadFeed();
-  } else renderResults();
+  renderResults();
 }
 function focusTrap(event) {
   if (event.key !== "Tab") return;
@@ -1514,24 +1551,39 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("keydown", (event) => {
   if (
-    event.defaultPrevented || event.repeat || event.isComposing ||
-    event.metaKey || event.ctrlKey || event.altKey ||
-    !state.selected || $(".modal") || $(".detail-panel")?.dataset.closing ||
+    event.defaultPrevented ||
+    event.repeat ||
+    event.isComposing ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    $(".modal") ||
+    $(".detail-panel")?.dataset.closing ||
     event.target.closest?.(
       'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="combobox"]',
     )
-  ) return;
+  )
+    return;
   const key = event.key.toLowerCase();
+  if (key !== "s" && key !== "n") return;
+  // An open panel takes priority over list rows behind its scrim.
+  const row = state.selected ? null : $(".event-row[data-event-id]:hover");
+  const id = state.selected || row?.dataset.eventId;
+  if (!id || !eventFor(id)) return;
   if (key === "n") {
-    const hide = $(".detail-hide");
-    if (hide && !hide.hidden) {
+    const hidden = assessment(store.fields, id).hidden;
+    const control = row
+      ? row.querySelector(`[data-action="${hidden ? "restore" : "hide"}"]`)
+      : hidden
+        ? $('#detail-interest-status [data-action="restore"]')
+        : $(".detail-hide");
+    if (control && !control.hidden) {
       event.preventDefault();
-      hide.click();
+      control.click();
     }
   } else if (key === "s") {
     event.preventDefault();
-    if (!assessment(store.fields, state.selected).saved)
-      saveEvent(eventFor(state.selected), true);
+    saveEvent(eventFor(id));
   }
 });
 document.addEventListener("click", async (e) => {
@@ -1673,7 +1725,9 @@ document.addEventListener("click", async (e) => {
         const event = eventFor(id);
         if (!event) break;
         const hidden = action === "hide";
-        recordConcertAction(id, hidden ? "marking not interested" : "restore", { hidden });
+        recordConcertAction(id, hidden ? "marking not interested" : "restore", {
+          hidden,
+        });
         store.change(`event/${id}/snapshot`, event);
         store.change(`event/${id}/hidden`, hidden);
         if (hidden && state.selected === id) await closeDetail();
@@ -1871,6 +1925,15 @@ document.addEventListener("click", async (e) => {
         closeModal();
         toast("Listening data removed.");
         break;
+      case "shared-lists":
+        await manageLists({
+          store,
+          concerts: events().filter(
+            (e) => assessment(store.fields, e.id).saved,
+          ),
+          openModal,
+        });
+        break;
       case "export":
         exportModal();
         break;
@@ -1979,13 +2042,14 @@ document.addEventListener("change", async (e) => {
     status.textContent = "Reading your listening history…";
     try {
       const combined = {};
-      let detailed = { artists: {}, first: null, last: null };
+      let detailed = { artists: {}, first: null, last: null, files: [] };
       let plays = 0;
       for (const file of el.files) {
         if (file.size > 150 * 1024 * 1024)
           throw new Error("Choose JSON files smaller than 150 MB each.");
         const doc = JSON.parse(await file.text());
         const data = importSpotifyHistory(doc);
+        detailed.files.push(importFileMetadata(file, doc, data));
         addHistoryDetails(doc, detailed);
         plays += data.count;
         for (const [key, a] of Object.entries(data.artists)) {
@@ -2003,6 +2067,7 @@ document.addEventListener("change", async (e) => {
         throw new Error(
           "No music plays found. Choose streaming-history files containing artist names and listening durations.",
         );
+      detailed.importedAt = new Date().toISOString();
       localStorage.setItem(historyDetailsKey(), JSON.stringify(detailed));
       store.change("listening", combined);
       listeningModal();

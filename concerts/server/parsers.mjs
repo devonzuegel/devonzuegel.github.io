@@ -266,6 +266,25 @@ export function parseVenue(venue, html, now = new Date()) {
           genres: e.find(".eventlist-cats a").map((i, a) => clean($(a).text())).get() });
       });
       break;
+    case "19hz-halcyon":
+      $("tr").each((i, node) => {
+        const cells = $(node).children("td"), listing = cells.eq(1);
+        if (!/@ Halcyon \(San Francisco\)\s*$/i.test(clean(listing.text()))) return;
+        const link = listing.find("a").first();
+        const date = clean(cells.eq(6).text()).match(/20\d{2}\/\d{2}\/\d{2}/)?.[0].replaceAll("/", "-");
+        const event = makeEvent(venue, {
+          title: clean(link.text()), date,
+          time: parseTime(clean(cells.eq(0).text()).match(/\(([^)]+)\)/)?.[1]?.split("-")[0]),
+          url: abs(link.attr("href")),
+          artists: clean(link.text()).split(/,\s*/),
+          genres: clean(cells.eq(2).text()).split(/,\s*/),
+        }, now);
+        if (event) {
+          event.sources = [{ name: "19hz · Halcyon", url: venue.url }, { name: "Event listing", url: event.ticketUrl }];
+          out.push(event);
+        }
+      });
+      break;
     case "halcyon-links":
       $('a[href*="dice.fm/event/"]').each((i, node) => {
         const e = $(node), label = clean(e.attr("aria-label") || e.text());

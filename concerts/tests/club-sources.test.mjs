@@ -17,3 +17,8 @@ test('Halcyon ignores undated legacy links and Public Works retains ticket links
  const [event]=parseVenue({...base,parser:'publicworks'},'<div class="eventbrite-items"><div class="event-item"><a href="https://tickets.example.com/dj"><div class="event-title">DJ</div><div class="event-date">Oct 02</div></a></div></div>',now);
  assert.equal(event.ticketUrl,'https://tickets.example.com/dj');
 });
+test('19hz imports only Halcyon SF with explicit year, lineup, genres and start time',()=>{
+ const row=(venue,date)=>`<tr><td>Sat: Oct 3<br>(10pm-4am)</td><td><a href="https://dice.fm/event/abc">Anyasa, Arjuna</a> @ ${venue}</td><td>progressive house</td><td></td><td></td><td></td><td>${date}</td></tr>`;
+ const events=parseVenue({...base,id:'halcyon',name:'Halcyon',parser:'19hz-halcyon',url:'https://19hz.info/eventlisting_BayArea.php'},'<table>'+row('Halcyon (San Francisco)','2026/10/03')+row('Audio (San Francisco)','2026/10/03')+row('Halcyon (San Francisco)','')+'</table>',now);
+ assert.equal(events.length,1);assert.equal(events[0].date,'2026-10-03');assert.equal(events[0].startAt,'2026-10-04T05:00:00.000Z');assert.deepEqual(events[0].artists.map(a=>a.name),['Anyasa','Arjuna']);assert.equal(events[0].sources[0].name,'19hz · Halcyon');assert.ok(!events[0].endDate);
+});

@@ -1,3 +1,4 @@
+import { enrichEventVenue } from "../shared/venue-profiles.js";
 import { readFile } from "node:fs/promises";
 import { readFestival } from "./festivals.mjs";
 import * as cheerio from "cheerio";
@@ -142,7 +143,7 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
             events: current,
             source: {
               id: v.id,
-              name: v.name,
+              name: v.sourceName || v.name,
               metro: v.metro,
               url: v.url,
               status: current.length ? "ok" : "empty",
@@ -153,7 +154,8 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
               message: current.length
                 ? hasMore
                   ? "Additional source pages may exist."
-                  : "Official calendar. Coverage limited to published listings."
+                  : v.sourceNote ||
+                    "Official calendar. Coverage limited to published listings."
                 : v.kind === "festival"
                   ? "Published festival dates are past; waiting for the next announcement."
                   : "No upcoming concerts could be read from this calendar.",
@@ -169,7 +171,7 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
             events: old,
             source: {
               id: v.id,
-              name: v.name,
+              name: v.sourceName || v.name,
               metro: v.metro,
               url: v.url,
               status: "error",
@@ -183,7 +185,7 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
     }),
   );
   const feed = {
-    events: mergeEvents(outputs.flatMap((o) => o.events)),
+    events: mergeEvents(outputs.flatMap((o) => o.events)).map(enrichEventVenue),
     sources: outputs.map((o) => o.source),
     updatedAt: now.toISOString(),
     coverage: "partial",
@@ -268,7 +270,7 @@ export async function ticketmaster(cities, from, to) {
       const venue = {
         ...known,
         id: known?.id || "tm-" + v.id,
-        name: v.name,
+        name: v.sourceName || v.name,
         metro: city.id,
         timezone:
           v.timezone ||
@@ -308,7 +310,10 @@ export async function ticketmaster(cities, from, to) {
     }
   }
   for (const c of cities) await window(c, from, to);
-  const value = { events: mergeEvents(events), configured: true };
+  const value = {
+    events: mergeEvents(events).map(enrichEventVenue),
+    configured: true,
+  };
   await store.set(cacheKey, { at: Date.now(), value });
   return value;
 }

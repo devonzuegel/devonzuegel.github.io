@@ -424,8 +424,8 @@
   {
     "id": "halcyon",
     "name": "Halcyon",
-    "url": "https://linktr.ee/halcyonsf",
-    "parser": "halcyon-links",
+    "url": "https://19hz.info/eventlisting_BayArea.php",
+    "parser": "19hz-halcyon",
     "address": "314 11th Street, San Francisco",
     "metro": "sf",
     "locality": "San Francisco",
@@ -433,7 +433,9 @@
     "lat": null,
     "lng": null,
     "capacity": null,
-    "layout": null
+    "layout": null,
+    "sourceName": "Halcyon via 19hz",
+    "sourceNote": "Community-maintained 19hz calendar with original ticket links; coverage may be incomplete."
   },
   {
     "id": "publicworks",

@@ -53,3 +53,38 @@ export function historyRank(artist, artists) {
     1 + Object.values(artists).filter((a) => a.plays > artist.plays).length
   );
 }
+
+export function importFileMetadata(file, doc, summary) {
+  const rows = Array.isArray(doc)
+    ? doc
+    : doc?.plays || doc?.streamingHistory || [];
+  let first = null,
+    last = null;
+  for (const row of rows) {
+    const raw = row.ts || row.endTime;
+    if (typeof raw !== "string" || !/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(raw)) continue;
+    const date = new Date(
+      raw.includes("T") ? raw : raw.replace(" ", "T") + ":00Z",
+    );
+    if (!Number.isFinite(+date)) continue;
+    const stamp = date.toISOString();
+    if (!first || stamp < first) first = stamp;
+    if (!last || stamp > last) last = stamp;
+  }
+  return {
+    name: file.name,
+    size: file.size,
+    type: file.type || "application/json",
+    modifiedAt: file.lastModified
+      ? new Date(file.lastModified).toISOString()
+      : null,
+    records: rows.length,
+    plays: summary.count,
+    artists: Object.keys(summary.artists).length,
+    first,
+    last,
+    format: rows.some((row) => "master_metadata_album_artist_name" in row)
+      ? "Extended streaming history"
+      : "Streaming history",
+  };
+}
