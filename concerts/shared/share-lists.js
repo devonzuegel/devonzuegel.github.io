@@ -12,6 +12,18 @@ const linkFor = (id) => {
   u.searchParams.set("list", id);
   return u.href;
 };
+function concertChoices(choices, selected) {
+  if (!choices.length)
+    return "<p>Save some concerts first, then add them here.</p>";
+  const days = new Map();
+  for (const event of choices) {
+    const key = event.date || "";
+    if (!days.has(key)) days.set(key, []);
+    days.get(key).push(event);
+  }
+  return `<table class="shared-choices-table"><thead><tr><th scope="col">Concert</th><th scope="col">Time</th><th scope="col">Venue</th><th scope="col">City</th></tr></thead>${[...days].map(([day, events]) => `<tbody><tr class="shared-day-heading"><th colspan="4" scope="rowgroup">${esc(day ? dateLabel(day, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) : "Date TBA")}</th></tr>${events.map((e) => `<tr class="shared-choice-row"><td><label><input type="checkbox" name="concert" value="${esc(e.id)}" ${selected.has(e.id) ? "checked" : ""}><strong>${esc(e.title)}</strong></label></td><td class="shared-choice-time">${esc(timeLabel(e))}</td><td>${esc(e.venue?.name || "Venue TBA")}</td><td>${esc(e.venue?.locality || "—")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
+}
+
 export async function manageLists({ store, concerts, openModal }) {
   if (!store.profile) {
     openModal(
@@ -50,10 +62,21 @@ export async function manageLists({ store, concerts, openModal }) {
     const selected = new Set(list?.events.map((e) => e.id) || []);
     openModal(
       list ? "Edit shared list" : "New shared list",
-      `<form id="shared-list-form"><label>List name<input name="title" maxlength="100" required placeholder="Weekend concert ideas" value="${esc(list?.title || "")}"></label><p>Select saved concerts. Updating this list keeps the same link.</p><div class="shared-list-choices">${choices.map((e) => `<label><input type="checkbox" name="concert" value="${esc(e.id)}" ${selected.has(e.id) ? "checked" : ""}><span><strong>${esc(e.title)}</strong><small>${esc(e.date ? dateLabel(e.date, { month: "short", day: "numeric", year: "numeric" }) : "Date TBA")} · ${esc(e.venue?.name)} · ${esc(e.venue?.locality)}</small></span></label>`).join("") || "<p>Save some concerts first, then add them here.</p>"}</div><p id="shared-list-status" role="status"></p><button class="primary" type="submit" ${choices.length ? "" : "disabled"}>${list ? "Update list" : "Create share link"}</button></form>${list ? `<div class="shared-list-link"><label>Read-only link<input readonly id="shared-list-url" value="${esc(linkFor(list.id))}"></label><button class="secondary" id="copy-shared-list">Copy link</button><a href="${esc(linkFor(list.id))}" target="_blank" rel="noopener">Preview ↗</a><button class="text-button" id="revoke-shared-list">Disable link</button></div>` : ""}`,
+      `<form id="shared-list-form"><label>List name<input name="title" maxlength="100" required placeholder="Weekend concert ideas" value="${esc(list?.title || "")}"></label><p>Select saved concerts. Updating this list keeps the same link.</p><div class="shared-list-choices">${concertChoices(choices, selected)}</div><p id="shared-list-status" role="status"></p><button class="primary" type="submit" ${choices.length ? "" : "disabled"}>${list ? "Update list" : "Create share link"}</button></form>${list ? `<div class="shared-list-link"><label>Read-only link<input readonly id="shared-list-url" value="${esc(linkFor(list.id))}"></label><button class="secondary" id="copy-shared-list">Copy link</button><a href="${esc(linkFor(list.id))}" target="_blank" rel="noopener">Preview ↗</a><button class="text-button" id="revoke-shared-list">Disable link</button></div>` : ""}`,
     );
+    document
+      .querySelector("#shared-list-form")
+      .closest(".modal")
+      .classList.add("shared-list-editor");
     const form = document.querySelector("#shared-list-form"),
       status = document.querySelector("#shared-list-status");
+    form.querySelector(".shared-list-choices").onclick = (event) => {
+      if (event.target.closest("label, input")) return;
+      const checkbox = event.target
+        .closest(".shared-choice-row")
+        ?.querySelector("input");
+      if (checkbox) checkbox.checked = !checkbox.checked;
+    };
     form.onsubmit = async (event) => {
       event.preventDefault();
       const submit = form.querySelector("[type=submit]");
@@ -95,39 +118,5 @@ export async function manageLists({ store, concerts, openModal }) {
         }
       };
     }
-  }
-}
-export async function renderSharedList(id) {
-  const app = document.querySelector("#app");
-  app.innerHTML =
-    '<main id="main" class="public-concert-list"><p role="status">Loading shared list…</p></main>';
-  try {
-    const u = new URL(window.CONCERTS_CONFIG.apiBase, location.href);
-    u.searchParams.set("action", "shared-list");
-    u.searchParams.set("id", id);
-    const response = await fetch(u, { signal: AbortSignal.timeout(18000) });
-    const list = await response.json();
-    if (!response.ok) throw new Error(list.error || "List unavailable.");
-    document.title = list.title + " · Concert Tracker";
-    const safe = (value) => {
-      try {
-        const u = new URL(value);
-        return ["https:", "http:"].includes(u.protocol) ? u.href : "";
-      } catch {
-        return "";
-      }
-    };
-    app.innerHTML = `<main id="main" class="public-concert-list"><a href="./">Concert Tracker</a><h1>${esc(list.title)}</h1><p>${list.events.length} ${list.events.length === 1 ? "concert" : "concerts"} · Read-only list · Updated ${esc(new Date(list.updatedAt).toLocaleDateString())}</p>${list.events
-      .slice()
-      .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-      .map(
-        (e) =>
-          `<article><div><small>${esc(e.date ? dateLabel(e.date, { month: "short", day: "numeric", year: "numeric" }) : "Date TBA")}${e.endDate && e.endDate !== e.date ? " – " + esc(dateLabel(e.endDate, { month: "short", day: "numeric", year: "numeric" })) : ""} · ${esc(timeLabel(e))}${e.timezone ? " · " + esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone) : ""}</small><h2>${esc(e.title)}</h2>${e.status && e.status !== "scheduled" ? `<p><strong>${esc(e.status === "soldout" ? "Sold out" : e.status)}</strong></p>` : ""}<p>${esc(e.venue?.name)}${e.venue?.locality ? " · " + esc(e.venue.locality) : ""}</p>${e.genres?.length ? `<p>${e.genres.map(esc).join(" · ")}</p>` : ""}</div><div class="shared-concert-actions">${safe(e.ticketUrl) ? `<a class="primary" href="${esc(safe(e.ticketUrl))}" target="_blank" rel="noopener">Tickets ↗</a>` : ""}<a class="secondary" href="./?concert=${encodeURIComponent(e.id)}" target="_blank" rel="noopener">Concert details ↗</a></div></article>`,
-      )
-      .join(
-        "",
-      )}<p class="media-notice">Check the ticket provider for current times and availability.</p></main>`;
-  } catch (error) {
-    app.innerHTML = `<main id="main" class="public-concert-list"><h1>Shared list unavailable</h1><p role="alert">${esc(error.message)}</p><a href="./">Open Concert Tracker</a></main>`;
   }
 }

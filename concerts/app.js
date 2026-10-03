@@ -1,4 +1,4 @@
-import { manageLists } from "./shared/share-lists.js";
+import { manageLists } from "./shared/share-lists.js?v=20261002-details";
 import { enrichEventVenue } from "./shared/venue-profiles.js";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
@@ -52,7 +52,19 @@ if (hadQRSync) {
 }
 const config = window.CONCERTS_CONFIG || {},
   apiBase = config.apiBase || "/api/concerts";
-const store = new ClientStore(apiBase);
+const sharedListId = new URLSearchParams(location.search).get("list");
+let sharedList = null;
+const store = sharedListId
+  ? Object.assign(new EventTarget(), {
+      fields: {},
+      data: { conflicts: [] },
+      active: "shared",
+      profile: null,
+      status: "Read-only",
+      sync: async () => {},
+      change: () => {},
+    })
+  : new ClientStore(apiBase);
 const icons = {
   hide: '<path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.5 5.3A11 11 0 0 1 12 5c6 0 10 7 10 7a18 18 0 0 1-3 3.6M6.5 6.5A21 21 0 0 0 2 12s4 7 10 7a11 11 0 0 0 5.5-1.5"/>',
   restore: '<path d="M3 4v6h6M3 10a9 9 0 1 1 1 8"/>',
@@ -100,6 +112,7 @@ let savedUI = {};
 try {
   savedUI = JSON.parse(localStorage.getItem("encore.ui.v1")) || {};
 } catch {}
+if (sharedListId) savedUI = {};
 const collapsedMonths = new Set();
 const state = {
   tab: "discover",
@@ -143,6 +156,7 @@ let map = null,
   renderTimer,
   detailNoteRev = 0;
 function persistUI() {
+  if (sharedListId) return;
   const {
     tab,
     view,
@@ -188,9 +202,31 @@ function toast(message, action = "") {
   );
 }
 const events = () =>
-  allEvents(state.feed.events, store.fields).map(enrichEventVenue);
+  (sharedListId
+    ? state.feed.events
+    : allEvents(state.feed.events, store.fields)
+  ).map(enrichEventVenue);
 const listening = () => valueAt(store.fields, "listening", {});
-const cities = () => citiesFrom(store.fields);
+const cities = () =>
+  sharedListId
+    ? [
+        ...new Map(
+          state.feed.events.map((e) => [
+            e.metro,
+            {
+              ...(DEFAULT_CITIES.find((c) => c.id === e.metro) || {
+                id: e.metro,
+                name: e.venue.locality || "Other city",
+                lat: e.venue.lat,
+                lng: e.venue.lng,
+                radius: 200,
+              }),
+              enabled: true,
+            },
+          ]),
+        ).values(),
+      ]
+    : citiesFrom(store.fields);
 function effectiveCities() {
   const current = cities();
   if (state.tab === "saved") {
@@ -253,6 +289,12 @@ function navMarkup(mobile = false) {
   return `<div class="${mobile ? "mobile-nav" : "main-nav"}">${button("tab", icon("explore") + "Discover", `nav-btn ${state.tab === "discover" ? "active" : ""}`, 'data-tab="discover"')}${button("tab", icon("bookmark") + 'Saved <span class="badge">' + count.upcoming + "</span>", `nav-btn ${state.tab === "saved" ? "active" : ""}`, 'data-tab="saved"')}${button("tab", icon("hide") + 'Not interested <span class="badge">' + hidden + "</span>", `nav-btn ${state.tab === "hidden" ? "active" : ""}`, 'data-tab="hidden"')}${mobile ? icoButton("profile", "user", "Your profile") : ""}</div>`;
 }
 function renderChrome() {
+  if (sharedListId) {
+    document.body.classList.add("shared-discover");
+    $("#mobile-header").innerHTML =
+      `<div class="shared-discover-heading"><a href="./">Concert Tracker</a><h1>${esc(sharedList?.title || "Shared list")}</h1><p>Read-only concert ideas${sharedList ? " · Updated " + esc(new Date(sharedList.updatedAt).toLocaleDateString()) : ""}</p></div>`;
+    return;
+  }
   const account = button(
     "profile",
     `${icon("user")}<span><small>${store.profile ? "Signed in as" : "Not signed in"}</small><strong>${esc(store.profile || "Guest · this device")}</strong></span>`,
@@ -337,6 +379,10 @@ function renderControls() {
       SIZE_BUCKETS.map((x) => [x[0], x[1]]),
       state.size,
     )}</select></label></div>`;
+  if (sharedListId) {
+    $("#search").placeholder = "Search artists or venues";
+    $("#search").setAttribute("aria-label", "Search artists or venues");
+  }
   $("#controls").classList.toggle("hidden-view", state.tab === "hidden");
   if (
     state.tab === "hidden" ||
@@ -360,6 +406,7 @@ function sizeDots(v) {
   return `<span class="size-dots" aria-hidden="true">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= n ? "lit" : ""}"></i>`).join("")}</span>`;
 }
 function hideBtn(e) {
+  if (sharedListId) return "";
   const hidden = assessment(store.fields, e.id).hidden;
   return icoButton(
     hidden ? "restore" : "hide",
@@ -370,6 +417,7 @@ function hideBtn(e) {
   );
 }
 function saveBtn(e) {
+  if (sharedListId) return "";
   const saved = assessment(store.fields, e.id).saved;
   return icoButton(
     "save",
@@ -471,6 +519,7 @@ function listeningDetailsMarkup(e) {
 function concertLink(id) {
   const url = new URL(location.href);
   url.search = "";
+  if (sharedListId) url.searchParams.set("list", sharedListId);
   url.hash = "";
   url.searchParams.set("concert", id);
   return url;
@@ -606,7 +655,7 @@ function resultsBar(list) {
         : list.length + " concerts";
   return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
-    ["matches", "Listening matches"],
+    ...(!sharedListId ? [["matches", "Listening matches"]] : []),
     ...(state.tab === "saved"
       ? [
           ["saved", "Recently saved"],
@@ -912,7 +961,58 @@ async function apiGet(action, params = {}) {
   if (!r.ok) throw new Error(d.error || "Service is unavailable.");
   return d;
 }
+async function loadSharedFeed() {
+  state.loading = true;
+  renderResults();
+  try {
+    sharedList = await apiGet("shared-list", { id: sharedListId });
+    let catalog = [];
+    try {
+      const r = await fetch("./data/events.json", {signal: AbortSignal.timeout(8000)});
+      if (r.ok) catalog = (await r.json()).events || [];
+    } catch {}
+    const known = new Map(catalog.map((e) => [e.id, e]));
+    state.feed = {
+      events: sharedList.events.map((e) => {
+        const full = known.get(e.id);
+        const matchingVenue = catalog.find(
+          (other) =>
+            normalize(other.venue?.name) === normalize(e.venue?.name) &&
+            normalize(other.venue?.locality) === normalize(e.venue?.locality),
+        )?.venue;
+        const venue = { ...matchingVenue, ...e.venue, ...full?.venue };
+        const metro = full?.metro || e.metro || venue.metro || "shared";
+        return {
+          ...e,
+          ...full,
+          metro,
+          venue: { ...venue, id: venue.id || e.id + "-venue", metro },
+          artists: full?.artists || e.artists || [{ name: e.title }],
+          sources: full?.sources || e.sources || [],
+          timezone: full?.timezone || e.timezone || "America/New_York",
+        };
+      }),
+      sources: [],
+    };
+    const dates = state.feed.events
+      .flatMap((e) => [e.date, e.endDate])
+      .filter(Boolean)
+      .sort();
+    state.from = dates[0] || dayInZone();
+    state.to = dates.at(-1) || dayInZone();
+    state.calendarMonth = state.from.slice(0, 7);
+    document.title = sharedList.title + " · Concert Tracker";
+  } catch (error) {
+    state.feed = { events: [], sources: [], sourceError: error.message };
+  }
+  state.loading = false;
+  renderChrome();
+  renderControls();
+  renderResults();
+  openLinkedConcert();
+}
 async function loadFeed() {
+  if (sharedListId) return loadSharedFeed();
   const id = ++feedRequest;
   state.loading = true;
   renderResults();
@@ -1096,7 +1196,7 @@ function openDetail(id, listen = false) {
       )
       .join(
         "",
-      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
+      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section personal-ratings"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div><div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
   animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
@@ -1551,6 +1651,7 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("keydown", (event) => {
   if (
+    sharedListId ||
     event.defaultPrevented ||
     event.repeat ||
     event.isComposing ||
@@ -2206,17 +2307,19 @@ setInterval(() => {
   if (!document.hidden) store.sync();
 }, 8000);
 shell();
-if (hadQRSync) receiveSyncQR();
-try {
-  const r = await fetch("./data/events.json");
-  if (r.ok) {
-    state.feed = await r.json();
-    state.loading = false;
-    renderChrome();
-    renderControls();
-    renderResults();
-  }
-} catch {}
+if (hadQRSync && !sharedListId) receiveSyncQR();
+if (!sharedListId) {
+  try {
+    const r = await fetch("./data/events.json");
+    if (r.ok) {
+      state.feed = await r.json();
+      state.loading = false;
+      renderChrome();
+      renderControls();
+      renderResults();
+    }
+  } catch {}
+}
 loadFeed();
 apiGet("status")
   .then((d) => (state.capabilities = d))

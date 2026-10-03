@@ -4188,22 +4188,77 @@ summary.month-heading:focus-visible {
   padding: 48px 24px;
   text-align: center;
 }
-.initial-loading h1 { font-size: clamp(26px, 5vw, 36px); margin: 20px 0 0; font-weight: 600; letter-spacing: -.8px; }
-.initial-loading p { margin: 12px 0 18px; }
-.loading-record { animation: loading-record-spin 5s linear infinite; }
-.loading-record img { display: block; }
-.loading-equalizer { display: flex; height: 22px; align-items: center; gap: 5px; }
-.loading-equalizer i { width: 3px; height: 16px; background: var(--accent); border-radius: 3px; animation: loading-level 1s ease-in-out infinite alternate; }
-.loading-equalizer i:nth-child(2) { animation-delay: -.4s; }
-.loading-equalizer i:nth-child(3) { animation-delay: -.8s; }
-.loading-equalizer i:nth-child(4) { animation-delay: -.2s; }
-.loading-equalizer i:nth-child(5) { animation-delay: -.6s; }
-.loading-failed .loading-record, .loading-failed .loading-equalizer i { animation: none; }
-.loading-failed .loading-equalizer { display: none; }
-#startup-retry[hidden] { display: none; }
-@keyframes loading-record-spin { to { transform: rotate(360deg); } }
-@keyframes loading-level { from { transform: scaleY(.25); opacity: .4; } to { transform: scaleY(1); opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .loading-record, .loading-equalizer i { animation: none; } }
+.initial-loading h1 {
+  font-size: clamp(26px, 5vw, 36px);
+  margin: 20px 0 0;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+}
+.initial-loading p {
+  margin: 12px 0 18px;
+}
+.loading-record {
+  animation: loading-record-spin 5s linear infinite;
+}
+.loading-record img {
+  display: block;
+}
+.loading-equalizer {
+  display: flex;
+  height: 22px;
+  align-items: center;
+  gap: 5px;
+}
+.loading-equalizer i {
+  width: 3px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 3px;
+  animation: loading-level 1s ease-in-out infinite alternate;
+}
+.loading-equalizer i:nth-child(2) {
+  animation-delay: -0.4s;
+}
+.loading-equalizer i:nth-child(3) {
+  animation-delay: -0.8s;
+}
+.loading-equalizer i:nth-child(4) {
+  animation-delay: -0.2s;
+}
+.loading-equalizer i:nth-child(5) {
+  animation-delay: -0.6s;
+}
+.loading-failed .loading-record,
+.loading-failed .loading-equalizer i {
+  animation: none;
+}
+.loading-failed .loading-equalizer {
+  display: none;
+}
+#startup-retry[hidden] {
+  display: none;
+}
+@keyframes loading-record-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loading-level {
+  from {
+    transform: scaleY(0.25);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-record,
+  .loading-equalizer i {
+    animation: none;
+  }
+}
 
 /* Saved concerts remain easy to spot while scanning the full list. */
 .event-row.saved-event-row {
@@ -4213,10 +4268,120 @@ summary.month-heading:focus-visible {
 .event-row.saved-event-row:hover {
   background: color-mix(in srgb, var(--accent) 13%, var(--paper));
 }
-.saved-event-row .event-date { padding-left: 9px; }
+.saved-event-row .event-date {
+  padding-left: 9px;
+}
 .save-btn.saved .icon,
 [data-action="detail-save"][aria-pressed="true"] .icon {
   fill: currentColor;
 }
 
-.weekend-tooltip .date-separator { opacity: 0.5; }
+.weekend-tooltip .date-separator {
+  opacity: 0.5;
+}
+
+.modal.shared-list-editor {
+  width: min(1050px, calc(100vw - 28px));
+}
+.shared-list-editor .shared-list-choices {
+  max-height: 48vh;
+  overflow: auto;
+}
+.shared-choices-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.shared-choices-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 1;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-align: left;
+  padding: 8px 10px;
+}
+.shared-choices-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.shared-choices-table td:first-child {
+  width: 44%;
+}
+.shared-choices-table td:nth-child(3) {
+  width: 25%;
+}
+.shared-choices-table .shared-day-heading th {
+  text-align: left;
+  padding: 14px 10px 7px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--paper);
+}
+.shared-choices-table label {
+  padding: 0;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.shared-choices-table strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.shared-choice-time {
+  white-space: nowrap;
+  color: var(--muted);
+}
+.shared-choice-row {
+  cursor: pointer;
+}
+.shared-choice-row:hover,
+.shared-choice-row:has(input:checked) {
+  background: var(--green-soft);
+}
+@media (max-width: 600px) {
+  .shared-choices-table {
+    min-width: 610px;
+  }
+  .shared-list-editor .modal-body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+.shared-discover .layout {
+  display: block;
+}
+.shared-discover .sidebar,
+.shared-discover .mobile-cities,
+.shared-discover .date-toolbar,
+.shared-discover .matches-toggle,
+.shared-discover [data-action="detail-save"],
+.shared-discover .detail-hide,
+.shared-discover .personal-ratings {
+  display: none !important;
+}
+.shared-discover #mobile-header {
+  display: block;
+}
+.shared-discover .main {
+  max-width: 1600px;
+  margin: auto;
+}
+.shared-discover-heading {
+  margin: 0 0 24px;
+}
+.shared-discover-heading h1 {
+  font-size: 30px;
+  margin: 16px 0 8px;
+}
+.shared-discover-heading p {
+  color: var(--muted);
+}
+.shared-discover .event-actions {
+  justify-content: flex-end;
+}

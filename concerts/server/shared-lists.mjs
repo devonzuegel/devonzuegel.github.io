@@ -26,6 +26,15 @@ export function publicConcert(e) {
   return {
     id: text(e.id, 200),
     title: text(e.title),
+    metro: text(e.metro, 80),
+    artists: Array.isArray(e.artists)
+      ? e.artists.slice(0, 200).map((a) => ({ name: text(a.name) }))
+      : [{ name: text(e.title) }],
+    sources: Array.isArray(e.sources)
+      ? e.sources
+          .slice(0, 10)
+          .map((s) => ({ name: text(s.name), url: url(s.url) }))
+      : [],
     date: text(e.date, 10),
     endDate: text(e.endDate, 10),
     time: text(e.time, 30),
@@ -37,6 +46,23 @@ export function publicConcert(e) {
     ticketUrl: url(e.ticketUrl),
     image: url(e.image),
     venue: {
+      id: text(e.venue?.id, 200),
+      metro: text(e.venue?.metro, 80),
+      lat: Number.isFinite(e.venue?.lat) ? e.venue.lat : null,
+      lng: Number.isFinite(e.venue?.lng) ? e.venue.lng : null,
+      room: text(e.venue?.room, 100),
+      layout: text(e.venue?.layout),
+      description: text(e.venue?.description, 1000),
+      descriptionSource: url(e.venue?.descriptionSource),
+      capacity: Number.isFinite(e.venue?.capacity?.max)
+        ? {
+            min: Number(e.venue.capacity.min) || e.venue.capacity.max,
+            max: e.venue.capacity.max,
+            configuration: text(e.venue.capacity.configuration),
+            source: url(e.venue.capacity.source),
+            approximate: !!e.venue.capacity.approximate,
+          }
+        : null,
       name: text(e.venue?.name),
       locality: text(e.venue?.locality),
       address: text(e.venue?.address),

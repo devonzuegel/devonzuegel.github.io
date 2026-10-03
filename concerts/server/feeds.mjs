@@ -1,3 +1,4 @@
+import { enrichDetails } from "./event-details.mjs";
 import { enrichEventVenue } from "../shared/venue-profiles.js";
 import { readFile } from "node:fs/promises";
 import { readFestival } from "./festivals.mjs";
@@ -6,6 +7,7 @@ import { parseVenue, makeEvent, clean } from "./parsers.mjs";
 import { request, json, responseText } from "./network.mjs";
 import * as store from "./storage.mjs";
 import {
+  localToISO,
   DEFAULT_CITIES,
   mergeEvents,
   dayInZone,
@@ -18,6 +20,32 @@ export const venues = JSON.parse(
 export const festivals = JSON.parse(
   await readFile(new URL("../data/festivals.json", import.meta.url), "utf8"),
 );
+const verifiedDetails = JSON.parse(await readFile(new URL("../data/event-details.json", import.meta.url), "utf8"));
+function verifiedFallback(event) {
+  const detail = verifiedDetails[event.id];
+  if (event.time || !detail || detail.date !== event.date) return event;
+  return {...event, time:detail.time, timeKind:detail.timeKind, showTime:detail.showTime,
+    startAt:localToISO(event.date,detail.time,event.timezone),ticketUrl:detail.ticketUrl,
+    sources:[...event.sources,{name:detail.source,url:detail.ticketUrl}],
+    detailVerifiedAt:detail.verifiedAt};
+}
+async function fetchDetail(url) {
+  if (!(await allowed(url))) throw new Error("Source restricts automated access.");
+  const key = `event-detail:${url}`;
+  const cached = await store.get(key).catch(() => null);
+  if (cached && Date.now() - cached.at < (cached.html ? 24 : 1) * 3600000) {
+    if (!cached.html) throw new Error("Detail page temporarily unavailable.");
+    return cached.html;
+  }
+  try {
+    const html = await responseText(await request(url, {signal:AbortSignal.timeout(6000)}));
+    await store.set(key,{at:Date.now(),html}).catch(() => {});
+    return html;
+  } catch (error) {
+    await store.set(key,{at:Date.now(),html:null}).catch(() => {});
+    throw error;
+  }
+}
 const SNAPSHOT = new URL("../data/events.json", import.meta.url);
 export async function bundledFeed() {
   try {
@@ -98,8 +126,17 @@ export async function readVenue(v, now = new Date()) {
       (v.parser === "warfield" &&
         cheerio.load(html)("#loadMoreEvents").length > 0);
   } while (url && pages < 8);
+  const unique = [...new Map(events.map((e) => [e.id, e])).values()];
+  let cursor = 0;
+  await Promise.all(Array.from({length:2}, async () => {
+    while (cursor < unique.length) {
+      const index = cursor++;
+      if ((unique[index].endDate || unique[index].date) < dayInZone(now, v.timezone)) continue;
+      unique[index] = verifiedFallback(await enrichDetails(unique[index], fetchDetail));
+    }
+  }));
   return {
-    events: [...new Map(events.map((e) => [e.id, e])).values()],
+    events: unique,
     pages,
     hasMore,
   };
@@ -199,9 +236,10 @@ export async function getFeed() {
   const bundled = await bundledFeed();
   try {
     const cached = await store.get("feed");
-    return cached && cached.updatedAt > bundled.updatedAt ? cached : bundled;
+    const feed = cached && cached.updatedAt > bundled.updatedAt ? cached : bundled;
+    return {...feed, events:feed.events.map(verifiedFallback)};
   } catch {
-    return bundled;
+    return {...bundled,events:bundled.events.map(verifiedFallback)};
   }
 }
 export async function ticketmaster(cities, from, to) {
