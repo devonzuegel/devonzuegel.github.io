@@ -12,7 +12,7 @@ try {
     const { renderSharedList } = await import('./share-lists.js?v=20261002-startup');
     await renderSharedList(list);
   } else {
-    await import('../app.js?v=20261002-startup');
+    await import('../app.js?v=20261002-saved');
   }
 } catch (error) {
   console.error('Concert Tracker startup failed:', error);

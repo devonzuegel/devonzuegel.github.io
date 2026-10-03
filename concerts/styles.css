@@ -4204,3 +4204,17 @@ summary.month-heading:focus-visible {
 @keyframes loading-record-spin { to { transform: rotate(360deg); } }
 @keyframes loading-level { from { transform: scaleY(.25); opacity: .4; } to { transform: scaleY(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .loading-record, .loading-equalizer i { animation: none; } }
+
+/* Saved concerts remain easy to spot while scanning the full list. */
+.event-row.saved-event-row {
+  background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.event-row.saved-event-row:hover {
+  background: color-mix(in srgb, var(--accent) 13%, var(--paper));
+}
+.saved-event-row .event-date { padding-left: 9px; }
+.save-btn.saved .icon,
+[data-action="detail-save"][aria-pressed="true"] .icon {
+  fill: currentColor;
+}
