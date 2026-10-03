@@ -104,3 +104,7 @@ Deploy the API first, then `npx wrangler deploy --config _concerts-worker/wrangl
 ### Regional and organizer discovery
 
 19hz Bay Area / Northern California imports published DJ nights and dance parties across venues, with secondary-source attribution. Afrobeats Oakland and The Faight Collective import structured upcoming events from their public Eventbrite organizer pages. These sources participate in the daily catalog refresh; no Eventbrite API key is required. Organizer pagination is reported as partial when more listings exist. Protected/online events and clearly non-music listings are excluded. Eventbrite event IDs merge listings from different sources while preserving source links.
+
+### Partiful
+
+The daily refresh imports public music-related events from Partiful Explore SF. Coverage is limited to events featured there. **Add event** accepts a public Partiful event URL, previews its date/location, and saves an event snapshot to the existing guest/account store. Saved imports can be selected in shared lists. Private, password-protected and online events are excluded; guest and host data is never imported. URL fetching uses a fixed HTTPS host/path allowlist, rejects redirects, and is rate limited.

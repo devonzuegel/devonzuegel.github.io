@@ -491,5 +491,14 @@
     "metro": "sf",
     "timezone": "America/Los_Angeles",
     "sourceNote": "Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically."
+  },
+  {
+    "id": "partiful-sf",
+    "name": "Partiful Explore \u00b7 San Francisco",
+    "url": "https://partiful.com/explore/sf",
+    "parser": "partiful-explore",
+    "metro": "sf",
+    "timezone": "America/Los_Angeles",
+    "sourceNote": "Public Explore listings with music-related descriptions. Curated discovery, not all Partiful events."
   }
 ]

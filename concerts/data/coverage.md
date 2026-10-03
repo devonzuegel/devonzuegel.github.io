@@ -44,3 +44,5 @@ New discovery sources (checked 2026-10-03T06:42:14.231Z):
 | 19hz Bay Area / Northern California | 548 | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
 | Afrobeats Oakland | 2 | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | The Faight Collective | 11 | Published upcoming listings imported; additional organizer listings may exist. |
+
+Partiful Explore SF: 6 public music listings imported; curated coverage, not a complete Partiful directory.

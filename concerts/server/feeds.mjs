@@ -1,3 +1,4 @@
+import {parsePartiful} from "./partiful.mjs";
 import { enrichVenueReferences } from "./musicbrainz.mjs";
 import { enrichDetails } from "./event-details.mjs";
 import { enrichEventVenue } from "../shared/venue-profiles.js";
@@ -104,7 +105,7 @@ export async function readVenue(v, now = new Date()) {
       throw new Error("Automated access is restricted by this source.");
     const r = await request(url);
     const html = await responseText(r);
-    const parsed = parseVenue(v, html, now);
+    const parsed = v.parser === "partiful-explore" ? parsePartiful(html,v) : parseVenue(v, html, now);
     events.push(...parsed);
     pages++;
     if (v.parser === "tribe") {

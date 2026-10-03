@@ -371,9 +371,15 @@ export function groupVenues(events) {
   return [...groups.values()];
 }
 export function mergeEvents(events) {
-  const map = new Map();
-  for (const e of events) {
+  const map = new Map(), partifulIds = new Map();
+  for (let e of events) {
     if (!e?.id || !e.title) continue;
+    const partiful=e.ticketUrl?.match(/^https:\/\/(?:www\.)?partiful\.com\/e\/([A-Za-z0-9]+)(?:[/?#]|$)/)?.[1];
+    if(partiful) {
+      const priorId=partifulIds.get(partiful);
+      if(priorId && priorId!==e.id)e={...e,aliases:[...(e.aliases||[]),e.id],id:priorId};
+      else partifulIds.set(partiful,e.id);
+    }
     const prior = map.get(e.id);
     if (prior) {
       map.set(e.id, { ...prior, ...e, sources: [...new Map([...(prior.sources || []), ...(e.sources || [])].map(s => [s.url, s])).values()] });

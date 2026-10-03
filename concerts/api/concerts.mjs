@@ -1,3 +1,4 @@
+import {importPartiful} from "../server/partiful.mjs";
 import {
   ownerLists,
   saveList,
@@ -85,6 +86,14 @@ export default async function handler(req, res) {
       body = raw ? JSON.parse(raw) : {};
     }
     body ||= {};
+    if (action === "import-event") {
+      const key='import:'+String(req.headers['x-forwarded-for']||'local');
+      const now=Date.now(),limit=limits.get(key)||{at:now,count:0};
+      if(now-limit.at>60000){limit.at=now;limit.count=0;}
+      limits.set(key,limit);
+      if(++limit.count>12)return send({error:'Please wait a minute before importing more events.'},429);
+      return send({event:await importPartiful(u.searchParams.get('url'))});
+    }
     if (action === "status")
       return send({
         ok: true,

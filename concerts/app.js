@@ -42,7 +42,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20261003-discovery";
+} from "./shared/core.js?v=20261003-partiful";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
@@ -685,7 +685,7 @@ function resultsBar(list) {
       : state.tab === "hidden"
         ? `${list.length} hidden ${list.length === 1 ? "concert" : "concerts"} · all dates and cities`
         : list.length + " concerts";
-  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
+  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${!sharedListId ? button("import-event", "Add event", "text-button") : ""}${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ...(!sharedListId ? [["matches", "Listening matches"]] : []),
     ...(state.tab === "saved"
@@ -1469,6 +1469,21 @@ function playRecording(index) {
   }
   renderMedia();
 }
+let pendingImportedEvent = null;
+function importEventModal() {
+  pendingImportedEvent = null;
+  openModal("Add event", `<label for="event-import-url">Partiful event URL</label><input id="event-import-url" type="url" placeholder="https://partiful.com/e/…" style="width:100%"><div class="form-actions">${button("preview-import-event","Preview event","primary")}</div><p id="event-import-status" role="status"></p><div id="event-import-preview"></div>`);
+}
+async function previewImportedEvent(el) {
+  const input=$("#event-import-url"),status=$("#event-import-status"),preview=$("#event-import-preview");
+  pendingImportedEvent=null;preview.innerHTML="";el.disabled=true;status.textContent="Loading event…";
+  try {
+    const {event}=await apiGet("import-event",{url:input.value.trim()});
+    if(!preview.isConnected)return;
+    pendingImportedEvent=event;status.textContent="";
+    preview.innerHTML=`<h3>${esc(event.title)}</h3><p>${esc(dateLabel(event.date))} · ${esc(timeLabel(event))}</p><p>${esc(event.venue.name)}${event.venue.address ? ` · ${esc(event.venue.address)}` : ""}</p><p>Save to your events, then select it when creating a shared list.</p>${button("save-import-event","Save event","primary")}`;
+  } catch(error) {if(status.isConnected)status.textContent=error.message;} finally {el.disabled=false;}
+}
 function openModal(title, body, wide = false) {
   disposeVenueMaps($("#modal-root"));
   $("#app").inert = true;
@@ -1744,6 +1759,21 @@ document.addEventListener("click", async (e) => {
     id = el.dataset.id;
   try {
     switch (action) {
+      case "import-event":
+        if(!sharedListId)importEventModal();
+        break;
+      case "preview-import-event":
+        if(!sharedListId)await previewImportedEvent(el);
+        break;
+      case "save-import-event": {
+        if(sharedListId || !pendingImportedEvent)break;
+        const imported=pendingImportedEvent;
+        const existing=events().find(x=>x.ticketUrl?.split('?')[0].replace(/\/$/,'')===imported.ticketUrl);
+        const event=existing?{...existing,...imported,id:existing.id,sources:[...(existing.sources||[]),...imported.sources]}:imported;
+        closeModal();saveEvent(event,true);pendingImportedEvent=null;
+        renderChrome();renderControls();renderResults();openDetail(event.id);
+        break;
+      }
       case "venue-map":
         venueLocationModal(id);
         break;
