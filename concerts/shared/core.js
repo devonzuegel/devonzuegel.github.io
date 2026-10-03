@@ -271,7 +271,7 @@ export function filterEvents(
           ).includes(q))
       );
     }
-    if (a.hidden) return false;
+    if (a.hidden && !filters.includeHidden) return false;
     if (filters.tab === "saved" && !a.saved) return false;
     if (!enabled.some((c) => e.metro === c.id || inMetro(e.venue, c)))
       return false;

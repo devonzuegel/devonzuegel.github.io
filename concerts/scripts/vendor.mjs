@@ -2,6 +2,7 @@ import { mkdir, copyFile, readdir } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 await mkdir(new URL("vendor/images/", root), { recursive: true });
 for (const [from, to] of [
+  ["qrcode-generator/dist/qrcode.mjs", "qrcode.mjs"],
   ["maplibre-gl/dist/maplibre-gl.mjs", "maplibre-gl.mjs"],
   ["maplibre-gl/dist/maplibre-gl-shared.mjs", "maplibre-gl-shared.mjs"],
   ["maplibre-gl/dist/maplibre-gl-worker.mjs", "maplibre-gl-worker.mjs"],

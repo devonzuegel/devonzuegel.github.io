@@ -199,6 +199,19 @@ test("hidden concerts leave discovery and saved views without losing personal da
   };
   assert.equal(filterEvents([event], filters, fields).length, 0);
   assert.equal(
+    filterEvents([event], { ...filters, includeHidden: true }, fields).length,
+    1,
+  );
+  assert.equal(
+    filterEvents(
+      [event],
+      { ...filters, includeHidden: true, query: "does not match" },
+      fields,
+    ).length,
+    0,
+  );
+
+  assert.equal(
     filterEvents([event], { ...filters, tab: "saved" }, fields).length,
     0,
   );

@@ -1,3 +1,6 @@
+import { ActionHistory } from "./shared/action-history.js";
+import qrcode from "./vendor/qrcode.mjs";
+import { syncLink, parseSyncLink } from "./shared/qr-sync.js";
 import { addHistoryDetails, historyRank } from "./shared/listening-details.js";
 import { captureResults, animateResults } from "./shared/results-motion.js";
 import { addMapboxBasemap } from "./shared/mapbox-basemap.js?v=20260922-minimap-logo";
@@ -34,6 +37,13 @@ import {
 } from "./shared/core.js?v=20260924-hidden";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
+let pendingQRSync = parseSyncLink(location.hash);
+const hadQRSync = new URLSearchParams(location.hash.slice(1)).has("sync");
+if (hadQRSync) {
+  const cleanURL = new URL(location.href);
+  cleanURL.hash = "";
+  history.replaceState(null, "", cleanURL);
+}
 const config = window.CONCERTS_CONFIG || {},
   apiBase = config.apiBase || "/api/concerts";
 const store = new ClientStore(apiBase);
@@ -197,7 +207,11 @@ function effectiveCities() {
 const filtered = () =>
   filterEvents(
     events(),
-    { ...state, cities: effectiveCities() },
+    {
+      ...state,
+      cities: effectiveCities(),
+      includeHidden: state.view === "list",
+    },
     store.fields,
     listening(),
   );
@@ -229,7 +243,7 @@ function navMarkup(mobile = false) {
   const hidden = events().filter(
     (e) => assessment(store.fields, e.id).hidden,
   ).length;
-  return `<div class="${mobile ? "mobile-nav" : "main-nav"}">${button("tab", icon("explore") + "Discover", `nav-btn ${state.tab === "discover" ? "active" : ""}`, 'data-tab="discover"')}${button("tab", icon("bookmark") + 'Saved <span class="badge">' + count.upcoming + "</span>", `nav-btn ${state.tab === "saved" ? "active" : ""}`, 'data-tab="saved"')}${button("tab", icon("hide") + 'Hidden <span class="badge">' + hidden + "</span>", `nav-btn ${state.tab === "hidden" ? "active" : ""}`, 'data-tab="hidden"')}${mobile ? icoButton("profile", "user", "Your profile") : ""}</div>`;
+  return `<div class="${mobile ? "mobile-nav" : "main-nav"}">${button("tab", icon("explore") + "Discover", `nav-btn ${state.tab === "discover" ? "active" : ""}`, 'data-tab="discover"')}${button("tab", icon("bookmark") + 'Saved <span class="badge">' + count.upcoming + "</span>", `nav-btn ${state.tab === "saved" ? "active" : ""}`, 'data-tab="saved"')}${button("tab", icon("hide") + 'Not interested <span class="badge">' + hidden + "</span>", `nav-btn ${state.tab === "hidden" ? "active" : ""}`, 'data-tab="hidden"')}${mobile ? icoButton("profile", "user", "Your profile") : ""}</div>`;
 }
 function renderChrome() {
   const account = button(
@@ -343,7 +357,7 @@ function hideBtn(e) {
   return icoButton(
     hidden ? "restore" : "hide",
     hidden ? "restore" : "hide",
-    (hidden ? "Restore concert: " : "Hide concert: ") + e.title,
+    (hidden ? "Restore concert: " : "Mark not interested: ") + e.title,
     `data-id="${esc(e.id)}"`,
     "hide-btn",
   );
@@ -473,6 +487,8 @@ function row(e) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
+  if (a.hidden)
+    return `<article class="event-row hidden-event-row" data-event-id="${esc(e.id)}"><span class="hidden-event-date">${e.date ? dateLabel(e.date, { month: "short", day: "numeric" }) : "TBA"}</span>${button("open", esc(e.title), "hidden-event-title", `data-id="${esc(e.id)}" title="${esc(e.title)}"`)}<span class="hidden-event-venue">${esc(e.venue.name)}</span><span class="hidden-event-label">Not interested</span>${hideBtn(e)}</article>`;
   return `<article class="event-row" data-event-id="${esc(e.id)}"><div class="event-date"><span class="day">${e.date ? dateLabel(e.date, { weekday: "short" }) : "TBA"}</span><strong>${e.date ? Number(e.date.slice(8)) : "—"}</strong><span class="time">${e.endDate ? "Through " + dateLabel(e.endDate, { month: "short", day: "numeric" }) : rowTimes(e)}</span></div><div class="event-main">${e.image ? `<img class="event-art" src="${esc(safeURL(e.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="event-art fallback" aria-hidden="true">${esc(e.title[0])}</div>`}<div class="event-copy" style="min-width:0">${button("open", esc(e.title), "event-title", `data-id="${esc(e.id)}"`)}${
     e.artists?.length > 1
       ? `<p class="supporting">Lineup: ${esc(
@@ -650,9 +666,9 @@ function renderResults() {
         : "Try changing the dates, cities, or filters.";
     if (state.tab === "hidden") {
       title = state.query
-        ? "No hidden concerts match your search."
-        : "No hidden concerts.";
-      text = "Restore hidden concerts to return them to results.";
+        ? "No matching concerts marked not interested."
+        : "No concerts marked not interested.";
+      text = "Restore concerts to expand them in results.";
     }
     body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Browse concerts" : "Reset filters", "secondary")}</div>`;
   } else if (state.view === "list") {
@@ -937,8 +953,60 @@ async function loadFeed() {
     }
   }
 }
+const actionHistory = new ActionHistory();
+function recordConcertAction(id, label, changes) {
+  const a = assessment(store.fields, id);
+  actionHistory.record(
+    store.active,
+    label,
+    Object.entries(changes).map(([field, after]) => ({
+      key: `event/${id}/${field}`,
+      before: a[field],
+      after,
+      ...(field === "saved" && !a.saved
+        ? { guard: { key: `event/${id}/notes`, value: a.notes } }
+        : {}),
+    })),
+  );
+}
+function undoConcertAction() {
+  const read = (key) => {
+    const [, id, field] = key.split("/");
+    return assessment(store.fields, id)[field];
+  };
+  const result = actionHistory.undo(store.active, read, (key, value) =>
+    store.change(key, value),
+  );
+  if (!result) return false;
+  updateDetailMeta();
+  toast(
+    result.applied
+      ? `Undid ${result.label}.`
+      : "This action changed since then and could not be undone.",
+  );
+  return true;
+}
+document.addEventListener("keydown", (event) => {
+  if (
+    !(event.metaKey || event.ctrlKey) ||
+    event.altKey ||
+    event.shiftKey ||
+    event.key.toLowerCase() !== "z" ||
+    event.isComposing
+  )
+    return;
+  if (
+    event.target.closest?.(
+      'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]',
+    )
+  )
+    return;
+  if (undoConcertAction()) event.preventDefault();
+});
 function saveEvent(e, force) {
+  if (!e) return;
   const next = force ?? !assessment(store.fields, e.id).saved;
+  recordConcertAction(e.id, next ? "save" : "unsave", { saved: next });
   store.change(`event/${e.id}/snapshot`, e);
   store.change(`event/${e.id}/saved`, next);
   toast(
@@ -951,6 +1019,8 @@ function saveEvent(e, force) {
 function setAssessment(id, field, value) {
   const e = eventFor(id);
   if (!e) return;
+  if (field !== "notes")
+    recordConcertAction(id, `${field} rating`, { [field]: value, saved: true });
   store.change(`event/${id}/snapshot`, e);
   if (!assessment(store.fields, id).saved)
     store.change(`event/${id}/saved`, true);
@@ -985,7 +1055,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Hide concert"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</header><div class="detail-body"><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}</div><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div><div class="event-tags">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons"><a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" title="Save concert"`)}${button(a.hidden ? "restore" : "hide", icon(a.hidden ? "restore" : "hide") + `<span class="detail-action-label">${a.hidden ? "Restore" : "Not interested"}</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="${a.hidden ? "Restore concert" : "Mark not interested"}"`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${listeningDetailsMarkup(e)}<section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"><div class="player-placeholder">${icon("headphones")}<span>Select a recording to play.</span></div></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1077,10 +1147,10 @@ function updateDetailMeta() {
     hide.dataset.action = a.hidden ? "restore" : "hide";
     hide.innerHTML =
       icon(a.hidden ? "restore" : "hide") +
-      `<span class="detail-action-label">${a.hidden ? "Restore" : "Hide"}</span>`;
+      `<span class="detail-action-label">${a.hidden ? "Restore" : "Not interested"}</span>`;
     hide.setAttribute(
       "aria-label",
-      a.hidden ? "Restore concert" : "Hide concert",
+      a.hidden ? "Restore concert" : "Mark not interested",
     );
   }
   const status = $("#detail-sync");
@@ -1235,6 +1305,7 @@ function openModal(title, body, wide = false) {
   );
 }
 function closeModal() {
+  pendingQRSync = null;
   disposeVenueMaps($("#modal-root"));
   $("#app").inert = !!state.selected;
   $("#detail-root").inert = false;
@@ -1242,11 +1313,42 @@ function closeModal() {
   document.body.style.overflow = state.selected ? "hidden" : "";
   if (modalReturnFocus?.isConnected) modalReturnFocus.focus();
 }
+async function showSyncQR() {
+  if (!store.profile || !store.data.code) return;
+  const status = await apiGet("status");
+  const local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if (local && status.storage !== "redis") {
+    toast(
+      "Open the preview using this computer’s network address to sync another device.",
+    );
+    return;
+  }
+  const base = local
+    ? "https://devonzuegel.com/concerts/"
+    : new URL("./", location.href).href;
+  const qr = qrcode(0, "M");
+  qr.addData(syncLink(base, store.profile, store.data.code));
+  qr.make();
+  openModal(
+    "Sync another device",
+    `<p>Scan with your other device’s camera, then tap Sign in.</p><div class="sync-qr" role="img" aria-label="Private account sign-in QR code">${qr.createSvgTag({ cellSize: 5, margin: 20, scalable: true })}</div><p>Signs in as <strong>${esc(store.profile)}</strong>.</p><p class="media-notice">Keep this QR code private. It grants the same access as your sync code.</p>${local ? '<p class="media-notice">Opens the live site. QR sign-in will work there after this update is deployed.</p>' : ""}`,
+  );
+}
+function receiveSyncQR() {
+  if (!pendingQRSync) {
+    toast("This sync QR code is invalid. Generate a new one from Account.");
+    return;
+  }
+  openModal(
+    "Sign in with QR code",
+    `<p>Sign in as <strong>${esc(pendingQRSync.username)}</strong> on this device?</p>${store.profile ? `<p>Currently signed in as ${esc(store.profile)}.</p>` : ""}<div class="form-actions">${button("accept-sync-qr", "Sign in", "primary")}${button("cancel-sync-qr", "Cancel", "secondary")}</div><p id="qr-sync-error" class="form-error" role="alert"></p>`,
+  );
+}
 function profileModal(mode = "create") {
   if (store.profile) {
     openModal(
       "Account",
-      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Save your sync code to sign in on other devices.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div><div class="sidebar-rule"></div><p>Signing out restores your guest list. Pending account changes stay on this device.</p>${button("logout", "Sign out", "secondary")}`,
+      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Save your sync code to sign in on other devices.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("show-sync-qr", "Sync with QR code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div><div class="sidebar-rule"></div><p>Signing out restores your guest list. Pending account changes stay on this device.</p>${button("logout", "Sign out", "secondary")}`,
     );
     return;
   }
@@ -1259,7 +1361,7 @@ function profileModal(mode = "create") {
   }
   openModal(
     "Account",
-    `<p>One saved list per account, synced across devices using your username and sync code.</p><div class="profile-tabs">${button("profile-create-tab", "Create account", `chip ${mode === "create" ? "active" : ""}`)}${button("profile-login-tab", "Sign in", `chip ${mode === "login" ? "active" : ""}`)}</div><form id="profile-form" data-mode="${mode}"><label class="form-field">Username<input id="profile-name" name="username" autocomplete="username" placeholder="e.g. devon" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}" minlength="3" maxlength="32" required></label>${mode === "login" ? '<label class="form-field">Private sync code<input id="profile-code" name="code" autocomplete="current-password" type="password" required></label>' : ""}<button type="submit" class="primary">${mode === "create" ? "Create account" : "Sign in"}</button><p id="profile-error" class="form-error" role="alert"></p></form><p class="media-notice">${mode === "create" ? "Guest saves will transfer to your account." : "Guest saves stay on this device and are separate from your account."} ${state.capabilities.storage === "local" ? "This preview syncs devices connected to the same running server." : ""}</p>`,
+    `<p>Sign in with your username and sync code, or scan a QR code from Account on a signed-in device using your phone’s camera.</p><div class="profile-tabs">${button("profile-create-tab", "Create account", `chip ${mode === "create" ? "active" : ""}`)}${button("profile-login-tab", "Sign in", `chip ${mode === "login" ? "active" : ""}`)}</div><form id="profile-form" data-mode="${mode}"><label class="form-field">Username<input id="profile-name" name="username" autocomplete="username" placeholder="e.g. devon" pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}" minlength="3" maxlength="32" required></label>${mode === "login" ? '<label class="form-field">Private sync code<input id="profile-code" name="code" autocomplete="current-password" type="password" required></label>' : ""}<button type="submit" class="primary">${mode === "create" ? "Create account" : "Sign in"}</button><p id="profile-error" class="form-error" role="alert"></p></form><p class="media-notice">${mode === "create" ? "Guest saves will transfer to your account." : "Guest saves stay on this device and are separate from your account."} ${state.capabilities.storage === "local" ? "This preview syncs devices connected to the same running server." : ""}</p>`,
   );
 }
 function citiesModal() {
@@ -1526,20 +1628,22 @@ document.addEventListener("click", async (e) => {
       case "listen":
         openDetail(id, true);
         break;
+      case "undo-action":
+        undoConcertAction();
+        break;
       case "hide":
       case "restore": {
         const event = eventFor(id);
         if (!event) break;
         const hidden = action === "hide";
+        recordConcertAction(id, hidden ? "marking not interested" : "restore", { hidden });
         store.change(`event/${id}/snapshot`, event);
         store.change(`event/${id}/hidden`, hidden);
         toast(
           hidden
-            ? "Concert hidden."
+            ? "Marked not interested."
             : "Concert restored. Your bookmarks and notes are kept.",
-          hidden
-            ? button("restore", "Undo", "toast-undo", `data-id="${esc(id)}"`)
-            : "",
+          hidden ? button("undo-action", "Undo", "toast-undo") : "",
         );
         break;
       }
@@ -1638,6 +1742,29 @@ document.addEventListener("click", async (e) => {
       case "clear-unmapped":
         state.unmapped = false;
         renderResults();
+        break;
+      case "show-sync-qr":
+        await showSyncQR();
+        break;
+      case "cancel-sync-qr":
+        pendingQRSync = null;
+        closeModal();
+        break;
+      case "accept-sync-qr":
+        if (!pendingQRSync) break;
+        el.disabled = true;
+        try {
+          await store.login(pendingQRSync.username, pendingQRSync.code);
+          pendingQRSync = null;
+          closeModal();
+          renderChrome();
+          renderControls();
+          renderResults();
+          toast("Signed in. Your concerts are synced.");
+        } catch (error) {
+          $("#qr-sync-error").textContent = error.message;
+          el.disabled = false;
+        }
         break;
       case "profile":
         profileModal();
@@ -1960,6 +2087,7 @@ document.addEventListener("submit", async (e) => {
   }
 });
 store.addEventListener("change", () => {
+  actionHistory.scope(store.active);
   renderChrome();
   const counts = savedCounts(events(), store.fields);
   const stats = document.querySelectorAll(".saved-stat strong");
@@ -1977,6 +2105,7 @@ setInterval(() => {
   if (!document.hidden) store.sync();
 }, 8000);
 shell();
+if (hadQRSync) receiveSyncQR();
 try {
   const r = await fetch("./data/events.json");
   if (r.ok) {
