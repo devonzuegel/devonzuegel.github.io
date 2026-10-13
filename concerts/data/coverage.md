@@ -1,27 +1,27 @@
 # Concert source coverage
 
-Checked 2026-10-12T20:20:36.484Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-10-13T18:23:25.389Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
-| sf | [The Independent](https://www.theindependentsf.com/) | 78 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [The Independent](https://www.theindependentsf.com/) | 81 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Chapel](https://thechapelsf.com/music/) | 15 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Rickshaw Stop](https://rickshawstop.com/) | 11 | error | Source returned HTTP 403. |
 | sf | [Cafe du Nord](https://cafedunord.com/) | 55 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 49 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 48 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Bowery Ballroom](https://mercuryeastpresents.com/boweryballroom/) | 78 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Le Poisson Rouge](https://lpr.com/) | 13 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Elsewhere](https://www.elsewhere.club/events) | 87 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Elsewhere](https://www.elsewhere.club/events) | 86 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Baby’s All Right](https://wl.seetickets.us/BabysAllRightBrooklyn) | 0 | error | Source returned HTTP 403. |
 | nyc | [Brooklyn Made](https://brooklynmadepresents.com/) | 0 | error | fetch failed |
 | miami | [Miami Beach Bandshell](https://miamibeachbandshell.com/events/) | 30 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Revolution Live](https://www.jointherevolution.net/concerts/) | 27 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Culture Room](https://www.cultureroom.net/) | 12 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 64 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 11 | error | Source returned HTTP 404. |
+| miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 66 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 10 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Respectable Street](https://respectablestreet.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
 | nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 110 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [Great American Music Hall](https://gamh.com/calendar/) | 68 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Great American Music Hall](https://gamh.com/calendar/) | 70 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Fillmore](https://www.thefillmore.com/shows) | 36 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Warfield](https://www.thewarfieldtheatre.com/events) | 20 | ok | Additional source pages may exist. |
 | sf | [Audio](https://www.audiosf.com/events/) | 27 | ok | Official calendar. Coverage limited to published listings. |
