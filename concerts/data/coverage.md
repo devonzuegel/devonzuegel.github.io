@@ -1,36 +1,36 @@
 # Concert source coverage
 
-Checked 2026-11-14T17:12:45.632Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-11-15T17:52:03.314Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
-| sf | [The Independent](https://www.theindependentsf.com/) | 94 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [The Independent](https://www.theindependentsf.com/) | 93 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Chapel](https://thechapelsf.com/music/) | 15 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Rickshaw Stop](https://rickshawstop.com/) | 4 | error | Source returned HTTP 403. |
-| sf | [Cafe du Nord](https://cafedunord.com/) | 27 | error | Calendar returned no readable events; keeping previously retrieved listings. |
-| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 36 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Bowery Ballroom](https://mercuryeastpresents.com/boweryballroom/) | 68 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Cafe du Nord](https://cafedunord.com/) | 26 | error | Calendar returned no readable events; keeping previously retrieved listings. |
+| sf | [Bottom of the Hill](https://bottomofthehill.com/calendar.html) | 35 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Bowery Ballroom](https://mercuryeastpresents.com/boweryballroom/) | 67 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Le Poisson Rouge](https://lpr.com/) | 8 | ok | Official calendar. Coverage limited to published listings. |
-| nyc | [Elsewhere](https://www.elsewhere.club/events) | 83 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Elsewhere](https://www.elsewhere.club/events) | 80 | ok | Official calendar. Coverage limited to published listings. |
 | nyc | [Baby’s All Right](https://wl.seetickets.us/BabysAllRightBrooklyn) | 0 | empty | No upcoming concerts could be read from this calendar. |
 | nyc | [Brooklyn Made](https://brooklynmadepresents.com/) | 0 | error | fetch failed |
-| miami | [Miami Beach Bandshell](https://miamibeachbandshell.com/events/) | 29 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Miami Beach Bandshell](https://miamibeachbandshell.com/events/) | 28 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Revolution Live](https://www.jointherevolution.net/concerts/) | 23 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [Culture Room](https://www.cultureroom.net/) | 12 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 65 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 5 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Culture Room](https://www.cultureroom.net/) | 11 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 62 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 4 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Respectable Street](https://respectablestreet.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
-| nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 102 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [Great American Music Hall](https://gamh.com/calendar/) | 76 | ok | Official calendar. Coverage limited to published listings. |
+| nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 100 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Great American Music Hall](https://gamh.com/calendar/) | 75 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Fillmore](https://www.thefillmore.com/shows) | 36 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [The Warfield](https://www.thewarfieldtheatre.com/events) | 20 | ok | Additional source pages may exist. |
-| sf | [Audio](https://www.audiosf.com/events/) | 24 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [Halcyon via 19hz](https://19hz.info/eventlisting_BayArea.php) | 21 | ok | Community-maintained 19hz calendar with original ticket links; coverage may be incomplete. |
+| sf | [Audio](https://www.audiosf.com/events/) | 22 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [Halcyon via 19hz](https://19hz.info/eventlisting_BayArea.php) | 20 | ok | Community-maintained 19hz calendar with original ticket links; coverage may be incomplete. |
 | sf | [Public Works](https://publicsf.com/) | 5 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [F8](https://www.feightsf.com/new-events) | 4 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [19hz Bay Area / Northern California](https://19hz.info/eventlisting_BayArea.php) | 422 | ok | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
-| sf | [Afrobeats Oakland](https://www.eventbrite.com/o/4507691499) | 2 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
-| sf | [The Faight Collective](https://www.eventbrite.com/o/75467307963) | 9 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
+| sf | [F8](https://www.feightsf.com/new-events) | 3 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [19hz Bay Area / Northern California](https://19hz.info/eventlisting_BayArea.php) | 376 | ok | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
+| sf | [Afrobeats Oakland](https://www.eventbrite.com/o/4507691499) | 1 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
+| sf | [The Faight Collective](https://www.eventbrite.com/o/75467307963) | 8 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | sf | [Partiful Explore · San Francisco](https://partiful.com/explore/sf) | 0 | empty | No upcoming concerts could be read from this calendar. |
 | sf | [Portola](https://www.portolamusicfestival.com/general-info/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Hardly Strictly Bluegrass](https://hardlystrictlybluegrass.com/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
