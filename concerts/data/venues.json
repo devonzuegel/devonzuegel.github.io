@@ -500,5 +500,35 @@
     "metro": "sf",
     "timezone": "America/Los_Angeles",
     "sourceNote": "Public Explore listings with music-related descriptions. Curated discovery, not all Partiful events."
+  },
+  {
+    "id": "19hz-miami",
+    "name": "19hz Miami / South Florida",
+    "url": "https://19hz.info/eventlisting_Miami.php",
+    "parser": "19hz-miami",
+    "metro": "miami",
+    "timezone": "America/New_York",
+    "sourceNote": "Community calendar of South Florida DJ nights, club shows and dance parties across venues. Secondary source; verify details with the ticket seller. Coverage is not exhaustive."
+  },
+  {
+    "id": "aire",
+    "name": "AIRE Miami",
+    "aliases": [
+      "Aire",
+      "AIRE Edgewater"
+    ],
+    "metro": "miami",
+    "url": "https://airemia.com/",
+    "parser": "aire",
+    "lat": 25.7958292,
+    "lng": -80.1925006,
+    "locality": "Miami",
+    "address": "111 NE 20th Street, Miami, FL 33137",
+    "locationSource": "https://airemia.com/",
+    "verifiedAt": "2026-11-22",
+    "timezone": "America/New_York",
+    "capacity": null,
+    "layout": "Open-air nightclub and lounge",
+    "sourceNote": "Official published AIRE calendar, including DJ nights, lineups, doors times and ticket links. Formerly Boho Miami; coverage limited to announced events."
   }
 ]

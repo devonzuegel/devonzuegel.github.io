@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { parseAire } from "./aire.mjs";
 import {
   hash,
   normalize,
@@ -222,7 +223,7 @@ export function makeEvent(venue, input, now = new Date()) {
     ...input.extra,
   };
 }
-export function parseVenue(venue, html, now = new Date()) {
+export function parseVenue(venue, html, now = new Date(), { venues = [] } = {}) {
   const $ = cheerio.load(html),
     out = [];
   const add = (x) => {
@@ -238,6 +239,8 @@ export function parseVenue(venue, html, now = new Date()) {
     }
   };
   switch (venue.parser) {
+    case "aire":
+      return parseAire(venue, html, now);
     case "audio":
       $('[id="cal-event-block-in"]').each((i, node) => {
         const e = $(node), title = text(e, '[id="cal-list-box-center"]');
@@ -284,13 +287,15 @@ export function parseVenue(venue, html, now = new Date()) {
       }
       break;
     }
+    case "19hz-miami":
     case "19hz-bayarea":
     case "19hz-halcyon":
       $("tr").each((i, node) => {
         const cells = $(node).children("td"), listing = cells.eq(1);
         const location=clean(listing.text()).match(/@ (.+) \(([^()]+)\)\s*$/);
         if (!location || (venue.parser === '19hz-halcyon' && !/@ Halcyon \(San Francisco\)\s*$/i.test(clean(listing.text())))) return;
-        const actual=venue.parser==='19hz-halcyon'?venue:{id:'19hz-venue-'+hash(location[1]+'|'+location[2]),name:location[1],locality:location[2],metro:venue.metro,timezone:venue.timezone,url:venue.url};
+        const known = venue.parser === "19hz-miami" && venues.find(v => v.metro === venue.metro && normalize(v.locality) === normalize(location[2]) && [v.name, ...(v.aliases || [])].some(name => normalize(name) === normalize(location[1])));
+        const actual=venue.parser==='19hz-halcyon'?venue:known || {id:'19hz-venue-'+hash(location[1]+'|'+location[2]),name:location[1],locality:location[2],metro:venue.metro,timezone:venue.timezone,url:venue.url};
         const link = listing.find("a").first();
         const date = clean(cells.eq(6).text()).match(/20\d{2}\/\d{2}\/\d{2}/)?.[0].replaceAll("/", "-");
         const ticket=abs(link.attr('href'));

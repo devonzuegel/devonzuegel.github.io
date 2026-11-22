@@ -1,4 +1,5 @@
 import {parsePartiful} from "./partiful.mjs";
+import { mergeCatalogEvents } from "./catalog-merge.mjs";
 import { enrichVenueReferences } from "./musicbrainz.mjs";
 import { enrichDetails } from "./event-details.mjs";
 import { enrichEventVenue } from "../shared/venue-profiles.js";
@@ -105,7 +106,7 @@ export async function readVenue(v, now = new Date()) {
       throw new Error("Automated access is restricted by this source.");
     const r = await request(url);
     const html = await responseText(r);
-    const parsed = v.parser === "partiful-explore" ? parsePartiful(html,v) : parseVenue(v, html, now);
+    const parsed = v.parser === "partiful-explore" ? parsePartiful(html,v) : parseVenue(v, html, now, { venues });
     events.push(...parsed);
     pages++;
     if (v.parser === "tribe") {
@@ -226,12 +227,12 @@ export async function refreshFeed({ now = new Date(), concurrency = 3 } = {}) {
     }),
   );
   const feed = {
-    events: await enrichVenueReferences(mergeEvents(outputs.flatMap((o) => o.events)).map(enrichEventVenue)),
+    events: await enrichVenueReferences(mergeCatalogEvents(outputs.flatMap((o) => o.events)).map(enrichEventVenue)),
     sources: outputs.map((o) => o.source),
     updatedAt: now.toISOString(),
     coverage: "partial",
     notice:
-      "Official venue and festival calendars. Coverage is incomplete; open Sources to see included sources and gaps.",
+      "Venue, festival, organizer and community calendars. Coverage is incomplete; open Sources to see included sources and gaps.",
   };
   if (store.storageMode !== "unconfigured") await store.set("feed", feed);
   return feed;

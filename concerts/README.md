@@ -103,6 +103,8 @@ Deploy the API first, then `npx wrangler deploy --config _concerts-worker/wrangl
 
 ### Regional and organizer discovery
 
+Miami / South Florida now imports the 19hz regional calendar for DJ nights, club shows and dance parties across venues, alongside AIRE Miami's official published calendar. Aire was previously absent from the curated source directory; Miami did not have a regional nightlife feed. AIRE uses explicit published dates, full lineups, doors times, ticket links and the venue's official map coordinates. Community listings retain secondary-source attribution. Exact tickets or corroborated lineups at the same verified venue/date are reconciled with the official calendar; conflicting times remain flagged, and distinct or ambiguous shows stay separate. These sources refresh daily with the rest of the catalog. They cover published listings, not every event in South Florida.
+
 19hz Bay Area / Northern California imports published DJ nights and dance parties across venues, with secondary-source attribution. Afrobeats Oakland and The Faight Collective import structured upcoming events from their public Eventbrite organizer pages. These sources participate in the daily catalog refresh; no Eventbrite API key is required. Organizer pagination is reported as partial when more listings exist. Protected/online events and clearly non-music listings are excluded. Eventbrite event IDs merge listings from different sources while preserving source links.
 
 ### Partiful

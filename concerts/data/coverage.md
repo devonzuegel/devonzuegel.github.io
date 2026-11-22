@@ -1,6 +1,6 @@
 # Concert source coverage
 
-Checked 2026-11-22T18:35:10.950Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-11-22T18:54:43.193Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
@@ -32,6 +32,8 @@ Checked 2026-11-22T18:35:10.950Z. This is a partial catalog, not every concert i
 | sf | [Afrobeats Oakland](https://www.eventbrite.com/o/4507691499) | 2 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | sf | [The Faight Collective](https://www.eventbrite.com/o/75467307963) | 6 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | sf | [Partiful Explore · San Francisco](https://partiful.com/explore/sf) | 0 | empty | No upcoming concerts could be read from this calendar. |
+| miami | [19hz Miami / South Florida](https://19hz.info/eventlisting_Miami.php) | 293 | ok | Community calendar of South Florida DJ nights, club shows and dance parties across venues. Secondary source; verify details with the ticket seller. Coverage is not exhaustive. |
+| miami | [AIRE Miami](https://airemia.com/) | 12 | ok | Official published AIRE calendar, including DJ nights, lineups, doors times and ticket links. Formerly Boho Miami; coverage limited to announced events. |
 | sf | [Portola](https://www.portolamusicfestival.com/general-info/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Hardly Strictly Bluegrass](https://hardlystrictlybluegrass.com/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Outside Lands](https://sfoutsidelands.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
