@@ -164,6 +164,20 @@ if (!sharedListId) {
     state.query = "";
   }
 }
+if (!sharedListId) {
+  const params = new URLSearchParams(location.search);
+  const range = { from: params.get("from"), to: params.get("to") };
+  if (!listDateError(range)) {
+    Object.assign(state, range, { preset: "custom", tab: "discover", query: "", genre: "any", venue: "any", size: "any", distanceRadius: "any", matches: false });
+    state.calendarMonth = range.from.slice(0, 7);
+  }
+}
+function dateLink() {
+  const url = new URL("./", location.href);
+  url.searchParams.set("from", state.from);
+  url.searchParams.set("to", state.to);
+  return url.href;
+}
 let map = null,
   markerGroup = null,
   feedRequest = 0,
@@ -175,6 +189,12 @@ let map = null,
   detailNoteRev = 0;
 function persistUI() {
   if (sharedListId) return;
+  if (state.tab === "discover") {
+    const url = new URL(location.href);
+    url.searchParams.set("from", state.from);
+    url.searchParams.set("to", state.to);
+    if (url.href !== location.href) history.replaceState(null, "", url);
+  }
   const {
     tab,
     view,
@@ -406,7 +426,7 @@ function renderControls() {
       })
       .join(
         "",
-      )}</div><div class="date-range">${button("date-range", icon("calendar") + `${dateLabel(state.from)} → ${dateLabel(state.to)}` + icon("down"), "range-trigger", 'aria-label="Choose date range" aria-haspopup="dialog" aria-expanded="false"')}${!sharedListId ? button("save-date-range", icon("bookmark") + "Save date range", "small-button save-range-button", state.loading ? "disabled" : "") : ""}</div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
+      )}</div><div class="date-range">${button("date-range", icon("calendar") + `${dateLabel(state.from)} → ${dateLabel(state.to)}` + icon("down"), "range-trigger", 'aria-label="Choose date range" aria-haspopup="dialog" aria-expanded="false"')}${!sharedListId ? button("copy-date-link", "Copy date link", "small-button") : ""}${!sharedListId ? button("save-date-range", icon("bookmark") + "Save date range", "small-button save-range-button", state.loading ? "disabled" : "") : ""}</div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
       SIZE_BUCKETS.map((x) => [x[0], x[1]]),
       state.size,
     )}</select></label></div><div class="distance-filter">
@@ -2133,6 +2153,14 @@ document.addEventListener("click", async (e) => {
         store.change("listening", null);
         closeModal();
         toast("Listening data removed.");
+        break;
+      case "copy-date-link":
+        try {
+          await navigator.clipboard.writeText(dateLink());
+          toast("Date-range link copied.");
+        } catch {
+          openModal("Date-range link", `<label>Copy this link<input readonly value="${esc(dateLink())}"></label>`);
+        }
         break;
       case "save-date-range":
         await manageLists({ ...listOptions(), createRange: true });
