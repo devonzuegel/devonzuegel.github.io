@@ -1,6 +1,6 @@
 import { planMarkup } from "./shared/concert-plan.js";
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
-import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-plan";
+import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-plan2";
 import { listDateError, listDateLabel } from "./shared/list-dates.js";
 import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
@@ -45,8 +45,8 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20261123-plan";
-import { ClientStore } from "./shared/client-store.js?v=20261123-plan";
+} from "./shared/core.js?v=20261123-plan2";
+import { ClientStore } from "./shared/client-store.js?v=20261123-plan2";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
 const hadQRSync = new URLSearchParams(location.hash.slice(1)).has("sync");

@@ -34,10 +34,14 @@ export class ClientStore extends EventTarget {
     this.lastError = "";
   }
   get fields() {
+    const cached = this.fieldCache;
+    if (cached && cached.fields === this.data.fields && cached.pending === this.data.pending && cached.groups === this.eventGroups) return cached.value;
     const f = { ...this.data.fields };
     for (const o of this.data.pending)
       f[o.key] = { value: o.value, rev: o.baseRev, at: o.at };
-    return projectEventFields(f, this.eventGroups);
+    const value = projectEventFields(f, this.eventGroups);
+    this.fieldCache = {fields: this.data.fields, pending: this.data.pending, groups: this.eventGroups, value};
+    return value;
   }
   setEventAliases(events) {
     this.eventGroups = events.filter(e => e.aliases?.length).map(e => [...new Set([e.id, ...e.aliases])]);
@@ -49,6 +53,7 @@ export class ClientStore extends EventTarget {
     this.dispatchEvent(new Event("change"));
   }
   persist(emit = true) {
+    this.fieldCache = null;
     try {
       localStorage.setItem(PREFIX + this.active, JSON.stringify(this.data));
       localStorage.setItem(ACTIVE, JSON.stringify(this.active));
