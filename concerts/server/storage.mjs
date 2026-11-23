@@ -18,11 +18,17 @@ async function command(args) {
     },
     body: JSON.stringify(args),
     signal: AbortSignal.timeout(10000),
-  }).catch(() => {
+  }).catch((error) => {
+    console.error("Concert storage network failure", error?.cause?.code || error?.name || "unknown");
     // Network/header errors can include credentials; never return them to clients.
     throw new Error("Sync storage is temporarily unavailable.");
   });
-  if (!r.ok) throw new Error("Sync storage is temporarily unavailable.");
+  if (!r.ok) {
+    const detail = await r.text().catch(() => "");
+    const reason = /quota|limit|exceed/i.test(detail) ? "quota or limit" : /token|auth|credential|permission/i.test(detail) ? "authentication or permission" : /inactive|suspend|disabled|archiv/i.test(detail) ? "database inactive" : "provider refusal";
+    console.error("Concert storage HTTP failure", r.status, reason);
+    throw new Error("Sync storage is temporarily unavailable.");
+  }
   const d = await r.json();
   if (d.error) throw new Error("Sync storage rejected the request.");
   return d.result;
