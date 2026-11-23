@@ -1,3 +1,4 @@
+import { mergeEventRecords } from "../shared/event-merge.js";
 import { mergeEvents, normalize } from "../shared/core.js";
 import { sameVenue } from "../shared/enrichment.js";
 
@@ -61,23 +62,7 @@ export function mergeCatalogEvents(events) {
       remaining.push(event);
       continue;
     }
-    const target = replacements.get(matches[0].id) || { ...matches[0] };
-    target.sources = [
-      ...new Map(
-        [...(target.sources || []), ...event.sources].map((source) => [
-          source.url,
-          source,
-        ]),
-      ).values(),
-    ];
-    target.aliases = [...new Set([...(target.aliases || []), event.id])];
-    // Keep the official doors time, but retain evidence of conflicting listings.
-    if (event.time && target.time && event.time !== target.time) {
-      target.dataConflicts = [
-        ...(target.dataConflicts || []),
-        { field: "time", sources: event.sources },
-      ];
-    }
+    const target = mergeEventRecords(replacements.get(matches[0].id) || matches[0], event);
     replacements.set(target.id, target);
   }
   return mergeEvents(

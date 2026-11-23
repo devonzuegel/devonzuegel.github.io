@@ -1,3 +1,4 @@
+import { projectEventFields } from "./event-associations.js";
 const operationId = () =>
   globalThis.crypto?.randomUUID?.() ||
   Date.now().toString(36) +
@@ -36,7 +37,10 @@ export class ClientStore extends EventTarget {
     const f = { ...this.data.fields };
     for (const o of this.data.pending)
       f[o.key] = { value: o.value, rev: o.baseRev, at: o.at };
-    return f;
+    return projectEventFields(f, this.eventGroups);
+  }
+  setEventAliases(events) {
+    this.eventGroups = events.filter(e => e.aliases?.length).map(e => [...new Set([e.id, ...e.aliases])]);
   }
   get profile() {
     return this.data.profile;
@@ -56,6 +60,12 @@ export class ClientStore extends EventTarget {
     if (emit) this.emit();
   }
   change(key, value, options = {}) {
+    const [, eventId, field] = key.split('/');
+    const group = key.startsWith('event/') && field !== 'snapshot' && this.eventGroups?.find(ids => ids.includes(eventId));
+    if (group && !options.aliasWrite) {
+      for (const id of group) this.change(`event/${id}/${field}`, value, id === eventId ? { ...options, aliasWrite: true } : { aliasWrite: true });
+      return;
+    }
     const baseRev = options.baseRev ?? this.data.fields[key]?.rev ?? 0;
     this.data.pending = this.data.pending.filter(
       (o) => o.key !== key || this.inflight.has(o.id),

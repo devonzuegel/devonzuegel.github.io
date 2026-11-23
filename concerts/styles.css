@@ -4461,3 +4461,15 @@ summary.month-heading:focus-visible {
 .distance-filter label { display:flex; align-items:center; gap:8px; }
 .distance-filter select { max-width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--white); color:inherit; font:inherit; }
 .distance-filter small { font-size:12px; }
+
+.shared-past-shows {
+  margin-top: 18px;
+}
+.shared-past-shows > summary {
+  padding: 14px 10px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.shared-past-shows[open] > summary {
+  margin-bottom: 8px;
+}

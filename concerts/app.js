@@ -44,7 +44,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20261003-distance";
+} from "./shared/core.js?v=20261123-duplicates";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
@@ -247,11 +247,17 @@ function toast(message, action = "") {
     action ? 10000 : 4200,
   );
 }
-const events = () =>
-  (sharedListId
-    ? state.feed.events
-    : allEvents(state.feed.events, store.fields)
-  ).map(enrichEventVenue);
+let eventCache = null;
+const events = () => {
+  const fields = store.fields;
+  const snapshots = sharedListId ? [] : Object.entries(fields).filter(([key]) => key.endsWith('/snapshot')).map(([key, field]) => [key, field.value]);
+  if (!eventCache || eventCache.feed !== state.feed.events || snapshots.length !== eventCache.snapshots.length || snapshots.some(([key, value], i) => key !== eventCache.snapshots[i][0] || value !== eventCache.snapshots[i][1])) {
+    const result = (sharedListId ? mergeEvents(state.feed.events) : allEvents(state.feed.events, fields)).map(enrichEventVenue);
+    eventCache = { feed: state.feed.events, snapshots, result };
+    store.setEventAliases?.(result);
+  }
+  return eventCache.result;
+};
 const listening = () => valueAt(store.fields, "listening", {});
 const cities = () =>
   sharedListId
@@ -311,7 +317,7 @@ const cityFor = (id) =>
     short: "",
     color: "#7d8561",
   };
-const eventFor = (id) => events().find((e) => e.id === id);
+const eventFor = (id) => events().find((e) => e.id === id || e.aliases?.includes(id));
 function icoButton(action, name, label, attrs = "", cls = "icon-btn") {
   return button(
     action,
@@ -1041,7 +1047,7 @@ async function loadSharedFeed() {
       const r = await fetch("./data/events.json", {signal: AbortSignal.timeout(8000)});
       if (r.ok) catalog = (await r.json()).events || [];
     } catch {}
-    const known = new Map(catalog.map((e) => [e.id, e]));
+    const known = new Map(mergeEvents(catalog).flatMap((e) => [e.id, ...(e.aliases || [])].map(id => [id, e])));
     state.feed = {
       events: sharedList.events.map((e) => {
         const full = known.get(e.id);

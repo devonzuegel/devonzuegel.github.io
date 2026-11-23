@@ -10,7 +10,7 @@ export function sharedListTimestamp(value) {
   return `${parts.weekday}, ${parts.month} ${parts.day} at ${parts.hour}:${parts.minute}${parts.dayPeriod.toLowerCase()} ${parts.timeZoneName}`;
 }
 
-import { dateLabel, timeLabel } from "./core.js";
+import { dateLabel, timeLabel, mergeEvents, dayInZone } from "./core.js";
 const esc = (value) =>
   String(value ?? "").replace(
     /[&<>"']/g,
@@ -32,7 +32,7 @@ export async function chooseConcertList(options) {
   try {
     const { lists } = await store.apiCall("lists");
     openModal("Add to a list", `<p><strong>${esc(concert.title)}</strong> stays in your default Saved list.</p><div class="add-to-list-choices">${lists.map((list) => {
-      const reason = list.events.some((e) => e.id === concert.id) ? "Already added"
+      const reason = mergeEvents([...list.events, concert]).length === mergeEvents(list.events).length ? "Already added"
         : list.dateRange && !concertInRange(concert, list.dateRange) ? "Outside these dates"
         : list.events.length >= 100 ? "List is full" : "";
       return `<button class="secondary" data-add-to-list="${esc(list.id)}" ${reason ? "disabled" : ""}><strong>${esc(list.title)}</strong><small>${esc(reason || (list.dateRange ? listDateLabel(list.dateRange) : `${list.events.length} concerts`))}</small></button>`;
@@ -56,7 +56,17 @@ export async function chooseConcertList(options) {
     openModal("Add to a list", `<p role="alert">${esc(error.message)} Your concert is still in Saved.</p>`);
   }
 }
-function concertChoices(choices, selected, isRange) {
+export function concertChoices(choices, selected, isRange, now = new Date()) {
+  const past = [], current = [];
+  for (const event of choices) {
+    const lastDay = event.endDate || event.date;
+    const ended = event.endAt && Number.isFinite(Date.parse(event.endAt)) && Date.parse(event.endAt) < +now;
+    (ended || (lastDay && lastDay < dayInZone(now, event.timezone || "America/New_York")) ? past : current).push(event);
+  }
+  const selectedPast = past.filter(event => selected.has(event.id)).length;
+  return `${current.length || !past.length ? concertChoiceTable(current, selected, isRange) : ""}${past.length ? `<details class="shared-past-shows"><summary>Past shows (${past.length})<span class="shared-past-selected">${selectedPast ? ` · ${selectedPast} selected` : ""}</span></summary>${concertChoiceTable(past, selected, isRange)}</details>` : ""}`;
+}
+function concertChoiceTable(choices, selected, isRange) {
   if (!choices.length)
     return isRange
       ? "<p>No concerts match these dates and your current filters. You can still save the dates and add concerts later.</p>"
@@ -108,13 +118,14 @@ export async function manageLists(options) {
   }
   function edit(list, initialRange = list?.dateRange) {
     let range = initialRange ? { ...initialRange } : null;
-    const pool = [
+    const pool = mergeEvents([
       ...new Map(
         [...(range ? rangeConcerts : concerts), ...(createConcert ? [createConcert] : []), ...(list?.events || [])].map((e) => [e.id, e]),
       ).values(),
-    ].sort((a, b) => (a.date || "").localeCompare(b.date || "") || (a.time || "").localeCompare(b.time || ""));
+     ]).sort((a, b) => (a.date || "").localeCompare(b.date || "") || (a.time || "").localeCompare(b.time || ""));
     let choices = range ? pool.filter((e) => concertInRange(e, range)) : pool;
     const selected = new Set(list ? list.events.map((e) => e.id) : range ? choices.map((e) => e.id) : createConcert ? [createConcert.id] : []);
+    for (const event of pool) if (event.aliases?.some(id => selected.has(id))) selected.add(event.id);
     const initialTitle = list?.title || (range ? listDateLabel(range) : "");
     openModal(
       list ? "Edit shared list" : range ? "Save date-range list" : "New shared list",
@@ -130,6 +141,11 @@ export async function manageLists(options) {
     const updateSelection = () => {
       const count = form.querySelectorAll('[name="concert"]:checked').length;
       document.querySelector("#shared-selection-count").textContent = `${count} selected · up to 100 concerts`;
+      const pastSection = form.querySelector('.shared-past-shows');
+      if (pastSection) {
+        const pastCount = pastSection.querySelectorAll('[name="concert"]:checked').length;
+        pastSection.querySelector('.shared-past-selected').textContent = pastCount ? ` · ${pastCount} selected` : '';
+      }
       const error = range ? listDateError(range) : "";
       submit.disabled = !!error || count > 100 || (!range && count === 0);
       status.textContent = error || (count > 100 ? "Choose up to 100 concerts, or narrow the dates or filters." : "");
@@ -140,7 +156,7 @@ export async function manageLists(options) {
     };
     for (const [id, checked] of [["shared-select-all", true], ["shared-clear-all", false]]) {
       document.getElementById(id).onclick = () => {
-        form.querySelectorAll('[name="concert"]').forEach((input) => { input.checked = checked; });
+        form.querySelectorAll('[name="concert"]').forEach((input) => { if (checked && input.closest(".shared-past-shows:not([open])")) return; input.checked = checked; });
         updateSelection();
       };
     }

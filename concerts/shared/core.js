@@ -1,4 +1,5 @@
-import { enrichFromDatasets } from "./enrichment.js?v=20261003-sources";
+import { mergeEventRecords, sameShowTitle, performerName } from "./event-merge.js";
+import { enrichFromDatasets, sameVenue } from "./enrichment.js?v=20261003-sources";
 export const DEFAULT_CITIES = [
   {
     id: "sf",
@@ -246,7 +247,7 @@ export function allEvents(feed, fields) {
     )
       events.set(field.value.id, { ...field.value, missingFromFeed: true });
   }
-  return [...events.values()];
+  return mergeEvents([...events.values()]);
 }
 export function spotifyMatch(e, listening = {}) {
   listening ||= {};
@@ -398,33 +399,42 @@ export function mergeEvents(events) {
     }
     const prior = map.get(e.id);
     if (prior) {
-      map.set(e.id, { ...prior, ...e, sources: [...new Map([...(prior.sources || []), ...(e.sources || [])].map(s => [s.url, s])).values()] });
+      map.set(e.id, mergeEventRecords(e, prior));
       continue;
     }
     map.set(e.id, e);
   }
-  // Only collapse identical venue/artist/date/time matches. Distinct nights and shows survive.
-  const aliases = new Map(),
-    result = [];
-  for (const e of enrichFromDatasets([...map.values()])) {
-    const key =
-      e.date && e.time
-        ? `${e.metro}|${normalize(e.venue?.locality)}|${normalize(e.venue?.name)}|${normalize(e.venue?.room)}|${e.date}|${e.time}|${normalize(e.artists?.[0]?.name || e.title)}`
-        : e.id;
-    if (aliases.has(key)) {
-      const old = aliases.get(key);
-      old.sources = [
-        ...new Map(
-          [...(old.sources || []), ...(e.sources || [])].map((s) => [s.url, s]),
-        ).values(),
-      ];
-      old.aliases = [...(old.aliases || []), e.id];
-      old.provenance = {...e.provenance,...old.provenance};
-      if (!old.genres?.length && e.genres?.length) old.genres = e.genres;
-    } else {
-      aliases.set(key, e);
-      result.push(e);
-    }
+  // A scheduling suffix alone is not an identity: also require venue, room,
+  // date and an explicitly identical start time, with one unambiguous match.
+  const result = [], buckets = new Map(), identities = new Map();
+  const bucketKey = e => `${e.metro}|${e.date}|${e.time}|${normalize(performerName(e.title))}`;
+  const enriched = enrichFromDatasets([...map.values()]);
+  const labels = new Map();
+  for (const e of enriched) {
+    const label = e.title.match(/\((sunset|early|late) show\)\s*$/i)?.[1]?.toLowerCase();
+    if (!labels.has(bucketKey(e))) labels.set(bucketKey(e), new Set());
+    if (label) labels.get(bucketKey(e)).add(label);
+  }
+  for (const e of enriched) {
+    const key = bucketKey(e);
+    const candidates = new Set([...(buckets.get(key) || []), ...[e.id, ...(e.aliases || [])].map(id => identities.get(id)).filter(Boolean)]);
+    const matches = [...candidates].filter(old =>
+      old.aliases?.includes(e.id) || e.aliases?.includes(old.id) ||
+      (e.date && e.time && old.date === e.date && old.time === e.time &&
+       (old.endDate || old.date) === (e.endDate || e.date) &&
+       (sameVenue(old, e) || (old.venue?.id && old.venue.id === e.venue?.id && old.metro === e.metro && normalize(old.venue?.room) === normalize(e.venue?.room))) &&
+       (labels.get(key).size < 2 || normalize(old.title) === normalize(e.title)) &&
+       sameShowTitle(old.title, e.title) && (old.sourceRecords || []).every(record => sameShowTitle(record.title, e.title))));
+    let merged = e;
+    if (matches.length === 1) {
+      const old = matches[0];
+      merged = mergeEventRecords(old, e);
+      result[result.indexOf(old)] = merged;
+      for (const bucket of buckets.values()) if (bucket.delete(old)) bucket.add(merged);
+    } else result.push(e);
+    if (!buckets.has(key)) buckets.set(key, new Set());
+    buckets.get(key).add(merged);
+    for (const id of [merged.id, ...(merged.aliases || [])]) identities.set(id, merged);
   }
   return result;
 }

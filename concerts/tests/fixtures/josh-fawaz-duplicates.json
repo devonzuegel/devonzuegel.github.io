@@ -1,0 +1,183 @@
+[
+  {
+    "id": "zeyzey-ho4fnc",
+    "title": "Josh Fawaz (Sunset Show)",
+    "artists": [
+      {
+        "name": "Josh Fawaz (Sunset Show)"
+      }
+    ],
+    "date": "2026-11-28",
+    "time": "18:00",
+    "timeKind": "show",
+    "doorsTime": null,
+    "showTime": "18:00",
+    "startAt": "2026-11-28T23:00:00.000Z",
+    "endAt": null,
+    "timezone": "America/New_York",
+    "metro": "miami",
+    "venue": {
+      "id": "zeyzey",
+      "name": "ZeyZey",
+      "metro": "miami",
+      "url": "https://calendar.zeyzeymiami.com/",
+      "lat": 25.8328078,
+      "lng": -80.189092,
+      "locality": "Miami",
+      "address": "353 Northeast 61st Street Miami 33137",
+      "locationSource": "https://www.openstreetmap.org/N/13272246796",
+      "verifiedAt": "2026-09-19",
+      "timezone": "America/New_York",
+      "capacity": {
+        "min": 1000,
+        "max": 1200,
+        "source": "https://www.indieonthemove.com/venues/zeyzey-miami-florida",
+        "configuration": "Outdoor main stage; published estimates vary",
+        "approximate": true,
+        "verifiedAt": "2026-10-02"
+      },
+      "layout": "Indoor / outdoor; stage varies",
+      "provenance": {
+        "description": {
+          "secondary": true,
+          "sources": [
+            {
+              "name": "Venue reference",
+              "url": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+            }
+          ],
+          "match": "Researched venue name and metro"
+        },
+        "capacity": {
+          "secondary": true,
+          "sources": [
+            {
+              "name": "Capacity reference",
+              "url": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+            }
+          ],
+          "match": "Researched venue name and metro; whole venue"
+        }
+      },
+      "description": "Outdoor Miami live-music and DJ venue with food vendors.",
+      "descriptionSource": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+    },
+    "genres": [],
+    "sourceGenres": [],
+    "image": "https://cdn.prod.website-files.com/69f4b7abec64bc099cc8a34b/6acfee83967c2d0e2a273e75_1.jpeg",
+    "ticketUrl": "https://calendar.zeyzeymiami.com/shows/josh-fawaz-sunset-show-28-nov",
+    "status": "scheduled",
+    "sources": [
+      {
+        "name": "ZeyZey",
+        "url": "https://calendar.zeyzeymiami.com/shows/josh-fawaz-sunset-show-28-nov"
+      }
+    ],
+    "sourceId": "zeyzey",
+    "fetchedAt": "2026-11-22T18:54:43.193Z",
+    "provenance": {},
+    "dataConflicts": []
+  },
+  {
+    "id": "zeyzey-1ygnzyz",
+    "title": "Josh Fawaz",
+    "artists": [
+      {
+        "name": "Josh Fawaz"
+      }
+    ],
+    "date": "2026-11-28",
+    "time": "18:00",
+    "timeKind": "show",
+    "doorsTime": null,
+    "showTime": "18:00",
+    "startAt": "2026-11-28T23:00:00.000Z",
+    "endAt": null,
+    "timezone": "America/New_York",
+    "metro": "miami",
+    "venue": {
+      "id": "zeyzey",
+      "name": "ZeyZey",
+      "metro": "miami",
+      "url": "https://calendar.zeyzeymiami.com/",
+      "lat": 25.8328078,
+      "lng": -80.189092,
+      "locality": "Miami",
+      "address": "353 Northeast 61st Street Miami 33137",
+      "locationSource": "https://www.openstreetmap.org/N/13272246796",
+      "verifiedAt": "2026-09-19",
+      "timezone": "America/New_York",
+      "capacity": {
+        "min": 1000,
+        "max": 1200,
+        "source": "https://www.indieonthemove.com/venues/zeyzey-miami-florida",
+        "configuration": "Outdoor main stage; published estimates vary",
+        "approximate": true,
+        "verifiedAt": "2026-10-02"
+      },
+      "layout": "Indoor / outdoor; stage varies",
+      "provenance": {
+        "description": {
+          "secondary": true,
+          "sources": [
+            {
+              "name": "Venue reference",
+              "url": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+            }
+          ],
+          "match": "Researched venue name and metro"
+        },
+        "capacity": {
+          "secondary": true,
+          "sources": [
+            {
+              "name": "Capacity reference",
+              "url": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+            }
+          ],
+          "match": "Researched venue name and metro; whole venue"
+        }
+      },
+      "description": "Outdoor Miami live-music and DJ venue with food vendors.",
+      "descriptionSource": "https://www.indieonthemove.com/venues/zeyzey-miami-florida"
+    },
+    "genres": [
+      "Rock",
+      "Electronic",
+      "Hip-hop"
+    ],
+    "sourceGenres": [
+      "house",
+      "uk garage",
+      "hip-hop"
+    ],
+    "image": "",
+    "ticketUrl": "https://ra.co/events/2563133",
+    "status": "scheduled",
+    "sources": [
+      {
+        "name": "19hz",
+        "url": "https://19hz.info/eventlisting_Miami.php"
+      },
+      {
+        "name": "Event listing",
+        "url": "https://ra.co/events/2563133"
+      }
+    ],
+    "sourceId": "19hz-miami",
+    "fetchedAt": "2026-11-22T18:54:43.193Z",
+    "provenance": {
+      "time": {
+        "secondary": true,
+        "sources": [
+          {
+            "name": "19hz",
+            "url": "https://19hz.info/eventlisting_Miami.php"
+          }
+        ],
+        "match": "Community calendar listing; verify with the ticket page"
+      }
+    },
+    "dataConflicts": []
+  }
+]

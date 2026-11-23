@@ -75,3 +75,26 @@ test("unchanged profile polling does not rerender the map or remove keyboard foc
   await s.sync();
   assert.equal(count, 0);
 });
+
+test('merged saves, notes and ratings survive alias edits and reloads', () => {
+  const store = new ClientStore('/api');
+  store.active = 'duplicate-test';
+  store.data = {fields:{},pending:[],conflicts:[],profile:null,code:null};
+  store.change('event/a/saved', true);
+  store.change('event/a/notes', 'One note');
+  store.change('event/b/notes', 'Another note');
+  store.change('event/b/music', 4);
+  store.setEventAliases([{id:'a',aliases:['b']}]);
+  assert.equal(store.fields['event/a/notes'].value, 'One note\n\nAnother note');
+  assert.equal(store.fields['event/a/music'].value,4);
+  store.change('event/a/saved', false);
+  assert.equal(store.fields['event/b/saved'].value,false);
+  store.change('event/b/notes', 'Edited combined note');
+  assert.equal(store.fields['event/a/notes'].value,'Edited combined note');
+  const reloaded = new ClientStore('/api');
+  reloaded.setEventAliases([{id:'a',aliases:['b']}]);
+  assert.equal(reloaded.fields['event/a/notes'].value,'Edited combined note');
+  reloaded.change('event/a/notes','');
+  assert.equal(reloaded.fields['event/b/notes'].value,'');
+  clearTimeout(store.timer);clearTimeout(reloaded.timer);
+});
