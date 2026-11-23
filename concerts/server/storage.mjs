@@ -1,3 +1,4 @@
+import { cloudflareGet, cloudflareUpdate } from "./cloudflare-storage.mjs";
 import { PublicReadCache } from "./public-read-cache.mjs";
 const publicReads = new PublicReadCache();
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
@@ -10,7 +11,7 @@ const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const token =
   process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 export const storageMode =
-  url && token ? "redis" : process.env.VERCEL ? "unconfigured" : "local";
+  process.env.CONCERTS_STORAGE_URL && process.env.CONCERTS_STORAGE_SECRET ? "cloudflare-d1" : url && token ? "redis" : process.env.VERCEL ? "unconfigured" : "local";
 async function command(args) {
   const r = await fetch(url, {
     method: "POST",
@@ -40,6 +41,11 @@ const path = (k) =>
   join(directory, createHash("sha256").update(k).digest("hex") + ".json");
 const queues = new Map();
 export async function get(k) {
+  if (storageMode === "cloudflare-d1") {
+    const cached=publicReads.get(k);
+    if(cached!==undefined)return cached;
+    const value=await cloudflareGet(key(k));publicReads.set(k,value);return value;
+  }
   if (storageMode === "unconfigured")
     throw new Error("Cloud sync needs a Redis connection.");
   if (storageMode === "redis") {
@@ -59,6 +65,9 @@ export async function get(k) {
 }
 export async function update(k, fn) {
   publicReads.delete(k);
+  if (storageMode === "cloudflare-d1") {
+    const value=await cloudflareUpdate(key(k),fn);publicReads.set(k,value);return value;
+  }
   if (storageMode === "unconfigured")
     throw new Error("Cloud sync needs a Redis connection.");
   if (storageMode === "redis") {

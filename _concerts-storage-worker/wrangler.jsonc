@@ -1,0 +1,18 @@
+{
+  "name": "devon-concert-storage",
+  "account_id": "c8bebf69ef232f4416601de728137fc8",
+  "main": "index.mjs",
+  "compatibility_date": "2026-11-23",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "concert-tracker",
+      "database_id": "5fc1b39f-3722-40f0-b7b0-cbe2e1b70b4d"
+    }
+  ]
+}
