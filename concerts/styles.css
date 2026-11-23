@@ -4506,3 +4506,23 @@ button.plan-event { cursor: pointer; }
 .prediction-reason { color: var(--green); font-size: 12px; line-height: 1.5; margin: 8px 0; }
 .prediction-reason small { display: block; color: var(--muted); font-size: 11px; }
 .viewbar [data-action="personalized"].active { color: var(--accent); background: var(--accent-soft); border-radius: 6px; }
+
+.plan-shared-note, .shared-note-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.plan-event .plan-shared-note { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 5px; line-height: 1.5; font-size: 13px; color: var(--ink); }
+.shared-note-section textarea { display: block; width: 100%; min-height: 90px; margin: 12px 0; padding: 12px; background: var(--white); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: inherit; resize: vertical; }
+.shared-note-section h3, .concert-weather h3 { margin: 0 0 10px; }
+.weather-context, .weather-credit, .weather-outlook { font-size: 12px; line-height: 1.5; color: var(--muted); }
+.weather-outlook { color: var(--accent); }
+.weather-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--white); margin: 12px 0; }
+.weather-chart { min-width: 100%; padding-top: 8px; }
+.weather-chart svg { display: block; width: 100%; height: 82px; color: var(--accent); }
+.weather-hours { display: flex; }
+.weather-hour { display: flex; flex: 1 0 90px; flex-direction: column; align-items: center; gap: 8px; border-right: 1px solid var(--line); padding: 10px 3px 14px; font-size: 12px; }
+.weather-hour:last-child { border-right: 0; }
+.weather-hour time { height: 32px; text-align: center; font-weight: 600; }
+.weather-hour time small { display: block; font-size: 9px; }
+.weather-hour strong { font-size: 20px; }
+.weather-hour small { font-size: 10px; color: var(--muted); }
+.weather-icon { font-size: 24px; line-height: 1; }
+.weather-rain { background: linear-gradient(to top, #628fa44d var(--rain), transparent var(--rain)); padding: 6px 4px; border-radius: 4px; }
+.weather-credit a { text-decoration: underline; }

@@ -1,4 +1,5 @@
-import { planMarkup, plannedEvents } from "./concert-plan.js";
+import { sharedNotesFor } from "./shared-notes.js";
+import { planMarkup, plannedEvents } from "./concert-plan.js?v=20261123-notes-weather";
 import { sharedListLink } from "./list-metadata.js?v=20261122-ranges";
 import { listDateError, listDateLabel, concertInRange } from "./list-dates.js";
 export function sharedListTimestamp(value) {
@@ -150,7 +151,7 @@ export async function manageLists(options) {
         button.classList.toggle('is-planned', active);
         button.setAttribute('aria-pressed', String(active));
       });
-      form.querySelector('#plan-preview').innerHTML = planMarkup(choices, [...planned], { interactive: false });
+      form.querySelector('#plan-preview').innerHTML = planMarkup(choices, [...planned], { interactive: false, notes: sharedNotesFor(choices, store.fields) });
       const count = form.querySelectorAll('[name="concert"]:checked').length;
       document.querySelector("#shared-selection-count").textContent = `${count} selected · up to 100 concerts`;
       const pastSection = form.querySelector('.shared-past-shows');

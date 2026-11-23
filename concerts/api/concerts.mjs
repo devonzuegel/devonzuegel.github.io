@@ -1,3 +1,4 @@
+import { concertWeather } from "../server/weather.mjs";
 import {importPartiful} from "../server/partiful.mjs";
 import {
   ownerLists,
@@ -95,6 +96,10 @@ export default async function handler(req, res) {
       limits.set(key,limit);
       if(++limit.count>12)return send({error:'Please wait a minute before importing more events.'},429);
       return send({event:await importPartiful(u.searchParams.get('url'))});
+    }
+    if (action === "weather") {
+      res.setHeader('Cache-Control', 'public, max-age=900');
+      return send(await concertWeather(Object.fromEntries(u.searchParams)));
     }
     if (action === "status")
       return send({

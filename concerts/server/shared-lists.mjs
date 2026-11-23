@@ -1,3 +1,4 @@
+import { sharedNotesFor } from "../shared/shared-notes.js";
 import { randomBytes } from "node:crypto";
 import * as storage from "./storage.mjs";
 import { listDateError, concertInRange } from "../shared/list-dates.js";
@@ -27,6 +28,7 @@ export function publicConcert(e) {
     throw fail("Invalid concert time.");
   return {
     id: text(e.id, 200),
+    aliases: (Array.isArray(e.aliases) ? e.aliases : []).filter(id => typeof id === "string" && id.length <= 200 && /^[a-zA-Z0-9_.:-]+$/.test(id)).slice(0,20),
     title: text(e.title),
     metro: text(e.metro, 80),
     provenance: provenance(e.provenance),
@@ -42,6 +44,9 @@ export function publicConcert(e) {
     date: text(e.date, 10),
     endDate: text(e.endDate, 10),
     time: text(e.time, 30),
+    showTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(e.showTime || "") ? e.showTime : "",
+    doorsTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(e.doorsTime || "") ? e.doorsTime : "",
+    endAt: typeof e.endAt === "string" && Number.isFinite(Date.parse(e.endAt)) ? text(e.endAt,40) : "",
     timeKind: e.timeKind === "doors" ? "doors" : "show",
     status: ["cancelled", "postponed", "soldout"].includes(e.status)
       ? e.status
@@ -160,7 +165,8 @@ export async function readList(id) {
   if (!list || list.revoked)
     throw fail("This list is unavailable or its link has been disabled.", 404);
   const { owner, ...publicList } = list;
-  return {...publicList, sharedBy: text(owner, 80)};
+  const profile = await storage.get('profile:' + owner);
+  return {...publicList, sharedNotes: sharedNotesFor(list.events, profile?.fields || {}), sharedBy: text(owner, 80)};
 }
 export async function revokeList(owner, id) {
   if (!/^[A-Za-z0-9_-]{32}$/.test(id || "")) throw fail("List not found.", 404);

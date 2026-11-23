@@ -1,7 +1,9 @@
+import { sharedNoteFor, sharedNotesFor } from "./shared/shared-notes.js";
+import { weatherMarkup, weatherWindow } from "./shared/weather-strip.js";
 import { recommendConcerts, rankDaily, recommendationGroups } from "./shared/recommendations.js";
-import { planMarkup } from "./shared/concert-plan.js";
+import { planMarkup } from "./shared/concert-plan.js?v=20261123-notes-weather";
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
-import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-plan2";
+import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-notes-weather";
 import { listDateError, listDateLabel } from "./shared/list-dates.js";
 import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
@@ -865,8 +867,8 @@ function renderResults() {
   } else if (state.view === "calendar") body = calendarView(list);
   else if (state.view === "venue") body = venueView(list);
   else body = mapView(list);
-  const plan = sharedListId ? planMarkup(events(), sharedList?.plannedIds || [])
-    : state.tab !== 'hidden' ? planMarkup(list, list.filter(e => assessment(store.fields, e.id).planned).map(e => e.id)) : '';
+  const plan = sharedListId ? planMarkup(events(), sharedList?.plannedIds || [], {notes:sharedList?.sharedNotes || {}})
+    : state.tab !== 'hidden' ? planMarkup(list, list.filter(e => assessment(store.fields, e.id).planned).map(e => e.id), {notes:sharedNotesFor(list,store.fields)}) : '';
   body = plan + (plan ? '<h2 class="plan-all-shows">All concert options</h2>' : '') + body;
   // Loading and sync notifications should not restart a transition or reload maps.
   const notices = feedNote();
@@ -1312,7 +1314,7 @@ function openDetail(id, listen = false) {
     a = assessment(store.fields, id),
     match = spotifyMatch(e, listening());
   $("#detail-root").innerHTML =
-    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}${secondaryMarkup(e.provenance,"time")}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons">${planBtn(e)}<a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Toggle saved (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
+    `<div class="scrim" data-action="close-detail"></div><section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-top"><div class="detail-top-meta"><h2 id="detail-title" class="detail-title">${esc(e.title)}</h2><div class="detail-date">${icon("calendar")}${eventDateLabel(e)} · ${esc(timeLabel(e))} · ${esc(e.timezone === "America/Los_Angeles" ? "Pacific time" : e.timezone === "America/New_York" ? "Eastern time" : e.timezone)}${secondaryMarkup(e.provenance,"time")}</div><div class="detail-venue">${icon("pin")}${esc(e.venue.name)} · ${esc(e.venue.locality || city.name)}</div></div><div class="detail-top-actions">${button("share-concert", "Copy link", "secondary", `data-id="${esc(id)}"`)}${icoButton("close-detail", "close", "Close concert")}</div></header><div class="detail-body"><div id="detail-interest-status">${interestStatusMarkup(id, a.hidden)}</div><div class="event-tags">${match ? `<span class="spotify-tag">${icon("spotify")}${esc(listeningContext(match))}</span>` : ""}${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status)}</span>` : ""}</div>${e.missingFromFeed ? '<p class="detail-warning">No longer listed by the source. Check for updates.</p>' : ""}<div class="detail-buttons">${planBtn(e)}<a class="primary" href="${esc(safeURL(e.ticketUrl))}" target="_blank" rel="noopener noreferrer">${icon("ticket")}Tickets ${icon("external")}</a>${button("detail-save", icon("bookmark") + `<span class="detail-action-label">${a.saved ? "Saved" : "Save"}</span>`, "secondary", `data-id="${esc(id)}" aria-pressed="${a.saved}" aria-label="Save concert" aria-keyshortcuts="s" title="Toggle saved (S)"`)}${button("hide", icon("hide") + `<span class="detail-action-label">Not interested</span>`, "secondary detail-hide", `data-id="${esc(id)}" aria-label="Mark not interested" aria-keyshortcuts="n" title="Not interested (N)" ${a.hidden ? "hidden" : ""}`)}${icoButton("export-one", "calendar", "Export to calendar", `data-id="${esc(id)}"`, "secondary")}</div>${sharedNoteSection(e)}<section class="detail-section concert-weather" id="concert-weather"><h3>Weather during the show</h3><div id="weather-content" aria-live="polite"><p class="media-notice">Loading hourly forecast…</p></div></section><section class="detail-section" id="listen-section">${e.artists?.length > 12 ? `<details class="festival-lineup"><summary>Choose an artist · ${e.artists.length} acts</summary>` : ""}<div class="detail-artist-row"><div class="artist-tabs">${(e.artists?.length ? e.artists : [{ name: e.title }]).map((a, i) => button("artist", esc(a.name), `artist-tab ${i === 0 ? "active" : ""}`, `data-artist="${esc(a.name)}"`)).join("")}</div><div class="detail-genres">${e.genres?.map((g) => `<span class="genre-tag">${esc(g)}</span>`).join("") || ""}</div></div>${e.artists?.length > 12 ? "</details>" : ""}<div id="detail-artist-background" class="detail-artist-background"></div><div id="player" class="player"></div><div class="media-mode">${[
       ["live", "Live performances"],
       ["full", "Full sets"],
       ["all", "All music"],
@@ -1327,13 +1329,14 @@ function openDetail(id, listen = false) {
       )
       .join(
         "",
-      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section personal-ratings"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div>${dataSourceNotes(e)}<div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
+      )}</div><form id="media-search" class="media-search"><input id="media-query" aria-label="Search recordings" placeholder="Search recordings or paste a YouTube link"><button class="secondary" type="submit" aria-label="Search recordings">${icon("search")}</button></form><div id="media-results"></div></section>${listeningDetailsMarkup(e)}<section class="detail-section personal-ratings"><div class="section-title"><h3>Ratings</h3><small id="detail-sync">${esc(store.status)}</small></div><div id="ratings">${ratingRow(id, "music", "Music", "")}${ratingRow(id, "venue", "Venue", "")}${ratingRow(id, "visuals", "Visuals", "")}</div><details class="concert-notes" ${a.notes?.trim() ? "open" : ""}><summary class="note-label">Private notes</summary><textarea aria-label="Notes" id="concert-note" maxlength="30000" data-id="${esc(id)}" placeholder="Add a note">${esc(a.notes)}</textarea></details><p class="media-notice">Adding notes or ratings also bookmarks this concert.</p></section>${venueSection(e)}<section class="detail-section"><div class="eyebrow" style="margin-bottom:12px">Sources</div>${dataSourceNotes(e)}<div class="source-list">${e.sources?.map((s) => `<a href="${esc(safeURL(s.url))}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join("") || ""}</div></section></div></section>`;
   animateDetail(false);
   $("#app").inert = true;
   document.body.style.overflow = "hidden";
   $(".detail-top button").focus();
   loadMedia();
   loadVenueMedia(e);
+  loadConcertWeather(e);
   loadDetailBackground(state.media.artist);
   if (listen)
     setTimeout(
@@ -1344,6 +1347,29 @@ function openDetail(id, listen = false) {
         }),
       80,
     );
+}
+function sharedNoteSection(event) {
+  const account = sharedListId ? viewerStore : store;
+  const mayEdit = !sharedListId || account?.profile === sharedList?.sharedBy;
+  const note = sharedListId ? sharedNoteFor(event, {}, sharedList?.sharedNotes || {}) : sharedNoteFor(event, store.fields);
+  if (!mayEdit && !note) return '';
+  return `<section class="detail-section shared-note-section"><h3>Note for friends</h3>${mayEdit ? `<p class="media-notice">Visible to anyone with a shared-list link containing this concert. Updates apply to every list; private notes stay private.</p><textarea id="shared-concert-note" aria-label="Note for friends" maxlength="3000" placeholder="Meeting spot, timing, why this show…">${esc(note)}</textarea>${button('publish-note','Save shared note','secondary',`data-id="${esc(event.id)}"`)}<p id="shared-note-status" role="status"></p>` : `<p class="shared-note-text">${esc(note)}</p>`}</section>`;
+}
+let weatherRequest = 0;
+async function loadConcertWeather(event) {
+  const request = ++weatherRequest, root = $('#weather-content');
+  if (!root) return;
+  if (!weatherWindow(event)) { root.innerHTML = '<p class="media-notice">A start time is needed to show hourly weather for this concert.</p>'; return; }
+  const exact = Number.isFinite(event.venue?.lat) && Number.isFinite(event.venue?.lng);
+  const place = exact ? event.venue : cityFor(event.metro);
+  if (!Number.isFinite(place?.lat) || !Number.isFinite(place?.lng)) { root.innerHTML='<p class="media-notice">A venue location is needed to show the forecast.</p>'; return; }
+  try {
+    const data = await apiGet('weather',{lat:place.lat,lng:place.lng,date:event.date,timezone:event.timezone || 'America/New_York'});
+    if (request !== weatherRequest || !root.isConnected || state.selected !== event.id) return;
+    root.innerHTML = (!exact ? `<p class="media-notice">Approximate forecast for ${esc(place.name)}; precise venue coordinates are unavailable.</p>` : '') + weatherMarkup(data,event);
+  } catch {
+    if (request === weatherRequest && root.isConnected) root.innerHTML = '<p class="media-notice">Weather is temporarily unavailable. Reopen this show to try again.</p>';
+  }
 }
 function venueSection(e) {
   const v = e.venue;
@@ -1995,6 +2021,21 @@ document.addEventListener("click", async (e) => {
         await loadFeed();
         toast("Concerts updated.");
         break;
+      case "publish-note": {
+        const account = sharedListId ? viewerStore : store;
+        if (sharedListId && account?.profile !== sharedList?.sharedBy) break;
+        const concert = eventFor(id), input = $('#shared-concert-note'), status = $('#shared-note-status');
+        if (!concert || !input || !status) break;
+        el.disabled = true;
+        account.change(`event/${id}/snapshot`,concert);
+        account.change(`event/${id}/saved`,true);
+        account.change(`event/${id}/publicNote`,input.value.trim());
+        await account.sync();
+        if (status.isConnected) status.textContent = !account.profile ? 'Saved on this device. Sign in and include this show in a shared list to share the note.' : account.status === 'Synced' ? 'Shared note saved. All shared lists containing this show will display it.' : 'Saved on this device; waiting to sync before friends can see it.';
+        if (sharedListId && account.status === 'Synced') await loadSharedFeed();
+        el.disabled = false;
+        break;
+      }
       case "personalized":
         state.personalized = !(state.personalized && state.sort === 'date');
         if (state.personalized) state.sort = 'date';
