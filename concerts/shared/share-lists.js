@@ -10,7 +10,7 @@ export function sharedListTimestamp(value) {
   return `${parts.weekday}, ${parts.month} ${parts.day} at ${parts.hour}:${parts.minute}${parts.dayPeriod.toLowerCase()} ${parts.timeZoneName}`;
 }
 
-import { dateLabel, timeLabel, mergeEvents, dayInZone } from "./core.js";
+import { dateLabel, timeLabel, mergeEvents, dayInZone } from "./core.js?v=20261123-duplicates";
 const esc = (value) =>
   String(value ?? "").replace(
     /[&<>"']/g,
