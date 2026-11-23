@@ -220,6 +220,7 @@ export const valueAt = (fields, key, fallback = null) =>
 export function assessment(fields, id) {
   const key = `event/${id}/`;
   return {
+    planned: valueAt(fields, key + "planned", false),
     saved: valueAt(fields, key + "saved", false),
     hidden: valueAt(fields, key + "hidden", false),
     notes: valueAt(fields, key + "notes", ""),

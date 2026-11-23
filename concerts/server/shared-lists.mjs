@@ -108,6 +108,8 @@ export async function saveList(owner, body) {
   ];
   if (dateRange && events.some((e) => !concertInRange(e, dateRange)))
     throw fail("Choose concerts within the saved date range.");
+  if (body.plannedIds !== undefined && (!Array.isArray(body.plannedIds) || body.plannedIds.some(id => typeof id !== "string")))
+    throw fail("Invalid planned concerts.");
   const id = body.id || randomBytes(24).toString("base64url");
   if (!/^[A-Za-z0-9_-]{32}$/.test(id)) throw fail("Invalid list link.");
   if (!body.id)
@@ -128,6 +130,7 @@ export async function saveList(owner, body) {
       owner,
       title,
       events,
+      plannedIds: [...new Set(body.plannedIds ?? old?.plannedIds ?? [])].filter(id => events.some(e => e.id === id)),
       ...(savedRange ? { dateRange: savedRange } : {}),
       createdAt: old?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),

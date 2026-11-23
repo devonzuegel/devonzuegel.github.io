@@ -11,7 +11,7 @@ export function projectEventFields(fields, groups = []) {
       const entries = ids.map(id => fields[`event/${id}/${name}`]).filter(Boolean);
       const latest = [...entries].sort((a, b) => (b.at || '').localeCompare(a.at || ''))[0];
       let value = latest.value;
-      if (name === 'saved' || name === 'hidden') value = entries.some(e => e.value === true);
+      if (name === 'saved' || name === 'hidden' || name === 'planned') value = entries.some(e => e.value === true);
       if (name === 'notes') value = [...new Set(entries.map(e => e.value).filter(Boolean))].join('\n\n');
       for (const id of ids) {
         const key = `event/${id}/${name}`;

@@ -1,3 +1,4 @@
+import { planMarkup, plannedEvents } from "./concert-plan.js";
 import { sharedListLink } from "./list-metadata.js?v=20261122-ranges";
 import { listDateError, listDateLabel, concertInRange } from "./list-dates.js";
 export function sharedListTimestamp(value) {
@@ -10,7 +11,7 @@ export function sharedListTimestamp(value) {
   return `${parts.weekday}, ${parts.month} ${parts.day} at ${parts.hour}:${parts.minute}${parts.dayPeriod.toLowerCase()} ${parts.timeZoneName}`;
 }
 
-import { dateLabel, timeLabel, mergeEvents, dayInZone } from "./core.js?v=20261123-duplicates";
+import { dateLabel, timeLabel, mergeEvents, dayInZone } from "./core.js?v=20261123-plan";
 const esc = (value) =>
   String(value ?? "").replace(
     /[&<>"']/g,
@@ -56,7 +57,7 @@ export async function chooseConcertList(options) {
     openModal("Add to a list", `<p role="alert">${esc(error.message)} Your concert is still in Saved.</p>`);
   }
 }
-export function concertChoices(choices, selected, isRange, now = new Date()) {
+export function concertChoices(choices, selected, isRange, now = new Date(), planned = new Set()) {
   const past = [], current = [];
   for (const event of choices) {
     const lastDay = event.endDate || event.date;
@@ -64,9 +65,9 @@ export function concertChoices(choices, selected, isRange, now = new Date()) {
     (ended || (lastDay && lastDay < dayInZone(now, event.timezone || "America/New_York")) ? past : current).push(event);
   }
   const selectedPast = past.filter(event => selected.has(event.id)).length;
-  return `${current.length || !past.length ? concertChoiceTable(current, selected, isRange) : ""}${past.length ? `<details class="shared-past-shows"><summary>Past shows (${past.length})<span class="shared-past-selected">${selectedPast ? ` · ${selectedPast} selected` : ""}</span></summary>${concertChoiceTable(past, selected, isRange)}</details>` : ""}`;
+  return `${current.length || !past.length ? concertChoiceTable(current, selected, isRange, planned) : ""}${past.length ? `<details class="shared-past-shows"><summary>Past shows (${past.length})<span class="shared-past-selected">${selectedPast ? ` · ${selectedPast} selected` : ""}</span></summary>${concertChoiceTable(past, selected, isRange, planned)}</details>` : ""}`;
 }
-function concertChoiceTable(choices, selected, isRange) {
+function concertChoiceTable(choices, selected, isRange, planned) {
   if (!choices.length)
     return isRange
       ? "<p>No concerts match these dates and your current filters. You can still save the dates and add concerts later.</p>"
@@ -77,11 +78,11 @@ function concertChoiceTable(choices, selected, isRange) {
     if (!days.has(key)) days.set(key, []);
     days.get(key).push(event);
   }
-  return `<table class="shared-choices-table"><thead><tr><th scope="col">Concert</th><th scope="col">Time</th><th scope="col">Venue</th><th scope="col">City</th></tr></thead>${[...days].map(([day, events]) => `<tbody><tr class="shared-day-heading"><th colspan="4" scope="rowgroup">${esc(day ? dateLabel(day, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) : "Date TBA")}</th></tr>${events.map((e) => `<tr class="shared-choice-row"><td><label><input type="checkbox" name="concert" value="${esc(e.id)}" ${selected.has(e.id) ? "checked" : ""}><strong>${esc(e.title)}</strong></label></td><td class="shared-choice-time">${esc(timeLabel(e))}</td><td>${esc(e.venue?.name || "Venue TBA")}</td><td>${esc(e.venue?.locality || "—")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
+  return `<table class="shared-choices-table"><thead><tr><th scope="col">Plan</th><th scope="col">Concert</th><th scope="col">Time</th><th scope="col">Venue</th><th scope="col">City</th></tr></thead>${[...days].map(([day, events]) => `<tbody><tr class="shared-day-heading"><th colspan="5" scope="rowgroup">${esc(day ? dateLabel(day, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) : "Date TBA")}</th></tr>${events.map((e) => `<tr class="shared-choice-row"><td><button type="button" class="plan-star ${planned.has(e.id) ? 'is-planned' : ''}" data-plan-id="${esc(e.id)}" aria-pressed="${planned.has(e.id)}" aria-label="Plan to attend ${esc(e.title)}" title="Star as part of the proposed plan">${planned.has(e.id) ? '★' : '☆'}</button></td><td><label><input type="checkbox" name="concert" value="${esc(e.id)}" ${selected.has(e.id) ? "checked" : ""}><strong>${esc(e.title)}</strong></label></td><td class="shared-choice-time">${esc(timeLabel(e))}</td><td>${esc(e.venue?.name || "Venue TBA")}</td><td>${esc(e.venue?.locality || "—")}</td></tr>`).join("")}</tbody>`).join("")}</table>`;
 }
 
 export async function manageLists(options) {
-  const { store, concerts, rangeConcerts = concerts, dateRange, createRange = false, createConcert = null, openModal, onSignIn } = options;
+  const { store, concerts, rangeConcerts = concerts, dateRange, createRange = false, createConcert = null, initialList = null, onSaved = () => {}, plannedIds = [], openModal, onSignIn } = options;
   if (!store.profile) {
     openModal(
       "Shared lists",
@@ -92,7 +93,8 @@ export async function manageLists(options) {
   }
   openModal("Shared lists", '<p role="status">Loading lists…</p>');
   try {
-    if (createRange) edit(null, dateRange);
+    if (initialList) edit(initialList);
+    else if (createRange) edit(null, dateRange);
     else if (createConcert) edit(null);
     else {
       const { lists } = await store.apiCall("lists");
@@ -126,10 +128,11 @@ export async function manageLists(options) {
     let choices = range ? pool.filter((e) => concertInRange(e, range)) : pool;
     const selected = new Set(list ? list.events.map((e) => e.id) : range ? choices.map((e) => e.id) : createConcert ? [createConcert.id] : []);
     for (const event of pool) if (event.aliases?.some(id => selected.has(id))) selected.add(event.id);
+    const planned = new Set(plannedEvents(pool, list?.plannedIds ?? plannedIds).map(e => e.id));
     const initialTitle = list?.title || (range ? listDateLabel(range) : "");
     openModal(
       list ? "Edit shared list" : range ? "Save date-range list" : "New shared list",
-      `<button class="text-button" id="all-shared-lists" type="button">All shared lists</button><form id="shared-list-form"><label>List name<input name="title" maxlength="100" required placeholder="Weekend concert ideas" value="${esc(initialTitle)}"></label>${range ? `<div class="shared-range-fields"><label>Start date<input type="date" name="from" value="${esc(range.from)}" required></label><label>End date<input type="date" name="to" value="${esc(range.to)}" required></label></div><p>Both dates are included. Changing dates selects matching concerts from your current cities and filters. Uncheck any you don’t want to share.</p><p>This list saves a snapshot; newly announced concerts aren’t added automatically. You can edit it later using the same link.</p>` : "<p>Select saved concerts. Updating this list keeps the same link.</p>"}<div class="shared-selection-actions"><span id="shared-selection-count" role="status"></span><button class="text-button" type="button" id="shared-select-all">Select all</button><button class="text-button" type="button" id="shared-clear-all">Clear selection</button></div><div class="shared-list-choices">${concertChoices(choices, selected, !!range)}</div><p id="shared-list-status" role="status"></p><button class="primary" type="submit">${list ? "Update list" : "Create share link"}</button></form>${list ? `<div class="shared-list-link"><label>Read-only link<input readonly id="shared-list-url" value="${esc(linkFor(list.id))}"></label><button class="secondary" id="copy-shared-list">Copy link</button><a href="${esc(linkFor(list.id))}" target="_blank" rel="noopener">Preview ↗</a><button class="text-button" id="revoke-shared-list">Disable link</button></div>` : ""}`,
+      `<button class="text-button" id="all-shared-lists" type="button">All shared lists</button><form id="shared-list-form"><label>List name<input name="title" maxlength="100" required placeholder="Weekend concert ideas" value="${esc(initialTitle)}"></label>${range ? `<div class="shared-range-fields"><label>Start date<input type="date" name="from" value="${esc(range.from)}" required></label><label>End date<input type="date" name="to" value="${esc(range.to)}" required></label></div><p>Both dates are included. Changing dates selects matching concerts from your current cities and filters. Uncheck any you don’t want to share.</p><p>This list saves a snapshot; newly announced concerts aren’t added automatically. You can edit it later using the same link.</p>` : "<p>Select saved concerts. Updating this list keeps the same link.</p>"}<p>★ Star the shows you propose attending. Friends see your starred plan and calendar first; the other selected shows remain options.</p><button class="text-button" type="button" id="use-planned-shows">Include my starred shows</button><div id="plan-preview"></div><div class="shared-selection-actions"><span id="shared-selection-count" role="status"></span><button class="text-button" type="button" id="shared-select-all">Select all</button><button class="text-button" type="button" id="shared-clear-all">Clear selection</button></div><div class="shared-list-choices">${concertChoices(choices, selected, !!range, new Date(), planned)}</div><p id="shared-list-status" role="status"></p><button class="primary" type="submit">${list ? "Update list" : "Create share link"}</button></form>${list ? `<div class="shared-list-link"><label>Read-only link<input readonly id="shared-list-url" value="${esc(linkFor(list.id))}"></label><button class="secondary" id="copy-shared-list">Copy link</button><a href="${esc(linkFor(list.id))}" target="_blank" rel="noopener">Preview ↗</a><button class="text-button" id="revoke-shared-list">Disable link</button></div>` : ""}`,
     );
     document
       .querySelector("#shared-list-form")
@@ -139,6 +142,15 @@ export async function manageLists(options) {
       status = document.querySelector("#shared-list-status");
     const submit = form.querySelector("[type=submit]");
     const updateSelection = () => {
+      const checked = new Set([...form.querySelectorAll('[name="concert"]:checked')].map(input => input.value));
+      for (const id of planned) if (!checked.has(id)) planned.delete(id);
+      form.querySelectorAll('[data-plan-id]').forEach(button => {
+        const active = planned.has(button.dataset.planId);
+        button.textContent = active ? '★' : '☆';
+        button.classList.toggle('is-planned', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      form.querySelector('#plan-preview').innerHTML = planMarkup(choices, [...planned], { interactive: false });
       const count = form.querySelectorAll('[name="concert"]:checked').length;
       document.querySelector("#shared-selection-count").textContent = `${count} selected · up to 100 concerts`;
       const pastSection = form.querySelector('.shared-past-shows');
@@ -149,6 +161,14 @@ export async function manageLists(options) {
       const error = range ? listDateError(range) : "";
       submit.disabled = !!error || count > 100 || (!range && count === 0);
       status.textContent = error || (count > 100 ? "Choose up to 100 concerts, or narrow the dates or filters." : "");
+    };
+    document.querySelector('#use-planned-shows').onclick = () => {
+      const mine = new Set(plannedEvents(choices, plannedIds).map(e => e.id));
+      for (const input of form.querySelectorAll('[name="concert"]')) if (mine.has(input.value)) {
+        input.checked = true;
+        planned.add(input.value);
+      }
+      updateSelection();
     };
     document.querySelector("#all-shared-lists").onclick = async () => {
       try { showIndex((await store.apiCall("lists")).lists); }
@@ -167,12 +187,23 @@ export async function manageLists(options) {
         choices = listDateError(range) ? [] : pool.filter((e) => concertInRange(e, range));
         if (form.elements.title.value === previousLabel && !listDateError(range))
           form.elements.title.value = listDateLabel(range);
-        form.querySelector(".shared-list-choices").innerHTML = concertChoices(choices, new Set(choices.map((e) => e.id)), true);
+        form.querySelector(".shared-list-choices").innerHTML = concertChoices(choices, new Set(choices.map((e) => e.id)), true, new Date(), planned);
       }
       updateSelection();
     };
     form.querySelector(".shared-list-choices").onclick = (event) => {
-      if (event.target.closest("label, input")) return;
+      const star = event.target.closest('[data-plan-id]');
+      if (star) {
+        const id = star.dataset.planId;
+        if (planned.has(id)) planned.delete(id);
+        else {
+          planned.add(id);
+          star.closest('tr').querySelector('[name="concert"]').checked = true;
+        }
+        updateSelection();
+        return;
+      }
+      if (event.target.closest("label, input, button")) return;
       const checkbox = event.target
         .closest(".shared-choice-row")
         ?.querySelector("input");
@@ -193,8 +224,10 @@ export async function manageLists(options) {
           id: list?.id,
           title: new FormData(form).get("title"),
           ...(range ? { dateRange: range } : {}),
+          plannedIds: [...planned],
           events: choices.filter((e) => ids.has(e.id)),
         });
+        await onSaved(saved);
         edit(saved);
         document.querySelector("#shared-list-status").textContent =
           "List saved. Anyone with the link can view it.";

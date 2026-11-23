@@ -1,4 +1,4 @@
-import { projectEventFields } from "./event-associations.js";
+import { projectEventFields } from "./event-associations.js?v=20261123-plan";
 const operationId = () =>
   globalThis.crypto?.randomUUID?.() ||
   Date.now().toString(36) +
