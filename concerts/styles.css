@@ -4098,6 +4098,56 @@ summary.month-heading:focus-visible {
   padding: 16px 0;
   border-bottom: 1px solid var(--line);
 }
+.date-range:has(.save-range-button) {
+  flex-wrap: wrap;
+}
+.shared-range-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.shared-range-fields label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.shared-range-fields input {
+  min-width: 0;
+  width: 100%;
+}
+.shared-selection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+.shared-selection-actions > span {
+  margin-right: auto;
+}
+.shared-date-range {
+  font-weight: 600;
+}
+.add-to-list-choices {
+  display: grid;
+  gap: 10px;
+  max-height: 45vh;
+  overflow: auto;
+}
+.add-to-list-choices button {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  white-space: normal;
+}
+.add-to-list-choices small {
+  font-weight: 400;
+}
+.add-to-list-choices button:disabled {
+  opacity: .6;
+  cursor: default;
+}
 .shared-list-index small {
   color: var(--muted);
 }
@@ -4406,3 +4456,8 @@ summary.month-heading:focus-visible {
 .event-row .event-date {
   padding-left: 0;
 }
+
+.distance-filter { display:flex; align-items:center; flex-wrap:wrap; gap:8px 16px; margin-top:12px; color:var(--muted); font-size:14px; }
+.distance-filter label { display:flex; align-items:center; gap:8px; }
+.distance-filter select { max-width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--white); color:inherit; font:inherit; }
+.distance-filter small { font-size:12px; }

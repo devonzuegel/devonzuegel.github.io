@@ -188,6 +188,17 @@ export function sizeMatches(v, key) {
   const b = SIZE_BUCKETS.find((x) => x[0] === key);
   return !b || (c.min <= b[3] && c.max >= b[2]);
 }
+export const DISTANCE_CENTERS = [
+  { id: "sf", name: "San Francisco · City Hall", lat: 37.7793, lng: -122.4193 },
+  { id: "miami", name: "Miami · Downtown", lat: 25.7743, lng: -80.1937 },
+  { id: "nyc", name: "New York · Midtown", lat: 40.7549, lng: -73.9840 },
+];
+export function distanceMiles(venue, center) {
+  if (![venue?.lat, venue?.lng, center?.lat, center?.lng].every(Number.isFinite)) return null;
+  const r = Math.PI / 180;
+  const a = Math.sin((venue.lat - center.lat) * r / 2) ** 2 + Math.cos(venue.lat * r) * Math.cos(center.lat * r) * Math.sin((venue.lng - center.lng) * r / 2) ** 2;
+  return 3958.8 * 2 * Math.asin(Math.sqrt(Math.min(1, a)));
+}
 export function inMetro(v, city) {
   if (!Number.isFinite(v?.lat) || !Number.isFinite(v?.lng))
     return v?.metro === city.id;
@@ -258,6 +269,11 @@ export function filterEvents(
   const q = normalize(filters.query);
   let result = events.filter((e) => {
     const a = assessment(fields, e.id);
+    if (Number(filters.distanceRadius) > 0) {
+      const center = DISTANCE_CENTERS.find(c => c.id === filters.distanceCenter) || (filters.cities || []).find(c => c.id === filters.distanceCenter);
+      const distance = distanceMiles(e.venue, center);
+      if (distance === null || distance > Number(filters.distanceRadius)) return false;
+    }
     if (filters.tab === "hidden") {
       return (
         a.hidden &&

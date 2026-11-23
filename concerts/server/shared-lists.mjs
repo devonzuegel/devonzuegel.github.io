@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import * as storage from "./storage.mjs";
+import { listDateError, concertInRange } from "../shared/list-dates.js";
 const fail = (message, status = 400) =>
   Object.assign(new Error(message), { status });
 const text = (v, max = 500) => (typeof v === "string" ? v.slice(0, max) : "");
@@ -90,15 +91,23 @@ export async function ownerLists(owner) {
 export async function saveList(owner, body) {
   const title = text(body.title, 100).trim();
   if (!title) throw fail("Name your list.");
+  let dateRange;
+  if (body.dateRange != null) {
+    const error = listDateError(body.dateRange);
+    if (error) throw fail(error);
+    dateRange = { from: body.dateRange.from, to: body.dateRange.to };
+  }
   if (
     !Array.isArray(body.events) ||
-    !body.events.length ||
+    (!body.events.length && !dateRange) ||
     body.events.length > 100
   )
-    throw fail("Choose between 1 and 100 concerts.");
+    throw fail(dateRange ? "Choose up to 100 concerts." : "Choose between 1 and 100 concerts.");
   const events = [
     ...new Map(body.events.map(publicConcert).map((e) => [e.id, e])).values(),
   ];
+  if (dateRange && events.some((e) => !concertInRange(e, dateRange)))
+    throw fail("Choose concerts within the saved date range.");
   const id = body.id || randomBytes(24).toString("base64url");
   if (!/^[A-Za-z0-9_-]{32}$/.test(id)) throw fail("Invalid list link.");
   if (!body.id)
@@ -110,15 +119,34 @@ export async function saveList(owner, body) {
   const result = await storage.update("shared-list:" + id, (old) => {
     if (body.id && (!old || old.owner !== owner || old.revoked))
       throw fail("List not found.", 404);
+    // Older clients must not silently erase a list's saved dates.
+    const savedRange = dateRange || old?.dateRange;
+    if (savedRange && events.some((e) => !concertInRange(e, savedRange)))
+      throw fail("Choose concerts within the saved date range.");
     return {
       id,
       owner,
       title,
       events,
+      ...(savedRange ? { dateRange: savedRange } : {}),
       createdAt: old?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       revoked: false,
     };
+  });
+  const { owner: ignored, ...list } = result;
+  return list;
+}
+export async function addToList(owner, id, concert) {
+  if (!/^[A-Za-z0-9_-]{32}$/.test(id || "")) throw fail("List not found.", 404);
+  const event = publicConcert(concert);
+  const result = await storage.update("shared-list:" + id, (old) => {
+    if (!old || old.owner !== owner || old.revoked) throw fail("List not found.", 404);
+    if (old.events.some((e) => e.id === event.id)) return old;
+    if (old.dateRange && !concertInRange(event, old.dateRange))
+      throw fail("This concert is outside the list’s date range.");
+    if (old.events.length >= 100) throw fail("This list already has 100 concerts.");
+    return { ...old, events: [...old.events, event], updatedAt: new Date().toISOString() };
   });
   const { owner: ignored, ...list } = result;
   return list;

@@ -1,5 +1,6 @@
-import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261003-domain";
-import { manageLists, sharedListTimestamp } from "./shared/share-lists.js?v=20261003-domain";
+import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
+import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261122-ranges";
+import { listDateError, listDateLabel } from "./shared/list-dates.js";
 import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
@@ -19,6 +20,7 @@ import {
 } from "./shared/venue-maps.js?v=20260922-minimap-logo";
 import {
   DEFAULT_CITIES,
+  DISTANCE_CENTERS,
   SIZE_BUCKETS,
   escapeHTML as esc,
   safeURL,
@@ -42,7 +44,7 @@ import {
   valueAt,
   youtubeVideoID,
   mergeEvents,
-} from "./shared/core.js?v=20261003-partiful";
+} from "./shared/core.js?v=20261003-distance";
 import { ClientStore } from "./shared/client-store.js";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
@@ -56,6 +58,7 @@ const config = window.CONCERTS_CONFIG || {},
   apiBase = config.apiBase || "/api/concerts";
 const sharedListId = new URLSearchParams(location.search).get("list");
 let sharedList = null;
+let pendingListAction = null;
 const viewerStore = sharedListId ? new ClientStore(apiBase) : null;
 const store = sharedListId
   ? Object.assign(new EventTarget(), {
@@ -128,11 +131,13 @@ const state = {
   genre: "any",
   venue: "any",
   size: "any",
+  distanceRadius: "any",
+  distanceCenter: "sf",
   sort: "date",
   matches: false,
   savedPeriod: "upcoming",
   ...savedUI,
-  ...dateRange(savedUI.preset || "60"),
+  ...(savedUI.preset === "custom" && !listDateError(savedUI) ? { from: savedUI.from, to: savedUI.to } : dateRange(savedUI.preset || "60")),
   feed: { events: [], sources: [] },
   loading: true,
   apiAvailable: false,
@@ -174,6 +179,8 @@ function persistUI() {
     tab,
     view,
     preset,
+    from,
+    to,
     query,
     genre,
     venue,
@@ -181,6 +188,8 @@ function persistUI() {
     sort,
     matches,
     savedPeriod,
+    distanceRadius,
+    distanceCenter,
   } = state;
   try {
     localStorage.setItem(
@@ -189,6 +198,8 @@ function persistUI() {
         tab,
         view,
         preset,
+        from,
+        to,
         query,
         genre,
         venue,
@@ -196,6 +207,8 @@ function persistUI() {
         sort,
         matches,
         savedPeriod,
+        distanceRadius,
+        distanceCenter,
       }),
     );
   } catch {}
@@ -310,7 +323,7 @@ function renderChrome() {
     $("#sidebar-content").innerHTML = nav + `<div class="sidebar-rule"></div>${sharedItem}<div class="sidebar-rule"></div><div class="sidebar-head"><span class="eyebrow">Your cities</span>${link("./?tab=discover&panel=cities",icon("plus"),"icon-btn small")}</div><div class="city-list">${citiesFrom(viewerStore.fields).map(c=>link(`./?tab=discover&city=${encodeURIComponent(c.id)}`,`<span class="city-dot" data-city="${esc(c.id)}" style="--city:${esc(c.color)}"></span>${esc(c.name)}`,"city-toggle")).join("")}</div>${link("./?tab=discover&panel=cities",icon("plus")+"Add a city","subtle-btn")}<div class="sidebar-sources">${link("./?tab=discover&panel=sources",icon("info")+"Sources","subtle-btn")}</div><div class="listening-box">${link("./?panel=listening",icon("spotify")+"Your Spotify listening history","small-button")}</div>`;
     $("#sidebar-bottom").innerHTML = `${link("./?panel=profile",`<span class="avatar">${esc((viewerStore.profile||"G").slice(0,1).toUpperCase())}</span><span class="profile-text"><strong>${esc(viewerStore.profile||"Account")}</strong><small>${viewerStore.profile ? "Your account" : "Guest · this device"}</small></span>`,"profile-btn")}<a class="site-link" href="/">← Back to devonzuegel.com</a>`;
     $("#mobile-header").innerHTML =
-      `<div class="shared-mobile-nav">${nav}${sharedItem}</div><div class="shared-discover-heading"><h1>${esc(sharedList?.title || "Shared list")}</h1><p>${sharedList ? `Shared by <strong>${esc(sharedList.sharedBy || "list owner")}</strong> · Updated ${esc(sharedListTimestamp(sharedList.updatedAt))}` : ""}</p></div>`;
+      `<div class="shared-mobile-nav">${nav}${sharedItem}</div><div class="shared-discover-heading"><h1>${esc(sharedList?.title || "Shared list")}</h1><p>${sharedList ? `Shared by <strong>${esc(sharedList.sharedBy || "list owner")}</strong> · Updated ${esc(sharedListTimestamp(sharedList.updatedAt))}` : ""}</p>${sharedList?.dateRange ? `<p class="shared-date-range">${esc(listDateLabel(sharedList.dateRange))}</p>` : ""}</div>`;
     return;
   }
   const account = button(
@@ -393,10 +406,14 @@ function renderControls() {
       })
       .join(
         "",
-      )}</div><div class="date-range">${button("date-range", icon("calendar") + `${dateLabel(state.from)} → ${dateLabel(state.to)}` + icon("down"), "range-trigger", 'aria-label="Choose date range" aria-haspopup="dialog" aria-expanded="false"')}</div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
+      )}</div><div class="date-range">${button("date-range", icon("calendar") + `${dateLabel(state.from)} → ${dateLabel(state.to)}` + icon("down"), "range-trigger", 'aria-label="Choose date range" aria-haspopup="dialog" aria-expanded="false"')}${!sharedListId ? button("save-date-range", icon("bookmark") + "Save date range", "small-button save-range-button", state.loading ? "disabled" : "") : ""}</div></div><div class="search-filter"><label class="searchbox">${icon("search")}<input id="search" type="search" placeholder="Search artists, venues, or notes" aria-label="Search artists, venues, or notes" value="${esc(state.query)}"></label><label class="filter-select"><select id="genre-filter" aria-label="Genre">${opts([["any", "All genres"], ...genres.map((g) => [g, g])], state.genre)}</select></label><label class="filter-select"><select id="venue-filter" aria-label="Venue">${opts([["any", "All venues"], ...vs.map((v) => [v.id, v.name + (v.room ? " · " + v.room : "")])], state.venue)}</select></label><label class="filter-select size-filter">${icon("size")}<select id="size-filter" aria-label="Venue size">${opts(
       SIZE_BUCKETS.map((x) => [x[0], x[1]]),
       state.size,
-    )}</select></label></div>`;
+    )}</select></label></div><div class="distance-filter">
+      <label>Distance <select id="distance-radius" aria-label="Maximum distance">${opts([["any", "Any distance"], ...[5,10,25,50,100,200].map(n => [String(n), "Within " + n + " miles"])], state.distanceRadius)}</select></label>
+      <label>from <select id="distance-center" aria-label="Distance measured from">${opts([...DISTANCE_CENTERS, ...cities().filter(c => !DISTANCE_CENTERS.some(d => d.id === c.id))].map(c => [c.id,c.name]), state.distanceCenter)}</select></label>
+      ${state.distanceRadius !== "any" ? '<small>Straight-line distance. Events without map coordinates are excluded. Other city filters still apply.</small>' : ""}
+    </div>`;
   if (sharedListId) {
     $("#search").placeholder = "Search artists or venues";
     $("#search").setAttribute("aria-label", "Search artists or venues");
@@ -1033,8 +1050,8 @@ async function loadSharedFeed() {
       .flatMap((e) => [e.date, e.endDate])
       .filter(Boolean)
       .sort();
-    state.from = dates[0] || dayInZone();
-    state.to = dates.at(-1) || dayInZone();
+    state.from = sharedList.dateRange?.from || dates[0] || dayInZone();
+    state.to = sharedList.dateRange?.to || dates.at(-1) || dayInZone();
     state.calendarMonth = state.from.slice(0, 7);
     document.title = sharedList.title + " · Concert Tracker";
   } catch (error) {
@@ -1170,12 +1187,13 @@ function saveEvent(e, force) {
   recordConcertAction(e.id, next ? "save" : "unsave", { saved: next });
   store.change(`event/${e.id}/snapshot`, e);
   store.change(`event/${e.id}/saved`, next);
-  toast(
-    next
-      ? "Added to your saved concerts."
-      : "Removed from saved. Your notes are kept.",
-  );
+  if (next) promptSpecificList(e);
+  else toast("Removed from saved. Your notes are kept.");
   updateDetailMeta();
+}
+function promptSpecificList(e) {
+  toast("Saved to your concerts. Add to a specific list too?",
+    button("choose-concert-list", "Choose list", "toast-undo", `data-id="${esc(e.id)}"`));
 }
 function setAssessment(id, field, value) {
   const e = eventFor(id);
@@ -1183,8 +1201,10 @@ function setAssessment(id, field, value) {
   if (field !== "notes")
     recordConcertAction(id, `${field} rating`, { [field]: value, saved: true });
   store.change(`event/${id}/snapshot`, e);
-  if (!assessment(store.fields, id).saved)
+  if (!assessment(store.fields, id).saved) {
     store.change(`event/${id}/saved`, true);
+    promptSpecificList(e);
+  }
   store.change(
     `event/${id}/${field}`,
     value,
@@ -1541,7 +1561,7 @@ function profileModal(mode = "create") {
   if (store.profile) {
     openModal(
       "Account",
-      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Save your sync code to sign in on other devices.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("show-sync-qr", "Sync with QR code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div><div class="sidebar-rule"></div><p>Signing out restores your guest list. Pending account changes stay on this device.</p>${button("logout", "Sign out", "secondary")}`,
+      `<p>Signed in as <strong>${esc(store.profile)}</strong>. ${esc(store.status)}.</p>${store.lastError ? `<p class="form-error">${esc(store.lastError)}</p>` : ""}<p>Save your sync code to sign in on other devices.</p><label class="form-field">Private sync code<input type="password" value="${esc(store.data.code)}" readonly id="sync-code" aria-label="Private sync code"></label><div class="form-actions">${button("copy-code", "Copy sync code", "primary")}${button("show-code", "Show code", "secondary")}${button("show-sync-qr", "Sync with QR code", "secondary")}${button("sync-now", "Sync now", "secondary")}</div>${pendingListAction ? `<div class="form-actions">${button("continue-list", "Continue to your list", "primary")}</div>` : ""}<div class="sidebar-rule"></div><p>Signing out restores your guest list. Pending account changes stay on this device.</p>${button("logout", "Sign out", "secondary")}`,
     );
     return;
   }
@@ -1634,6 +1654,28 @@ function download(contents, name, type) {
   a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+function signInForList(resume) {
+  pendingListAction = resume;
+  profileModal();
+}
+async function resumeListAction() {
+  const resume = pendingListAction;
+  pendingListAction = null;
+  if (resume) await resume();
+}
+function listOptions() {
+  return {
+    store,
+    concerts: events().filter((e) => assessment(store.fields, e.id).saved),
+    rangeConcerts: filterEvents(events(), {
+      ...state, tab: "discover", from: "0001-01-01", to: "9999-12-31",
+      cities: effectiveCities(),
+    }, store.fields, listening()),
+    dateRange: { from: state.from, to: state.to },
+    openModal,
+    onSignIn: signInForList,
+  };
 }
 function exportModal() {
   const list = events()
@@ -2092,15 +2134,29 @@ document.addEventListener("click", async (e) => {
         closeModal();
         toast("Listening data removed.");
         break;
+      case "save-date-range":
+        await manageLists({ ...listOptions(), createRange: true });
+        break;
+      case "continue-list":
+        await resumeListAction();
+        break;
       case "shared-lists":
-        await manageLists({
-          store,
-          concerts: events().filter(
-            (e) => assessment(store.fields, e.id).saved,
-          ),
-          openModal,
+        await manageLists(listOptions());
+        break;
+      case "choose-concert-list": {
+        const concert = eventFor(id);
+        $("#toast").classList.remove("visible");
+        $("#toast").inert = true;
+        await chooseConcertList({
+          store, concert, openModal, onSignIn: signInForList,
+          onCreate: () => manageLists({ ...listOptions(), createConcert: concert }),
+          onAdded: (list) => {
+            closeModal();
+            toast(`Also added to “${list.title}”.`);
+          },
         });
         break;
+      }
       case "export":
         exportModal();
         break;
@@ -2169,6 +2225,12 @@ document.addEventListener("input", (e) => {
 });
 document.addEventListener("change", async (e) => {
   const el = e.target;
+  if (el.id === "distance-radius" || el.id === "distance-center") {
+    state[el.id === "distance-radius" ? "distanceRadius" : "distanceCenter"] = el.value;
+    state.limit = 60;
+    renderControls();
+    renderResults();
+  }
   if (el.id === "genre-filter") {
     state.genre = el.value;
     renderResults();
@@ -2268,6 +2330,7 @@ document.addEventListener("submit", async (e) => {
         await store.login(name, $("#profile-code").value);
         closeModal();
         toast("Signed in.");
+        await resumeListAction();
       }
       renderChrome();
       renderControls();

@@ -97,6 +97,10 @@ Artist context combines Wikidata/Wikipedia with MusicBrainz: linked MusicBrainz 
 
 ### Shared-list link previews
 
+**Save date range** beside the date picker creates a named shared list with inclusive start/end dates and matching concerts preselected from the current cities and filters. Owners can adjust dates, choose up to 100 concerts, or save an empty range and add concerts later. Lists save snapshots; new listings are not added automatically. Saved dates appear in the list manager, public page, and link-preview metadata. Updating a list keeps its link. Custom browsing dates also survive reloads.
+
+Saving a concert always adds it to the default Saved list first. A small prompt offers **Choose list** to also add it to an existing shared list or create a new one. Existing membership, out-of-range concerts, and full lists are clearly marked. Additions are atomic and idempotent, and a failed addition never undoes the default save. Creating/editing shared lists requires an account; friends can read links without signing in. Notes, ratings, and listening history stay private.
+
 Shared links use `https://devonzuegel.com/concerts/?list=…`. The Cloudflare Worker in `_concerts-worker` inserts list-specific Open Graph/Twitter metadata into the initial GitHub Pages HTML for all visitors. Images use `/concerts/share-image?list=…&v=…`; the Worker proxies the existing API's image renderer. There is no separate redirect/preview page. Revoked or invalid lists return 404; dynamic responses are not cached. Social platforms may retain their own cached previews.
 
 Deploy the API first, then `npx wrangler deploy --config _concerts-worker/wrangler.jsonc`, and publish frontend changes through GitHub Pages. The Worker only handles shared-list HTML and preview images; other concerts requests pass through to GitHub Pages.

@@ -248,3 +248,16 @@ test("hidden concerts leave discovery and saved views without losing personal da
   assert.equal(filterEvents([event], hiddenFilters, fields).length, 0);
   assert.equal(fields["event/show-1/notes"].value, "Great visuals");
 });
+
+test('radius filters across views exclude distant and unlocated shows without losing them', () => {
+  const local = concert({id:'local', metro:'sf', venue:{lat:37.7793,lng:-122.4193}});
+  const napa = concert({id:'napa', metro:'sf', venue:{lat:38.2975,lng:-122.2869}});
+  const unknown = concert({id:'unknown', metro:'sf', venue:{metro:'sf'}});
+  const filters = {cities:DEFAULT_CITIES, from:'2026-01-01',to:'2026-12-31',distanceCenter:'sf',distanceRadius:'5', includeHidden:true};
+  for (const view of ['list','calendar','venues','map']) {
+    assert.deepEqual(filterEvents([local,napa,unknown], {...filters,view}).map(e=>e.id), ['local']);
+  }
+  assert.deepEqual(filterEvents([local,napa,unknown], {...filters,distanceRadius:'50'}).map(e=>e.id), ['local','napa']);
+  assert.equal(filterEvents([local,napa,unknown], {...filters,distanceRadius:'any'}).length,3);
+  assert.deepEqual(filterEvents([local,napa], {...filters,tab:'hidden'}, {'event/local/hidden':{value:true},'event/napa/hidden':{value:true}}).map(e=>e.id),['local']);
+});

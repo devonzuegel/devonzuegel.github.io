@@ -2,6 +2,7 @@ import {importPartiful} from "../server/partiful.mjs";
 import {
   ownerLists,
   saveList,
+  addToList,
   readList,
   revokeList,
 } from "../server/shared-lists.mjs";
@@ -63,6 +64,7 @@ export default async function handler(req, res) {
   try {
     const changing = [
       "save-list",
+      "add-to-list",
       "revoke-list",
       "create-profile",
       "sync",
@@ -251,6 +253,7 @@ export default async function handler(req, res) {
     if (action === "lists")
       return send({ lists: await ownerLists(p.username) });
     if (action === "save-list") return send(await saveList(p.username, body));
+    if (action === "add-to-list") return send(await addToList(p.username, body.id, body.event));
     if (action === "revoke-list")
       return send(await revokeList(p.username, body.id));
     if (action === "profile") return send(publicProfile(p));

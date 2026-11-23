@@ -1,3 +1,4 @@
+import { listDateLabel } from "./list-dates.js";
 export function sharedListLink(id, origin) {
   const url=new URL('/concerts/',origin);
   url.searchParams.set('list',id);
@@ -6,7 +7,7 @@ export function sharedListLink(id, origin) {
 export function listMetadata(list,shareURL) {
   const dates=list.events.map(e=>e.date).filter(Boolean).sort();
   const date=value=>new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));
-  const range=dates.length ? (dates[0]===dates.at(-1)?date(dates[0]):`${date(dates[0])} – ${date(dates.at(-1))}`) : '';
+  const range=listDateLabel(list.dateRange) || (dates.length ? (dates[0]===dates.at(-1)?date(dates[0]):`${date(dates[0])} – ${date(dates.at(-1))}`) : '');
   const cities=[...new Set(list.events.map(e=>e.venue?.locality).filter(Boolean))];
   const count=`${list.events.length} concert${list.events.length===1?'':'s'}`;
   const description=[`Shared by ${list.sharedBy||'list owner'}`,count,cities.join(', '),range].filter(Boolean).join(' · ');
