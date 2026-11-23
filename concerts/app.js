@@ -1,3 +1,4 @@
+import { recommendConcerts, rankDaily, recommendationGroups } from "./shared/recommendations.js";
 import { planMarkup } from "./shared/concert-plan.js";
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
 import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-plan2";
@@ -135,6 +136,7 @@ const state = {
   distanceRadius: "any",
   distanceCenter: "sf",
   sort: "date",
+  personalized: true,
   matches: false,
   savedPeriod: "upcoming",
   ...savedUI,
@@ -209,6 +211,7 @@ function persistUI() {
     sort,
     matches,
     savedPeriod,
+    personalized,
     distanceRadius,
     distanceCenter,
   } = state;
@@ -228,6 +231,7 @@ function persistUI() {
         sort,
         matches,
         savedPeriod,
+        personalized,
         distanceRadius,
         distanceCenter,
       }),
@@ -620,7 +624,7 @@ function eventDateLabel(e) {
     (e.endDate && e.endDate !== e.date ? " – " + dateLabel(e.endDate) : "")
   );
 }
-function row(e) {
+function row(e, prediction = null) {
   const city = cityFor(e.metro),
     a = assessment(store.fields, e.id),
     match = spotifyMatch(e, listening());
@@ -642,7 +646,7 @@ function row(e) {
       .slice(0, 2)
       .map((g) => `<span class="genre-tag">${esc(g)}</span>`)
       .join("") || ""
-  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<button class="spotify-tag" data-action="listening-detail" data-id="${esc(e.id)}" title="View listening details">${icon("spotify")}${esc(listeningContext(match))}</button>` : ""}</div>${rowAssessment(a)}${secondaryMarkup(e.provenance,"time")}${e.dataConflicts?.some(c=>c.field==="time") ? '<span class="source-conflict">Time differs between sources</span>' : ""}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div>${secondaryMarkup(e.venue.provenance)}<p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${planBtn(e)}${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
+  }${e.status !== "scheduled" ? `<span class="status-tag">${esc(e.status === "soldout" ? "Sold out" : e.status)}</span>` : ""}${match ? `<button class="spotify-tag" data-action="listening-detail" data-id="${esc(e.id)}" title="View listening details">${icon("spotify")}${esc(listeningContext(match))}</button>` : ""}</div>${prediction && !prediction.explicit ? `<p class="prediction-reason">${esc(prediction.reasons.join(' · ') || 'Not enough preference signals yet')} <small>${esc(prediction.confidence)}</small></p>` : ''}${rowAssessment(a)}${secondaryMarkup(e.provenance,"time")}${e.dataConflicts?.some(c=>c.field==="time") ? '<span class="source-conflict">Time differs between sources</span>' : ""}${artistContextSlot(e)}</div></div><div class="event-location">${venueMapMarkup(e)}<div class="venue-summary"><span class="venue-name">${esc(e.venue.name)}${e.venue.room ? " · " + esc(e.venue.room) : ""}</span><div class="location-line"><span class="city-dot" data-city="${esc(city.id)}" style="--city:${esc(city.color)}"></span>${esc(e.venue.locality || city.name)} · ${esc(city.short || city.name)}</div>${secondaryMarkup(e.venue.provenance)}<p class="mobile-venue-facts">${esc([e.venue.capacity ? capacityLabel(e.venue) + " capacity" : "", (e.venue.layout || e.venue.capacity?.configuration || "").replace(/;?\s*stage varies/i, "").trim()].filter(Boolean).join(" · "))}</p><div class="capacity">${sizeDots(e.venue)}<span>${esc(capacityLabel(e.venue))}${e.venue.capacity ? " capacity" : ""}</span></div>${e.venue.layout || e.venue.capacity?.configuration ? `<p class="venue-type">${esc(e.venue.layout || e.venue.capacity.configuration)}</p>` : ""}</div></div><div class="event-actions">${planBtn(e)}${saveBtn(e)}${hideBtn(e)}${icoButton("open", "chevron", "View details for " + e.title, `data-id="${esc(e.id)}"`, "details-btn")}</div></article>`;
 }
 const artistContexts = new Map();
 let artistObserver;
@@ -734,7 +738,7 @@ function resultsBar(list) {
       : state.tab === "hidden"
         ? `${list.length} hidden ${list.length === 1 ? "concert" : "concerts"} · all dates and cities`
         : list.length + " concerts";
-  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${!sharedListId ? button("import-event", "Add event", "text-button") : ""}${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
+  return `<div class="viewbar ${state.tab === "hidden" ? "hidden-view" : ""}"><div class="results-heading"><div class="results-total"><span class="results-count" aria-live="polite">${state.loading ? "Finding concerts…" : label}</span></div>${button("matches", icon("spotify") + "In Spotify history", `matches-toggle ${state.matches ? "active" : ""}`, `aria-pressed="${state.matches}"`)}</div><div class="viewbar-right">${!sharedListId && state.tab === 'discover' && state.view === 'list' ? button('personalized', 'Group by predicted interest', `text-button ${state.personalized && state.sort === 'date' ? 'active' : ''}`, `aria-pressed="${state.personalized && state.sort === 'date'}"`) : ''}${!sharedListId ? button("import-event", "Add event", "text-button") : ""}${button("refresh", icon("refresh") + "<span>Refresh</span>", "text-button results-refresh", `aria-label="Refresh concerts" ${state.loading ? "disabled" : ""}`)}<select id="sort" aria-label="Sort concerts" class="sort-select">${[
     ["date", "Date, soonest"],
     ...(!sharedListId ? [["matches", "Listening matches"]] : []),
     ...(state.tab === "saved"
@@ -782,8 +786,17 @@ function feedNote() {
   return `${state.feed.sourceError ? `<div class="banner">${esc(state.feed.sourceError)}</div>` : ""}${store.data.conflicts?.length ? `<div class="banner">A note was edited on two devices. ${button("conflicts", "Review both versions", "text-button")}</div>` : ""}${state.matches && !Object.keys(listening() || {}).length ? `<div class="banner">Add your listening history to find familiar artists. ${button("listening", "Import Spotify history", "text-button")}</div>` : ""}${state.unmapped ? `<div class="banner">Showing concerts without a verified map location. ${button("clear-unmapped", "Show all concerts", "text-button")}</div>` : ""}`;
 }
 let lastResultsBody = null;
+let recommendationCache;
+function predictions() {
+  const catalog = events(), fields = store.fields, history = listening();
+  if (!recommendationCache || recommendationCache.catalog !== catalog || recommendationCache.fields !== fields || recommendationCache.history !== history)
+    recommendationCache = {catalog, fields, history, value: recommendConcerts(catalog, fields, history)};
+  return recommendationCache.value;
+}
 function renderResults() {
-  const list = filtered(),
+  const personalized = !sharedListId && state.tab === 'discover' && state.view === 'list' && state.personalized && state.sort === 'date';
+  const prediction = personalized ? predictions() : null;
+  const list = personalized ? rankDaily(filtered(), prediction) : filtered(),
     root = $("#results");
   if (!root) return;
   let body = "";
@@ -808,6 +821,22 @@ function renderResults() {
       text = "Restore concerts to expand them in results.";
     }
     body = `<div class="empty-state">${icon(state.tab === "saved" ? "bookmark" : "music")}<h2>${title}</h2><p>${text}</p>${button(["saved", "hidden"].includes(state.tab) ? "discover" : "reset-filters", ["saved", "hidden"].includes(state.tab) ? "Browse concerts" : "Reset filters", "secondary")}</div>`;
+  } else if (personalized) {
+    body = '<p class="prediction-intro">Suggestions based on your listening history and concert choices. Your stars, saves, and “not interested” choices always take priority. Save, star, or dismiss a show to refine future suggestions.</p>';
+    let day = null, group = null;
+    for (const e of list.slice(0,state.limit)) {
+      const p = prediction.get(e.id);
+      if (day !== e.date) {
+        day = e.date; group = null;
+        body += `<h2 class="prediction-day">${esc(day ? dateLabel(day,{weekday:'long',month:'short',day:'numeric',year:'numeric'}) : 'Date TBA')}</h2>`;
+      }
+      if (group !== p.group) {
+        group = p.group;
+        body += `<h3 class="prediction-group prediction-${esc(group)}">${esc(recommendationGroups.find(([key])=>key===group)[1])}${p.explicit ? '' : '<small>Suggested · you decide</small>'}</h3>`;
+      }
+      body += row(e,p);
+    }
+    if (list.length > state.limit) body += button('more-events', `Show more · ${list.length-state.limit} remaining`, 'show-more');
   } else if (state.view === "list") {
     let month = "",
       day = "";
@@ -1965,6 +1994,11 @@ document.addEventListener("click", async (e) => {
       case "refresh":
         await loadFeed();
         toast("Concerts updated.");
+        break;
+      case "personalized":
+        state.personalized = !(state.personalized && state.sort === 'date');
+        if (state.personalized) state.sort = 'date';
+        renderResults();
         break;
       case "more-events":
         state.limit += 60;
