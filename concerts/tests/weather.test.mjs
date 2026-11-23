@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {concertWeather} from '../server/weather.mjs';
-import {weatherWindow,weatherMarkup,weatherCondition} from '../shared/weather-strip.js';
+import {weatherWindow,weatherMarkup,weatherCondition,outdoorComfort} from '../shared/weather-strip.js';
 const event={date:'2026-11-28',time:'23:30',timezone:'America/New_York'};
 test('estimated concert window crosses midnight',()=>{
  const w=weatherWindow(event);
@@ -52,4 +52,23 @@ test('extended hourly data preserves zero values and renders distinct forecast l
  assert.match(markup,/72% rain · 0\.13 in/);
  assert.match(markup,/9 mph SE wind · gusts 15 mph/);
  assert.match(markup,/UV 0\.0/);
+});
+
+test('outdoor comfort uses feels-like temperature, rain and gusts, and leaves gaps neutral', () => {
+ const mild = {temp:83, feels:73, rain:4, precip:0, wind:7, gust:12};
+ assert.equal(outdoorComfort(mild).level,'very');
+ assert.equal(outdoorComfort({...mild,rain:42}).level,'okay');
+ assert.equal(outdoorComfort({...mild,gust:35}).level,'uncomfortable');
+ assert.equal(outdoorComfort({...mild,rain:75}).level,'uncomfortable');
+ assert.equal(outdoorComfort({...mild,feels:93}).level,'uncomfortable');
+ assert.equal(outdoorComfort({...mild,code:95}).level,'uncomfortable');
+ assert.equal(outdoorComfort({...mild,rain:null,precip:null}).level,'unknown');
+ assert.equal(outdoorComfort({temp:73,rain:0,wind:0}).level,'very');
+ const hours = [mild,{...mild,rain:42},{...mild,rain:75},{temp:73}].map((hour,index) =>
+  ({...hour,time:['2026-11-28T21:00','2026-11-28T22:00','2026-11-28T23:00','2026-11-29T00:00'][index]}));
+ const html = weatherMarkup({status:'ok',timezone:event.timezone,hours},event);
+ assert.match(html,/aria-label="11pm · Uncomfortable"/);
+ assert.match(html,/class="weather-tick comfort-unknown"/);
+ assert.match(html,/There’s a chance of rain\./);
+ assert.match(html,/Estimated outdoor comfort/);
 });

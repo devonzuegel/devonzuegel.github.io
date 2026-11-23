@@ -1,5 +1,5 @@
 import { sharedNoteFor, sharedNotesFor } from "./shared/shared-notes.js";
-import { bindWeatherStrip, weatherMarkup, weatherWindow } from "./shared/weather-strip.js?v=20261123-estimates";
+import { bindWeatherStrip, weatherMarkup, weatherWindow } from "./shared/weather-strip.js?v=20261123-comfort";
 import { concertWeather } from "./shared/weather-forecast.js";
 import { disposePlanMaps, mountPlanMaps } from "./shared/plan-maps.js";
 import { recommendConcerts, rankDaily, recommendationGroups } from "./shared/recommendations.js";

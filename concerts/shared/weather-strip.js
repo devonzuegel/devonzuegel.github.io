@@ -20,6 +20,38 @@ const clamp = (value, max) => Math.max(0, Math.min(value, max));
 const numeric = Number.isFinite;
 const read = (value, suffix = "") => numeric(value) ? Math.round(value) + suffix : "—";
 
+const comfortLabels = {
+  very: "Very comfortable",
+  okay: "Okay",
+  uncomfortable: "Uncomfortable",
+  unknown: "Insufficient data",
+};
+
+// Estimate how the hour might feel at an outdoor show using the most limiting condition.
+export function outdoorComfort(hour) {
+  const temperature = numeric(hour.feels) ? hour.feels : hour.temp;
+  const hasRain = numeric(hour.rain) || numeric(hour.precip);
+  const hasWind = numeric(hour.wind) || numeric(hour.gust);
+  const [, condition] = weatherCondition(hour.code, hour.day);
+  const limitingConditions = [
+    [condition === "Thunderstorms", false, "Thunderstorms are forecast."],
+    [numeric(temperature) && temperature < 50, numeric(temperature) && temperature < 60, "It may feel chilly."],
+    [numeric(temperature) && temperature >= 88, numeric(temperature) && temperature > 80, "It may feel hot."],
+    [hour.precip >= 0.10 || hour.rain >= 70, hour.precip >= 0.01 || hour.rain >= 30,
+      hour.rain >= 70 || hour.precip >= 0.10 ? "Rain is likely or measurable." : "There’s a chance of rain."],
+    [hour.wind >= 23 || hour.gust >= 32, hour.wind >= 13 || hour.gust >= 23,
+      hour.wind >= 23 || hour.gust >= 32 ? "Strong wind or gusts." : "Wind or gusts may be noticeable."],
+  ];
+  const hard = limitingConditions.find(([uncomfortable]) => uncomfortable);
+  if (hard) return {level:"uncomfortable", reason:hard[2]};
+  if (!numeric(temperature) || !hasRain || !hasWind) {
+    return {level:"unknown", reason:"Hourly temperature, rain, or wind data is missing."};
+  }
+  const soft = limitingConditions.find(([, okay]) => okay);
+  if (soft) return {level:"okay", reason:soft[2]};
+  return {level:"very", reason:"Mild, with little rain and light wind."};
+}
+
 function trend(hours, field, x, y, className) {
   let path = "";
   let previous = false;
@@ -97,13 +129,27 @@ export function weatherMarkup(data, event) {
   if (!hours.length) return '<p class="media-notice">The forecast does not cover these concert hours yet. Check back closer to the show.</p>';
   const selected = hours.reduce((best, hour, index) =>
     Math.abs(Date.parse(hour.time + "Z") - window.start) < Math.abs(Date.parse(hours[best].time + "Z") - window.start) ? index : best, 0);
+  const comfort = hours.map(outdoorComfort);
   const ticks = hours.map((hour, index) => {
     const label = clockLabel(Date.parse(hour.time + "Z"));
     const nextDay = hour.time.slice(0,10) > event.date && hour.time.slice(11) === "00:00";
-    return '<button type="button" class="weather-tick" data-weather-hour="' + index + '" aria-controls="weather-hour-' + index + '" aria-pressed="' + (index === selected) + '">' + label + (nextDay ? '<small>Next day</small>' : '') + '</button>';
+    const {level} = comfort[index];
+    const accessibleLabel = label + (nextDay ? " next day" : "") + " · " + comfortLabels[level];
+    return '<button type="button" class="weather-tick comfort-' + level + '" data-weather-hour="' + index +
+      '" aria-label="' + accessibleLabel + '" aria-controls="weather-hour-' + index + '" aria-pressed="' + (index === selected) +
+      '">' + label + (nextDay ? '<small>Next day</small>' : '') + '</button>';
   }).join("");
-  const readouts = hours.map((hour, index) => '<div class="weather-hour-readout" id="weather-hour-' + index + '"' +
-    (index === selected ? "" : " hidden") + '><strong>' + clockLabel(Date.parse(hour.time + "Z")) + '</strong>' + hourDetails(hour) + '<template>' + hourDetails(hour, true) + '</template></div>').join("");
+  const readouts = hours.map((hour, index) => {
+    const {level,reason} = comfort[index];
+    return '<div class="weather-hour-readout" id="weather-hour-' + index + '"' + (index === selected ? "" : " hidden") +
+      '><strong>' + clockLabel(Date.parse(hour.time + "Z")) + '</strong>' + hourDetails(hour) +
+      '<div class="weather-comfort-detail comfort-' + level + '"><strong>' + comfortLabels[level] +
+      (level === "unknown" ? "" : " outdoors") + '</strong><span>' + esc(reason) + '</span></div>' +
+      '<template>' + hourDetails(hour, true) + '</template></div>';
+  }).join("");
+  const legend = Object.entries(comfortLabels).filter(([level]) => level !== "unknown" ||
+    comfort.some(hour => hour.level === level)).map(([level,label]) =>
+    '<li class="comfort-' + level + '">' + label + '</li>').join("");
   const context = window.knownEnd ? "Shaded area marks the listed show window." : "Shaded area marks the estimated show window.";
   const partial = Date.parse(hours[0].time + "Z") > window.from ||
     Date.parse(hours.at(-1).time + "Z") < Math.floor(window.to/HOUR)*HOUR;
@@ -113,6 +159,7 @@ export function weatherMarkup(data, event) {
     '<div class="weather-scroll"><div class="weather-chart" style="--hours:' + hours.length + ';--selected-hour:' + selected + '">' +
     '<div class="weather-plot">' + weatherPlot(hours,window) + '<div class="weather-cursor"></div><div class="weather-float" aria-hidden="true" hidden></div></div>' +
     '<div class="weather-hours" role="group" aria-label="Forecast hour, venue local time">' + ticks + '</div></div></div>' +
+    '<ul class="weather-comfort-legend" aria-label="Estimated outdoor comfort">' + legend + '</ul>' +
     '<div class="weather-readouts" aria-live="polite">' + readouts + '</div>' +
     '<p class="weather-credit">Outdoor conditions · ' + esc(data.timezone) + ' · <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>';
 }
@@ -164,6 +211,7 @@ export function bindWeatherStrip(root) {
   plot.addEventListener("click", pick);
   scroll.addEventListener("scroll", () => { if (!labels.hidden) showLabels(active); });
   buttons.forEach((button, index) => {
+    button.addEventListener("pointerenter", event => { if (event.pointerType === "mouse") select(index); });
     button.addEventListener("focus", () => showLabels(index));
     button.addEventListener("blur", hideLabels);
     button.addEventListener("click", () => showLabels(index));

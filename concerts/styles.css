@@ -4565,9 +4565,19 @@ button.plan-event:focus-visible { z-index: 1; }
 .weather-cursor { position: absolute; inset-block: 0; left: calc((var(--selected-hour) + .5) * 100% / var(--hours)); border-left: 2px solid var(--weather-rain); opacity: .75; pointer-events: none; }
 .weather-hours { display: grid; grid-template-columns: repeat(var(--hours), minmax(0,1fr)); }
 .weather-tick { min-height: 38px; padding: 3px 0; text-align: center; color: var(--muted); font: inherit; font-size: 11px; border: none; background: transparent; cursor: pointer; }
-.weather-tick[aria-pressed="true"] { color: var(--weather-rain); font-weight: 750; }
 .weather-tick:focus-visible { outline-offset: -2px; }
 .weather-tick small { display: block; font-size: 10px; }
+.concert-weather .comfort-very { --comfort-color: light-dark(#286c47,#a4dfb4); }
+.concert-weather .comfort-okay { --comfort-color: light-dark(#825700,#f2cb73); }
+.concert-weather .comfort-uncomfortable { --comfort-color: light-dark(#a03e38,#ffafa4); }
+.concert-weather .comfort-unknown { --comfort-color: var(--muted); }
+.weather-tick { background: color-mix(in srgb, var(--comfort-color) 19%, var(--white)); color: var(--ink); }
+.weather-tick + .weather-tick { border-inline-start: 1px solid var(--white); }
+.weather-tick[aria-pressed="true"] { color: var(--weather-rain); font-weight: 750; box-shadow: inset 0 -2px var(--weather-rain); }
+.weather-comfort-legend { display: flex; flex-wrap: wrap; gap: 3px 10px; padding: 0; margin: 7px 0; list-style: none; font-size: 11px; color: var(--muted); }
+.weather-comfort-legend li::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-inline-end: 4px; border-radius: 2px; background: var(--comfort-color); }
+.weather-comfort-detail { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 1px 7px; color: var(--muted); }
+.weather-comfort-detail strong { color: var(--comfort-color); }
 .weather-hour-readout:not([hidden]) { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 9px; min-height: 37px; font-size: 12px; font-variant-numeric: tabular-nums; }
 .weather-air-read { color: var(--weather-air); }
 .weather-rain-read { color: var(--weather-rain); }
