@@ -1226,9 +1226,21 @@ function saveEvent(e, force) {
   else toast("Removed from saved. Your notes are kept.");
   updateDetailMeta();
 }
+let savePromptTimer;
 function promptSpecificList(e) {
-  toast("Saved to your concerts. Add to a specific list too?",
-    button("choose-concert-list", "Choose list", "toast-undo", `data-id="${esc(e.id)}"`));
+  openModal("Concert saved", `<div class="save-list-prompt"><p><strong>${esc(e.title)}</strong> is in your Saved concerts.</p><p>Add it to a specific list too?</p><div class="form-actions">${button("choose-concert-list", "Choose a list", "primary", `data-id="${esc(e.id)}"`)}${button("close-modal", "Not now", "secondary")}</div><small class="save-prompt-hint">Closes in 8 seconds · Esc to dismiss</small></div>`);
+  const modal = $(".modal");
+  modal.classList.add("save-list-modal");
+  const keepOpen = () => {
+    clearTimeout(savePromptTimer);
+    const hint = modal.querySelector('.save-prompt-hint');
+    if (hint) hint.textContent = 'Esc to dismiss';
+  };
+  modal.addEventListener('pointerdown', keepOpen);
+  modal.addEventListener('keydown', keepOpen);
+  savePromptTimer = setTimeout(() => {
+    if (modal.isConnected) closeModal();
+  }, 8000);
 }
 function setAssessment(id, field, value) {
   const e = eventFor(id);
@@ -1540,10 +1552,11 @@ async function previewImportedEvent(el) {
   } catch(error) {if(status.isConnected)status.textContent=error.message;} finally {el.disabled=false;}
 }
 function openModal(title, body, wide = false) {
+  clearTimeout(savePromptTimer);
   disposeVenueMaps($("#modal-root"));
   $("#app").inert = true;
   $("#detail-root").inert = true;
-  modalReturnFocus = document.activeElement;
+  if (!$(".modal")) modalReturnFocus = document.activeElement;
   $("#modal-root").innerHTML =
     `<div class="scrim modal-scrim" data-action="close-modal"></div><section class="modal ${wide ? "wide" : ""}" role="dialog" aria-modal="true" aria-labelledby="modal-title"><header class="modal-header"><h2 id="modal-title">${esc(title)}</h2>${icoButton("close-modal", "close", "Close dialog")}</header><div class="modal-body">${body}</div></section>`;
   document.body.style.overflow = "hidden";
@@ -1553,6 +1566,7 @@ function openModal(title, body, wide = false) {
   );
 }
 function closeModal() {
+  clearTimeout(savePromptTimer);
   pendingQRSync = null;
   disposeVenueMaps($("#modal-root"));
   $("#app").inert = !!state.selected;

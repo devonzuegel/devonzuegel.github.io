@@ -4493,3 +4493,7 @@ button.plan-event { cursor: pointer; }
 .plan-all-shows { font-size: 20px; margin: 16px 0; }
 .shared-choices-table td:first-child:has(.plan-star) { width: 56px; padding-right: 0; }
 @media(max-width: 600px) { .concert-plan { padding: 12px; } .plan-calendar { grid-template-columns: 1fr; } .event-actions { flex-wrap: wrap; } }
+
+.modal.save-list-modal { max-width: 460px; }
+.save-list-prompt .form-actions { margin: 22px 0 16px; }
+.save-prompt-hint { color: var(--muted); font-size: 12px; }
