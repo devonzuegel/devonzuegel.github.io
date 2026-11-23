@@ -4500,7 +4500,7 @@ summary.month-heading:focus-visible {
 .plan-venue { color: var(--muted); }
 .plan-stop { grid-row: 1 / 4; align-self: start; min-width: 15px; height: 15px; border-radius: 10px; margin-top: 1px; padding-inline: 3px; text-align: center; background: var(--green); color: var(--white); font-size: 10px; font-weight: 700; line-height: 15px; }
 .plan-grid .plan-event { position: absolute; top: calc(var(--start) * var(--hour-height)); left: calc(100% / var(--lanes) * var(--lane)); width: calc(100% / var(--lanes) - 3px); height: max(44px, calc(var(--duration) * var(--hour-height) - 2px)); overflow: hidden; }
-.plan-event.plan-open-ended { border-left-style: dashed; background: var(--paper); }
+.plan-event.plan-estimated { border-left-style: dashed; background: color-mix(in srgb, var(--green-soft) 69%, var(--paper)); }
 button.plan-event { cursor: pointer; }
 button.plan-event:focus-visible { z-index: 1; }
 .plan-map-panel { border-top: 1px solid var(--line); padding: 10px 12px 12px; }
@@ -4574,3 +4574,16 @@ button.plan-event:focus-visible { z-index: 1; }
 .weather-wind-read { color: var(--weather-wind); }
 .weather-uv-read { color: var(--weather-uv); }
 .weather-credit a { text-decoration: underline; }
+
+
+.weather-float:not([hidden]) {
+  position: absolute; top: 4px; width: max-content; display: flex; flex-direction: column; align-items: flex-start;
+  gap: 2px; pointer-events: none; font-size: 12px; line-height: 1.12;
+  font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.weather-float span {
+  display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 1px 5px; border-radius: 3px; background: var(--white);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--line) 72%, transparent);
+}
+.weather-feels-read { color: color-mix(in srgb, var(--weather-air) 80%, var(--muted)); }

@@ -1,13 +1,13 @@
 import { sharedNoteFor, sharedNotesFor } from "./shared/shared-notes.js";
-import { bindWeatherStrip, weatherMarkup, weatherWindow } from "./shared/weather-strip.js?v=20261123-forecast-plan";
+import { bindWeatherStrip, weatherMarkup, weatherWindow } from "./shared/weather-strip.js?v=20261123-estimates";
 import { concertWeather } from "./shared/weather-forecast.js";
 import { disposePlanMaps, mountPlanMaps } from "./shared/plan-maps.js";
 import { recommendConcerts, rankDaily, recommendationGroups } from "./shared/recommendations.js";
-import { planMarkup } from "./shared/concert-plan.js?v=20261123-forecast-plan";
+import { planMarkup } from "./shared/concert-plan.js?v=20261123-estimates";
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
-import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-forecast-plan";
+import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-estimates";
 import { listDateError, listDateLabel } from "./shared/list-dates.js";
-import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
+import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261123-miami-locations";
 import { ActionHistory } from "./shared/action-history.js";
 import qrcode from "./vendor/qrcode.mjs";
 import { syncLink, parseSyncLink } from "./shared/qr-sync.js";

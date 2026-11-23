@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import {concertWeather} from '../server/weather.mjs';
 import {weatherWindow,weatherMarkup,weatherCondition} from '../shared/weather-strip.js';
 const event={date:'2026-11-28',time:'23:30',timezone:'America/New_York'};
-test('unknown ending is an explicit planning window crossing midnight',()=>{
+test('estimated concert window crosses midnight',()=>{
  const w=weatherWindow(event);
- assert.equal(new Date(w.to).toISOString(),'2026-11-29T03:30:00.000Z');
+ assert.equal(new Date(w.to).toISOString(),'2026-11-29T01:30:00.000Z');
  assert.equal(w.knownEnd,false);
  const html=weatherMarkup({status:'ok',timezone:event.timezone,updatedAt:'2026-11-23T12:00Z',hours:[{time:'2026-11-29T00:00',temp:70,feels:71,rain:null,wind:3,code:0,day:false}]},event);
- assert.match(html,/End time unknown/); assert.match(html,/Next day/); assert.match(html,/— rain/);
+ assert.match(html,/estimated show window/); assert.match(html,/Next day/); assert.match(html,/— rain/);
 });
 test('known end uses venue timezone and missing start is not invented',()=>{
  const w=weatherWindow({...event,endAt:'2026-11-29T10:00:00Z'});

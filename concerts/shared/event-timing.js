@@ -28,6 +28,20 @@ export function eventTiming(event) {
   return { start, end, doors };
 }
 
+export function scheduleTiming(event) {
+  const timing = eventTiming(event);
+  const {start, end, doors} = timing;
+  if (start === null || end !== null) return {...timing, estimated:false};
+  const hour = new Date(start).getUTCHours();
+  const electronic = event.genres?.some(genre => /^(electronic|house|techno|trance|dance)$/i.test(genre));
+  const nightclub = /\bnightclub\b/i.test(event.venue?.name || "");
+  const lateNight = hour >= 21 || hour < 4;
+  let duration = doors ? 2.5 : 2;
+  if (event.eventType === "festival") duration = 6;
+  else if (nightclub || (lateNight && electronic)) duration = 4;
+  return {...timing, end:start + duration * HOUR, estimated:true};
+}
+
 export function clockLabel(value) {
   const date = new Date(value);
   const hour = date.getUTCHours();

@@ -53,10 +53,21 @@ test('day grid preserves duration, gives overlaps separate lanes, and maps untim
  ];
  const markup = planMarkup(shows,shows.map(show=>show.id));
  assert.match(markup,/--start:0\.5;--duration:2\.5;--lane:0;--lanes:2/);
- assert.match(markup,/--start:0\.75;--duration:0;--lane:1;--lanes:2/);
+ assert.match(markup,/--start:0\.75;--duration:2.5;--lane:1;--lanes:2/);
  assert.match(markup,/10:30pm–1am next day/);
- assert.match(markup,/end TBA · doors/);
+ assert.match(markup,/10:45pm–1:15am next day · est. · doors/);
  assert.match(markup,/Start time TBA/);
  assert.match(markup,/&quot;timed&quot;:false/);
  assert.doesNotMatch(planMarkup(shows,['one'],{interactive:false}),/data-plan-stops/);
+});
+
+test('late electronic nights and festivals get longer estimates than a concert', () => {
+ const show = {...a,date:'2026-11-27',time:'22:00'};
+ const estimated = event => planMarkup([event],[event.id]);
+ assert.match(estimated(show),/10pm–12am next day · est\./);
+ assert.match(estimated({...show,genres:['Electronic']}),/10pm–2am next day · est\./);
+ assert.match(estimated({...show,eventType:'festival',time:'15:00'}),/3pm–9pm · est\./);
+ const confirmed = {...show,timezone:'America/New_York',endAt:'2026-11-28T04:30Z'};
+ assert.match(estimated(confirmed),/10pm–11:30pm/);
+ assert.doesNotMatch(estimated(confirmed),/ · est\./);
 });

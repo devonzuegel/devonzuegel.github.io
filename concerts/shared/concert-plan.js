@@ -1,11 +1,11 @@
 import { sharedNoteFor } from "./shared-notes.js";
 import { dateLabel, escapeHTML as esc } from "./core.js?v=20261123-plan2";
-import { clockLabel, eventTiming, HOUR } from "./event-timing.js";
+import { clockLabel, scheduleTiming, HOUR } from "./event-timing.js?v=20261123-estimates";
 
 export function plannedEvents(events, ids = []) {
   const selected = new Set(ids);
   return events.filter(e => selected.has(e.id) || e.aliases?.some(id => selected.has(id)))
-    .map(event => ({event, start:eventTiming(event).start}))
+    .map(event => ({event, start:scheduleTiming(event).start}))
     .sort((a,b) => (a.event.date || "").localeCompare(b.event.date || "") ||
       (a.start ?? Infinity) - (b.start ?? Infinity))
     .map(({event}) => event);
@@ -35,14 +35,14 @@ function daySchedule(shows) {
 }
 
 function planCard(show, interactive, geometry = "") {
-  const {event,start,end,doors,index} = show;
+  const {event,start,end,doors,index,estimated} = show;
   const title = esc(event.title);
   const timing = start === null ? "Start time TBA" : clockLabel(start) +
-    (end === null ? " · end TBA" : "–" + clockLabel(end) + (new Date(start).getUTCDate() !== new Date(end).getUTCDate() ? " next day" : "")) +
+    ("–" + clockLabel(end) + (new Date(start).getUTCDate() !== new Date(end).getUTCDate() ? " next day" : "") + (estimated ? " · est." : "")) +
     (doors ? " · doors" : "");
   const venue = esc(event.venue?.name || "Venue TBA");
   const tag = interactive ? "button" : "div";
-  return '<' + tag + ' class="plan-event' + (end === null ? ' plan-open-ended' : '') + '"' +
+  return '<' + tag + ' class="plan-event' + (estimated ? ' plan-estimated' : '') + '"' +
     (interactive ? ' type="button" data-action="open" data-id="' + esc(event.id) + '" title="' + title + ' · ' + timing + ' · ' + venue + '"' : '') +
     (geometry ? ' style="' + geometry + '"' : '') + '><span class="plan-stop">' + index + '</span><strong>' + title +
     '</strong><span class="plan-time">' + timing + '</span><span class="plan-venue">' + venue + '</span></' + tag + '>';
@@ -90,7 +90,7 @@ export function planMarkup(events, ids, {interactive = true, notes = {}} = {}) {
   for (const event of planned) {
     const day = event.date || "";
     const shows = days.get(day) || [];
-    shows.push({event, ...eventTiming(event), index:shows.length+1});
+    shows.push({event, ...scheduleTiming(event), index:shows.length+1});
     days.set(day, shows);
   }
   const markup = [...days].map(([day, shows]) => {

@@ -53,3 +53,15 @@ test("researched numerical capacities have sources and valid bounds", () => {
     }
   }
 });
+
+test('19Hz Miami venue names resolve checked map pins for older snapshots', async () => {
+ const {enrichVenue} = await import('../shared/venue-profiles.js');
+ for (const [name,locality] of [['Do Not Sit On The Furniture','Miami Beach'],
+   ['Jolene Downtown','Miami'],['Floyd Miami','Miami'],['Liv Nightclub','Miami']]) {
+  const venue = enrichVenue({name,locality,lat:null,lng:null},'miami');
+  assert.ok(Number.isFinite(venue.lat) && Number.isFinite(venue.lng), name);
+  assert.equal(venue.provenance.coordinates.sources.length,2);
+ }
+ assert.equal(enrichVenue({name:'Jolene Downtown',locality:'Oakland'},'miami').lat,undefined);
+ assert.equal(enrichVenue({name:'Jolene Downtown',locality:'Miami'},'miami').locationApproximate,true);
+});

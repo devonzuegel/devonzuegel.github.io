@@ -1,10 +1,10 @@
-import { clockLabel, eventTiming, HOUR } from './event-timing.js';
+import { clockLabel, scheduleTiming, HOUR } from './event-timing.js?v=20261123-estimates';
 import { escapeHTML as esc } from './core.js?v=20261123-plan2';
 
 export function weatherWindow(event) {
-  const { start, end } = eventTiming(event);
+  const { start, end, estimated, doors } = scheduleTiming(event);
   if (start === null) return null;
-  return {from: Math.floor(start/HOUR)*HOUR-HOUR, to: end ?? start+4*HOUR, knownEnd: end !== null, start};
+  return {from: Math.floor(start/HOUR)*HOUR-HOUR, to: end, knownEnd: !estimated, start, doors};
 }
 export function weatherCondition(code,day) {
   if(code===0)return [day?'☀':'☾',day?'Clear':'Clear night'];
@@ -64,10 +64,21 @@ function weatherPlot(hours, window) {
     '</svg>';
 }
 
-function hourDetails(hour) {
+function hourDetails(hour, floating = false) {
   const [,condition] = weatherCondition(hour.code, hour.day);
   const direction = numeric(hour.direction) ? " " + ["N","NE","E","SE","S","SW","W","NW"][Math.round(hour.direction/45)%8] : "";
   const amount = numeric(hour.precip) ? " · " + hour.precip.toFixed(2) + " in" : "";
+  if (floating) {
+    const tag = (text, cls = "") => '<span class="' + cls + '">' + esc(text) + '</span>';
+    const air = (value, label, cls) => numeric(value) ? tag(label + " " + read(value,"°F"),cls) : "";
+    return (numeric(hour.rain) || numeric(hour.precip) ? tag("Rain " + read(hour.rain,"%") + amount,"weather-rain-read") : "") +
+      air(hour.feels,"Feels like","weather-feels-read") +
+      (numeric(hour.cloud) ? tag("Cloud cover " + read(hour.cloud,"%")) : numeric(hour.code) ? tag(condition) : "") +
+      air(hour.temp,"Air","weather-air-read") +
+      (numeric(hour.wind) ? tag("Wind " + read(hour.wind," mph") + direction +
+        (numeric(hour.gust) ? " · gusts " + read(hour.gust," mph") : ""), "weather-wind-read") : "") +
+      (numeric(hour.uv) ? tag("UV " + hour.uv.toFixed(1),"weather-uv-read") : "");
+  }
   return '<span class="weather-air-read">' + read(hour.temp,"°F") + ' · feels ' + read(hour.feels,"°F") + '</span>' +
     '<span class="weather-rain-read">' + read(hour.rain,"%") + ' rain' + amount + '</span>' +
     '<span>' + esc(condition) + (numeric(hour.cloud) ? ' · ' + read(hour.cloud,"%") + ' cloud' : '') + '</span>' +
@@ -92,15 +103,15 @@ export function weatherMarkup(data, event) {
     return '<button type="button" class="weather-tick" data-weather-hour="' + index + '" aria-controls="weather-hour-' + index + '" aria-pressed="' + (index === selected) + '">' + label + (nextDay ? '<small>Next day</small>' : '') + '</button>';
   }).join("");
   const readouts = hours.map((hour, index) => '<div class="weather-hour-readout" id="weather-hour-' + index + '"' +
-    (index === selected ? "" : " hidden") + '><strong>' + clockLabel(Date.parse(hour.time + "Z")) + '</strong>' + hourDetails(hour) + '</div>').join("");
-  const context = window.knownEnd ? "Shaded area marks the listed show window." : "End time unknown. Shading runs four hours after the listed start.";
+    (index === selected ? "" : " hidden") + '><strong>' + clockLabel(Date.parse(hour.time + "Z")) + '</strong>' + hourDetails(hour) + '<template>' + hourDetails(hour, true) + '</template></div>').join("");
+  const context = window.knownEnd ? "Shaded area marks the listed show window." : "Shaded area marks the estimated show window.";
   const partial = Date.parse(hours[0].time + "Z") > window.from ||
     Date.parse(hours.at(-1).time + "Z") < Math.floor(window.to/HOUR)*HOUR;
-  return '<p class="weather-context">' + context + (eventTiming(event).doors ? ' Start is doors opening.' : '') +
+  return '<p class="weather-context">' + context + (window.doors ? ' Start is doors opening.' : '') +
     (partial ? ' Only part of this window is available.' : '') + '</p>' +
     (data.outlook ? '<p class="weather-outlook">Early outlook · Hourly details may change.</p>' : '') +
     '<div class="weather-scroll"><div class="weather-chart" style="--hours:' + hours.length + ';--selected-hour:' + selected + '">' +
-    '<div class="weather-plot">' + weatherPlot(hours,window) + '<div class="weather-cursor"></div></div>' +
+    '<div class="weather-plot">' + weatherPlot(hours,window) + '<div class="weather-cursor"></div><div class="weather-float" aria-hidden="true" hidden></div></div>' +
     '<div class="weather-hours" role="group" aria-label="Forecast hour, venue local time">' + ticks + '</div></div></div>' +
     '<div class="weather-readouts" aria-live="polite">' + readouts + '</div>' +
     '<p class="weather-credit">Outdoor conditions · ' + esc(data.timezone) + ' · <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>';
@@ -122,22 +133,52 @@ export function bindWeatherStrip(root) {
     chart.style.setProperty("--selected-hour", index);
     active = index;
   };
+  const scroll = root.querySelector(".weather-scroll");
+  const labels = plot.querySelector(".weather-float");
+  let labeledHour = -1;
+  const showLabels = index => {
+    select(index);
+    if (labeledHour !== index) {
+      labels.replaceChildren(readouts[index].querySelector("template").content.cloneNode(true));
+      labeledHour = index;
+    }
+    labels.hidden = !labels.childElementCount;
+    if (labels.hidden) return;
+    const inset = 5;
+    const viewportLeft = Math.max(0, scroll.getBoundingClientRect().left - plot.getBoundingClientRect().left);
+    const viewportRight = viewportLeft + scroll.clientWidth;
+    labels.style.maxWidth = Math.max(0, scroll.clientWidth - 2 * inset) + "px";
+    const anchor = (index + .5) * plot.clientWidth / buttons.length;
+    const width = labels.offsetWidth;
+    const preferred = anchor + 8 + width <= viewportRight ? anchor + 8 : anchor - width - 8;
+    labels.style.left = Math.max(viewportLeft + inset, Math.min(preferred, viewportRight - width - inset)) + "px";
+  };
+  const hideLabels = () => { labels.hidden = true; };
   const pick = event => {
     const rect = plot.getBoundingClientRect();
     const fraction = (event.clientX - rect.left) / rect.width;
-    select(clamp(Math.floor(fraction * buttons.length), buttons.length - 1));
+    showLabels(clamp(Math.floor(fraction * buttons.length), buttons.length - 1));
   };
   plot.addEventListener("pointermove", event => { if (event.pointerType === "mouse") pick(event); });
+  plot.addEventListener("pointerleave", event => { if (event.pointerType === "mouse") hideLabels(); });
   plot.addEventListener("click", pick);
+  scroll.addEventListener("scroll", () => { if (!labels.hidden) showLabels(active); });
   buttons.forEach((button, index) => {
-    button.addEventListener("focus", () => select(index));
-    button.addEventListener("click", () => select(index));
+    button.addEventListener("focus", () => showLabels(index));
+    button.addEventListener("blur", hideLabels);
+    button.addEventListener("click", () => showLabels(index));
     button.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !labels.hidden) {
+        event.stopPropagation();
+        hideLabels();
+        return;
+      }
       if (!["ArrowLeft","ArrowRight","Home","End"].includes(event.key)) return;
       event.preventDefault();
       const next = event.key === "Home" ? 0 : event.key === "End" ? buttons.length-1 :
         clamp(index + (event.key === "ArrowRight" ? 1 : -1), buttons.length-1);
       buttons[next].focus();
+      showLabels(next);
     });
   });
 }
