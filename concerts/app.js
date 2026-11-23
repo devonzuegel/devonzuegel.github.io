@@ -1,9 +1,11 @@
 import { sharedNoteFor, sharedNotesFor } from "./shared/shared-notes.js";
-import { weatherMarkup, weatherWindow } from "./shared/weather-strip.js";
+import { bindWeatherStrip, weatherMarkup, weatherWindow } from "./shared/weather-strip.js?v=20261123-forecast-plan";
+import { concertWeather } from "./shared/weather-forecast.js";
+import { disposePlanMaps, mountPlanMaps } from "./shared/plan-maps.js";
 import { recommendConcerts, rankDaily, recommendationGroups } from "./shared/recommendations.js";
-import { planMarkup } from "./shared/concert-plan.js?v=20261123-notes-weather";
+import { planMarkup } from "./shared/concert-plan.js?v=20261123-forecast-plan";
 import {sharedListLink,setListMetadata} from "./shared/list-metadata.js?v=20261122-ranges";
-import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-notes-weather";
+import { manageLists, chooseConcertList, sharedListTimestamp } from "./shared/share-lists.js?v=20261123-forecast-plan";
 import { listDateError, listDateLabel } from "./shared/list-dates.js";
 import { enrichEventVenue, mergeVenueRecords } from "./shared/venue-profiles.js?v=20261003-locations";
 import { ActionHistory } from "./shared/action-history.js";
@@ -886,6 +888,7 @@ function renderResults() {
     ),
   );
   disposeVenueMaps(root);
+  disposePlanMaps(root);
   if (map) {
     state.mapPosition = { center: map.getCenter(), zoom: map.getZoom() };
     map.remove();
@@ -897,6 +900,7 @@ function renderResults() {
     `<div class="results-notices">${notices}</div><div class="results-content">${body}</div>`;
   animateResults(root.querySelector(".results-content"), before);
   mountArtistContexts(root);
+  mountPlanMaps(root, config);
   if (state.view === "list") mountVenueMaps(root, config).catch(() => {});
   if (state.view === "map" && list.length)
     requestAnimationFrame(() => initializeMap(list));
@@ -1364,9 +1368,11 @@ async function loadConcertWeather(event) {
   const place = exact ? event.venue : cityFor(event.metro);
   if (!Number.isFinite(place?.lat) || !Number.isFinite(place?.lng)) { root.innerHTML='<p class="media-notice">A venue location is needed to show the forecast.</p>'; return; }
   try {
-    const data = await apiGet('weather',{lat:place.lat,lng:place.lng,date:event.date,timezone:event.timezone || 'America/New_York'});
+    const params = {lat:place.lat,lng:place.lng,date:event.date,timezone:event.timezone || 'America/New_York'};
+    const data = await concertWeather(params).catch(() => apiGet('weather',params));
     if (request !== weatherRequest || !root.isConnected || state.selected !== event.id) return;
     root.innerHTML = (!exact ? `<p class="media-notice">Approximate forecast for ${esc(place.name)}; precise venue coordinates are unavailable.</p>` : '') + weatherMarkup(data,event);
+    bindWeatherStrip(root);
   } catch {
     if (request === weatherRequest && root.isConnected) root.innerHTML = '<p class="media-notice">Weather is temporarily unavailable. Reopen this show to try again.</p>';
   }

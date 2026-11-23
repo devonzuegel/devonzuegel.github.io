@@ -4482,14 +4482,43 @@ summary.month-heading:focus-visible {
 .plan-heading h2 { margin: 0; color: var(--accent); font-size: 24px; }
 .plan-heading span, .concert-plan > p { color: var(--muted); font-size: 13px; }
 .concert-plan > p { margin: 8px 0 18px; }
-.plan-calendar { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.plan-calendar { display: grid; gap: 16px; margin-top: 16px; }
 .plan-day { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; min-width: 0; }
-.plan-day h3 { padding: 12px; margin: 0; background: var(--green-soft); font-size: 15px; border-bottom: 1px solid var(--line); }
-.plan-day-shows { display: grid; gap: 8px; padding: 10px; }
-.plan-event { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 5px; width: 100%; padding: 12px; border: 0; border-left: 3px solid var(--accent); border-radius: 5px; background: var(--accent-soft); color: var(--ink); overflow-wrap: anywhere; }
+.plan-day > header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; padding: 12px; background: var(--green-soft); border-bottom: 1px solid var(--line); }
+.plan-day h3, .plan-day h4 { margin: 0; font-size: 15px; }
+.plan-day > header span, .plan-map-note { font-size: 12px; color: var(--muted); }
+.plan-grid { --hour-height: 78px; position: relative; height: calc(var(--day-hours) * var(--hour-height)); margin: 16px 12px 16px 60px; }
+.plan-grid-hour { position: absolute; top: calc(var(--hour) * var(--hour-height)); width: 100%; border-top: 1px solid var(--line); pointer-events: none; }
+.plan-grid-hour span { position: absolute; right: calc(100% + 5px); width: 51px; text-align: right; transform: translateY(-50%); color: var(--muted); font-size: 11px; line-height: 1.1; }
+.plan-grid-hour small { display: block; font-size: 10px; }
+.plan-day-shows, .plan-notes { display: grid; gap: 6px; padding: 0 12px 12px; }
+.plan-event { display: grid; grid-template-columns: minmax(15px, auto) minmax(0,1fr); grid-template-rows: auto auto auto; align-content: start; align-items: baseline; text-align: left; gap: 0 5px; min-width: 0; padding: 3px 6px; border: 0; border-left: 3px solid var(--green); border-radius: 5px; background: var(--green-soft); color: var(--ink); font-family: inherit; line-height: 1.24; }
+.plan-event strong, .plan-event .plan-time, .plan-venue { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plan-event strong { font-size: 13px; }
+.plan-event .plan-time, .plan-venue { grid-column: 2; font-size: 11px; }
+.plan-event .plan-time { color: var(--green); font-weight: 700; }
+.plan-venue { color: var(--muted); }
+.plan-stop { grid-row: 1 / 4; align-self: start; min-width: 15px; height: 15px; border-radius: 10px; margin-top: 1px; padding-inline: 3px; text-align: center; background: var(--green); color: var(--white); font-size: 10px; font-weight: 700; line-height: 15px; }
+.plan-grid .plan-event { position: absolute; top: calc(var(--start) * var(--hour-height)); left: calc(100% / var(--lanes) * var(--lane)); width: calc(100% / var(--lanes) - 3px); height: max(44px, calc(var(--duration) * var(--hour-height) - 2px)); overflow: hidden; }
+.plan-event.plan-open-ended { border-left-style: dashed; background: var(--paper); }
 button.plan-event { cursor: pointer; }
-.plan-event span, .plan-event small { font-size: 12px; }
-.plan-event .plan-time { color: var(--accent); font-weight: 700; }
+button.plan-event:focus-visible { z-index: 1; }
+.plan-map-panel { border-top: 1px solid var(--line); padding: 10px 12px 12px; }
+.plan-map-heading { display: flex; align-items: center; justify-content: space-between; gap: 4px 10px; flex-wrap: wrap; margin-bottom: 7px; }
+.plan-map-modes { display: flex; align-items: center; gap: 4px; }
+.plan-map-modes button { font: inherit; font-size: 12px; color: var(--ink); background: var(--white); border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; cursor: pointer; }
+.plan-map-modes button[aria-pressed="true"] { background: var(--green-soft); border-color: var(--green); font-weight: 650; }
+.plan-map { width: 100%; height: clamp(180px,30vw,245px); isolation: isolate; border-radius: 7px; background: var(--paper); color: var(--muted); }
+.plan-map-pin { transform-origin: center; text-align: center; line-height: 19px; padding-inline: 4px; min-width: 22px; width: max-content !important; border: 2px solid var(--white); border-radius: 20px; background: var(--green); color: var(--white); font-size: 11px; font-weight: 750; }
+.plan-map .plan-distance-tooltip { background: var(--white); color: var(--ink); border-color: var(--line); padding: 3px 5px; font-size: 10px; white-space: nowrap; }
+.plan-map-distances { display: grid; gap: 0; font-weight: 650; }
+.plan-route-walking { color: light-dark(#905019,#fbbb82); }
+.plan-route-driving { color: light-dark(#395d98,#afd0ff); }
+.plan-route-summary { font-size: 12px; }
+.plan-route-legs { list-style: none; padding: 0; margin: 5px 0 0; }
+.plan-route-legs li { display: flex; gap: 3px 10px; flex-wrap: wrap; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.plan-route-legs strong { width: 100%; font-weight: 650; }
+.plan-map-note { margin: 6px 0 0; }
 .plan-all-shows { font-size: 20px; margin: 16px 0; }
 .shared-choices-table td:first-child:has(.plan-star) { width: 56px; padding-right: 0; }
 @media(max-width: 600px) { .concert-plan { padding: 12px; } .plan-calendar { grid-template-columns: 1fr; } .event-actions { flex-wrap: wrap; } }
@@ -4508,21 +4537,40 @@ button.plan-event { cursor: pointer; }
 .viewbar [data-action="personalized"].active { color: var(--accent); background: var(--accent-soft); border-radius: 6px; }
 
 .plan-shared-note, .shared-note-text { white-space: pre-wrap; overflow-wrap: anywhere; }
-.plan-event .plan-shared-note { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 5px; line-height: 1.5; font-size: 13px; color: var(--ink); }
+.plan-notes .plan-shared-note { border-top: 1px solid var(--line); padding-top: 8px; margin: 0; line-height: 1.5; font-size: 13px; color: var(--ink); }
 .shared-note-section textarea { display: block; width: 100%; min-height: 90px; margin: 12px 0; padding: 12px; background: var(--white); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: inherit; resize: vertical; }
 .shared-note-section h3, .concert-weather h3 { margin: 0 0 10px; }
 .weather-context, .weather-credit, .weather-outlook { font-size: 12px; line-height: 1.5; color: var(--muted); }
 .weather-outlook { color: var(--accent); }
-.weather-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--white); margin: 12px 0; }
-.weather-chart { min-width: 100%; padding-top: 8px; }
-.weather-chart svg { display: block; width: 100%; height: 82px; color: var(--accent); }
-.weather-hours { display: flex; }
-.weather-hour { display: flex; flex: 1 0 90px; flex-direction: column; align-items: center; gap: 8px; border-right: 1px solid var(--line); padding: 10px 3px 14px; font-size: 12px; }
-.weather-hour:last-child { border-right: 0; }
-.weather-hour time { height: 32px; text-align: center; font-weight: 600; }
-.weather-hour time small { display: block; font-size: 9px; }
-.weather-hour strong { font-size: 20px; }
-.weather-hour small { font-size: 10px; color: var(--muted); }
-.weather-icon { font-size: 24px; line-height: 1; }
-.weather-rain { background: linear-gradient(to top, #628fa44d var(--rain), transparent var(--rain)); padding: 6px 4px; border-radius: 4px; }
+.concert-weather {
+  --weather-air: light-dark(#6743a4,#c4a5fc);
+  --weather-rain: light-dark(#2c78a9,#8bcdff);
+  --weather-wind: light-dark(#237460,#82d7b7);
+  --weather-uv: light-dark(#9b620d,#ffbc69);
+}
+.weather-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--white); margin: 10px 0 6px; }
+.weather-chart { min-width: max(100%, calc(var(--hours) * 37px)); }
+.weather-plot { position: relative; }
+.weather-plot svg { display: block; width: 100%; height: clamp(123px,27vw,173px); }
+.weather-show-band { fill: var(--weather-uv); opacity: .11; }
+.weather-grid-line { stroke: var(--line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.weather-cloud-layer { fill: var(--muted); opacity: .24; }
+.weather-rain-layer { fill: var(--weather-rain); opacity: .18; }
+.weather-amount-layer { fill: var(--weather-rain); opacity: .5; }
+.weather-uv-layer { fill: var(--weather-uv); }
+.weather-air-line, .weather-wind-line { fill: none; stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.weather-air-line { stroke: var(--weather-air); }
+.weather-wind-line { stroke: var(--weather-wind); }
+.weather-dashed { stroke-dasharray: 4 4; opacity: .72; }
+.weather-cursor { position: absolute; inset-block: 0; left: calc((var(--selected-hour) + .5) * 100% / var(--hours)); border-left: 2px solid var(--weather-rain); opacity: .75; pointer-events: none; }
+.weather-hours { display: grid; grid-template-columns: repeat(var(--hours), minmax(0,1fr)); }
+.weather-tick { min-height: 38px; padding: 3px 0; text-align: center; color: var(--muted); font: inherit; font-size: 11px; border: none; background: transparent; cursor: pointer; }
+.weather-tick[aria-pressed="true"] { color: var(--weather-rain); font-weight: 750; }
+.weather-tick:focus-visible { outline-offset: -2px; }
+.weather-tick small { display: block; font-size: 10px; }
+.weather-hour-readout:not([hidden]) { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 9px; min-height: 37px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.weather-air-read { color: var(--weather-air); }
+.weather-rain-read { color: var(--weather-rain); }
+.weather-wind-read { color: var(--weather-wind); }
+.weather-uv-read { color: var(--weather-uv); }
 .weather-credit a { text-decoration: underline; }

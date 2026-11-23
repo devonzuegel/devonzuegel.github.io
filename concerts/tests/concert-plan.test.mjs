@@ -43,3 +43,20 @@ test('shared plan persists, rejects strangers, preserves old clients, and remove
   await assert.rejects(saveList('owner',{title:'Plan',events:[a],plannedIds:'one'}),/Invalid planned/);
  } finally {await rm(dir,{recursive:true,force:true});}
 });
+
+test('day grid preserves duration, gives overlaps separate lanes, and maps untimed shows', () => {
+ const date = '2026-11-28', timezone = 'America/Los_Angeles';
+ const shows = [
+   {...a, date, timezone, time:'22:00', showTime:'22:30', endAt:'2026-11-29T09:00Z', venue:{name:'One',lat:37.76,lng:-122.42}},
+   {...b, date, timezone, time:'22:45', timeKind:'doors', venue:{name:'Two',lat:37.77,lng:-122.41}},
+   {id:'three',title:'Untimed',date,timezone,venue:{name:'Three',lat:37.78,lng:-122.40}},
+ ];
+ const markup = planMarkup(shows,shows.map(show=>show.id));
+ assert.match(markup,/--start:0\.5;--duration:2\.5;--lane:0;--lanes:2/);
+ assert.match(markup,/--start:0\.75;--duration:0;--lane:1;--lanes:2/);
+ assert.match(markup,/10:30pm–1am next day/);
+ assert.match(markup,/end TBA · doors/);
+ assert.match(markup,/Start time TBA/);
+ assert.match(markup,/&quot;timed&quot;:false/);
+ assert.doesNotMatch(planMarkup(shows,['one'],{interactive:false}),/data-plan-stops/);
+});
