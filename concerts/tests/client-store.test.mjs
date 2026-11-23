@@ -98,3 +98,22 @@ test('merged saves, notes and ratings survive alias edits and reloads', () => {
   assert.equal(reloaded.fields['event/b/notes'].value,'');
   clearTimeout(store.timer);clearTimeout(reloaded.timer);
 });
+
+test('automatic profile reads are throttled but new edits sync immediately', async () => {
+  const s = fresh(); let calls = 0;
+  s.apiCall = async () => { calls++; return {fields:{},conflicts:[],acknowledged:s.data.pending.map(o=>o.id)}; };
+  await s.sync({automatic:true});
+  await s.sync({automatic:true});
+  assert.equal(calls,1);
+  s.change('event/show/saved',true);stop(s);
+  await s.sync({automatic:true});
+  assert.equal(calls,2);
+});
+test('failed automatic sync backs off without dropping pending changes; manual retry works', async () => {
+  const s = fresh();let calls=0;
+  s.change('event/show/saved',true);stop(s);
+  s.apiCall=async()=>{calls++;throw new Error('Storage unavailable');};
+  await s.sync({automatic:true});await s.sync({automatic:true});
+  assert.equal(calls,1);assert.equal(s.data.pending.length,1);
+  await s.sync();assert.equal(calls,2);assert.equal(s.data.pending.length,1);
+});

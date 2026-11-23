@@ -1,3 +1,5 @@
+import { PublicReadCache } from "./public-read-cache.mjs";
+const publicReads = new PublicReadCache();
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import { createHash, randomUUID } from "node:crypto";
 import { join } from "node:path";
@@ -41,8 +43,12 @@ export async function get(k) {
   if (storageMode === "unconfigured")
     throw new Error("Cloud sync needs a Redis connection.");
   if (storageMode === "redis") {
+    const cached = publicReads.get(k);
+    if (cached !== undefined) return cached;
     const raw = await command(["GET", key(k)]);
-    return raw ? JSON.parse(raw) : null;
+    const value = raw ? JSON.parse(raw) : null;
+    publicReads.set(k,value);
+    return value;
   }
   try {
     return JSON.parse(await readFile(path(k), "utf8"));
@@ -52,6 +58,7 @@ export async function get(k) {
   }
 }
 export async function update(k, fn) {
+  publicReads.delete(k);
   if (storageMode === "unconfigured")
     throw new Error("Cloud sync needs a Redis connection.");
   if (storageMode === "redis") {
@@ -62,7 +69,7 @@ export async function update(k, fn) {
       const script =
         "local old=redis.call('GET',KEYS[1]); if (old or '') ~= ARGV[1] then return 0 end; redis.call('SET',KEYS[1],ARGV[2]); return 1";
       const ok = await command(["EVAL", script, 1, key(k), raw || "", json]);
-      if (ok) return next;
+      if (ok) { publicReads.set(k,next); return next; }
     }
     throw new Error("Another device is saving. Please try again.");
   }

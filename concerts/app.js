@@ -49,7 +49,7 @@ import {
   youtubeVideoID,
   mergeEvents,
 } from "./shared/core.js?v=20261123-plan2";
-import { ClientStore } from "./shared/client-store.js?v=20261123-plan2";
+import { ClientStore } from "./shared/client-store.js?v=20261123-sync-recovery";
 import { searchArchive } from "./shared/archive.js";
 let pendingQRSync = parseSyncLink(location.hash);
 const hadQRSync = new URLSearchParams(location.hash.slice(1)).has("sync");
@@ -1271,7 +1271,7 @@ function promptSpecificList(e) {
   modal.addEventListener('keydown', keepOpen);
   savePromptTimer = setTimeout(() => {
     if (modal.isConnected) closeModal();
-  }, 8000);
+  }, 60000);
 }
 function setAssessment(id, field, value) {
   const e = eventFor(id);
@@ -2587,13 +2587,13 @@ store.addEventListener("change", () => {
   updateDetailMeta();
 });
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) store.sync();
+  if (!document.hidden) store.sync({ automatic: true });
 });
 window.addEventListener("online", () => store.sync());
-window.addEventListener("focus", () => store.sync());
+window.addEventListener("focus", () => store.sync({ automatic: true }));
 setInterval(() => {
-  if (!document.hidden) store.sync();
-}, 8000);
+  if (!document.hidden) store.sync({ automatic: true });
+}, 60000);
 shell();
 if (hadQRSync && !sharedListId) receiveSyncQR();
 if (!sharedListId) {

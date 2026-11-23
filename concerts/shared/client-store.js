@@ -89,7 +89,7 @@ export class ClientStore extends EventTarget {
     } else this.status = "Saving…";
     this.persist();
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.sync(), 700);
+    this.timer = setTimeout(() => this.sync({ automatic: true }), 700);
   }
   async apiCall(action, body, auth = true) {
     const u = new URL(this.api, location.href);
@@ -182,7 +182,9 @@ export class ClientStore extends EventTarget {
     this.lastError = "";
     this.persist();
   }
-  async sync() {
+  async sync({ automatic = false } = {}) {
+    const now = Date.now();
+    if (automatic && (now < (this.retryAfter || 0) || (!this.data.pending.length && now < (this.nextPoll || 0)))) return;
     if (!this.profile || this.busy) return;
     this.busy = true;
     const profile = this.profile;
@@ -221,6 +223,9 @@ export class ClientStore extends EventTarget {
       this.data.spotify = d.spotify;
       this.status = this.data.pending.length ? "Saving…" : "Synced";
       this.lastError = "";
+      this.failures = 0;
+      this.retryAfter = 0;
+      this.nextPoll = Date.now() + 60000;
       this.persist(
         previous !==
           JSON.stringify([
@@ -231,6 +236,8 @@ export class ClientStore extends EventTarget {
           ]),
       );
     } catch (e) {
+      this.failures = (this.failures || 0) + 1;
+      this.retryAfter = Date.now() + Math.min(600000, 30000 * 2 ** Math.min(this.failures - 1, 5));
       this.status = "Waiting to sync";
       this.lastError = e.message;
       this.emit();
