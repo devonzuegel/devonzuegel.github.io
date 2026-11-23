@@ -1,0 +1,27 @@
+{
+  "name": "devon-cards",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "dev": "wrangler dev",
+    "dry-run": "wrangler deploy --dry-run --outdir .build",
+    "deploy": "node scripts/check-config.mjs && wrangler deploy",
+    "preview": "node scripts/preview.mjs"
+  },
+  "dependencies": {
+    "web-push": "3.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20260923.1",
+    "@types/node": "22.19.7",
+    "@types/web-push": "3.6.4",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "wrangler": "4.139.0"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

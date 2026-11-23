@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3ec">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://cards-api.devonzuegel.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Cards · Devon Zuegel</title>
+  <link rel="manifest" href="/remember/manifest.webmanifest">
+  <link rel="icon" href="/remember/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/remember/icon-192.png">
+  <link rel="stylesheet" href="/remember/styles.css">
+  <script type="module" src="/remember/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to cards</a>
+  <div class="shell">
+    <header class="topbar">
+      <a href="/remember/" class="brand"><span class="brand-icon" aria-hidden="true">▱</span> Cards <span class="brand-caption">a practice in remembering</span></a>
+      <button id="settings-open" class="quiet">Reminders <span aria-hidden="true">↗</span></button>
+    </header>
+    <main id="main">
+      <section class="intro">
+        <p class="eyebrow" id="date-label">A LITTLE, OFTEN</p>
+        <h1>Keep the good things<br><em>in mind.</em></h1>
+        <p class="lede">A few minutes with the ideas you want to keep.</p>
+      </section>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="welcome" class="welcome panel" hidden>
+        <span class="small-label">YOUR PERSONAL CARD LIBRARY</span>
+        <h2>A small daily practice.</h2>
+        <p>Review your Notion cards here. Reveal an answer, see how well you remember it, and let the next review find its place.</p>
+        <div class="welcome-actions"><a id="sign-in" class="button primary">Sign in with GitHub <span aria-hidden="true">→</span></a><button id="try-demo" class="quiet">Try a sample session</button></div>
+        <p class="fine" id="connection-note">Your cards are private. Only your account can open them.</p>
+      </section>
+      <section id="review" hidden aria-label="Card review">
+        <div class="session-meta"><span><span class="dot"></span> <span id="queue-label">Ready to review</span></span><span id="progress-label">0 reviewed</span></div>
+        <progress id="progress" value="0" max="1" aria-label="Session progress"></progress>
+        <article class="card" id="card">
+          <div class="card-top"><span class="small-label">THINK IT OVER</span><span id="card-tags"></span></div>
+          <h2 id="prompt" tabindex="-1"></h2>
+          <div id="answer-area" hidden><div class="answer-rule"><span class="small-label">THE ANSWER</span></div><div id="answer"></div></div>
+          <div class="card-bottom"><span id="due-label"></span><a id="notion-link" target="_blank" rel="noopener noreferrer">Open in Notion ↗</a></div>
+        </article>
+        <div id="reveal-area"><button id="reveal" class="button primary wide">Reveal answer <span aria-hidden="true">↵</span></button><p class="hint">Take a moment to recall it before turning the card.</p></div>
+        <div id="rating-area" hidden><p class="rating-question">How well did you remember?</p><div class="ratings">
+          <button data-rating="again"><span>Again</span><small></small></button>
+          <button data-rating="hard"><span>Hard</span><small></small></button>
+          <button data-rating="good"><span>Good</span><small></small></button>
+          <button data-rating="easy"><span>Easy</span><small></small></button>
+        </div><p class="hint" id="rating-hint">1–4 to rate · Your review is saved to Notion.</p></div>
+        <div class="session-actions"><button id="refresh" class="quiet">Refresh queue</button><button id="end" class="quiet">Finish for now</button></div>
+      </section>
+      <section id="complete" class="panel complete" hidden><div class="complete-mark" aria-hidden="true">✳</div><p class="eyebrow">A LITTLE MORE, REMEMBERED</p><h2 id="complete-title">You’re all caught up.</h2><p id="complete-copy"></p><button id="check-again" class="button primary">Check for due cards</button></section>
+      <div id="private-actions" hidden><button id="sign-out" class="quiet">Sign out</button></div>
+      <div id="demo-banner" hidden>Sample session · These cards aren’t saved to Notion. <button id="exit-demo" class="quiet">Exit sample</button></div>
+    </main>
+    <footer><a href="/">← Devon’s website</a><span>Little by little, it stays.</span></footer>
+  </div>
+  <dialog id="settings">
+    <div class="dialog-heading"><h2>A gentle reminder.</h2><button id="settings-close" class="quiet" aria-label="Close reminders">✕</button></div>
+    <p>One notification on days you have cards to review.</p>
+    <div class="install-note"><strong>On your iPhone</strong><p>Open this page in Safari, tap Share, then Add to Home Screen. Open Cards from its new icon, sign in, and enable notifications below.</p></div>
+    <p id="settings-note" role="status" aria-live="polite"></p>
+    <fieldset id="settings-fields" disabled>
+      <label class="check-label"><input id="reminder-enabled" type="checkbox"> Send daily reminders</label>
+      <div class="settings-grid"><label>Time<select id="reminder-hour"></select></label><label>Timezone<select id="reminder-timezone"><option value="America/New_York">New York</option><option value="America/Chicago">Chicago</option><option value="America/Denver">Denver</option><option value="America/Los_Angeles">Los Angeles</option><option value="Europe/London">London</option><option value="UTC">UTC</option></select></label></div>
+      <button id="settings-save" class="button primary wide">Save reminder</button>
+      <div class="device-actions"><button id="push-enable" class="button">Enable this device</button><button id="push-test" class="quiet">Send test</button><button id="push-disable" class="quiet">Disable this device</button></div>
+    </fieldset>
+    <p class="fine">Notifications say that cards are ready; they never include your card content.</p>
+  </dialog>
+  <noscript><p>Please enable JavaScript to review your cards.</p></noscript>
+</body>
+</html>
