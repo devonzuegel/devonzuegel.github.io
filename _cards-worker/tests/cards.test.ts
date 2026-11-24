@@ -8,6 +8,7 @@ import { hash, type Env } from '../src/core.ts';
 import { schedule, localClock } from '../src/schedule.ts';
 import { card, nextDuePage, review } from '../src/notion.ts';
 import { reminders, validateSubscription } from '../src/push.ts';
+import { progress } from '../src/progress.ts';
 const originalFetch = globalThis.fetch;
 afterEach(()=>{ globalThis.fetch = originalFetch; });
 function fixture() {
@@ -106,10 +107,36 @@ test('queue skips future timestamps and continues pagination to find due cards',
   const result=await nextDuePage(e,'America/New_York',new Date('2026-09-27T13:00:00Z'));
   assert.equal(result.cards.length,1); assert.equal(count,2);
 });
+test('progress preserves confirmed history, ignores pending saves, and uses local review days', async () => {
+  const {e,db}=fixture();
+  const insert = db.prepare('INSERT INTO reviews(id,card_id,rating,expected_version,state,created_at) VALUES(?,?,?,?,?,?)');
+  insert.run('past', 'a', 'good', 'v', 'done', Date.parse('2026-11-22T12:00:00Z'));
+  insert.run('saved-later', 'a', 'hard', 'v', 'pending', Date.parse('2026-11-24T04:30:00Z'));
+  insert.run('today', 'b', 'easy', 'v', 'done', Date.parse('2026-11-24T05:30:00Z'));
+  insert.run('pending', 'c', 'again', 'v', 'pending', Date.parse('2026-11-24T06:30:00Z'));
+  db.exec(readFileSync(new URL('../migrations/0002_review_activity.sql', import.meta.url), 'utf8'));
+  db.exec("UPDATE reviews SET state='done' WHERE id='saved-later'");
+  db.exec("UPDATE reviews SET state='done' WHERE id='saved-later'");
+  db.exec("DELETE FROM reviews WHERE state='done'");
+
+  const data = await progress(e, Date.parse('2026-11-24T18:00:00Z'));
+  assert.deepEqual(data.days.slice(-3), [
+    { date: '2026-11-22', count: 1 }, { date: '2026-11-23', count: 1 }, { date: '2026-11-24', count: 1 },
+  ]);
+  assert.equal(data.today, 1);
+  assert.equal(data.week, 3);
+  assert.equal(data.uniqueCards, 2);
+  assert.deepEqual(data.ratingCounts, { again:0, hard:1, good:1, easy:1 });
+  assert.equal(data.currentStreak, 3);
+  assert.equal(data.bestStreak, 3);
+  assert.equal((await progress(e, Date.parse('2026-11-25T18:00:00Z'))).currentStreak, 3);
+  assert.equal((await progress(e, Date.parse('2026-11-26T18:00:00Z'))).currentStreak, 0);
+});
 test('private API requires authentication and mutations require exact origin and CSRF', async () => {
   const {e,db}=fixture();
   const get = (path: string, init?:RequestInit)=>worker.fetch(new Request(e.PUBLIC_ORIGIN+path,init),e);
   assert.equal((await get('/api/cards')).status,401);
+  assert.equal((await get('/api/progress')).status,401);
   const token='a'.repeat(32);
   db.prepare('INSERT INTO sessions VALUES(?,?,?,?)').run(await hash(token),'owner','csrf',Math.floor(Date.now()/1000)+600);
   const headers={cookie:`__Host-cards_session=${token}`,origin:e.DASHBOARD_ORIGIN,'content-type':'application/json'};

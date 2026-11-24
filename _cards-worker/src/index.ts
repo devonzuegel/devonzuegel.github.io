@@ -2,6 +2,7 @@ import { auth, session, signInConfigured } from './auth.ts';
 import { Env, HttpError, body, hash, json, now } from './core.ts';
 import { nextDuePage, review } from './notion.ts';
 import { reminders, sendPush, validateSubscription } from './push.ts';
+import { progress } from './progress.ts';
 async function handle(req: Request, e: Env) {
   const url = new URL(req.url), path = url.pathname;
   if (req.method === 'OPTIONS') {
@@ -12,6 +13,7 @@ async function handle(req: Request, e: Env) {
   const s = await session(req, e, req.method !== 'GET');
   if (path === '/api/session' && req.method === 'GET') return json({ csrf:s.csrf, notionReady:!!e.NOTION_TOKEN, pushKey:e.VAPID_PUBLIC_KEY || null });
   if (path === '/api/pending' && req.method === 'GET') return json((await e.DB.prepare("SELECT id,card_id AS cardId,rating,expected_version AS version FROM reviews WHERE state='pending' ORDER BY created_at LIMIT 50").all()).results);
+  if (path === '/api/progress' && req.method === 'GET') return json(await progress(e));
   if (path === '/api/cards' && req.method === 'GET') {
     const settings: any = await e.DB.prepare('SELECT * FROM settings WHERE id=1').first();
     const cursor = url.searchParams.get('cursor') || undefined;

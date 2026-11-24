@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 let csrf = '', pushKey = null, demo = false, queue = [], cursor = null, reviewed = 0, total = 0, busy = false, revealed = false;
 let registration;
 let syncPromise, prefetchedPage;
+let progressData, progressRequest = 0, historyDays = 30;
 const pendingPrefix = 'cards-review:';
 const legacyPendingKey = 'cards-pending-review';
 const samples = [
@@ -51,6 +52,8 @@ async function api(path, options = {}) {
       }
       if (!demo) show('welcome');
       $('private-actions').hidden = true;
+      $('progress-open').hidden = true;
+      showProgress(false);
     }
     throw error;
   }
@@ -117,7 +120,10 @@ function syncReviews() {
     $('save-status').textContent = 'Reviews are queued on this device. Retry to finish saving.';
     $('retry-save').hidden = !csrf;
     return false;
-  }).finally(() => { syncPromise = null; });
+  }).finally(() => {
+    syncPromise = null;
+    if (!$('progress-view').hidden && csrf) void loadProgress();
+  });
   return syncPromise;
 }
 const fetchPage = (after) => api(after ? `/api/cards?cursor=${encodeURIComponent(after)}` : '/api/cards');
@@ -184,6 +190,7 @@ async function start() {
     const session = await api('/api/session'); csrf = session.csrf; pushKey = session.pushKey;
     if (demo) return;
     $('private-actions').hidden = false;
+    $('progress-open').hidden = false;
     if (!session.notionReady) { notice('Your sign-in works. The Notion connection still needs to be configured.'); return; }
     await loadQueue();
   } catch (error) {
@@ -194,19 +201,109 @@ async function start() {
     }
   }
 }
-$('try-demo').onclick = () => { demo = true; $('demo-banner').hidden = false; $('private-actions').hidden = true; loadQueue(); };
+$('try-demo').onclick = () => { demo = true; $('demo-banner').hidden = false; $('private-actions').hidden = true; $('progress-open').hidden = true; loadQueue(); };
 $('exit-demo').onclick = () => location.reload();
 $('retry-save').onclick = () => { void syncReviews(); };
 $('reveal').onclick = reveal;
 for (const button of document.querySelectorAll('[data-rating]')) button.onclick = () => rate(button.dataset.rating);
 $('refresh').onclick = loadQueue; $('check-again').onclick = loadQueue;
 $('end').onclick = () => { if (!busy) finish(true); };
+const countFormat = new Intl.NumberFormat('en-US');
+const shortDate = new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', timeZone:'UTC' });
+const formatDay = date => shortDate.format(new Date(`${date}T00:00:00Z`));
+
+function statRow(label, value) {
+  const row = document.createElement('div');
+  const term = document.createElement('dt');
+  const description = document.createElement('dd');
+  term.textContent = label;
+  description.textContent = countFormat.format(value);
+  row.append(term, description);
+  return row;
+}
+
+function drawActivity() {
+  if (!progressData) return;
+  const days = progressData.days.slice(-historyDays);
+  const max = Math.max(1, ...days.map(day => day.count));
+  const bars = days.map((day, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'activity-bar';
+    bar.style.height = day.count ? `${day.count / max * 100}%` : '2px';
+    bar.title = `${formatDay(day.date)} · ${countFormat.format(day.count)} ${day.count === 1 ? 'review' : 'reviews'}`;
+    if (!day.count) bar.dataset.empty = '';
+    if (i === days.length - 1) bar.dataset.today = '';
+    return bar;
+  });
+  $('activity-chart').replaceChildren(...bars);
+  $('activity-dates').replaceChildren(...[formatDay(days[0].date), 'Today'].map(label => {
+    const span = document.createElement('span');
+    span.textContent = label;
+    return span;
+  }));
+  $('activity-counts').replaceChildren(...days.map(day => statRow(formatDay(day.date), day.count)));
+}
+
+async function loadProgress() {
+  const id = ++progressRequest;
+  $('progress-refresh').disabled = true;
+  $('progress-notice').textContent = 'Loading review history…';
+  try {
+    const data = await api('/api/progress');
+    if (id !== progressRequest) return;
+    progressData = data;
+    $('metric-today').textContent = countFormat.format(data.today);
+    $('metric-week').textContent = countFormat.format(data.week);
+    $('metric-streak').textContent = `${data.currentStreak} ${data.currentStreak === 1 ? 'day' : 'days'}`;
+    $('metric-best').textContent = `${data.bestStreak} ${data.bestStreak === 1 ? 'day' : 'days'}`;
+    const goodOrEasy = data.ratingCounts.good + data.ratingCounts.easy;
+    $('rating-summary').textContent = data.month
+      ? `${countFormat.format(data.month)} reviews across ${countFormat.format(data.uniqueCards)} ${data.uniqueCards === 1 ? 'unique card' : 'unique cards'}. ${Math.round(100 * goodOrEasy / data.month)}% rated Good or Easy.`
+      : 'Your rating breakdown will appear after your first saved review.';
+    $('rating-breakdown').replaceChildren(...Object.entries(data.ratingCounts).map(([label, count]) =>
+      statRow(label[0].toUpperCase() + label.slice(1), count)));
+    $('progress-footnote').textContent = `Counts include reviews saved through Remember. Streaks look back 90 days. Days follow ${data.timezone.replaceAll('_', ' ')}.`;
+    $('progress-notice').textContent = data.month ? '' : 'No saved reviews in the last 30 days.';
+    drawActivity();
+    $('progress-data').hidden = false;
+  } catch (error) {
+    if (id === progressRequest) $('progress-notice').textContent = error.message || 'Could not load review history. Try refreshing.';
+  } finally {
+    if (id === progressRequest) $('progress-refresh').disabled = false;
+  }
+}
+
+function showProgress(open) {
+  $('progress-view').hidden = !open;
+  $('study-view').hidden = open;
+  $('progress-open').textContent = open ? 'Back to review' : 'Progress';
+  $('progress-open').setAttribute('aria-expanded', String(open));
+}
+
+$('progress-open').onclick = () => {
+  const open = $('progress-view').hidden;
+  showProgress(open);
+  if (open) {
+    $('progress-title').focus();
+    void loadProgress();
+  }
+};
+$('progress-refresh').onclick = () => { void loadProgress(); };
+for (const button of document.querySelectorAll('[data-history-days]')) {
+  button.onclick = () => {
+    historyDays = Number(button.dataset.historyDays);
+    for (const option of document.querySelectorAll('[data-history-days]')) {
+      option.setAttribute('aria-pressed', String(option === button));
+    }
+    drawActivity();
+  };
+}
 $('sign-out').onclick = async () => {
   try { await api('/auth/logout', { method:'POST', body:'{}' }); queue=[]; $('prompt').textContent=''; $('answer').textContent=''; location.reload(); }
   catch (error) { notice(error.message); }
 };
 document.addEventListener('keydown', event => {
-  if ($('settings').open || event.metaKey || event.ctrlKey || event.altKey || /INPUT|SELECT|TEXTAREA|BUTTON|A/.test(event.target.tagName) || $('review').hidden) return;
+  if ($('settings').open || !$('progress-view').hidden || event.metaKey || event.ctrlKey || event.altKey || /INPUT|SELECT|TEXTAREA|BUTTON|A/.test(event.target.tagName) || $('review').hidden) return;
   if (!revealed && (event.code === 'Space' || event.key === 'Enter')) { event.preventDefault(); reveal(); }
   if (revealed && /^[1-4]$/.test(event.key)) { event.preventDefault(); rate(['again','hard','good','easy'][Number(event.key)-1]); }
 });
