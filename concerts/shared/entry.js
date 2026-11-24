@@ -8,7 +8,7 @@ function showStartupError() {
 }
 const timeout = setTimeout(showStartupError, 20000);
 try {
-  await import("../app.js?v=20261123-comfort");
+  await import("../app.js?v=20261124-aligned-plan");
 } catch (error) {
   console.error("Concert Tracker startup failed:", error);
   showStartupError();

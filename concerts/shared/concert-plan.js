@@ -11,16 +11,19 @@ export function plannedEvents(events, ids = []) {
     .map(({event}) => event);
 }
 
+const DAY = 24 * HOUR;
+const LABEL_SPACE = 36 * 60000;
+
+function dayOffset(time) {
+  return ((time % DAY) + DAY) % DAY;
+}
+
 function daySchedule(shows) {
   const timed = shows.filter(show => show.start !== null);
-  if (!timed.length) return null;
-  const start = Math.floor(timed[0].start/HOUR) * HOUR;
-  const labelSpace = 36 * 60000;
-  const end = Math.ceil(Math.max(...timed.map(show => Math.max(show.end ?? 0, show.start + labelSpace)))/HOUR)*HOUR;
   const groups = [];
   let group;
   for (const show of timed) {
-    const occupiedUntil = Math.max(show.end ?? 0, show.start + labelSpace);
+    const occupiedUntil = Math.max(show.end ?? 0, show.start + LABEL_SPACE);
     if (!group || group.until <= show.start) {
       group = {until:occupiedUntil, lanes:[], shows:[]};
       groups.push(group);
@@ -31,7 +34,7 @@ function daySchedule(shows) {
     group.until = Math.max(group.until, occupiedUntil);
     group.shows.push({ ...show, lane });
   }
-  return {start,end,groups};
+  return groups;
 }
 
 function planCard(show, interactive, geometry = "") {
@@ -48,10 +51,10 @@ function planCard(show, interactive, geometry = "") {
     '</strong><span class="plan-time">' + timing + '</span><span class="plan-venue">' + venue + '</span></' + tag + '>';
 }
 
-function calendarMarkup(shows, day, interactive) {
-  const schedule = daySchedule(shows);
-  if (!schedule) return "";
-  const {start,end,groups} = schedule;
+function calendarMarkup(shows, day, interactive, range) {
+  if (!range) return "";
+  const {start,end} = range;
+  const groups = daySchedule(shows);
   const hours = (end-start)/HOUR;
   const guides = Array.from({length:hours+1}, (_, i) => {
     const time = start + i*HOUR;
@@ -59,7 +62,7 @@ function calendarMarkup(shows, day, interactive) {
       (i > 0 && new Date(time).getUTCHours() === 0 ? ' <small>+1 day</small>' : '') + '</span></div>';
   }).join("");
   const cards = groups.flatMap(group => group.shows.map(show => {
-    const top = (show.start-start)/HOUR;
+    const top = (dayOffset(show.start)-start)/HOUR;
     const duration = show.end === null ? 0 : (show.end-show.start)/HOUR;
     return planCard(show,interactive,"--start:" + top + ";--duration:" + duration +
       ";--lane:" + show.lane + ";--lanes:" + group.lanes.length);
@@ -93,6 +96,12 @@ export function planMarkup(events, ids, {interactive = true, notes = {}} = {}) {
     shows.push({event, ...scheduleTiming(event), index:shows.length+1});
     days.set(day, shows);
   }
+  const timed = [...days.values()].flat().filter(show => show.start !== null);
+  const range = timed.length ? {
+    start: Math.floor(Math.min(...timed.map(show => dayOffset(show.start))) / HOUR) * HOUR,
+    end: Math.ceil(Math.max(...timed.map(show =>
+      dayOffset(show.start) + Math.max(show.end - show.start, LABEL_SPACE))) / HOUR) * HOUR,
+  } : null;
   const markup = [...days].map(([day, shows]) => {
     const title = day ? dateLabel(day,{weekday:"long", month:"short", day:"numeric"}) : "Date TBA";
     const untimed = shows.filter(show => show.start === null);
@@ -101,12 +110,13 @@ export function planMarkup(events, ids, {interactive = true, notes = {}} = {}) {
       return note ? '<p class="plan-shared-note"><strong>' + index + ' · ' + esc(event.title) + '</strong> ' + esc(note) + '</p>' : '';
     }).join("");
     return '<section class="plan-day"><header><h3>' + esc(title) +
-      '</h3><span>Venue local time</span></header>' + calendarMarkup(shows,title,interactive) +
+      '</h3><span>Venue local time</span></header>' + calendarMarkup(shows,title,interactive,range) +
       (untimed.length ? '<div class="plan-day-shows">' + untimed.map(show => planCard(show,interactive)).join("") + '</div>' : '') +
       (showNotes ? '<div class="plan-notes">' + showNotes + '</div>' : '') +
       (interactive ? venueMapMarkup(shows) : '') + '</section>';
   }).join("");
   return '<section class="concert-plan" aria-label="Proposed plan"><div class="plan-heading"><h2>★ Proposed plan</h2><span>' +
     planned.length + ' starred ' + (planned.length === 1 ? 'show' : 'shows') +
-    '</span></div><div class="plan-calendar">' + markup + '</div></section>';
+    '</span></div><div class="plan-calendar"' +
+    (days.size > 1 && interactive ? ' tabindex="0" role="region" aria-label="Plan days"' : '') + '>' + markup + '</div></section>';
 }

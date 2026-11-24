@@ -71,3 +71,17 @@ test('late electronic nights and festivals get longer estimates than a concert',
  assert.match(estimated(confirmed),/10pm–11:30pm/);
  assert.doesNotMatch(estimated(confirmed),/ · est\./);
 });
+
+test('all plan days share the full local-hour range across midnight', () => {
+ const shows = [
+   {...a, date:'2026-11-27', time:'22:00'},
+   {...b, date:'2026-11-28', time:'18:00'},
+   {id:'late', title:'Late show', date:'2026-11-29', time:'23:30', genres:['Electronic']},
+ ];
+ const markup = planMarkup(shows, shows.map(show => show.id));
+ assert.equal((markup.match(/--day-hours:10/g) || []).length, 3);
+ assert.equal((markup.match(/--hour:0"><span>6pm/g) || []).length, 3);
+ assert.equal((markup.match(/--hour:10"><span>4am/g) || []).length, 3);
+ assert.match(markup, /data-id="one"[^>]*--start:4;/);
+ assert.match(markup, /data-id="late"[^>]*--start:5\.5;/);
+});
