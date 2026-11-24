@@ -12,7 +12,8 @@ export function plannedEvents(events, ids = []) {
 }
 
 const DAY = 24 * HOUR;
-const LABEL_SPACE = 36 * 60000;
+// Reserve room for the minimum card height on the compact hourly grid.
+const LABEL_SPACE = 72 * 60000;
 
 function dayOffset(time) {
   return ((time % DAY) + DAY) % DAY;

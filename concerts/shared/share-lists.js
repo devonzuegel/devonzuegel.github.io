@@ -1,5 +1,5 @@
 import { sharedNotesFor } from "./shared-notes.js";
-import { planMarkup, plannedEvents } from "./concert-plan.js?v=20261124-aligned-plan";
+import { planMarkup, plannedEvents } from "./concert-plan.js?v=20261124-compact-plan";
 import { sharedListLink } from "./list-metadata.js?v=20261122-ranges";
 import { listDateError, listDateLabel, concertInRange } from "./list-dates.js";
 export function sharedListTimestamp(value) {

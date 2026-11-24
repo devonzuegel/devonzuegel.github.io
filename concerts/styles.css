@@ -4496,7 +4496,7 @@ summary.month-heading:focus-visible {
 .plan-day > header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; padding: 12px; background: var(--green-soft); border-bottom: 1px solid var(--line); }
 .plan-day h3, .plan-day h4 { margin: 0; font-size: 15px; }
 .plan-day > header span, .plan-map-note { font-size: 12px; color: var(--muted); }
-.plan-grid { --hour-height: 78px; position: relative; height: calc(var(--day-hours) * var(--hour-height)); margin: 16px 12px 16px 60px; }
+.plan-grid { --hour-height: 39px; position: relative; height: calc(var(--day-hours) * var(--hour-height)); margin: 16px 12px 16px 60px; }
 .plan-grid-hour { position: absolute; top: calc(var(--hour) * var(--hour-height)); width: 100%; border-top: 1px solid var(--line); pointer-events: none; }
 .plan-grid-hour span { position: absolute; right: calc(100% + 5px); width: 51px; text-align: right; transform: translateY(-50%); color: var(--muted); font-size: 11px; line-height: 1.1; }
 .plan-grid-hour small { display: block; font-size: 10px; }
