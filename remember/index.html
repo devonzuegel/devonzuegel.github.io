@@ -12,7 +12,8 @@
   <link rel="icon" href="/remember/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/remember/icon-192.png">
   <link rel="stylesheet" href="/remember/styles.css">
-  <script type="module" src="/remember/app.js?v=78f474f9"></script>
+  <link rel="preconnect" href="https://cards-api.devonzuegel.com" crossorigin>
+  <script type="module" src="/remember/app.js?v=20261124-performance"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to cards</a>
@@ -28,6 +29,7 @@
         <p class="lede">A few minutes with the ideas you want to keep.</p>
       </section>
       <div id="notice" role="status" aria-live="polite"></div>
+      <div class="fine"><span id="save-status" role="status"></span> <button id="retry-save" class="quiet" hidden>Retry saves</button></div>
       <section id="welcome" class="welcome panel" hidden>
         <span class="small-label">YOUR PERSONAL CARD LIBRARY</span>
         <h2>A small daily practice.</h2>

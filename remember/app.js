@@ -2,6 +2,9 @@ const API = 'https://cards-api.devonzuegel.com';
 const $ = id => document.getElementById(id);
 let csrf = '', pushKey = null, demo = false, queue = [], cursor = null, reviewed = 0, total = 0, busy = false, revealed = false;
 let registration;
+let syncPromise, prefetchedPage;
+const pendingPrefix = 'cards-review:';
+const legacyPendingKey = 'cards-pending-review';
 const samples = [
   { id:'sample-1', prompt:'What makes spaced repetition work?', answer:'Practice retrieving an idea just as it starts to fade. Each successful recall strengthens the memory, so the next review can be further away.', tags:['Learning'], next:{ again:10/1440, hard:1, good:3, easy:4 } },
   { id:'sample-2', prompt:'What is the difference between recognition and recall?', answer:'Recognition is noticing that something looks familiar. Recall is bringing it to mind without seeing the answer first.\n\nPause and try to retrieve the answer before revealing it.', tags:['Memory'], next:{ again:10/1440, hard:1, good:1, easy:4 } },
@@ -10,9 +13,28 @@ const samples = [
 function notice(message = '') { $('notice').textContent = message; }
 function show(section) { for (const id of ['welcome','review','complete']) $(id).hidden = id !== section; }
 function intervalLabel(days) { return days < 1 ? `${Math.round(days*1440)} min` : `${days} ${days === 1 ? 'day' : 'days'}`; }
-function pending() { try { return JSON.parse(localStorage.getItem('cards-pending-review') || 'null'); } catch { return null; } }
-function rememberReview(value) { localStorage.setItem('cards-pending-review', JSON.stringify(value)); }
-function clearPending() { localStorage.removeItem('cards-pending-review'); }
+function pendingReviews() {
+  const reviews = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key?.startsWith(pendingPrefix)) continue;
+    const review = JSON.parse(localStorage.getItem(key));
+    if (review) reviews.push(review);
+  }
+  reviews.sort((a, b) => (a.queuedAt ?? 0) - (b.queuedAt ?? 0));
+  const legacy = JSON.parse(localStorage.getItem(legacyPendingKey) || 'null');
+  if (legacy && !reviews.some(review => review.id === legacy.id)) reviews.unshift(legacy);
+  return reviews;
+}
+function queueReview(review) {
+  localStorage.setItem(pendingPrefix + review.id, JSON.stringify(review));
+}
+function removeReview(id) {
+  localStorage.removeItem(pendingPrefix + id);
+  if (JSON.parse(localStorage.getItem(legacyPendingKey) || 'null')?.id === id) {
+    localStorage.removeItem(legacyPendingKey);
+  }
+}
 async function api(path, options = {}) {
   const response = await fetch(`${API}${path}`, { credentials:'include', ...options, headers:{ ...(options.body ? { 'Content-Type':'application/json', 'X-CSRF-Token':csrf } : {}), ...options.headers } });
   const data = await response.json();
@@ -55,6 +77,9 @@ function drawCard(focus = false) {
   for (const button of document.querySelectorAll('[data-rating]')) button.querySelector('small').textContent = intervalLabel(c.next[button.dataset.rating]);
   show('review');
   if (focus) { $('prompt').focus({ preventScroll:true }); $('review').scrollIntoView({ block:'start' }); }
+  if (!demo && cursor && queue.length <= 8 && !prefetchedPage) {
+    prefetchedPage = fetchPage(cursor).catch(() => null);
+  }
 }
 function reveal() {
   if (busy || !queue.length) return;
@@ -66,27 +91,59 @@ function reveal() {
 function finish(early = false) {
   show('complete');
   $('complete-title').textContent = early ? 'A good place to pause.' : 'You’re all caught up.';
-  $('complete-copy').textContent = `${reviewed ? `You reviewed ${reviewed} ${reviewed === 1 ? 'card' : 'cards'}${demo ? ' in this sample' : ''}. ` : ''}${early ? 'Your progress is saved. Come back whenever you’re ready.' : 'Come back later for your next review.'}`;
+  $('complete-copy').textContent = `${reviewed ? `You reviewed ${reviewed} ${reviewed === 1 ? 'card' : 'cards'}. ` : ''}${early ? 'Come back whenever you’re ready.' : 'Come back later for your next review.'}`;
   if (demo) $('complete-copy').textContent = `You tried ${reviewed} sample ${reviewed === 1 ? 'card' : 'cards'}. Sign in to review your own Notion library.`;
 }
-async function recoverReview() {
-  const operations = await api('/api/pending');
-  const local = pending();
-  if (local && !operations.some(p=>p.id===local.id)) operations.unshift(local);
-  if (!operations.length) return;
-  notice('Checking your last review with Notion…');
-  for (const p of operations) {
-    try { await api('/api/review', { method:'POST', body:JSON.stringify(p) }); if (local?.id === p.id) clearPending(); }
-    catch (error) { if (error.status === 409 || error.status === 404) { if (local?.id === p.id) clearPending(); } else throw error; }
-  }
+function syncReviews() {
+  if (syncPromise) return syncPromise;
+  syncPromise = (async () => {
+    $('retry-save').hidden = true;
+    let conflicts = 0;
+    let operation;
+    while ((operation = pendingReviews()[0])) {
+      $('save-status').textContent = 'Saving reviews to Notion…';
+      try {
+        await api('/api/review', { method:'POST', body:JSON.stringify(operation) });
+      } catch (error) {
+        if (error.status !== 404 && error.status !== 409) throw error;
+        conflicts++;
+        notice('A card changed in Notion or another review is pending. Refresh the queue to check what still needs review.');
+      }
+      removeReview(operation.id);
+    }
+    $('save-status').textContent = conflicts ? 'Some reviews could not be saved.' : 'Reviews saved to Notion.';
+    return true;
+  })().catch(() => {
+    $('save-status').textContent = 'Reviews are queued on this device. Retry to finish saving.';
+    $('retry-save').hidden = !csrf;
+    return false;
+  }).finally(() => { syncPromise = null; });
+  return syncPromise;
 }
+const fetchPage = (after) => api(after ? `/api/cards?cursor=${encodeURIComponent(after)}` : '/api/cards');
 async function loadQueue() {
   if (busy) return;
   setBusy(true); notice('');
   try {
+    prefetchedPage = null;
     if (demo) { queue = structuredClone(samples); cursor = null; }
-    else { await recoverReview(); const data = await api('/api/cards'); queue = data.cards; cursor = data.cursor; }
-    reviewed = 0; total = queue.length; notice(''); drawCard();
+    else {
+      if (syncPromise && !await syncPromise) return;
+      // Overlap the first queue request with the check for interrupted saves.
+      const [serverPending, firstPage] = await Promise.all([api('/api/pending'), fetchPage()]);
+      let page = firstPage;
+      const localIds = new Set(pendingReviews().map(review => review.id));
+      if (localIds.size || serverPending.length) {
+        for (const review of serverPending) {
+          if (!localIds.has(review.id)) queueReview(review);
+        }
+        if (!await syncReviews()) return;
+        page = await fetchPage();
+      }
+      queue = page.cards;
+      cursor = page.cursor;
+    }
+    reviewed = 0; total = queue.length; drawCard();
   } catch (error) { notice(error.message || 'Cannot reach your cards. Please try again.'); }
   finally { setBusy(false); }
 }
@@ -94,25 +151,28 @@ async function rate(rating) {
   if (busy || !revealed || !queue.length || !queue[0].answer) return;
   setBusy(true); notice('');
   const current = queue[0];
+  let advanced = false;
   try {
     if (!demo) {
       // Persist the operation identity, never card text, before starting the write.
-      const saved = pending();
-      const operation = saved || { id:crypto.randomUUID(), cardId:current.id, version:current.version, rating };
-      if (operation.cardId !== current.id) throw new Error('A previous review needs to be checked. Refresh the queue to recover it.');
-      rememberReview(operation);
-      await api('/api/review', { method:'POST', body:JSON.stringify(operation) });
-      clearPending();
+      const pending = pendingReviews();
+      if (!pending.some(review => review.cardId === current.id)) {
+        queueReview({ id:crypto.randomUUID(), cardId:current.id, version:current.version, rating, queuedAt:Date.now() });
+      }
+      void syncReviews();
     }
-    queue.shift(); reviewed++;
+    queue.shift(); reviewed++; advanced = true;
     if (!queue.length && cursor && !demo) {
-      const data = await api(`/api/cards?cursor=${encodeURIComponent(cursor)}`);
+      const cached = prefetchedPage;
+      prefetchedPage = null;
+      const data = await cached || await fetchPage(cursor);
+      if (!csrf) return;
       queue = data.cards; cursor = data.cursor; total += queue.length;
     }
     drawCard(true);
   } catch (error) {
-    if (error.status === 409 || error.status === 404) clearPending();
-    notice(`${error.message || 'Could not confirm the save.'} ${error.status === 409 ? 'Refresh the queue to continue.' : 'Retry to confirm your original rating, or refresh to recover the review.'}`);
+    if (advanced && error.status !== 401) finish(true);
+    notice(advanced ? 'Could not load the next cards. Check for due cards to retry.' : 'Could not queue your rating on this device. Please try again.');
   } finally { setBusy(false); }
 }
 async function start() {
@@ -122,6 +182,7 @@ async function start() {
   show('welcome');
   try {
     const session = await api('/api/session'); csrf = session.csrf; pushKey = session.pushKey;
+    if (demo) return;
     $('private-actions').hidden = false;
     if (!session.notionReady) { notice('Your sign-in works. The Notion connection still needs to be configured.'); return; }
     await loadQueue();
@@ -135,6 +196,7 @@ async function start() {
 }
 $('try-demo').onclick = () => { demo = true; $('demo-banner').hidden = false; $('private-actions').hidden = true; loadQueue(); };
 $('exit-demo').onclick = () => location.reload();
+$('retry-save').onclick = () => { void syncReviews(); };
 $('reveal').onclick = reveal;
 for (const button of document.querySelectorAll('[data-rating]')) button.onclick = () => rate(button.dataset.rating);
 $('refresh').onclick = loadQueue; $('check-again').onclick = loadQueue;
