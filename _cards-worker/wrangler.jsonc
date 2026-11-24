@@ -16,7 +16,7 @@
     "DASHBOARD_ORIGIN": "https://devonzuegel.com",
     "PUBLIC_ORIGIN": "https://cards-api.devonzuegel.com",
     "OWNER_GITHUB_ID": "6979755",
-    "GITHUB_CLIENT_ID": "REPLACE_WITH_CARDS_OAUTH_APP_ID",
+    "GITHUB_CLIENT_ID": "Ov23litovFbX3S08jQcp",
     "NOTION_DATA_SOURCE": "7c583d6a-698c-470d-8d1e-86f269d502fd",
     "VAPID_SUBJECT": "https://devonzuegel.com/remember/"
   }
