@@ -4482,7 +4482,13 @@ summary.month-heading:focus-visible {
 .plan-heading h2 { margin: 0; color: var(--accent); font-size: 24px; }
 .plan-heading span, .concert-plan > p { color: var(--muted); font-size: 13px; }
 .concert-plan > p { margin: 8px 0 18px; }
-.plan-calendar { display: grid; gap: 16px; margin-top: 16px; }
+.plan-calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(420px, calc((100% - 16px) / 2))), 1fr));
+  align-items: start;
+  gap: 16px;
+  margin-top: 16px;
+}
 .plan-day { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; min-width: 0; }
 .plan-day > header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; padding: 12px; background: var(--green-soft); border-bottom: 1px solid var(--line); }
 .plan-day h3, .plan-day h4 { margin: 0; font-size: 15px; }
