@@ -1,4 +1,4 @@
-import { auth, session } from './auth.ts';
+import { auth, session, signInConfigured } from './auth.ts';
 import { Env, HttpError, body, hash, json, now } from './core.ts';
 import { nextDuePage, review } from './notion.ts';
 import { reminders, sendPush, validateSubscription } from './push.ts';
@@ -58,7 +58,12 @@ export default {
   async fetch(req: Request, e: Env) {
     let response: Response;
     try { response = await handle(req, e); }
-    catch (error) { response = json({ error:error instanceof HttpError ? error.message : 'Something went wrong. Please retry.' }, error instanceof HttpError ? error.status : 500); }
+    catch (error) {
+      const status = error instanceof HttpError ? error.status : 500;
+      const signInStatus = status === 401 && req.method === 'GET' && new URL(req.url).pathname === '/api/session'
+        ? { signInReady: signInConfigured(e) } : {};
+      response = json({ error:error instanceof HttpError ? error.message : 'Something went wrong. Please retry.', ...signInStatus }, status);
+    }
     response.headers.set('Cache-Control', 'no-store');
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('Referrer-Policy', 'no-referrer');

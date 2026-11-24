@@ -31,6 +31,10 @@ export async function session(req: Request, e: Env, mutate = false) {
     );
   return row;
 }
+export function signInConfigured(e: Env) {
+  return Boolean(e.GITHUB_CLIENT_SECRET && e.GITHUB_CLIENT_ID &&
+    !e.GITHUB_CLIENT_ID.startsWith("REPLACE") && e.RATE_HASH_SECRET?.length >= 32);
+}
 export async function auth(req: Request, e: Env, path: string) {
   if (path === "/auth/logout" && req.method === "POST") {
     const s = await session(req, e, true);
@@ -44,6 +48,8 @@ export async function auth(req: Request, e: Env, path: string) {
   if (req.method !== "GET") throw new HttpError(405, "Method not allowed.");
   if (!["/auth/login", "/auth/callback"].includes(path))
     throw new HttpError(404, "Not found.");
+  if (!signInConfigured(e))
+    throw new HttpError(503, "Owner sign-in has not been configured yet.");
   const source = await sourceKey(req, e, now());
   if (
     !(await e.AUTH_LIMIT.limit({ key: source })).success ||
@@ -53,12 +59,6 @@ export async function auth(req: Request, e: Env, path: string) {
       429,
       "Too many sign-in attempts. Please try again in a minute.",
     );
-  if (
-    !e.GITHUB_CLIENT_SECRET ||
-    !e.GITHUB_CLIENT_ID ||
-    e.GITHUB_CLIENT_ID.startsWith("REPLACE")
-  )
-    throw new HttpError(503, "Owner sign-in has not been configured yet.");
   const callback = `${e.PUBLIC_ORIGIN}/auth/callback`;
   if (path === "/auth/login") {
     const state = random(),

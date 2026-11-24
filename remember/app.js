@@ -19,7 +19,17 @@ async function api(path, options = {}) {
   if (!response.ok) {
     const error = new Error(data.error || 'Could not complete that request.');
     error.status = response.status;
-    if (response.status === 401) { csrf = ''; $('sign-in').textContent = 'Sign in again →'; show('welcome'); $('private-actions').hidden = true; }
+    if (response.status === 401) {
+      const hadSession = Boolean(csrf);
+      csrf = '';
+      if (path === '/api/session') $('sign-in').hidden = data.signInReady !== true;
+      if (hadSession) {
+        $('sign-in').hidden = false;
+        $('sign-in').textContent = 'Sign in again →';
+      }
+      if (!demo) show('welcome');
+      $('private-actions').hidden = true;
+    }
     throw error;
   }
   return data;
@@ -116,7 +126,11 @@ async function start() {
     if (!session.notionReady) { notice('Your sign-in works. The Notion connection still needs to be configured.'); return; }
     await loadQueue();
   } catch (error) {
-    if (error.status !== 401) $('connection-note').textContent = 'The card service isn’t connected yet. You can explore a sample session below.';
+    if (error.status === 401 && $('sign-in').hidden) {
+      $('connection-note').textContent = 'GitHub sign-in still needs to be set up. You can try a sample session now.';
+    } else if (error.status !== 401) {
+      $('connection-note').textContent = 'The card service couldn’t be reached. You can try a sample session now.';
+    }
   }
 }
 $('try-demo').onclick = () => { demo = true; $('demo-banner').hidden = false; $('private-actions').hidden = true; loadQueue(); };
