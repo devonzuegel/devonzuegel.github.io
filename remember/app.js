@@ -336,7 +336,7 @@ $('settings-save').onclick = () => settingsAction(async () => {
   return $('reminder-enabled').checked ? 'Reminder saved. Enable this device below to receive it.' : 'Daily reminders are off.';
 });
 function pushSupport() {
-  if (!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) throw new Error('On iPhone, add Cards to your Home Screen and open it from the icon first. Requires iOS 16.4 or later.');
+  if (!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) throw new Error('On iPhone, add Sunshine Cards to your Home Screen and open it from the icon first. Requires iOS 16.4 or later.');
   if (!registration?.active) throw new Error('Notification setup is loading. Try again in a moment.');
   if (!pushKey) throw new Error('The notification service still needs to be configured.');
 }
