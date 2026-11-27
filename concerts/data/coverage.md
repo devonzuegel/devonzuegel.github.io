@@ -1,6 +1,6 @@
 # Concert source coverage
 
-Checked 2026-11-26T20:18:57.997Z. This is a partial catalog, not every concert in each metro.
+Checked 2026-11-27T20:03:46.066Z. This is a partial catalog, not every concert in each metro.
 
 | Metro | Source | Upcoming imported | Status | Notes |
 | --- | --- | ---: | --- | --- |
@@ -18,7 +18,7 @@ Checked 2026-11-26T20:18:57.997Z. This is a partial catalog, not every concert i
 | miami | [Revolution Live](https://www.jointherevolution.net/concerts/) | 26 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Culture Room](https://www.cultureroom.net/) | 14 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [ZeyZey](https://calendar.zeyzeymiami.com/) | 62 | ok | Official calendar. Coverage limited to published listings. |
-| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 13 | ok | Official calendar. Coverage limited to published listings. |
+| miami | [Lagniappe](https://www.lagniappehouse.com/music-schedule.html) | 12 | ok | Official calendar. Coverage limited to published listings. |
 | miami | [Respectable Street](https://respectablestreet.com/) | 0 | empty | No upcoming concerts could be read from this calendar. |
 | nyc | [Mercury Lounge](https://mercuryeastpresents.com/mercurylounge/) | 97 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Great American Music Hall](https://gamh.com/calendar/) | 71 | ok | Official calendar. Coverage limited to published listings. |
@@ -27,13 +27,13 @@ Checked 2026-11-26T20:18:57.997Z. This is a partial catalog, not every concert i
 | sf | [Audio](https://www.audiosf.com/events/) | 22 | ok | Official calendar. Coverage limited to published listings. |
 | sf | [Halcyon via 19hz](https://19hz.info/eventlisting_BayArea.php) | 20 | ok | Community-maintained 19hz calendar with original ticket links; coverage may be incomplete. |
 | sf | [Public Works](https://publicsf.com/) | 5 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [F8](https://www.feightsf.com/new-events) | 10 | ok | Official calendar. Coverage limited to published listings. |
-| sf | [19hz Bay Area / Northern California](https://19hz.info/eventlisting_BayArea.php) | 372 | ok | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
+| sf | [F8](https://www.feightsf.com/new-events) | 9 | ok | Official calendar. Coverage limited to published listings. |
+| sf | [19hz Bay Area / Northern California](https://19hz.info/eventlisting_BayArea.php) | 386 | ok | Community calendar including DJ nights and dance parties. Secondary source; verify details with the ticket seller. |
 | sf | [Afrobeats Oakland](https://www.eventbrite.com/o/4507691499) | 2 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | sf | [The Faight Collective](https://www.eventbrite.com/o/75467307963) | 5 | ok | Organizer-published Eventbrite calendar; visible upcoming listings refreshed automatically. |
 | sf | [Partiful Explore · San Francisco](https://partiful.com/explore/sf) | 0 | empty | No upcoming concerts could be read from this calendar. |
-| miami | [19hz Miami / South Florida](https://19hz.info/eventlisting_Miami.php) | 271 | ok | Community calendar of South Florida DJ nights, club shows and dance parties across venues. Secondary source; verify details with the ticket seller. Coverage is not exhaustive. |
-| miami | [AIRE Miami](https://airemia.com/) | 15 | ok | Official published AIRE calendar, including DJ nights, lineups, doors times and ticket links. Formerly Boho Miami; coverage limited to announced events. |
+| miami | [19hz Miami / South Florida](https://19hz.info/eventlisting_Miami.php) | 280 | ok | Community calendar of South Florida DJ nights, club shows and dance parties across venues. Secondary source; verify details with the ticket seller. Coverage is not exhaustive. |
+| miami | [AIRE Miami](https://airemia.com/) | 14 | ok | Official published AIRE calendar, including DJ nights, lineups, doors times and ticket links. Formerly Boho Miami; coverage limited to announced events. |
 | sf | [Portola](https://www.portolamusicfestival.com/general-info/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Hardly Strictly Bluegrass](https://hardlystrictlybluegrass.com/) | 0 | empty | Published festival dates are past; waiting for the next announcement. |
 | sf | [Outside Lands](https://sfoutsidelands.com/) | 1 | ok | Official calendar. Coverage limited to published listings. |
